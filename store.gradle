@@ -1,0 +1,8 @@
+ext{
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    key_alias = properties.getProperty("keyAlias")
+    key_password = properties.getProperty("keyPassword")
+    store_password = properties.getProperty("storePassword")
+    key_store = properties.getProperty("keystore.dir")
+}
