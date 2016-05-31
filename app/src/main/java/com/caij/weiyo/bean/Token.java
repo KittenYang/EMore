@@ -1,12 +1,14 @@
 package com.caij.weiyo.bean;
 
+import java.io.Serializable;
+
 /**
  * oauth授权token
  * 
  * @author wangdan
  * 
  */
-public class Token extends Bean {
+public class Token implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

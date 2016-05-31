@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
-
+apply plugin: 'realm-android'
 
 apply from: '../store.gradle'
 
@@ -53,16 +53,37 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
+    splits {
+        // Split apks on build target ABI, view all options for the splits here:
+        // http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits
+        abi {
+            enable true
+            reset()
+            include 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
+    }
+}
+
+repositories {
+    maven {
+        url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo'
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+    testCompile 'org.robolectric:robolectric:3.0'
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportVersion}"
 
-    compile "com.squareup.retrofit2:retrofit:${rootProject.ext.retrofitVersion}"
+    compile ("com.squareup.retrofit2:retrofit:${rootProject.ext.retrofitVersion}") {
+        exclude module: 'okhttp'
+    }
     compile "com.squareup.retrofit2:adapter-rxjava:${rootProject.ext.retrofitVersion}"
-    compile "com.squareup.retrofit2:converter-gson:${rootProject.ext.retrofitVersion}"
+//    compile ("com.squareup.retrofit2:converter-gson:${rootProject.ext.retrofitVersion}") {
+//        exclude module: 'gson'
+//    }
     compile "com.google.code.gson:gson:${rootProject.ext.gsonVersion}"
     compile "io.reactivex:rxandroid:${rootProject.ext.rxAndroidVersion}"
     compile "io.reactivex:rxjava:${rootProject.ext.rxJavaVersion}"
@@ -74,6 +95,7 @@ dependencies {
 
     debugCompile "com.facebook.stetho:stetho:${rootProject.ext.stethoVersion}"
     debugCompile "com.facebook.stetho:stetho-okhttp3:${rootProject.ext.stethoVersion}"
+    debugCompile "com.uphyca:stetho_realm:${rootProject.ext.stetho_realmVersion}"
     debugCompile "com.squareup.leakcanary:leakcanary-android:${rootProject.ext.leakcanaryVersion}"
 
 

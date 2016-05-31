@@ -21,7 +21,7 @@ public class UserPrefs {
     public UserPrefs() {
         String jsonTokenStr  = SPUtil.getString(USER_TOKEN, "");
         if (!TextUtils.isEmpty(jsonTokenStr)) {
-            token = GsonUtils.getGson().fromJson(jsonTokenStr, AccessToken.class);
+            token = GsonUtils.fromJson(jsonTokenStr, AccessToken.class);
         }
     }
 
@@ -38,7 +38,7 @@ public class UserPrefs {
 
     public void setToken(AccessToken token) {
         this.token = token;
-        String jsonTokenStr  = GsonUtils.getGson().toJson(token);
+        String jsonTokenStr  = GsonUtils.toJson(token);
         LogUtil.d(this, jsonTokenStr);
         SPUtil.saveString(USER_TOKEN, jsonTokenStr);
     }

@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
-import com.caij.weiyo.MainActivity;
+import com.caij.weiyo.Key;
 import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
@@ -27,15 +27,13 @@ public class LoginActivity extends WebActivity implements LoginView {
 
     private LoginPresent mLoginPresent;
 
-    private String name;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.login_label);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         mLoginPresent = new LoginPresentImp(new LoginSourceImp(), this);
-        mLoginPresent.onAttach();
+        mLoginPresent.onCreate();
         mLoginDialog = new ProgressDialog(this);
         mLoginDialog.setMessage(getString(R.string.logining));
         mLoginDialog.setCancelable(false);
@@ -84,29 +82,18 @@ public class LoginActivity extends WebActivity implements LoginView {
                         getAppId(), getRedirectUrL());
     }
 
-//    private String getAppId() {
-//        return Key.WEIBO_APP_ID;
-//    }
-//
-//    public String getAppSecret() {
-//        return Key.WEIBO_APP_SECRET;
-//    }
-//
-//    private String getRedirectUrL() {
-//        return Key.WEIBO_CALLBACK_URL;
-//    }
-
     private static String getAppId() {
-        return "2362431378";
+        return Key.WEIBO_APP_ID;
     }
 
     public static String getAppSecret() {
-        return "582ce3cdcdeb8a3b45087073d0dbcadf";
+        return Key.WEIBO_APP_SECRET;
     }
 
     private static String getRedirectUrL() {
-        return "http://boyqiang520.s8.csome.cn/oauth2/";
+        return Key.WEIBO_CALLBACK_URL;
     }
+
 
     @Override
     public void onLoginSuccess(AccessToken accessToken) {

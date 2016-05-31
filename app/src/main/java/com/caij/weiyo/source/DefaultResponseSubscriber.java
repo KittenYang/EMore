@@ -10,11 +10,11 @@ import rx.Subscriber;
 /**
  * Created by Caij on 2016/5/28.
  */
-public abstract class DefaultSubscriber<T> extends Subscriber<T> {
+public abstract class DefaultResponseSubscriber<T> extends Subscriber<T> {
 
     private BaseView mBaseView;
 
-    public DefaultSubscriber(BaseView baseView) {
+    public DefaultResponseSubscriber(BaseView baseView) {
         this.mBaseView = baseView;
     }
 

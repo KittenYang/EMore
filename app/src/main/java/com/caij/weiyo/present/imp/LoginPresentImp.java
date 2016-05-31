@@ -54,7 +54,7 @@ public class LoginPresentImp implements LoginPresent{
     }
 
     @Override
-    public void onAttach() {
+    public void onCreate() {
 
     }
 

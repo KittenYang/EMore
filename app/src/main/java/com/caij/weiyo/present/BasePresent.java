@@ -5,7 +5,8 @@ package com.caij.weiyo.present;
  */
 public interface BasePresent {
 
-    void onAttach();
+    void onCreate();
 
     void onDestroy();
+
 }

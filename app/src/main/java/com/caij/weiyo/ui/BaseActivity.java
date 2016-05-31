@@ -12,7 +12,7 @@ import com.caij.weiyo.utils.ToastUtil;
 /**
  * Created by Caij on 2016/5/27.
  */
-public class BaseActivity extends AppCompatActivity implements BaseView{
+public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,17 +34,5 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
         ToastUtil.show(this, msgId);
     }
 
-    @Override
-    public void onAuthenticationError() {
-        ActivityManager.getInstance().remove(this);
-        ActivityManager.getInstance().finishAllActivity();
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
-    @Override
-    public void onComnLoadError() {
-        showToast(R.string.net_request_error);
-    }
 }
