@@ -81,7 +81,6 @@ public class WeiboItemPicsView extends ViewGroup{
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         if (mPicsRect == null || mPicsRect.size() == 0)
             return;
-
         for (int i = 0; i < mPicsRect.size(); i++) {
             try {
                 Rect imgRect = mPicsRect.get(i);
@@ -111,30 +110,27 @@ public class WeiboItemPicsView extends ViewGroup{
 
     private void disPlayPics(List<PicUrl> picUrls, List<Rect> rects) {
         for (int i = 0; i < getChildCount(); i++) {
-            ImageView imgView = (ImageView) getChildAt(i);
+            ItemImageView imgView = (ItemImageView) getChildAt(i);
 
             // 隐藏多余的View
             if (i >= picUrls.size()) {
                 imgView.setVisibility(View.GONE);
             }else {
                 imgView.setVisibility(View.VISIBLE);
-                LayoutParams params = imgView.getLayoutParams();
                 Rect rect = rects.get(i);
                 int imageWidth = rect.width();
                 int imageHeight = rect.height();
-                if (params == null) {
-                    params = new LayoutParams(imageWidth, imageHeight);
-                    imgView.setLayoutParams(params);
+                String url  =  picUrls.get(i).getThumbnail_pic().replace("thumbnail", "bmiddle");
+                imgView.setUrl(url);
+                if (picUrls.size() == 1 && (imageHeight / imageWidth >= 3 || imageWidth / imageHeight >= 3)) {
+                    //高宽的3倍 设置长图
+                    ImageLoader.load(getContext(), imgView, ImageLoader.ScaleType.TOP,
+                            url, imageWidth, imageHeight);
                 }else {
-                    if (params.height != imageHeight || params.width != imageWidth) {
-                        params.height = imageHeight;
-                        params.width = imageWidth;
-                        imgView.setLayoutParams(params);
-                    }
+                    ImageLoader.load(getContext(), imgView, ImageLoader.ScaleType.CENTER_CROP,
+                            url, imageWidth, imageHeight);
                 }
 
-                ImageLoader.load(getContext(), imgView, ImageView.ScaleType.CENTER_CROP,
-                        picUrls.get(i).getThumbnail_pic().replace("thumbnail", "bmiddle"));
             }
         }
     }
@@ -172,7 +168,7 @@ public class WeiboItemPicsView extends ViewGroup{
     private static Rect create1PicsRectF(List<Rect> mPicsRectF, int width,  PicUrl picUrl) {
         Rect rect = null;
         if (picUrl.getHeight() > 0 && picUrl.getWidth() > 0) {
-            float maxRadio = 13 * 1.0f / 16;
+            float maxRadio = 13 * 1.0f / 13;
             if (picUrl.getWidth() * 1.0f / picUrl.getHeight() < maxRadio) { //宽比高小很多  竖着的图
                 int imageWidth  = (int) (width * 1.0f / 2);
                 int imageHeight = (int) (imageWidth * 1.34f);
@@ -195,8 +191,8 @@ public class WeiboItemPicsView extends ViewGroup{
         return rect;
     }
 
-    private ImageView createImageView(int imageWidth) {
-        ImageView imageView = new ImageView(getContext());
+    private ItemImageView createImageView(int imageWidth) {
+        ItemImageView imageView = new ItemImageView(getContext());
         LayoutParams params = new LayoutParams(imageWidth, imageWidth);
         imageView.setLayoutParams(params);
         return imageView;

@@ -124,6 +124,8 @@ public class LoginActivity extends WebActivity implements LoginView {
             mLoginDialog.dismiss();
             mLoginDialog = null;
         }
+        mWebView.removeAllViews();
+        mWebView.destroy();
         super.onDestroy();
         mLoginPresent.onDestroy();
     }

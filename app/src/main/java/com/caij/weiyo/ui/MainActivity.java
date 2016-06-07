@@ -1,6 +1,7 @@
 package com.caij.weiyo.ui;
 
 import android.content.res.ColorStateList;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -28,8 +29,12 @@ import com.caij.weiyo.source.local.LocalUserSource;
 import com.caij.weiyo.source.server.ServerUserSource;
 import com.caij.weiyo.ui.fragment.FriendWeiboFragment;
 import com.caij.weiyo.utils.ImageLoader;
+import com.caij.weiyo.utils.ImageUtil;
+import com.caij.weiyo.utils.LogUtil;
 import com.caij.weiyo.utils.SystemUtil;
 
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -79,6 +84,7 @@ public class MainActivity extends BaseNeedLoadDataActivity implements UserView {
 
         Drawable iconWeiboDrawable = createNavMenuItemDrawable(R.mipmap.ic_weibo);
         mRbWeibo.setCompoundDrawables(iconWeiboDrawable, null, null, null);
+
 
         getFragmentManager().beginTransaction().add(R.id.attach_container,
                 new FriendWeiboFragment()).commit();

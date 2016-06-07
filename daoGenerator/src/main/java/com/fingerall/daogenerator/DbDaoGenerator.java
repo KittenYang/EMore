@@ -14,6 +14,7 @@ public class DbDaoGenerator {
         createUser(sch);
         createFriendWeibo(sch);
         createUserWeibo(sch);
+        createImage(sch);
         new de.greenrobot.daogenerator.DaoGenerator().generateAll(sch, "./app/src/main/java");
     }
 
@@ -93,6 +94,13 @@ public class DbDaoGenerator {
         entity.addStringProperty("visible_json");
         entity.addStringProperty("pic_ids_json");
         entity.addLongProperty("create_time");
+    }
+
+    static void createImage(Schema sch) {
+        Entity image = sch.addEntity("LocakImage");
+        image.addStringProperty("url").primaryKey();
+        image.addIntProperty("width");
+        image.addIntProperty("height");
     }
 
 

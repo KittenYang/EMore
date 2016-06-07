@@ -34,4 +34,8 @@ public class PicUrl {
     public void setHeight(int height) {
         this.height = height;
     }
+
+    public boolean hasSize() {
+        return width > 0 && height > 0;
+    }
 }
