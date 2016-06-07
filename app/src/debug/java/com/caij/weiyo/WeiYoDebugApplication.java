@@ -3,7 +3,6 @@ package com.caij.weiyo;
 
 import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
-import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 
 /**
@@ -17,7 +16,7 @@ public class WeiYoDebugApplication extends WeiYoApplication {
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                        .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
                         .build());
         LeakCanary.install(this);
     }

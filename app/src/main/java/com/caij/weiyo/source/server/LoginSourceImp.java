@@ -1,11 +1,8 @@
-package com.caij.weiyo.source.imp;
+package com.caij.weiyo.source.server;
 
 import com.caij.weiyo.api.WeiBoService;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.source.LoginSource;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import rx.Observable;
 

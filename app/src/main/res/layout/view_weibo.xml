@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/spacing_large"
+        android:paddingRight="@dimen/spacing_large"
+        android:paddingTop="@dimen/spacing_large">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:id="@+id/sdv_avatar"
+                android:layout_width="42dip"
+                android:layout_height="42dip"
+                android:layout_marginRight="8dip" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/text_100"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/sdv_avatar"
+                android:text="名字"/>
+
+            <ImageView
+                android:id="@+id/img_verified"
+                android:layout_width="18dip"
+                android:layout_height="18dip"
+                android:layout_marginLeft="4dip"
+                android:layout_marginRight="10dp"
+                android:layout_toRightOf="@id/tv_name" android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tv_desc"
+                android:textSize="@dimen/text_size_medium_min"
+                android:textColor="@color/text_54"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_name"
+                android:layout_marginTop="2dip"
+                android:layout_toRightOf="@id/sdv_avatar"
+                android:text="来自Aisen 2015-01-26"/>
+
+            <TextView
+                android:id="@+id/tv_content"
+                style="@style/WeiboTextBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/sdv_avatar"
+                android:layout_marginBottom="4dip"
+                android:layout_marginTop="10dip"
+                android:lineSpacingExtra="2dip"
+                android:text="哈哈，我今天发了条微博"/>
+
+            <!--android:background="@drawable/timeline_profile_question_single_normal"-->
+            <RelativeLayout
+                android:id="@+id/rl_re_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_content"
+                android:layout_marginLeft="-10dip"
+                android:layout_marginRight="-10dip"
+                android:orientation="vertical"
+                android:paddingBottom="4dip"
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip">
+
+                <View
+                    android:id="@+id/line_re_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1.5dip"
+                    android:layout_marginBottom="8dip"
+                    android:background="@color/divider_timeline_item"/>
+
+                <TextView
+                    android:id="@+id/tv_re_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/line_re_divider"
+                    style="@style/WeiboTextBody"
+                    android:lineSpacingExtra="2dip"
+                    android:text="哈哈，我发了条微博被baby转发了，教主吃屎！"/>
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <com.caij.weiyo.view.WeiboItemPicsView
+            android:id="@+id/pics_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+
+        </com.caij.weiyo.view.WeiboItemPicsView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dip"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/tv_like"
+                style="@style/WeiboTextBody"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="1人赞了"
+                android:textColor="@color/text_54"
+                android:textSize="12sp"
+                android:drawableLeft="@drawable/like_selector"
+                android:drawablePadding="4dp"
+                android:gravity="center_vertical"
+                android:background="?attr/selectableItemBackground"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:id="@+id/tv_comment_count"
+                style="@style/WeiboTextBody"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100"
+                android:textColor="@color/text_54"
+                android:textSize="12sp"
+                android:drawableLeft="@mipmap/timeline_icon_comment"
+                android:layout_alignParentRight="true"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:drawablePadding="4dp"
+                android:layout_centerVertical="true"/>
+
+
+            <TextView
+                android:id="@+id/tv_repost_count"
+                style="@style/WeiboTextBody"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100"
+                android:textColor="@color/text_54"
+                android:textSize="12sp"
+                android:drawableLeft="@mipmap/timeline_icon_redirect"
+                android:background="?attr/selectableItemBackground"
+                android:layout_marginRight="10dip"
+                android:layout_toLeftOf="@id/tv_comment_count"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:drawablePadding="4dp"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/btn_menus"
+        android:layout_width="40dip"
+        android:layout_height="40dip"
+        android:layout_gravity="right"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:paddingBottom="8dip"
+        android:src="@mipmap/ic_menu_moreoverflow_card_dark_normal"/>
+
+</merge>

@@ -1,13 +1,93 @@
 package com.caij.weiyo.bean;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import com.caij.weiyo.database.bean.LocalUser;
+import com.caij.weiyo.utils.GsonUtils;
 
 /**
  * Created by Caij on 2016/5/31.
  */
-public class User extends RealmObject {
-    @PrimaryKey
+public class User {
+
+    public static User localUser2User(LocalUser localUser) {
+        if (localUser == null) return null;
+        User user = new User();
+        user.setUrl(localUser.getUrl());
+        user.setAllow_all_act_msg(localUser.getAllow_all_act_msg());
+        user.setAllow_all_comment(localUser.getAllow_all_comment());
+        user.setAvatar_hd(localUser.getAvatar_hd());
+        user.setAvatar_large(localUser.getAvatar_large());
+        user.setBi_followers_count(localUser.getBi_followers_count());
+        user.setCity(localUser.getCity());
+        user.setCreated_at(localUser.getCreated_at());
+        user.setDescription(localUser.getDescription());
+        user.setDomain(localUser.getDomain());
+        user.setFavourites_count(localUser.getFavourites_count());
+        user.setFollow_me(localUser.getFollow_me());
+        user.setFollowing(localUser.getFollowing());
+        user.setFollowers_count(localUser.getFollowers_count());
+        user.setGender(localUser.getGender());
+        user.setGeo_enabled(localUser.getGeo_enabled());
+        user.setLocation(localUser.getLocation());
+        user.setOnline_status(localUser.getOnline_status());
+        user.setId(localUser.getId());
+        user.setName(localUser.getName());
+        user.setStatuses_count(localUser.getStatuses_count());
+        user.setStatus(GsonUtils.fromJson(localUser.getWeibo_json(), Weibo.class));
+        user.setScreen_name(localUser.getScreen_name());
+        user.setRemark(localUser.getRemark());
+        user.setProvince(localUser.getProvince());
+        user.setVerified_type(localUser.getVerified_type());
+        user.setIdstr(localUser.getIdstr());
+        user.setProfile_image_url(localUser.getProfile_image_url());
+        user.setProfile_url(localUser.getProfile_url());
+        user.setWeihao(localUser.getWeihao());
+        user.setFriends_count(localUser.getFriends_count());
+        user.setVerified_reason(localUser.getVerified_reason());
+        user.setLang(localUser.getLang());
+        return user;
+    }
+
+    public static LocalUser user2LocalUser(User user) {
+        if (user == null) return  null;
+        LocalUser localUser = new LocalUser();
+        localUser.setUrl(user.getUrl());
+        localUser.setAllow_all_act_msg(user.isAllow_all_act_msg());
+        localUser.setAllow_all_comment(user.isAllow_all_comment());
+        localUser.setAvatar_hd(user.getAvatar_hd());
+        localUser.setAvatar_large(user.getAvatar_large());
+        localUser.setBi_followers_count(user.getBi_followers_count());
+        localUser.setCity(user.getCity());
+        localUser.setCreated_at(user.getCreated_at());
+        localUser.setDescription(user.getDescription());
+        localUser.setDomain(user.getDomain());
+        localUser.setFavourites_count(user.getFavourites_count());
+        localUser.setFollow_me(user.isFollow_me());
+        localUser.setFollowing(user.isFollowing());
+        localUser.setFollowers_count(user.getFollowers_count());
+        localUser.setGender(user.getGender());
+        localUser.setGeo_enabled(user.isGeo_enabled());
+        localUser.setLocation(user.getLocation());
+        localUser.setOnline_status(user.getOnline_status());
+        localUser.setId(user.getId());
+        localUser.setName(user.getName());
+        localUser.setStatuses_count(user.getStatuses_count());
+        localUser.setWeibo_json(GsonUtils.toJson(user.getStatus()));
+        localUser.setScreen_name(user.getScreen_name());
+        localUser.setRemark(user.getRemark());
+        localUser.setProvince(user.getProvince());
+        localUser.setVerified_type(user.getVerified_type());
+        localUser.setIdstr(user.getIdstr());
+        localUser.setProfile_image_url(user.getProfile_image_url());
+        localUser.setProfile_url(user.getProfile_url());
+        localUser.setWeihao(user.getWeihao());
+        localUser.setFriends_count(user.getFriends_count());
+        localUser.setVerified_reason(user.getVerified_reason());
+        localUser.setLang(user.getLang());
+        return localUser;
+    }
+
+
+
     private long id;
     private String idstr;
     private String screen_name;

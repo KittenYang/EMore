@@ -2,9 +2,8 @@ package com.caij.weiyo.bean;
 
 import java.io.Serializable;
 
-import io.realm.RealmObject;
 
-public class Visible extends RealmObject implements Serializable {
+public class Visible implements Serializable {
 
 	private static final long serialVersionUID = 7285113172667412284L;
 

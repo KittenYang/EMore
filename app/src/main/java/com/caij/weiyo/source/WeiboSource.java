@@ -11,6 +11,18 @@ import rx.Observable;
  */
 public interface WeiboSource {
 
+
+    /**
+     * @param accessToken
+     * @param since_id
+     * @param max_id
+     * @param count
+     * @param page 查询页，最低从1开始
+     * @return
+     */
     public Observable<List<Weibo>> getFriendWeibo(String accessToken, long since_id, long max_id,
-                                                  int count, int page, int feature);
+                                                  int count, int page);
+
+    public Observable<Void> saveFriendWeibo(String accessToken, List<Weibo> weibos);
+
 }

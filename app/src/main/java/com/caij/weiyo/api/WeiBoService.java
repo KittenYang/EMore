@@ -50,11 +50,15 @@ public interface WeiBoService {
                                            @Field("redirect_uri") String redirectUrL);
 
     @GET("2/users/show.json")
-    Observable<User> getWeiBoUserInfo(@Query("access_token") String accessToken, @Query("screen_name") String name);
+    Observable<User> getWeiBoUserInfoByName(@Query("access_token") String accessToken, @Query("screen_name") String name);
+
+    @GET("2/users/show.json")
+    Observable<User> getWeiBoUserInfoByUid(@Query("access_token") String accessToken, @Query("uid") long uid);
 
     @GET("2/statuses/friends_timeline.json")
-    Observable<QueryWeiboResponse> getFrientWeibo(@Query("access_token") String accessToken, @Query("since_id") long since_id,
-                                                  @Query("max_id") long max_id, @Query("count") int count,
-                                                  @Query("page") int page, @Query("feature") int feature);
+    Observable<QueryWeiboResponse> getFrientWeibo(@Query("access_token") String accessToken,
+                                                  @Query("since_id") long since_id,
+                                                  @Query("max_id") long max_id,
+                                                  @Query("count") int count, @Query("page") int page);
 
 }

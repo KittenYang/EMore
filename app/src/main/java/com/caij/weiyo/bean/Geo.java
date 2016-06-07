@@ -2,9 +2,7 @@ package com.caij.weiyo.bean;
 
 import java.io.Serializable;
 
-import io.realm.RealmObject;
-
-public class Geo extends RealmObject implements Serializable {
+public class Geo implements Serializable {
 
 	private static final long serialVersionUID = -8502841620576546529L;
 	private String longitude;// 经度坐标

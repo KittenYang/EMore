@@ -1,11 +1,14 @@
 package com.caij.weiyo.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.caij.weiyo.Key;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
+import com.caij.weiyo.database.dao.DBManager;
 
 /**
  * Created by Caij on 2016/5/28.
@@ -21,6 +24,7 @@ public class SplashActivity extends BaseActivity{
             intent = new Intent(this, LoginActivity.class);
         }else {
             intent = new Intent(this, MainActivity.class);
+            initDB(accessToken.getUid());
         }
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -29,6 +33,10 @@ public class SplashActivity extends BaseActivity{
                 finish();
             }
         }, 2000);
-
     }
+
+    private void initDB(String uid) {
+        DBManager.initDB(this, Key.DB_NAME + uid);
+    }
+
 }

@@ -9,5 +9,9 @@ import rx.Observable;
  */
 public interface UserSource {
 
-    public Observable<User> getWeiUserInfo(String accessToken, String name);
+    public Observable<User> getWeiboUserInfoByName(String accessToken, String name);
+
+    public Observable<User> getWeiboUserInfoByUid(String accessToken, long uid);
+
+    public Observable<Void> saveWeiboUser(User user);
 }

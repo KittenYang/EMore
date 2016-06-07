@@ -4,8 +4,8 @@ import com.caij.weiyo.bean.User;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.source.UserSource;
 import com.caij.weiyo.source.WeiboSource;
-import com.caij.weiyo.source.imp.UserSourceImp;
-import com.caij.weiyo.source.imp.WeiboSourceImp;
+import com.caij.weiyo.source.server.ServerUserSource;
+import com.caij.weiyo.source.server.ServerWeiboSource;
 import com.caij.weiyo.utils.GsonUtils;
 
 import org.junit.Test;
@@ -21,8 +21,8 @@ public class WeiboUnitTest {
 
     @Test
     public void loadUserInfo() throws Exception {
-        UserSource userSource = new UserSourceImp();
-        userSource.getWeiUserInfo(Key.token, "Ca1j").subscribe(new Subscriber<User>() {
+        UserSource userSource = new ServerUserSource();
+        userSource.getWeiboUserInfoByName(Key.token, "Ca1j").subscribe(new Subscriber<User>() {
             @Override
             public void onCompleted() {
                 System.out.print("onCompleted");
@@ -42,7 +42,7 @@ public class WeiboUnitTest {
 
     @Test
     public void loadFriendWeibo() throws Exception {
-        WeiboSource weiboSource = new WeiboSourceImp();
+        WeiboSource weiboSource = new ServerWeiboSource();
         weiboSource.getFriendWeibo(Key.token, 0, 0, 20, 1, 0).subscribe(new Subscriber<List<Weibo>>() {
             @Override
             public void onCompleted() {

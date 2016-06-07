@@ -1,18 +1,76 @@
 package com.caij.weiyo.bean;
 
-import java.util.List;
+import com.caij.weiyo.database.bean.FriendWeibo;
+import com.caij.weiyo.utils.GsonUtils;
+import com.google.gson.reflect.TypeToken;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Caij on 2016/5/31.
  */
-public class Weibo extends RealmObject {
+public class Weibo{
+
+    public static Weibo friendWeibo2Weibo(FriendWeibo friendWeibo) {
+        Weibo weibo = new Weibo();
+        weibo.setId(friendWeibo.getId());
+        weibo.setAttitudes_count(friendWeibo.getAttitudes_count());
+        weibo.setBmiddle_pic(friendWeibo.getBmiddle_pic());
+        weibo.setCreated_at(friendWeibo.getCreated_at());
+        weibo.setFavorited(friendWeibo.getFavorited());
+        weibo.setGeo(GsonUtils.fromJson(friendWeibo.getGeo_json(), Geo.class));
+        weibo.setIdstr(friendWeibo.getIdstr());
+        weibo.setIn_reply_to_screen_name(friendWeibo.getIn_reply_to_screen_name());
+        weibo.setIn_reply_to_status_id(friendWeibo.getIn_reply_to_status_id());
+        weibo.setIn_reply_to_user_id(friendWeibo.getIn_reply_to_user_id());
+        weibo.setMid(friendWeibo.getMid());
+        weibo.setCreated_at(friendWeibo.getCreated_at());
+        weibo.setMlevel(friendWeibo.getMlevel());
+        weibo.setOriginal_pic(friendWeibo.getOriginal_pic());
+        weibo.setIn_reply_to_screen_name(friendWeibo.getIn_reply_to_screen_name());
+        weibo.setPic_urls((List<PicUrl>) GsonUtils.fromJson(friendWeibo.getPic_ids_json(), new TypeToken<List<PicUrl>>(){}.getType()));
+        weibo.setReposts_count(friendWeibo.getReposts_count());
+        weibo.setRetweeted_status(GsonUtils.fromJson(friendWeibo.getRetweeted_status_json(), Weibo.class));
+        weibo.setSource(friendWeibo.getSource());
+        weibo.setText(friendWeibo.getText());
+        weibo.setTruncated(friendWeibo.getTruncated());
+        weibo.setUser(GsonUtils.fromJson(friendWeibo.getUser_json(),  User.class));
+        weibo.setVisible(GsonUtils.fromJson(friendWeibo.getVisible_json(), Visible.class));
+        return weibo;
+    }
+
+    public static FriendWeibo weibo2FriendWeibo(Weibo weibo) {
+        FriendWeibo friendWeibo = new FriendWeibo();
+        friendWeibo.setId(weibo.getId());
+        friendWeibo.setAttitudes_count(weibo.getAttitudes_count());
+        friendWeibo.setBmiddle_pic(weibo.getBmiddle_pic());
+        friendWeibo.setFavorited(weibo.isFavorited());
+        friendWeibo.setGeo_json(GsonUtils.toJson(weibo.getGeo()));
+        friendWeibo.setIdstr(weibo.getIdstr());
+        friendWeibo.setIn_reply_to_screen_name(weibo.getIn_reply_to_screen_name());
+        friendWeibo.setIn_reply_to_status_id(weibo.getIn_reply_to_status_id());
+        friendWeibo.setIn_reply_to_user_id(weibo.getIn_reply_to_user_id());
+        friendWeibo.setMid(weibo.getMid());
+        friendWeibo.setCreated_at(weibo.getCreated_at());
+        friendWeibo.setMlevel(weibo.getMlevel());
+        friendWeibo.setOriginal_pic(weibo.getOriginal_pic());
+        friendWeibo.setIn_reply_to_screen_name(weibo.getIn_reply_to_screen_name());
+        friendWeibo.setPic_ids_json(GsonUtils.toJson(weibo.getPic_urls()));
+        friendWeibo.setReposts_count(weibo.getReposts_count());
+        friendWeibo.setRetweeted_status_json(GsonUtils.toJson(weibo.getRetweeted_status()));
+        friendWeibo.setSource(weibo.getSource());
+        friendWeibo.setText(weibo.getText());
+        friendWeibo.setTruncated(weibo.isTruncated());
+        friendWeibo.setUser_json(GsonUtils.toJson(weibo.getUser()));
+        friendWeibo.setVisible_json(GsonUtils.toJson(weibo.getVisible()));
+        friendWeibo.setCreate_time(Date.parse(weibo.getCreated_at()));
+        return friendWeibo;
+    }
 
     private String created_at;
-    @PrimaryKey
     private long id;
     private long mid;
     private String idstr;
@@ -34,7 +92,8 @@ public class Weibo extends RealmObject {
     private int attitudes_count;
     private int mlevel;
     private Visible visible;
-    private RealmList<RealmString> pic_ids;
+    private List<PicUrl> pic_urls;
+
 
     public String getCreated_at() {
         return created_at;
@@ -212,11 +271,17 @@ public class Weibo extends RealmObject {
         this.visible = visible;
     }
 
-    public RealmList<RealmString> getPic_ids() {
-        return pic_ids;
+    public List<PicUrl> getPic_urls() {
+        return pic_urls;
     }
 
-    public void setPic_ids(RealmList<RealmString> pic_ids) {
-        this.pic_ids = pic_ids;
+    public void setPic_urls(List<PicUrl> pic_urls) {
+        this.pic_urls = pic_urls;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Weibo weibo = (Weibo) o;
+        return id == weibo.getId();
     }
 }

@@ -5,6 +5,9 @@ package com.caij.weiyo;
  */
 public interface Key {
 
+    String DB_NAME  = "WeiBo";
+    long DB_VERSION  = 1;
+
     String WEIBO_BASE_URL = "https://api.weibo.com/";
     String WEIBO_APP_ID  = "1210093162";
     String WEIBO_APP_SECRET = "2304b3d6aad36d32cc737cb38607b4a8";

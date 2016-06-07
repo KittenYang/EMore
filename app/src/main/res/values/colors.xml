@@ -4,6 +4,32 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="transparent">#00000000</color>
+
     <color name="color_black">#222222</color>
     <color name="background_white_light">#fafafa</color>
+    <color name="white">#ffffff</color>
+    <color name="light_white">#ffffffff</color>
+
+    <color name="background_selected_color">#1a000000</color>
+
+    <color name="navmenu_selected_color">@color/background_selected_color</color>
+    <color name="nav_item_text_color">#ff676767</color>
+    <color name="icon_normal_color">#ff676767</color>
+
+    <color name="gplus_color_1">#3e802f</color>
+    <color name="gplus_color_2">#f4b400</color>
+    <color name="gplus_color_3">#427fed</color>
+    <color name="gplus_color_4">#b23424</color>
+
+    <!--适配Materail Design后添加的颜色-->
+    <color name="text_100">#ff000000</color>
+    <color name="text_87">#dd000000</color>
+    <color name="text_80">#cc000000</color>
+    <color name="text_60">#99000000</color>
+    <color name="text_54">#69000000</color>
+
+    <!--timeline-->
+    <color name="divider_timeline_item">#ebeef4</color>
+
 </resources>

@@ -8,10 +8,37 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.Main" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/color_black</item>
         <item name="android:background">@drawable/dialog_background</item>
+    </style>
+
+    <style name="NavRadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/activity_vertical_margin</item>
+        <item name="android:button">@null</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:background">@drawable/bg_navmenu_item_selector</item>
+        <item name="android:textColor">@color/nav_item_tv_color_selector</item>
+        <item name="android:drawablePadding">6dp</item>
+    </style>
+
+    <style name="WeiboTextBody">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/text_80</item>
+    </style>
+
+    <style name="TextSubhead">
+        <item name="android:textColor">@color/text_54</item>
+        <item name="android:textSize">@dimen/text_size_medium_min</item>
     </style>
 
 </resources>

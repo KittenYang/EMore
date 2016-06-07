@@ -5,7 +5,7 @@ import com.caij.weiyo.utils.LogUtil;
 
 import java.util.concurrent.TimeUnit;
 
-public class AccessToken extends Token {
+public class AccessToken  {
 
 	private static final long serialVersionUID = 1L;
 
@@ -16,10 +16,6 @@ public class AccessToken extends Token {
 	private String access_token;
 
 	private long expires_in;
-
-    private String appKey;
-
-    private String appScreet;
 
     private long create_at = System.currentTimeMillis();
 
@@ -39,19 +35,10 @@ public class AccessToken extends Token {
 		this.uid = uid;
 	}
 	
-	@Override
-	public String getToken() {
-		return getAccess_token();
-	}
-	
 	public String getAccess_token() {
 		return access_token;
 	}
 
-	public void setAccess_token(String access_token) {
-		this.access_token = access_token;
-		setToken(access_token);
-	}
 
     public long getExpires_in() {
         return expires_in;
@@ -76,19 +63,5 @@ public class AccessToken extends Token {
         return System.currentTimeMillis() - create_at >= expires_in * 1000;
     }
 
-    public String getAppKey() {
-        return appKey;
-    }
 
-    public void setAppKey(String appKey) {
-        this.appKey = appKey;
-    }
-
-    public String getAppScreet() {
-        return appScreet;
-    }
-
-    public void setAppScreet(String appScreet) {
-        this.appScreet = appScreet;
-    }
 }

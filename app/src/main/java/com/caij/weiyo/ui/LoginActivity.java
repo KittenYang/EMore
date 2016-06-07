@@ -10,10 +10,11 @@ import com.caij.weiyo.Key;
 import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
+import com.caij.weiyo.database.dao.DBManager;
 import com.caij.weiyo.present.LoginPresent;
 import com.caij.weiyo.present.imp.LoginPresentImp;
 import com.caij.weiyo.present.view.LoginView;
-import com.caij.weiyo.source.imp.LoginSourceImp;
+import com.caij.weiyo.source.server.LoginSourceImp;
 import com.caij.weiyo.utils.LogUtil;
 
 import java.net.URL;
@@ -98,9 +99,14 @@ public class LoginActivity extends WebActivity implements LoginView {
     @Override
     public void onLoginSuccess(AccessToken accessToken) {
         UserPrefs.get().setToken(accessToken);
+        initDB(accessToken.getUid());
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void initDB(String uid) {
+        DBManager.initDB(this, Key.DB_NAME + uid);
     }
 
     @Override

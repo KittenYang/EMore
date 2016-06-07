@@ -8,6 +8,7 @@ import com.caij.weiyo.present.BasePresent;
  */
 public interface FriendWeiboPresent extends BasePresent{
 
-    public void onLoadMore(long maxId, int feature);
+    public void onLoadMore();
 
+    public void onRefresh();
 }

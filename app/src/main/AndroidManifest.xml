@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.caij.weiyo">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -13,6 +14,14 @@
         android:supportsRtl="true"
         android:name=".WeiYoApplication"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
+            tools:node="remove" />
+
+        <meta-data android:name="com.caij.weiyo.okhttp.MyGlideModule"
+            android:value="GlideModule"/>
+
         <activity android:name=".ui.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,6 +34,7 @@
             android:screenOrientation="portrait"/>
 
         <activity android:name=".ui.MainActivity"
+            android:theme="@style/AppTheme.Main"
             android:screenOrientation="portrait"/>
     </application>
 
