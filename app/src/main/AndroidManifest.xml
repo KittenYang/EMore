@@ -36,6 +36,24 @@
         <activity android:name=".ui.MainActivity"
             android:theme="@style/AppTheme.Main"
             android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.UserInfoActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <data android:scheme="com.caij.weiyo.userinfo"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.WebActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <data android:scheme="weibohttp"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

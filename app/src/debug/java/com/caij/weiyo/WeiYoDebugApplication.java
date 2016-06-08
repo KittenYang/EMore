@@ -18,6 +18,6 @@ public class WeiYoDebugApplication extends WeiYoApplication {
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
                         .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
                         .build());
-        LeakCanary.install(this);
+//        LeakCanary.install(this);
     }
 }

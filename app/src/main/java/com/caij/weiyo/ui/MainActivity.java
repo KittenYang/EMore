@@ -33,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 
-public class MainActivity extends BaseNeedLoadDataActivity implements UserView {
+public class MainActivity extends BaseActivity implements UserView {
 
     @BindView(R.id.img_navigation_avatar)
     ImageView mImgNavigationAvatar;
@@ -101,7 +101,7 @@ public class MainActivity extends BaseNeedLoadDataActivity implements UserView {
         if (user != null) {
             mTvNavigationUsername.setText(user.getName());
             ImageLoader.load(this, mImgNavigationAvatar,
-                    user.getAvatar_large(), true);
+                    user.getAvatar_large(), true, R.mipmap.ic_default_circle_head_image);
         }
     }
 

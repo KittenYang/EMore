@@ -1,5 +1,7 @@
 package com.caij.weiyo.present.view;
 
+import android.content.Context;
+
 import com.caij.weiyo.bean.Weibo;
 
 import java.util.List;
@@ -16,4 +18,6 @@ public interface FriendWeiboView extends BaseView {
     void onRefreshComplite();
 
     void onLoadComplite();
+
+    Context getContent();
 }

@@ -1,5 +1,6 @@
 package com.caij.weiyo.ui.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -79,6 +80,11 @@ public class FriendWeiboFragment extends SwipeRefreshRecyclerViewFragment<Weibo>
     @Override
     public void onLoadComplite() {
         mLoadMoreLoadMoreRecyclerView.completeLoading();
+    }
+
+    @Override
+    public Context getContent() {
+        return getActivity().getApplication();
     }
 
     @Override

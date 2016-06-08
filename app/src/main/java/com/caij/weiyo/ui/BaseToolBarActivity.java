@@ -9,7 +9,7 @@ import com.caij.weiyo.R;
 /**
  * Created by Caij on 2016/5/28.
  */
-public abstract class BaseToolBarActivity extends BaseNeedLoadDataActivity {
+public abstract class BaseToolBarActivity extends BaseActivity {
 
     protected Toolbar mToolbar;
     protected FrameLayout mAttachContainer;

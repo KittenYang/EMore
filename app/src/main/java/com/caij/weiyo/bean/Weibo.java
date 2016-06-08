@@ -1,7 +1,10 @@
 package com.caij.weiyo.bean;
 
+import android.text.SpannableString;
+
 import com.caij.weiyo.database.bean.FriendWeibo;
 import com.caij.weiyo.utils.GsonUtils;
+import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
 
 import java.text.ParseException;
@@ -93,6 +96,8 @@ public class Weibo{
     private int mlevel;
     private Visible visible;
     private List<PicUrl> pic_urls;
+
+    private transient SpannableString contentSpannableString;
 
 
     public String getCreated_at() {
@@ -277,6 +282,14 @@ public class Weibo{
 
     public void setPic_urls(List<PicUrl> pic_urls) {
         this.pic_urls = pic_urls;
+    }
+
+    public SpannableString getContentSpannableString() {
+        return contentSpannableString;
+    }
+
+    public void setContentSpannableString(SpannableString contentSpannableString) {
+        this.contentSpannableString = contentSpannableString;
     }
 
     @Override

@@ -36,9 +36,4 @@
         <item name="android:textColor">@color/text_80</item>
     </style>
 
-    <style name="TextSubhead">
-        <item name="android:textColor">@color/text_54</item>
-        <item name="android:textSize">@dimen/text_size_medium_min</item>
-    </style>
-
 </resources>

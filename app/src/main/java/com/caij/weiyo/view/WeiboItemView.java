@@ -83,7 +83,7 @@ public class WeiboItemView extends FrameLayout implements View.OnClickListener {
     public void setWeibo(Weibo weibo) {
         tvName.setText(weibo.getUser().getName());
         ImageLoader.load(getContext(), ivAvatar,
-                weibo.getUser().getAvatar_large(), true);
+                weibo.getUser().getAvatar_large(), true, R.mipmap.ic_default_circle_head_image);
         String createAt = "";
         if (!TextUtils.isEmpty(weibo.getCreated_at()))
             createAt = DateUtil.convDate(getContext(), weibo.getCreated_at());
@@ -111,7 +111,7 @@ public class WeiboItemView extends FrameLayout implements View.OnClickListener {
 
         // 文本
 //		txtContent.setText(data.getText());
-        tvContent.setText(weibo.getText());
+        tvContent.setText(weibo.getContentSpannableString());
 
         // reContent
         Weibo reContent = weibo.getRetweeted_status();
@@ -121,12 +121,7 @@ public class WeiboItemView extends FrameLayout implements View.OnClickListener {
             rlReContent.setVisibility(View.VISIBLE);
             rlReContent.setTag(reContent);
 
-            User reUser = reContent.getUser();
-
-            String reUserName = "";
-            if (reUser != null && !TextUtils.isEmpty(reUser.getScreen_name()))
-                reUserName = String.format("@%s :", reUser.getScreen_name());
-            tvReContent.setText(reUserName + reContent.getText());
+            tvReContent.setText(reContent.getContentSpannableString());
         }
 
         // pictures

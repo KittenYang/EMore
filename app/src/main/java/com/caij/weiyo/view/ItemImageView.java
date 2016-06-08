@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -95,6 +96,15 @@ public class ItemImageView extends ImageView implements View.OnLongClickListener
         GifDrawable gifDrawable = null;
         if (drawable instanceof GifDrawable) {
             gifDrawable = (GifDrawable) drawable;
+        }else if (drawable instanceof TransitionDrawable) {
+            // we fade in images on load which uses a TransitionDrawable; check its layers
+            TransitionDrawable fadingIn = (TransitionDrawable) drawable;
+            for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
+                if (fadingIn.getDrawable(i) instanceof GifDrawable) {
+                    gifDrawable = (GifDrawable) fadingIn.getDrawable(i);
+                    break;
+                }
+            }
         }
 
         switch (event.getAction()) {
@@ -115,6 +125,15 @@ public class ItemImageView extends ImageView implements View.OnLongClickListener
         GifDrawable gifDrawable = null;
         if (drawable instanceof GifDrawable) {
             gifDrawable = (GifDrawable) drawable;
+        }else if (drawable instanceof TransitionDrawable) {
+            // we fade in images on load which uses a TransitionDrawable; check its layers
+            TransitionDrawable fadingIn = (TransitionDrawable) drawable;
+            for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
+                if (fadingIn.getDrawable(i) instanceof GifDrawable) {
+                    gifDrawable = (GifDrawable) fadingIn.getDrawable(i);
+                    break;
+                }
+            }
         }
         if (gifDrawable != null) {
             gifDrawable.start();

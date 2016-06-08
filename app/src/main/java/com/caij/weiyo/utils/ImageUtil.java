@@ -1,6 +1,8 @@
 package com.caij.weiyo.utils;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 
 import com.caij.weiyo.okhttp.OkHttpClientProvider;
 
@@ -29,5 +31,16 @@ public class ImageUtil {
         BitmapFactory.decodeStream(inputStream, null, options);
         responseBody.close();
         return options;
+    }
+
+    public static Bitmap zoomBitmap(Bitmap source, int width) {
+        Matrix matrix = new Matrix();
+        float scale = (float)width * 1.0F / (float)source.getWidth();
+        matrix.setScale(scale, scale);
+        Bitmap result = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+        if (result != source) {
+            source.recycle();
+        }
+        return result;
     }
 }

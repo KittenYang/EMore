@@ -53,7 +53,7 @@
                 android:layout_toRightOf="@id/sdv_avatar"
                 android:text="来自Aisen 2015-01-26"/>
 
-            <TextView
+            <com.caij.weiyo.view.FixClickableSpanBugTextView
                 android:id="@+id/tv_content"
                 style="@style/WeiboTextBody"
                 android:layout_width="match_parent"
@@ -84,7 +84,7 @@
                     android:layout_marginBottom="8dip"
                     android:background="@color/divider_timeline_item"/>
 
-                <TextView
+                <com.caij.weiyo.view.FixClickableSpanBugTextView
                     android:id="@+id/tv_re_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

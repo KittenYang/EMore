@@ -46,8 +46,14 @@ public class WebActivity extends BaseToolBarActivity {
     }
 
     protected void handlerIntent(Intent intent) {
-        String url = intent.getStringExtra(Key.URL);
-        mWebView.loadUrl(url);
+        String url;
+        String action = intent.getAction();
+        if (Intent.ACTION_VIEW.equalsIgnoreCase(action) && getIntent().getData() != null) {
+            url = getIntent().getData().toString();
+            if (url.startsWith("weibohttp://"))
+                url = url.replace("weibohttp://", "");
+            mWebView.loadUrl(url);
+        }
     }
 
     protected void initView() {

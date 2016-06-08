@@ -1,19 +1,21 @@
 package com.caij.weiyo.present.imp;
 
-import android.graphics.BitmapFactory;
+import android.text.SpannableString;
+import android.text.TextUtils;
 
+import com.caij.weiyo.R;
 import com.caij.weiyo.bean.PicUrl;
+import com.caij.weiyo.bean.User;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.database.bean.LocakImage;
 import com.caij.weiyo.present.FriendWeiboPresent;
 import com.caij.weiyo.present.view.FriendWeiboView;
-import com.caij.weiyo.source.DefaultResponseSubscriber;
 import com.caij.weiyo.source.ImageSouce;
 import com.caij.weiyo.source.WeiboSource;
 import com.caij.weiyo.source.local.LocalImageSource;
 import com.caij.weiyo.source.server.ServerImageSource;
-import com.caij.weiyo.utils.ImageUtil;
 import com.caij.weiyo.utils.LogUtil;
+import com.caij.weiyo.utils.SpannableStringUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +25,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -70,6 +71,7 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
+                        paraeSpannable(weibo);
                         return weibo;
                     }
                 })
@@ -111,6 +113,7 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
+                        paraeSpannable(weibo);
                         return weibo;
                     }
                 })
@@ -118,6 +121,7 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
+                        LogUtil.d("onRefresh", "TO SAVE LOACL");
                         mLocalWeiboSource.saveFriendWeibo(mToken, weibos);
                     }
                 })
@@ -162,6 +166,32 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
         }
     }
 
+    private void paraeSpannable(Weibo weibo) {
+        int color = mView.getContent().getResources().getColor(R.color.colorPrimary);
+        SpannableString contentSpannableString = SpannableString.valueOf(weibo.getText());
+        SpannableStringUtil.praseName(contentSpannableString);
+        SpannableStringUtil.praseHttpUrl(contentSpannableString);
+        SpannableStringUtil.praseTopic(contentSpannableString);
+        SpannableStringUtil.urlSpan2ClickSpan(contentSpannableString, color);
+        SpannableStringUtil.praseEmotions(mView.getContent().getApplicationContext(), contentSpannableString);
+        weibo.setContentSpannableString(contentSpannableString);
+
+        if (weibo.getRetweeted_status() != null) {
+            Weibo reWeibo = weibo.getRetweeted_status();
+            String reUserName = "";
+            User reUser = reWeibo.getUser();
+            if (reUser != null && !TextUtils.isEmpty(reUser.getScreen_name()))
+                reUserName = String.format("@%s :", reUser.getScreen_name());
+            SpannableString reContentSpannableString = SpannableString.valueOf(reUserName + reWeibo.getText());
+            SpannableStringUtil.praseName(reContentSpannableString);
+            SpannableStringUtil.praseHttpUrl(reContentSpannableString);
+            SpannableStringUtil.praseTopic(reContentSpannableString);
+            SpannableStringUtil.praseEmotions(mView.getContent().getApplicationContext(), reContentSpannableString);
+            SpannableStringUtil.urlSpan2ClickSpan(reContentSpannableString, color);
+            reWeibo.setContentSpannableString(reContentSpannableString);
+        }
+    }
+
     @Override
     public void onLoadMore() {
         long maxId = 0;
@@ -186,6 +216,7 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
+                        paraeSpannable(weibo);
                         return weibo;
                     }
                 })

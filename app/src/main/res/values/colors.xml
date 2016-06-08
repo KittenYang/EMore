@@ -9,7 +9,6 @@
     <color name="color_black">#222222</color>
     <color name="background_white_light">#fafafa</color>
     <color name="white">#ffffff</color>
-    <color name="light_white">#ffffffff</color>
 
     <color name="background_selected_color">#1a000000</color>
 
@@ -24,12 +23,13 @@
 
     <!--适配Materail Design后添加的颜色-->
     <color name="text_100">#ff000000</color>
-    <color name="text_87">#dd000000</color>
     <color name="text_80">#cc000000</color>
-    <color name="text_60">#99000000</color>
     <color name="text_54">#69000000</color>
 
     <!--timeline-->
     <color name="divider_timeline_item">#ebeef4</color>
 
+    <color name="link_text_press_bg_color">#33969696</color>
+
+    <color name="default_img_placeholder">#e1e1e1</color>
 </resources>

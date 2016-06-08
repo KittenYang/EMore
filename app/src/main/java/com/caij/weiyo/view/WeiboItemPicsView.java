@@ -192,10 +192,10 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
                 if (imgView.isLongImage() || imgView.isGif()) {
                     //高宽的3倍 设置长图
                     ImageLoader.load(getContext(), imgView, ImageLoader.ScaleType.TOP,
-                            url, false);
+                            url, false, ImageLoader.Priority.LOW, R.drawable.weibo_image_placeholder);
                 } else {
                     ImageLoader.load(getContext(), imgView, ImageLoader.ScaleType.CENTER_CROP,
-                            url, false);
+                            url, false, R.drawable.weibo_image_placeholder);
                 }
             }
         }

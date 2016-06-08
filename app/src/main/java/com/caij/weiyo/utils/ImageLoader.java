@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.caij.weiyo.utils.glide.CropCircleTransformation;
@@ -22,7 +23,16 @@ public class ImageLoader {
         int TOP = 3;  //优先显示上面部分
     }
 
-    private static void load(Context context, ImageView view, int scaleType, String url, int width, int height, Transformation transformation, boolean isSupportGif) {
+    public static interface Priority {
+        int HIGH = 3;
+        int NORMAL = 2;
+        int LOW = 1;
+    }
+
+    private static void load(Context context, ImageView view, int scaleType, String url, int width,
+                             int height, Transformation transformation,
+                             boolean isSupportGif, int priority,
+                             int resourceId ) {
         DrawableTypeRequest<String> request = createRequest(context, url);
         switch (scaleType) {
             case ScaleType.CENTER_CROP:
@@ -45,29 +55,50 @@ public class ImageLoader {
             request.bitmapTransform(transformation);
         }
 
+        switch (priority) {
+            case Priority.HIGH:
+                request.priority(com.bumptech.glide.Priority.HIGH);
+                break;
+
+            case Priority.LOW:
+                request.priority(com.bumptech.glide.Priority.LOW);
+                break;
+
+            default:
+                request.priority(com.bumptech.glide.Priority.NORMAL);
+                break;
+        }
+
+        request.placeholder(resourceId);
+
         request.into(new GifTarget(view, isSupportGif));
     }
 
-    public static void load(Context context, ImageView view, int scaleType, String url, int width, int height) {
-        load(context, view, scaleType, url, width, height, null, false);
+    public static void load(Context context, ImageView view, int scaleType, String url, int width, int height, int resourceId) {
+        load(context, view, scaleType, url, width, height, null, false, Priority.NORMAL, resourceId);
     }
 
 
-    public static void load(Context context, ImageView view, int scaleType, String url) {
-        load(context, view, scaleType, url, -1, -1, null, false);
+    public static void load(Context context, ImageView view, int scaleType, String url, boolean isSupportGif, int resourceId ) {
+        load(context, view, scaleType, url, isSupportGif, Priority.NORMAL, resourceId);
     }
 
-    public static void load(Context context, ImageView view, int scaleType, String url, boolean isSupportGif) {
-        load(context, view, scaleType, url, -1, -1, null, isSupportGif);
+    public static void load(Context context, ImageView view, int scaleType, String url, boolean isSupportGif, int priority, int resourceId ) {
+        load(context, view, scaleType, url, -1, -1, null, isSupportGif, priority, resourceId);
     }
 
-    public static void load(Context context, ImageView view, String url) {
-        load(context, view, ScaleType.FIT_CENTER, url);
+    public static void load(Context context, ImageView view, int scaleType, String url, int resourceId ) {
+        load(context, view, scaleType, url, false, resourceId);
     }
 
-    public static void load(Context context, ImageView view, String url, boolean isCircle) {
+    public static void load(Context context, ImageView view, String url,int resourceId ) {
+        load(context, view, ScaleType.FIT_CENTER, url, resourceId);
+    }
+
+
+    public static void load(Context context, ImageView view, String url, boolean isCircle, int resourceId) {
         load(context, view, ScaleType.FIT_CENTER, url, -1, -1,
-                isCircle ? new CropCircleTransformation(context) : null, false);
+                isCircle ? new CropCircleTransformation(context) : null, false, Priority.NORMAL, resourceId);
     }
 
     private static DrawableTypeRequest<String> createRequest(Context context, String url) {
@@ -75,7 +106,5 @@ public class ImageLoader {
                 load(url).
                 diskCacheStrategy(DiskCacheStrategy.RESULT);
     }
-
-
 
 }
