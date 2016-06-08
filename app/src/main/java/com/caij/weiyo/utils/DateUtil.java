@@ -48,7 +48,9 @@ public class DateUtil {
                         buffer.append((diffTime / 60) + res.getString(R.string.msg_few_minutes_ago));
                     } else if (diffTime < 60) {
                         buffer.append(res.getString(R.string.msg_now));
-                    } else {
+                    } else if (diffTime >= 3600 && diffTime < 3600 * 6) {
+                        buffer.append(diffTime / 3600).append(res.getString(R.string.msg_hour));
+                    }else {
                         buffer.append(res.getString(R.string.msg_today)).append(" ").append(formatDate(createCal.getTimeInMillis(), "HH:mm"));
                     }
                 }
@@ -56,9 +58,7 @@ public class DateUtil {
                 else if (currentcal.get(Calendar.DAY_OF_MONTH) - createCal.get(Calendar.DAY_OF_MONTH) == 1) {
                     buffer.append(res.getString(R.string.msg_yesterday)).append(" ").append(formatDate(createCal.getTimeInMillis(), "HH:mm"));
                 }
-            }
-
-            if (buffer.length() == 0) {
+            }else {
                 buffer.append(formatDate(createCal.getTimeInMillis(), "MM-dd HH:mm"));
             }
 

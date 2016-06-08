@@ -1,9 +1,7 @@
 package com.caij.weiyo.ui;
 
 import android.content.res.ColorStateList;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -21,7 +19,6 @@ import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.User;
-import com.caij.weiyo.okhttp.CropCircleTransformation;
 import com.caij.weiyo.present.UserPresent;
 import com.caij.weiyo.present.imp.UserPresentImp;
 import com.caij.weiyo.present.view.UserView;
@@ -29,12 +26,8 @@ import com.caij.weiyo.source.local.LocalUserSource;
 import com.caij.weiyo.source.server.ServerUserSource;
 import com.caij.weiyo.ui.fragment.FriendWeiboFragment;
 import com.caij.weiyo.utils.ImageLoader;
-import com.caij.weiyo.utils.ImageUtil;
-import com.caij.weiyo.utils.LogUtil;
 import com.caij.weiyo.utils.SystemUtil;
 
-
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -25,8 +25,7 @@ public class ServerUserSource implements UserSource{
     }
 
     @Override
-    public Observable<Void> saveWeiboUser(User user) {
-        return null;
+    public void saveWeiboUser(User user) {
     }
 
 }

@@ -43,6 +43,7 @@ public class LoadMoreRecyclerView extends RecyclerView {
     private void init(Context context) {
         addOnScrollListener(mOpOnScrollChangeListener);
         mLoadMoreView = new LoadMoreView(context);
+        mLoadMoreView.setState(STATE_NORMAL);
     }
 
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {

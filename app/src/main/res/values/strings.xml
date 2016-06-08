@@ -15,4 +15,5 @@
     <string name="msg_yesterday">昨天</string>
     <string name="msg_few_minutes_ago">分钟前</string>
     <string name="msg_ten_thousand">万</string>
+    <string name="msg_hour">小时前</string>
 </resources>

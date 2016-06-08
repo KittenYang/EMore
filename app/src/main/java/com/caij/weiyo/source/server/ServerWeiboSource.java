@@ -29,8 +29,7 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<Void> saveFriendWeibo(String accessToken, List<Weibo> weibos) {
+    public void saveFriendWeibo(String accessToken, List<Weibo> weibos) {
 
-        return null;
     }
 }

@@ -1,4 +1,4 @@
-package com.caij.weiyo.okhttp;
+package com.caij.weiyo.utils.glide;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,6 +14,7 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapResource;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
+import com.caij.weiyo.utils.LogUtil;
 
 //caij
 public class TopTransformation extends BitmapTransformation {
@@ -46,7 +47,7 @@ public class TopTransformation extends BitmapTransformation {
     Canvas canvas = new Canvas(result);
     Paint paint = new Paint(PAINT_FLAGS);
     canvas.drawBitmap(toTransform, m, paint);
-
+    LogUtil.d(this, "width=%s height=%s", result.getWidth(), result.getHeight());
     return result;
   }
 

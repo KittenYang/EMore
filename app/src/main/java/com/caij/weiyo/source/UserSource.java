@@ -13,5 +13,5 @@ public interface UserSource {
 
     public Observable<User> getWeiboUserInfoByUid(String accessToken, long uid);
 
-    public Observable<Void> saveWeiboUser(User user);
+    public void saveWeiboUser(User user);
 }

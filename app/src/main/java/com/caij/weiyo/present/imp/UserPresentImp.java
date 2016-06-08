@@ -8,6 +8,7 @@ import com.caij.weiyo.source.UserSource;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -56,6 +57,12 @@ public class UserPresentImp implements UserPresent {
                     }
                 });
         Subscription serverSubscription = mServerUserSource.getWeiboUserInfoByName(mToken, name)
+                .doOnNext(new Action1<User>() {
+                    @Override
+                    public void call(User user) {
+                        mLocalUserSource.saveWeiboUser(user);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<User>() {
@@ -72,33 +79,10 @@ public class UserPresentImp implements UserPresent {
                     @Override
                     public void onNext(User user) {
                         mUserView.setUser(user);
-                        saveUser(user);
                     }
                 });
         mLoginCompositeSubscription.add(localSubscription);
         mLoginCompositeSubscription.add(serverSubscription);
-    }
-
-    private void saveUser(User user) {
-        mLocalUserSource.saveWeiboUser(user)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Void aVoid) {
-
-                    }
-                });
     }
 
     @Override

@@ -50,20 +50,13 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<Void> saveFriendWeibo(String accessToken, final List<Weibo> weibos) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                FriendWeiboDao dao = DBManager.getDaoSession().getFriendWeiboDao();
-                List<FriendWeibo> friendWeibos = new ArrayList<>(weibos.size());
-                for (Weibo weibo : weibos) {
-                    FriendWeibo friendWeibo = Weibo.weibo2FriendWeibo(weibo);
-                    friendWeibos.add(friendWeibo);
-                }
-                dao.insertOrReplaceInTx(friendWeibos);
-                subscriber.onNext(null);
-                subscriber.onCompleted();
-            }
-        });
+    public void saveFriendWeibo(String accessToken, final List<Weibo> weibos) {
+        FriendWeiboDao dao = DBManager.getDaoSession().getFriendWeiboDao();
+        List<FriendWeibo> friendWeibos = new ArrayList<>(weibos.size());
+        for (Weibo weibo : weibos) {
+            FriendWeibo friendWeibo = Weibo.weibo2FriendWeibo(weibo);
+            friendWeibos.add(friendWeibo);
+        }
+        dao.insertOrReplaceInTx(friendWeibos);
     }
 }

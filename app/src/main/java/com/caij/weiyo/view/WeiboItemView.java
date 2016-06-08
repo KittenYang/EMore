@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.caij.weiyo.R;
 import com.caij.weiyo.bean.User;
 import com.caij.weiyo.bean.Weibo;
-import com.caij.weiyo.okhttp.CropCircleTransformation;
 import com.caij.weiyo.utils.DateUtil;
 import com.caij.weiyo.utils.ImageLoader;
 

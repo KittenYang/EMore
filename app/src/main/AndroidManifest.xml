@@ -19,7 +19,7 @@
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
             tools:node="remove" />
 
-        <meta-data android:name="com.caij.weiyo.okhttp.MyGlideModule"
+        <meta-data android:name="com.caij.weiyo.utils.glide.MyGlideModule"
             android:value="GlideModule"/>
 
         <activity android:name=".ui.SplashActivity">

@@ -58,20 +58,8 @@ public class LocalUserSource implements UserSource{
     }
 
     @Override
-    public Observable<Void> saveWeiboUser(final User user) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    LocalUserDao dao = DBManager.getDaoSession().getLocalUserDao();
-                    dao.insertOrReplace(User.user2LocalUser(user));
-                    subscriber.onNext(null);
-                }catch (Exception e) {
-                    subscriber.onError(e);
-                }
-                subscriber.onCompleted();
-            }
-        });
+    public void saveWeiboUser(final User user) {
+        LocalUserDao dao = DBManager.getDaoSession().getLocalUserDao();
+        dao.insertOrReplace(User.user2LocalUser(user));
     }
 }

@@ -32,6 +32,7 @@ public class FriendWeiboFragment extends SwipeRefreshRecyclerViewFragment<Weibo>
         mAdapter = new WeiboAdapter(getActivity());
         mLoadMoreLoadMoreRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mLoadMoreLoadMoreRecyclerView.setAdapter(mAdapter);
+        mLoadMoreLoadMoreRecyclerView.setOnLoadMoreListener(this);
         AccessToken token = UserPrefs.get().getToken();
         mFriendWeiboPresent = new FriendWeiboPresentImp(token.getAccess_token(), this,
                 new ServerWeiboSource(), new LocalWeiboSource());
@@ -66,7 +67,18 @@ public class FriendWeiboFragment extends SwipeRefreshRecyclerViewFragment<Weibo>
 
     @Override
     public void toRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
         mFriendWeiboPresent.onRefresh();
+    }
+
+    @Override
+    public void onRefreshComplite() {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onLoadComplite() {
+        mLoadMoreLoadMoreRecyclerView.completeLoading();
     }
 
     @Override

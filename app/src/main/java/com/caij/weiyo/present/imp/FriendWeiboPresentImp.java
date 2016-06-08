@@ -21,6 +21,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -58,38 +59,27 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
 
     @Override
     public void onCreate() {
-        mLocalWeiboSource.getFriendWeibo(mToken, 0, 0, PAGE_COUNT, 1)
+        Subscription subscription = mLocalWeiboSource.getFriendWeibo(mToken, 0, 0, PAGE_COUNT, 1)
                 .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(List<Weibo> weibos) {
                         return Observable.from(weibos);
                     }
-                }).map(new Func1<Weibo, Weibo>() {
+                })
+                .map(new Func1<Weibo, Weibo>() {
                     @Override
                     public Weibo call(Weibo weibo) {
-                        Weibo realWeibo = weibo.getRetweeted_status() != null ? weibo.getRetweeted_status() : weibo;
-                        if (realWeibo.getPic_urls() != null && realWeibo.getPic_urls().size() == 1 ) {
-                            PicUrl picUrl = realWeibo.getPic_urls().get(0);
-                            try {
-                                LocakImage image = mServerImageSouce.get(picUrl.getThumbnail_pic());
-                                picUrl.setWidth(image.getWidth());
-                                picUrl.setHeight(image.getHeight());
-                                LogUtil.d(this, picUrl.getThumbnail_pic() + "  width:" +image.getWidth()
-                                        + "  height:" + image.getHeight());
-                                mLocalImageSouce.save(image);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        toGetImageSize(weibo);
                         return weibo;
                     }
-                }).subscribeOn(Schedulers.io())
+                })
+                .toList()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Weibo>() {
+                .subscribe(new Subscriber<List<Weibo>>() {
                     @Override
                     public void onCompleted() {
-                        mView.setFriendWeibo(mWeibos);
-                        mView.toRefresh();
+
                     }
 
                     @Override
@@ -98,85 +88,79 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
                     }
 
                     @Override
-                    public void onNext(Weibo weibo) {
-                        mWeibos.add(weibo);
+                    public void onNext(List<Weibo> weibos) {
+                        mWeibos.addAll(weibos);
+                        mView.setFriendWeibo(mWeibos);
+                        mView.toRefresh();
                     }
                 });
+        mLoginCompositeSubscription.add(subscription);
     }
 
     @Override
     public void onRefresh() {
-        final List<Weibo> realWeibos = new ArrayList<>();
-        mServerWeiboSource.getFriendWeibo(mToken, 0, 0, PAGE_COUNT, 1)
+        Subscription subscription = mServerWeiboSource.getFriendWeibo(mToken, 0, 0, PAGE_COUNT, 1)
                 .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(List<Weibo> weibos) {
                         return Observable.from(weibos);
                     }
-                }).map(new Func1<Weibo, Weibo>() {
-            @Override
-            public Weibo call(Weibo weibo) {
-                Weibo realWeibo = weibo.getRetweeted_status() != null ? weibo.getRetweeted_status() : weibo;
-                if (realWeibo.getPic_urls() != null && realWeibo.getPic_urls().size() == 1 ) {
-                    PicUrl picUrl = realWeibo.getPic_urls().get(0);
-                    try {
-                        LocakImage image = mServerImageSouce.get(picUrl.getThumbnail_pic());
-                        picUrl.setWidth(image.getWidth());
-                        picUrl.setHeight(image.getHeight());
-                        LogUtil.d(this, picUrl.getThumbnail_pic() + "  width:" +image.getWidth()
-                                + "  height:" + image.getHeight());
-                        mLocalImageSouce.save(image);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                })
+                .map(new Func1<Weibo, Weibo>() {
+
+                    @Override
+                    public Weibo call(Weibo weibo) {
+                        toGetImageSize(weibo);
+                        return weibo;
                     }
-                }
-                return weibo;
-            }
-        }).subscribeOn(Schedulers.io())
+                })
+                .toList()
+                .doOnNext(new Action1<List<Weibo>>() {
+                    @Override
+                    public void call(List<Weibo> weibos) {
+                        mLocalWeiboSource.saveFriendWeibo(mToken, weibos);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Weibo>() {
+                .subscribe(new Subscriber<List<Weibo>>() {
                     @Override
                     public void onCompleted() {
-                        mWeibos.clear();
-                        mWeibos.addAll(realWeibos);
-                        mView.setFriendWeibo(mWeibos);
-                        saveFriendWeibo(realWeibos);
+                        mView.onRefreshComplite();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         mView.onComnLoadError();
+                        mView.onRefreshComplite();
                     }
 
                     @Override
-                    public void onNext(Weibo weibo) {
-                        realWeibos.add(weibo);
+                    public void onNext(List<Weibo> weibos) {
+                        mWeibos.clear();
+                        mWeibos.addAll(weibos);
+                        mView.setFriendWeibo(mWeibos);
                     }
                 });
+        mLoginCompositeSubscription.add(subscription);
     }
 
-    private void saveFriendWeibo(List<Weibo> weibos) {
-        mLocalWeiboSource.saveFriendWeibo(mToken, weibos)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        LogUtil.d(this, "save weibo error");
-                    }
-
-                    @Override
-                    public void onNext(Void aVoid) {
-
-                    }
-                });
+    private void toGetImageSize(Weibo weibo) {
+        Weibo realWeibo = weibo.getRetweeted_status() != null ? weibo.getRetweeted_status() : weibo;
+        if (realWeibo.getPic_urls() != null && realWeibo.getPic_urls().size() == 1) {
+            PicUrl picUrl = realWeibo.getPic_urls().get(0);
+            try {
+                LocakImage image = mServerImageSouce.get(picUrl.getThumbnail_pic());
+                picUrl.setWidth(image.getWidth());
+                picUrl.setHeight(image.getHeight());
+                LogUtil.d(this, picUrl.getThumbnail_pic() + "  width:" + image.getWidth()
+                        + "  height:" + image.getHeight());
+                mLocalImageSouce.save(image);
+            } catch (IOException e) {
+                LogUtil.d(this, "%s 图片尺寸获取失败", picUrl.getThumbnail_pic());
+            }
+        }
     }
-
 
     @Override
     public void onLoadMore() {
@@ -184,28 +168,49 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
         if (mWeibos.size() > 0) {
             maxId = mWeibos.get(mWeibos.size() - 1).getId();
         }
-        mServerWeiboSource.getFriendWeibo(mToken, 0, maxId, PAGE_COUNT, 1)
+        Subscription subscription = mServerWeiboSource.getFriendWeibo(mToken, 0, maxId, PAGE_COUNT, 1)
+                .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
+                    @Override
+                    public Observable<Weibo> call(List<Weibo> weibos) {
+                        return Observable.from(weibos);
+                    }
+                })
+                .filter(new Func1<Weibo, Boolean>() {
+                    @Override
+                    public Boolean call(Weibo weibo) {
+                        return !mWeibos.contains(weibo);
+                    }
+                })
+                .map(new Func1<Weibo, Weibo>() {
+
+                    @Override
+                    public Weibo call(Weibo weibo) {
+                        toGetImageSize(weibo);
+                        return weibo;
+                    }
+                })
+                .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
+                .subscribe(new Subscriber<List<Weibo>>() {
                     @Override
                     public void onCompleted() {
-
+                        mView.onLoadComplite();
                     }
 
                     @Override
-                    protected void onError(Exception e) {
+                    public void onError(Throwable e) {
                         mView.onComnLoadError();
+                        mView.onLoadComplite();
                     }
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
                         mView.setFriendWeibo(mWeibos);
-                        saveFriendWeibo(weibos);
                     }
                 });
-
+        mLoginCompositeSubscription.add(subscription);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.caij.weiyo.okhttp;
+package com.caij.weiyo.utils.glide;
 
 /**
  * Copyright (C) 2015 Wasabeef

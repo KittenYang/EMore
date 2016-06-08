@@ -12,4 +12,8 @@ public interface FriendWeiboView extends BaseView {
     public void setFriendWeibo(List<Weibo> weibos);
 
     void toRefresh();
+
+    void onRefreshComplite();
+
+    void onLoadComplite();
 }

@@ -23,6 +23,6 @@ public interface WeiboSource {
     public Observable<List<Weibo>> getFriendWeibo(String accessToken, long since_id, long max_id,
                                                   int count, int page);
 
-    public Observable<Void> saveFriendWeibo(String accessToken, List<Weibo> weibos);
+    public void saveFriendWeibo(String accessToken, List<Weibo> weibos);
 
 }
