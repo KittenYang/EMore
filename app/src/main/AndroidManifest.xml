@@ -38,6 +38,7 @@
             android:screenOrientation="portrait"/>
 
         <activity android:name=".ui.UserInfoActivity"
+            android:theme="@style/AppTheme.Main"
             android:screenOrientation="portrait">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -49,8 +50,9 @@
         <activity android:name=".ui.WebActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
-                <data android:scheme="weibohttp"/>
                 <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="weibohttp"/>
             </intent-filter>
         </activity>
 

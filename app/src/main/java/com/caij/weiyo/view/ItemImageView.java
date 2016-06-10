@@ -55,9 +55,6 @@ public class ItemImageView extends ImageView implements View.OnLongClickListener
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (getWidth() <= 0 && getHeight() <= 0) {
-            return;
-        }
         super.onDraw(canvas);
         if (isGif()) {
             if (mGifDrawable == null) {

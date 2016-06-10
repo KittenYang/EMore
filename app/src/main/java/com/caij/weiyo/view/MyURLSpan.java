@@ -53,8 +53,7 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
         Uri uri = Uri.parse(this.getURL());
         Context context = widget.getContext();
         Intent intent;
-        intent = new Intent("android.intent.action.VIEW", uri);
-        intent.putExtra("com.android.browser.application_id", context.getPackageName());
+        intent = new Intent(Intent.ACTION_VIEW, uri);
         context.startActivity(intent);
     }
 

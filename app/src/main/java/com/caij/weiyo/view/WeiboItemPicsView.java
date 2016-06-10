@@ -2,6 +2,7 @@ package com.caij.weiyo.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -98,7 +99,8 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
                                 MeasureSpec.makeMeasureSpec(defaultImageWidth, MeasureSpec.EXACTLY));
                     }
                 }else {
-                    child.measure(-1, -1);
+                    //不需要测量
+//                    child.measure(-1, -1);
                 }
             }
         }
@@ -139,9 +141,24 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
 //                            i, left, top, right, button);
                 }
             }else {
-                childView.layout(-1, -1, -1, -1);
+                //不需要定位
+//                childView.layout(-1, -1, -1, -1);
             }
         }
+    }
+
+    @Override
+    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+        for (int i = 0; i < getChildCount(); i++) {
+            if (getChildAt(i) == child) {
+                if (mPicUrls != null && i < mPicUrls.size()) {
+                    return super.drawChild(canvas, child, drawingTime);
+                }else {
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     private static boolean isImageWidthAndHeightWillSame(PicUrl picUrl1, PicUrl picUrl2) {

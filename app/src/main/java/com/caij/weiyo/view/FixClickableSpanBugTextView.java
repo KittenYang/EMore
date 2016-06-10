@@ -2,6 +2,7 @@ package com.caij.weiyo.view;
 
 import android.content.Context;
 import android.text.method.LinkMovementMethod;
+import android.text.method.MovementMethod;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,7 +32,8 @@ public class FixClickableSpanBugTextView extends TextView {
 
     private void init() {
         setMovementMethod(LinkMovementMethod.getInstance());
-        setOnTouchListener(onTouchListener);
+//        setOnTouchListener(onTouchListener);
+        setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private OnTouchListener onTouchListener = new OnTouchListener() {

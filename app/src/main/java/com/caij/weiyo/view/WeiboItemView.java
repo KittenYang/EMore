@@ -2,6 +2,7 @@ package com.caij.weiyo.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.text.Html;
 import android.text.TextUtils;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.caij.weiyo.R;
 import com.caij.weiyo.bean.User;
 import com.caij.weiyo.bean.Weibo;
+import com.caij.weiyo.ui.UserInfoActivity;
 import com.caij.weiyo.utils.DateUtil;
 import com.caij.weiyo.utils.ImageLoader;
 
@@ -82,8 +84,10 @@ public class WeiboItemView extends FrameLayout implements View.OnClickListener {
 
     public void setWeibo(Weibo weibo) {
         tvName.setText(weibo.getUser().getName());
+        ivAvatar.setTag(weibo.getUser());
         ImageLoader.load(getContext(), ivAvatar,
                 weibo.getUser().getAvatar_large(), true, R.mipmap.ic_default_circle_head_image);
+
         String createAt = "";
         if (!TextUtils.isEmpty(weibo.getCreated_at()))
             createAt = DateUtil.convDate(getContext(), weibo.getCreated_at());
@@ -129,10 +133,17 @@ public class WeiboItemView extends FrameLayout implements View.OnClickListener {
         picsView.setPics(s.getPic_urls());
 
         // group visiable
+        ivAvatar.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.sdv_avatar:
+                User user = (User) v.getTag();
+                Intent intent = new Intent(getContext(), UserInfoActivity.class);
+                getContext().startActivity(intent);
+                break;
+        }
     }
 }
