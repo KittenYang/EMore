@@ -10,7 +10,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.GlideModule;
 import com.bumptech.glide.request.target.ViewTarget;
 import com.caij.weiyo.R;
-import com.caij.weiyo.okhttp.OkHttpClientProvider;
+import com.caij.weiyo.utils.okhttp.OkHttpClientProvider;
 
 import java.io.InputStream;
 

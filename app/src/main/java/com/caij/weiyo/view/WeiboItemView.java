@@ -141,7 +141,7 @@ public class WeiboItemView extends FrameLayout implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.sdv_avatar:
                 User user = (User) v.getTag();
-                Intent intent = new Intent(getContext(), UserInfoActivity.class);
+                Intent intent = UserInfoActivity.newIntent(getContext(), user);
                 getContext().startActivity(intent);
                 break;
         }

@@ -30,18 +30,22 @@ import java.util.regex.Pattern;
  */
 public class SpannableStringUtil {
 
+    public static final String USER_INFO_SCHEME = "com.caij.weiyo.userinfo://";
+    public static final String HTTP_SCHEME = "weibohttp://";
+    public static final String TOPIC_SCHEME = "com.caij.weiyo.topics://";
+
     private static Map<String, String> sEmotions;
 
     public static void praseName(Spannable spannableString) {
         // 用户名称
 //			Pattern pattern = Pattern.compile("@([a-zA-Z0-9_\\-\\u4e00-\\u9fa5]+)");
         Pattern pattern = Pattern.compile("@[\\w\\p{InCJKUnifiedIdeographs}-]{1,26}");
-        String scheme = "com.caij.weiyo.userinfo://";
+        String scheme = USER_INFO_SCHEME;
         Linkify.addLinks(spannableString, pattern, scheme);
     }
 
     public static void praseHttpUrl(Spannable spannableString) {
-        String scheme = "weibohttp://";
+        String scheme = HTTP_SCHEME;
         Linkify.addLinks(spannableString, Pattern.compile("http://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]"),
                 scheme);
     }
@@ -50,7 +54,7 @@ public class SpannableStringUtil {
         // 话题
         Pattern dd = Pattern.compile("#[\\p{Print}\\p{InCJKUnifiedIdeographs}&&[^#]]+#");
         //Pattern dd = Pattern.compile("#([a-zA-Z0-9_\\-\\u4e00-\\u9fa5]+)#");
-        String scheme = "com.caij.weiyo.topics://";
+        String scheme = TOPIC_SCHEME;
         Linkify.addLinks(spannableString, dd, scheme);
     }
 

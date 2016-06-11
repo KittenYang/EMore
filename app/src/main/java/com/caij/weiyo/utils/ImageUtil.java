@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 
-import com.caij.weiyo.okhttp.OkHttpClientProvider;
+import com.caij.weiyo.utils.okhttp.OkHttpClientProvider;
 
 import java.io.IOException;
 import java.io.InputStream;

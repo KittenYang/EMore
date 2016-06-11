@@ -4,12 +4,12 @@ import com.caij.weiyo.Key;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.QueryWeiboResponse;
 import com.caij.weiyo.bean.User;
-import com.caij.weiyo.okhttp.GsonConverterFactory;
-import com.caij.weiyo.okhttp.OkHttpClientProvider;
+import com.caij.weiyo.utils.okhttp.OkHttpClientProvider;
 import com.caij.weiyo.utils.GsonUtils;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;

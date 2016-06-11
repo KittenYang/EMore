@@ -1,4 +1,4 @@
-package com.caij.weiyo.okhttp;
+package com.caij.weiyo.utils.okhttp;
 
 import com.caij.weiyo.utils.LogUtil;
 

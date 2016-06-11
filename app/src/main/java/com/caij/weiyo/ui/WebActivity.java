@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import com.caij.weiyo.Key;
 import com.caij.weiyo.R;
 import com.caij.weiyo.utils.LogUtil;
+import com.caij.weiyo.utils.SpannableStringUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,10 +51,11 @@ public class WebActivity extends BaseToolBarActivity {
         String action = intent.getAction();
         if (Intent.ACTION_VIEW.equalsIgnoreCase(action) && getIntent().getData() != null) {
             url = getIntent().getData().toString();
-            if (url.startsWith("weibohttp://"))
-                url = url.replace("weibohttp://", "");
+            if (url.startsWith(SpannableStringUtil.HTTP_SCHEME))
+            url = url.replace(SpannableStringUtil.HTTP_SCHEME, "");
             mWebView.loadUrl(url);
         }
+
     }
 
     protected void initView() {

@@ -17,4 +17,5 @@
     <dimen name="user_info_avatar_image">60dp</dimen>
     <dimen name="rl_nav_head_height">148dp</dimen>
     <dimen name="weibo_image_space">4dp</dimen>
+    <dimen name="profile_cover">200dp</dimen>
 </resources>

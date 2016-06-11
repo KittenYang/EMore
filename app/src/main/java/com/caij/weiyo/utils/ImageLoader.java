@@ -1,6 +1,7 @@
 package com.caij.weiyo.utils;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.DrawableTypeRequest;
@@ -8,6 +9,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.target.ViewTarget;
 import com.caij.weiyo.utils.glide.CropCircleTransformation;
 import com.caij.weiyo.utils.glide.GifTarget;
 import com.caij.weiyo.utils.glide.TopTransformation;
@@ -70,8 +80,11 @@ public class ImageLoader {
         }
 
         request.placeholder(resourceId);
-
-        request.into(new GifTarget(view, isSupportGif));
+        if (isSupportGif) {
+            request.into(view);
+        }else {
+            request.into(new GifTarget(view, false));
+        }
     }
 
     public static void load(Context context, ImageView view, int scaleType, String url, int width, int height, int resourceId) {

@@ -9,6 +9,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.util.AttributeSet;
 import android.view.ViewParent;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.caij.weiyo.R;
@@ -23,6 +24,7 @@ public class UserInfoCollapsingToolbarLayout extends CollapsingToolbarLayout {
     private Rect mTempRect;
     private int mVerticalOffset;
     private TextView name;
+    private ImageView imgCover;
 
     public UserInfoCollapsingToolbarLayout(Context context) {
         super(context);
@@ -45,7 +47,7 @@ public class UserInfoCollapsingToolbarLayout extends CollapsingToolbarLayout {
         mInsetForeground = a.getDrawable(R.styleable.ScrimInsetsView_appInsetForeground);
         a.recycle();
         mTempRect = new Rect();
-        name = (TextView) findViewById(R.id.txtName);
+
     }
 
     @Override
@@ -74,6 +76,8 @@ public class UserInfoCollapsingToolbarLayout extends CollapsingToolbarLayout {
         if (parent instanceof AppBarLayout) {
             ((AppBarLayout) parent).addOnOffsetChangedListener(innerOffsetChangedListener);
         }
+        name = (TextView) findViewById(R.id.txtName);
+        imgCover = (ImageView) findViewById(R.id.imgCover);
     }
 
     @Override
@@ -91,9 +95,6 @@ public class UserInfoCollapsingToolbarLayout extends CollapsingToolbarLayout {
         public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
             mVerticalOffset = verticalOffset;
 
-            float b = verticalOffset * 1.0f / getHeight();
-            b  = Math.abs(b);
-            name.setY(getChildAt(0).getHeight() * b);
         }
     };
 }

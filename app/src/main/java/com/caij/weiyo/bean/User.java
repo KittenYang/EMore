@@ -3,10 +3,12 @@ package com.caij.weiyo.bean;
 import com.caij.weiyo.database.bean.LocalUser;
 import com.caij.weiyo.utils.GsonUtils;
 
+import java.io.Serializable;
+
 /**
  * Created by Caij on 2016/5/31.
  */
-public class User {
+public class User implements Serializable{
 
     public static User localUser2User(LocalUser localUser) {
         if (localUser == null) return null;
@@ -87,7 +89,6 @@ public class User {
     }
 
 
-
     private long id;
     private String idstr;
     private String screen_name;
@@ -122,6 +123,7 @@ public class User {
     private int online_status;
     private int bi_followers_count;
     private String lang;
+    private String cover_image_phone;
 
     public long getId() {
         return id;
@@ -393,5 +395,13 @@ public class User {
 
     public void setLang(String lang) {
         this.lang = lang;
+    }
+
+    public String getCover_image_phone() {
+        return cover_image_phone;
+    }
+
+    public void setCover_image_phone(String cover_image_phone) {
+        this.cover_image_phone = cover_image_phone;
     }
 }

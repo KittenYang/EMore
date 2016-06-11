@@ -15,4 +15,5 @@ public interface Key {
 
     String SP_CONFIG = "sp_config";
     String URL = "url";
+    String OBJ = "obj";
 }
