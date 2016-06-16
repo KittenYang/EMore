@@ -72,6 +72,12 @@ public class WebActivity extends BaseToolBarActivity {
         return R.layout.activity_web;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mWebView.destroy();
+    }
+
     static class MyWebViewClient extends WebViewClient {
 
         ProgressBar mProgressBar;

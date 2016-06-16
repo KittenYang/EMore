@@ -7,17 +7,17 @@ import java.util.Stack;
 /**
  * Created by Caij on 2015/8/25.
  */
-public class ActivityManager {
+public class ActivityStack {
 
-    private static ActivityManager sActivityManager = new ActivityManager();
+    private static ActivityStack sActivityStack = new ActivityStack();
 
     private Stack<Activity> mActivityStack;
 
-    public static ActivityManager getInstance() {
-        return sActivityManager;
+    public static ActivityStack getInstance() {
+        return sActivityStack;
     }
 
-    private ActivityManager() {
+    private ActivityStack() {
         mActivityStack = new Stack<>();
     }
 

@@ -95,7 +95,6 @@ public class LoginActivity extends WebActivity implements LoginView {
         return Key.WEIBO_CALLBACK_URL;
     }
 
-
     @Override
     public void onLoginSuccess(AccessToken accessToken) {
         UserPrefs.get().setToken(accessToken);

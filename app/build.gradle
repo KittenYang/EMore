@@ -91,6 +91,8 @@ dependencies {
     compile "com.android.support:design:${rootProject.ext.supportVersion}"
     compile "com.android.support:cardview-v7:${rootProject.ext.supportVersion}"
 
+    compile "com.yqritc:recyclerview-flexibledivider:${rootProject.ext.flexibledividerVersion}"
+
     compile ("com.squareup.retrofit2:retrofit:${rootProject.ext.retrofitVersion}") {
         exclude module: 'okhttp'
     }

@@ -1,6 +1,7 @@
 package com.caij.weiyo.utils;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 
 /**
  * Author:  Caij
@@ -20,5 +21,18 @@ public class DensityUtil {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
+
+    public static int getScreenWidth(Context context) {
+        DisplayMetrics displayMetrics =
+                context.getResources().getDisplayMetrics();
+        return displayMetrics.widthPixels;
+    }
+
+    public static int getScreenHeight(Context context) {
+        DisplayMetrics displayMetrics =
+                context.getResources().getDisplayMetrics();
+        return displayMetrics.heightPixels;
+    }
+
 
 }

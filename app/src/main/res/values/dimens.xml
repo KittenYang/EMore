@@ -4,11 +4,15 @@
     <dimen name="spacing_micro">4dp</dimen>
     <dimen name="spacing_large">16dp</dimen>
 
+    <dimen name="spacing_weibo_item">10dp</dimen>
+    <dimen name="spacing_weibo_detail_item">18dp</dimen>
+
     <dimen name="activity_horizontal_margin">@dimen/spacing_large</dimen>
     <dimen name="activity_vertical_margin">@dimen/spacing_large</dimen>
 
     <!--text size-->
-    <dimen name="text_size_medium_min">14sp</dimen>
+    <dimen name="text_size_small">12dp</dimen>
+    <dimen name="text_size_medium_min">14dp</dimen>
     <dimen name="text_size_medium">16dp</dimen>
 
 
@@ -18,4 +22,5 @@
     <dimen name="rl_nav_head_height">148dp</dimen>
     <dimen name="weibo_image_space">4dp</dimen>
     <dimen name="profile_cover">200dp</dimen>
+    <dimen name="divider">0.67dp</dimen>
 </resources>

@@ -1,6 +1,7 @@
 package com.caij.weiyo.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,15 +15,18 @@ import com.caij.weiyo.present.imp.FriendWeiboPresentImp;
 import com.caij.weiyo.present.view.FriendWeiboView;
 import com.caij.weiyo.source.local.LocalWeiboSource;
 import com.caij.weiyo.source.server.ServerWeiboSource;
+import com.caij.weiyo.ui.WeiboDetialActivity;
 import com.caij.weiyo.ui.adapter.BaseAdapter;
 import com.caij.weiyo.ui.adapter.WeiboAdapter;
+import com.caij.weiyo.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.List;
 
 /**
  * Created by Caij on 2016/6/4.
  */
-public class FriendWeiboFragment extends SwipeRefreshRecyclerViewFragment<Weibo> implements FriendWeiboView {
+public class FriendWeiboFragment extends SwipeRefreshRecyclerViewFragment<Weibo> implements FriendWeiboView , RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener {
 
     FriendWeiboPresent mFriendWeiboPresent;
     WeiboAdapter mAdapter;
@@ -30,7 +34,7 @@ public class FriendWeiboFragment extends SwipeRefreshRecyclerViewFragment<Weibo>
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAdapter = new WeiboAdapter(getActivity());
+        mAdapter = new WeiboAdapter(getActivity(), this);
         mLoadMoreLoadMoreRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mLoadMoreLoadMoreRecyclerView.setAdapter(mAdapter);
         mLoadMoreLoadMoreRecyclerView.setOnLoadMoreListener(this);
@@ -57,7 +61,8 @@ public class FriendWeiboFragment extends SwipeRefreshRecyclerViewFragment<Weibo>
 
     @Override
     public void onItemClick(View view, int position) {
-
+        Intent intent = WeiboDetialActivity.newIntent(getActivity(), mAdapter.getItem(position));
+        startActivity(intent);
     }
 
     @Override
@@ -78,8 +83,17 @@ public class FriendWeiboFragment extends SwipeRefreshRecyclerViewFragment<Weibo>
     }
 
     @Override
-    public void onLoadComplite() {
-        mLoadMoreLoadMoreRecyclerView.completeLoading();
+    public void onLoadComplite(boolean isHaveMore) {
+        if (isHaveMore) {
+            mLoadMoreLoadMoreRecyclerView.completeLoading();
+        }else {
+            mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_NO_MORE);
+        }
+    }
+
+    @Override
+    public void onEmpty() {
+
     }
 
     @Override

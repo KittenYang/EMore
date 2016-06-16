@@ -69,7 +69,7 @@ public class UserInfoActivity extends BaseActivity implements UserView {
     TabLayout tabLayout;
     @BindView(R.id.appbar)
     AppBarLayout appbar;
-    @BindView(R.id.viewPager)
+//    @BindView(R.id.viewPager)
     ViewPager viewPager;
     @BindView(R.id.imgAvatar)
     ImageView imgAvatar;
@@ -108,35 +108,7 @@ public class UserInfoActivity extends BaseActivity implements UserView {
     }
 
     private void fillDate(User user) {
-        mTvName.setText(user.getName());
-        ImageLoader.load(this, mImgCover, ImageLoader.ScaleType.CENTER_CROP, user.getCover_image_phone(),
-                R.mipmap.default_user_info_bg);
-//        ImageLoader.load(this, imgAvatar, user.getAvatar_large(), true, R.drawable.weibo_image_placeholder);
-        // TODO is bad
-        Glide.with(this).load(user.getAvatar_large()).bitmapTransform(new CropCircleTransformation(this))
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        return false;
-                    }
 
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
-                                                   boolean isFromMemoryCache, boolean isFirstResource) {
-                        LogUtil.d(this, isFromMemoryCache + "");
-                        if (resource instanceof GlideBitmapDrawable) {
-                            collapsingToolbar.setAvatarBitmap(((GlideBitmapDrawable) resource).getBitmap());
-                        }else if (resource instanceof GifDrawable) {
-                            collapsingToolbar.setAvatarBitmap(((GifDrawable) resource).getFirstFrame());
-                        }
-
-                        return false;
-                    }
-                })
-                .placeholder(R.mipmap.ic_default_circle_head_image).into(imgAvatar);
-        txtDesc.setText(user.getDescription());
-        txtFollowersCounter.setText(user.getFollowers_count() + "粉丝");
-        txtFriendsCounter.setText(user.getFriends_count() + "关注");
     }
 
     @Override

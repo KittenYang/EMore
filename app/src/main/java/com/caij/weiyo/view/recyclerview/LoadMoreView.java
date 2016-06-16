@@ -60,6 +60,12 @@ public class LoadMoreView extends RelativeLayout{
                 mHint.setText(getContext().getString(R.string.loading));
                 break;
             case LoadMoreRecyclerView.STATE_NO_MORE:
+                mLoadingContent.setVisibility(VISIBLE);
+                mLoading.setVisibility(View.GONE);
+                mHint.setVisibility(VISIBLE);
+                mHint.setText(getContext().getString(R.string.no_more));
+                break;
+            case LoadMoreRecyclerView.STATE_EMPTY:
                 mHint.setVisibility(View.GONE);
                 mLoading.setVisibility(View.GONE);
                 mLoadingContent.setVisibility(GONE);

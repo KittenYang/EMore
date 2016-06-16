@@ -71,7 +71,7 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
-                        paraeSpannable(weibo);
+                        SpannableStringUtil.paraeSpannable(weibo, mView.getContent().getApplicationContext());
                         return weibo;
                     }
                 })
@@ -113,7 +113,7 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
-                        paraeSpannable(weibo);
+                        SpannableStringUtil.paraeSpannable(weibo, mView.getContent().getApplicationContext());
                         return weibo;
                     }
                 })
@@ -143,6 +143,11 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
                         mWeibos.clear();
                         mWeibos.addAll(weibos);
                         mView.setFriendWeibo(mWeibos);
+                        if (weibos.size() == 0) {
+                            mView.onEmpty();
+                        }else {
+                            mView.onLoadComplite(weibos.size() >= PAGE_COUNT);
+                        }
                     }
                 });
         mLoginCompositeSubscription.add(subscription);
@@ -169,31 +174,6 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
         }
     }
 
-    private void paraeSpannable(Weibo weibo) {
-        int color = mView.getContent().getResources().getColor(R.color.colorPrimary);
-        SpannableString contentSpannableString = SpannableString.valueOf(weibo.getText());
-        SpannableStringUtil.praseName(contentSpannableString);
-        SpannableStringUtil.praseHttpUrl(contentSpannableString);
-        SpannableStringUtil.praseTopic(contentSpannableString);
-        SpannableStringUtil.urlSpan2ClickSpan(contentSpannableString, color);
-        SpannableStringUtil.praseEmotions(mView.getContent().getApplicationContext(), contentSpannableString);
-        weibo.setContentSpannableString(contentSpannableString);
-
-        if (weibo.getRetweeted_status() != null) {
-            Weibo reWeibo = weibo.getRetweeted_status();
-            String reUserName = "";
-            User reUser = reWeibo.getUser();
-            if (reUser != null && !TextUtils.isEmpty(reUser.getScreen_name()))
-                reUserName = String.format("@%s :", reUser.getScreen_name());
-            SpannableString reContentSpannableString = SpannableString.valueOf(reUserName + reWeibo.getText());
-            SpannableStringUtil.praseName(reContentSpannableString);
-            SpannableStringUtil.praseHttpUrl(reContentSpannableString);
-            SpannableStringUtil.praseTopic(reContentSpannableString);
-            SpannableStringUtil.praseEmotions(mView.getContent().getApplicationContext(), reContentSpannableString);
-            SpannableStringUtil.urlSpan2ClickSpan(reContentSpannableString, color);
-            reWeibo.setContentSpannableString(reContentSpannableString);
-        }
-    }
 
     @Override
     public void onLoadMore() {
@@ -219,7 +199,7 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
-                        paraeSpannable(weibo);
+                        SpannableStringUtil.paraeSpannable(weibo, mView.getContent().getApplicationContext());
                         return weibo;
                     }
                 })
@@ -229,19 +209,20 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
                 .subscribe(new Subscriber<List<Weibo>>() {
                     @Override
                     public void onCompleted() {
-                        mView.onLoadComplite();
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         mView.onComnLoadError();
-                        mView.onLoadComplite();
+                        mView.onLoadComplite(true);
                     }
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
                         mView.setFriendWeibo(mWeibos);
+                        mView.onLoadComplite(weibos.size() >= PAGE_COUNT);
                     }
                 });
         mLoginCompositeSubscription.add(subscription);

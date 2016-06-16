@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Weibo;
-import com.caij.weiyo.view.WeiboItemView;
+import com.caij.weiyo.view.weibo.WeiboItemView;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.List;
@@ -28,9 +28,14 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHolle
         super(context, entities);
     }
 
+    public WeiboAdapter(Context context, RecyclerViewOnItemClickListener onItemClickListener) {
+        this(context);
+        mOnItemClickListener = onItemClickListener;
+    }
+
     @Override
     public WeiboViewHoller onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new WeiboViewHoller(mInflater.inflate(R.layout.item_weibo, parent, false), null);
+        return new WeiboViewHoller(mInflater.inflate(R.layout.item_weibo, parent, false), mOnItemClickListener);
     }
 
     @Override

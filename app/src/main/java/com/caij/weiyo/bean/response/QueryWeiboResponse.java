@@ -1,4 +1,6 @@
-package com.caij.weiyo.bean;
+package com.caij.weiyo.bean.response;
+
+import com.caij.weiyo.bean.Weibo;
 
 import java.util.List;
 

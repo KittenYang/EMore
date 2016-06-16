@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2015/9/23.
  */
-public abstract class RecyclerViewFragment<E> extends LazyFragment implements LoadMoreRecyclerView.OnLoadMoreListener, RecyclerViewOnItemClickListener {
+public abstract class RecyclerViewFragment<E> extends LazyFragment {
 
     @BindView(R.id.recycler_view)
     LoadMoreRecyclerView mLoadMoreLoadMoreRecyclerView;

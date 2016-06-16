@@ -24,7 +24,6 @@ public class SplashActivity extends BaseActivity{
             intent = new Intent(this, LoginActivity.class);
         }else {
             intent = new Intent(this, MainActivity.class);
-            initDB(accessToken.getUid());
         }
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -35,8 +34,5 @@ public class SplashActivity extends BaseActivity{
         }, 2000);
     }
 
-    private void initDB(String uid) {
-        DBManager.initDB(this, Key.DB_NAME + uid);
-    }
 
 }

@@ -79,7 +79,7 @@ public class MainActivity extends BaseActivity implements UserView {
         mRbWeibo.setCompoundDrawables(iconWeiboDrawable, null, null, null);
 
 
-        getFragmentManager().beginTransaction().add(R.id.attach_container,
+        getSupportFragmentManager().beginTransaction().add(R.id.attach_container,
                 new FriendWeiboFragment()).commit();
     }
 
@@ -100,8 +100,8 @@ public class MainActivity extends BaseActivity implements UserView {
     public void setUser(User user) {
         if (user != null) {
             mTvNavigationUsername.setText(user.getName());
-            ImageLoader.load(this, mImgNavigationAvatar,
-                    user.getAvatar_large(), true, R.mipmap.ic_default_circle_head_image);
+            ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild().setCircle(true).build();
+            ImageLoader.load(this, mImgNavigationAvatar,  user.getAvatar_large(), R.mipmap.ic_default_circle_head_image, config);
         }
     }
 

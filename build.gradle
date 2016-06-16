@@ -36,6 +36,7 @@ ext {
     greendaoVersion = "2.2.0"
     glideVersion = "3.7.0"
     glideIntegrationVersion = "1.4.0"
+    flexibledividerVersion = "1.2.6"
 }
 
 

@@ -7,6 +7,7 @@ import com.caij.weiyo.utils.GsonUtils;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class Weibo{
+public class Weibo implements Serializable{
 
     public static Weibo friendWeibo2Weibo(FriendWeibo friendWeibo) {
         Weibo weibo = new Weibo();

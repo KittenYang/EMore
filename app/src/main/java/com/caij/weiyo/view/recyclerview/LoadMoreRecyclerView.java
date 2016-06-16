@@ -17,7 +17,7 @@ public class LoadMoreRecyclerView extends RecyclerView {
     public static final int STATE_NORMAL = 1;
     public static final int STATE_LOADING = 2;
     public static final int STATE_NO_MORE = 3;
-    public static final int STATE_NETWORK_UNAVAILABLE = 4;
+    public static final int STATE_EMPTY = 4;
 
     private OnLoadMoreListener mOnLoadMoreListener;
     private boolean mIsLoadMoreEnable = true;
@@ -43,7 +43,7 @@ public class LoadMoreRecyclerView extends RecyclerView {
     private void init(Context context) {
         addOnScrollListener(mOpOnScrollChangeListener);
         mLoadMoreView = new LoadMoreView(context);
-        mLoadMoreView.setState(STATE_NORMAL);
+        mLoadMoreView.setState(STATE_EMPTY);
     }
 
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {

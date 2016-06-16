@@ -8,6 +8,7 @@ import com.caij.weiyo.utils.okhttp.OkHttpClientProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -20,6 +21,8 @@ public class ImageUtil {
 
     public static BitmapFactory.Options getImageOptions(String url) throws IOException {
         OkHttpClient okHttpClient = OkHttpClientProvider.getDefaultOkHttpClient();
+        okHttpClient = okHttpClient.newBuilder().readTimeout(5000, TimeUnit.MILLISECONDS)
+                .writeTimeout(5000, TimeUnit.MILLISECONDS).build();
         okhttp3.Request.Builder okHttpRequestBuilder = new okhttp3.Request.Builder();
         okHttpRequestBuilder.url(url);
         okhttp3.Request okHttpRequest = okHttpRequestBuilder.build();

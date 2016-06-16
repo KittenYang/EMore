@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,14 +9,13 @@
         android:layout_height="match_parent"
         android:clipChildren="false"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/spacing_large"
-        android:paddingRight="@dimen/spacing_large"
         android:paddingTop="@dimen/spacing_large">
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/spacing_weibo_item"
+            android:paddingRight="@dimen/spacing_weibo_item">
 
             <ImageView
                 android:id="@+id/sdv_avatar"
@@ -32,7 +30,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/sdv_avatar"
-                android:text="名字"/>
+                android:text="名字"
+                android:singleLine="true"/>
 
             <ImageView
                 android:id="@+id/img_verified"
@@ -51,68 +50,77 @@
                 android:layout_below="@id/tv_name"
                 android:layout_marginTop="2dip"
                 android:layout_toRightOf="@id/sdv_avatar"
-                android:text="来自Aisen 2015-01-26"/>
+                android:text="来自Aisen 2015-01-26"
+                android:singleLine="true"/>
 
-            <com.caij.weiyo.view.FixClickableSpanBugTextView
-                android:id="@+id/tv_content"
-                style="@style/WeiboTextBody"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/sdv_avatar"
-                android:layout_marginBottom="4dip"
-                android:layout_marginTop="10dip"
-                android:lineSpacingExtra="2dip"
-                android:text="哈哈，我今天发了条微博"/>
-
-            <!--android:background="@drawable/timeline_profile_question_single_normal"-->
-            <RelativeLayout
-                android:id="@+id/rl_re_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_content"
-                android:layout_marginLeft="-10dip"
-                android:layout_marginRight="-10dip"
-                android:orientation="vertical"
-                android:paddingBottom="4dip"
-                android:paddingLeft="10dip"
-                android:paddingRight="10dip">
-
-                <View
-                    android:id="@+id/line_re_divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1.5dip"
-                    android:layout_marginBottom="8dip"
-                    android:background="@color/divider_timeline_item"/>
-
-                <com.caij.weiyo.view.FixClickableSpanBugTextView
-                    android:id="@+id/tv_re_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/line_re_divider"
-                    style="@style/WeiboTextBody"
-                    android:lineSpacingExtra="2dip"
-                    android:text="哈哈，我发了条微博被baby转发了，教主吃屎！"/>
-
-            </RelativeLayout>
         </RelativeLayout>
 
-        <com.caij.weiyo.view.WeiboItemPicsView
+        <com.caij.weiyo.view.FixClickableSpanBugTextView
+            android:id="@+id/tv_content"
+            style="@style/WeiboTextBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_micro"
+            android:paddingBottom="@dimen/spacing_micro"
+            android:paddingTop="@dimen/spacing_micro"
+            android:lineSpacingExtra="2dip"
+            android:text="哈哈，我今天发了条微博"
+            android:paddingLeft="@dimen/spacing_weibo_item"
+            android:paddingRight="@dimen/spacing_weibo_item"/>
+
+        <com.caij.weiyo.view.weibo.WeiboItemPicsView
             android:id="@+id/pics_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/spacing_weibo_item"
+            android:paddingRight="@dimen/spacing_weibo_item"
+            android:paddingTop="@dimen/spacing_medium"
+            android:paddingBottom="@dimen/spacing_medium">
 
+        </com.caij.weiyo.view.weibo.WeiboItemPicsView>
 
+        <LinearLayout
+            android:id="@+id/ll_re"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/repost_content_bg_selector"
+            android:paddingTop="@dimen/spacing_medium"
+            android:paddingBottom="@dimen/spacing_medium"
+            android:paddingLeft="@dimen/spacing_weibo_item"
+            android:paddingRight="@dimen/spacing_weibo_item">
 
-        </com.caij.weiyo.view.WeiboItemPicsView>
+        <com.caij.weiyo.view.FixClickableSpanBugTextView
+            android:id="@+id/tv_re_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="2dip"
+            android:text="哈哈，我发了条微博被baby转发了，教主吃屎！"
+            android:textColor="@color/text_54"
+            android:textSize="@dimen/text_size_medium"/>
+
+            <com.caij.weiyo.view.weibo.WeiboItemPicsView
+                android:id="@+id/re_pics_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/spacing_medium"
+                android:paddingBottom="@dimen/spacing_medium">
+
+            </com.caij.weiyo.view.weibo.WeiboItemPicsView>
+
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="35dip"
+            android:layout_height="wrap_content"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
-
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_weibo_item"
+            android:paddingRight="@dimen/spacing_weibo_item"
+            android:paddingTop="@dimen/spacing_medium"
+            android:paddingBottom="@dimen/spacing_medium">
 
             <TextView
                 android:id="@+id/tv_like"
@@ -142,7 +150,6 @@
                 android:gravity="center"
                 android:drawablePadding="4dp"
                 android:layout_centerVertical="true"/>
-
 
             <TextView
                 android:id="@+id/tv_repost_count"

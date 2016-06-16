@@ -1,12 +1,12 @@
 package com.caij.weiyo.ui.fragment;
 
-import android.app.Fragment;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 
 import com.caij.weiyo.R;
 import com.caij.weiyo.present.view.BaseView;
 import com.caij.weiyo.ui.LoginActivity;
-import com.caij.weiyo.utils.ActivityManager;
+import com.caij.weiyo.utils.ActivityStack;
 import com.caij.weiyo.utils.ToastUtil;
 
 /**
@@ -16,8 +16,8 @@ public class BaseFragment extends Fragment implements BaseView{
 
     @Override
     public void onAuthenticationError() {
-        ActivityManager.getInstance().remove(getActivity());
-        ActivityManager.getInstance().finishAllActivity();
+        ActivityStack.getInstance().remove(getActivity());
+        ActivityStack.getInstance().finishAllActivity();
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);
         getActivity().finish();

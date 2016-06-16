@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.caij.weiyo.R;
 import com.caij.weiyo.present.view.BaseView;
-import com.caij.weiyo.utils.ActivityManager;
+import com.caij.weiyo.utils.ActivityStack;
 import com.caij.weiyo.utils.ToastUtil;
 
 /**
@@ -17,13 +17,13 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityManager.getInstance().push(this);
+        ActivityStack.getInstance().push(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ActivityManager.getInstance().remove(this);
+        ActivityStack.getInstance().remove(this);
     }
 
     protected void showToast(String msg) {
@@ -36,8 +36,8 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
 
     @Override
     public void onAuthenticationError() {
-        ActivityManager.getInstance().remove(this);
-        ActivityManager.getInstance().finishAllActivity();
+        ActivityStack.getInstance().remove(this);
+        ActivityStack.getInstance().finishAllActivity();
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();

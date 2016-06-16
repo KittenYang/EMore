@@ -1,16 +1,11 @@
 package com.caij.weiyo.view;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Parcel;
 import android.text.ParcelableSpan;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.View;
 
@@ -23,6 +18,8 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
 
     private final String mURL;
     private int color;
+    private int pressColor;
+    private boolean pressed;
 
     public MyURLSpan(String url) {
         this.mURL = url;
@@ -57,17 +54,22 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
         context.startActivity(intent);
     }
 
-    public void setColor(int color) {
+    public void setTextColor(int color) {
         this.color = color;
+    }
+
+    public void setPressColor(int color) {
+        this.pressColor = color;
     }
 
     @Override
     public void updateDrawState(TextPaint ds) {
         ds.setColor(color);
         ds.setUnderlineText(false);
+        ds.bgColor = pressed ? pressColor : 0x00000000;
     }
 
-    public void onLongClick(View widget) {
-
+    public void setPressed(boolean pressed) {
+        this.pressed = pressed;
     }
 }

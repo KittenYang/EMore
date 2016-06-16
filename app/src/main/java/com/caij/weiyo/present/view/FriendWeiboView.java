@@ -9,15 +9,11 @@ import java.util.List;
 /**
  * Created by Caij on 2016/5/31.
  */
-public interface FriendWeiboView extends BaseView {
+public interface FriendWeiboView extends RefreshListView {
 
     public void setFriendWeibo(List<Weibo> weibos);
 
     void toRefresh();
-
-    void onRefreshComplite();
-
-    void onLoadComplite();
 
     Context getContent();
 }

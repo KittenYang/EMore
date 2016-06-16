@@ -1,15 +1,21 @@
 package com.caij.weiyo.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by Caij on 2016/6/6.
  */
-public class PicUrl {
+public class PicUrl implements Serializable{
 
     private String thumbnail_pic;
 
     private int width = -1;
 
     private int height = -1;
+
+    private String original_pic;
+
+    private String bmiddle_pic;
 
     public String getThumbnail_pic() {
         return thumbnail_pic;
@@ -37,5 +43,28 @@ public class PicUrl {
 
     public boolean hasSize() {
         return width > 0 && height > 0;
+    }
+
+    public String getOriginal_pic() {
+        if (original_pic == null) {
+            original_pic = new String(thumbnail_pic).replace("thumbnail", "large");
+        }
+        return original_pic;
+    }
+
+    public String getBmiddle_pic() {
+        if (bmiddle_pic == null) {
+            bmiddle_pic = new String(thumbnail_pic).replace("thumbnail", "bmiddle");
+        }
+
+        return bmiddle_pic;
+    }
+
+    public boolean isBigImage() {
+        return this.getWidth() / this.getHeight() > 3 || this.getHeight() / this.getWidth() > 3;
+    }
+
+    public boolean isBigImageAndHeightBtWidth() {
+        return this.getHeight() / this.getWidth() > 3;
     }
 }

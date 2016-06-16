@@ -2,10 +2,14 @@ package com.caij.weiyo.api;
 
 import com.caij.weiyo.Key;
 import com.caij.weiyo.bean.AccessToken;
-import com.caij.weiyo.bean.QueryWeiboResponse;
+import com.caij.weiyo.bean.Comment;
+import com.caij.weiyo.bean.response.QueryWeiboCommentResponse;
+import com.caij.weiyo.bean.response.QueryWeiboResponse;
 import com.caij.weiyo.bean.User;
 import com.caij.weiyo.utils.okhttp.OkHttpClientProvider;
 import com.caij.weiyo.utils.GsonUtils;
+
+import java.util.List;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -56,9 +60,52 @@ public interface WeiBoService {
     Observable<User> getWeiBoUserInfoByUid(@Query("access_token") String accessToken, @Query("uid") long uid);
 
     @GET("2/statuses/friends_timeline.json")
-    Observable<QueryWeiboResponse> getFrientWeibo(@Query("access_token") String accessToken,
-                                                  @Query("since_id") long since_id,
-                                                  @Query("max_id") long max_id,
-                                                  @Query("count") int count, @Query("page") int page);
+    Observable<QueryWeiboResponse> getFriendsWeibo(@Query("access_token") String accessToken,
+                                                   @Query("since_id") long since_id,
+                                                   @Query("max_id") long max_id,
+                                                   @Query("count") int count, @Query("page") int page);
+
+    /**
+     * 评论微博
+     * @param accessToken
+     * @param comment
+     * @param id 微博id
+     * @return
+     */
+    @POST("2/comments/create.json")
+    Observable<QueryWeiboResponse> createCommentOfWeibo(@Field("access_token") String accessToken,
+                                                  @Field("comment") String comment,
+                                                  @Field("id") boolean id,
+                                                  @Field("comment_ori") int comment_ori);
+
+    /**
+     * @param accessToken
+     * @param attitude
+     * @param id 微博id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/2/attitudes/create.json")
+    Observable<Void> createAttitudeOfWeibo(@Field("access_token") String accessToken,
+                                                        @Field("attitude") String attitude,
+                                                        @Field("id") long id);
+    /**
+     * @param accessToken
+     * @param attitude
+     * @param id 微博id
+     * @return
+     */
+    @POST("2/attitudes/destroy.json")
+    Observable<Void> destoryAttitudeOfWeibo(@Field("access_token") String accessToken,
+                                                         @Field("attitude") String attitude,
+                                                         @Field("id") long id);
+
+    @GET("2/comments/show.json")
+    Observable<QueryWeiboCommentResponse> getCommentsByWeibo(@Query("access_token") String accessToken,
+                                                             @Query("id") long id,
+                                                             @Query("since_id") long since_id,
+                                                             @Query("max_id") long max_id,
+                                                             @Query("count") int count,
+                                                             @Query("page") int page);
 
 }

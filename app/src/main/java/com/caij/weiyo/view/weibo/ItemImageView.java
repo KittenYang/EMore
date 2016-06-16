@@ -1,4 +1,4 @@
-package com.caij.weiyo.view;
+package com.caij.weiyo.view.weibo;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.caij.weiyo.R;
 import com.caij.weiyo.bean.PicUrl;
+
+import java.util.List;
 
 /**
  * Created by Caij on 2016/6/7.
@@ -77,9 +79,8 @@ public class ItemImageView extends ImageView implements View.OnLongClickListener
 
     //在layout 后才有效
     public boolean isLongImage() {
-        return mPicUrl != null && (mPicUrl.getWidth() / mPicUrl.getHeight() > 3 || mPicUrl.getHeight() / mPicUrl.getWidth() > 3);
+        return mPicUrl != null && mPicUrl.isBigImage();
     }
-
 
     public boolean isGif() {
         return mPicUrl != null && mPicUrl.getThumbnail_pic().contains("gif");
@@ -137,5 +138,6 @@ public class ItemImageView extends ImageView implements View.OnLongClickListener
         }
         return true;
     }
+
 
 }
