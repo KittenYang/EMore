@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/7.
  */
-public class ItemImageView extends ImageView implements View.OnLongClickListener {
+public class ItemImageView extends ImageView {
 
     private Bitmap mGifDrawable;
     private Paint paint;
@@ -52,7 +52,6 @@ public class ItemImageView extends ImageView implements View.OnLongClickListener
     }
 
     private void init() {
-        setOnLongClickListener(this);
     }
 
     @Override
@@ -77,7 +76,6 @@ public class ItemImageView extends ImageView implements View.OnLongClickListener
         mPicUrl = picUrl;
     }
 
-    //在layout 后才有效
     public boolean isLongImage() {
         return mPicUrl != null && mPicUrl.isBigImage();
     }
@@ -86,58 +84,57 @@ public class ItemImageView extends ImageView implements View.OnLongClickListener
         return mPicUrl != null && mPicUrl.getThumbnail_pic().contains("gif");
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        boolean superOnTouchEvent =  super.onTouchEvent(event);
-        Drawable drawable = getDrawable();
-        if (drawable == null) return superOnTouchEvent;
-        GifDrawable gifDrawable = null;
-        if (drawable instanceof GifDrawable) {
-            gifDrawable = (GifDrawable) drawable;
-        }else if (drawable instanceof TransitionDrawable) {
-            // we fade in images on load which uses a TransitionDrawable; check its layers
-            TransitionDrawable fadingIn = (TransitionDrawable) drawable;
-            for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
-                if (fadingIn.getDrawable(i) instanceof GifDrawable) {
-                    gifDrawable = (GifDrawable) fadingIn.getDrawable(i);
-                    break;
-                }
-            }
-        }
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                if (gifDrawable != null && gifDrawable.isRunning()) {
-                    gifDrawable.stop();
-                }
-                break;
-        }
-        return superOnTouchEvent;
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        //如果是gif图片 长按播放 up和cancel停止
-        Drawable drawable = getDrawable();
-        GifDrawable gifDrawable = null;
-        if (drawable instanceof GifDrawable) {
-            gifDrawable = (GifDrawable) drawable;
-        }else if (drawable instanceof TransitionDrawable) {
-            // we fade in images on load which uses a TransitionDrawable; check its layers
-            TransitionDrawable fadingIn = (TransitionDrawable) drawable;
-            for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
-                if (fadingIn.getDrawable(i) instanceof GifDrawable) {
-                    gifDrawable = (GifDrawable) fadingIn.getDrawable(i);
-                    break;
-                }
-            }
-        }
-        if (gifDrawable != null) {
-            gifDrawable.start();
-        }
-        return true;
-    }
-
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        boolean superOnTouchEvent =  super.onTouchEvent(event);
+//        Drawable drawable = getDrawable();
+//        if (drawable == null) return superOnTouchEvent;
+//        GifDrawable gifDrawable = null;
+//        if (drawable instanceof GifDrawable) {
+//            gifDrawable = (GifDrawable) drawable;
+//        }else if (drawable instanceof TransitionDrawable) {
+//            // we fade in images on load which uses a TransitionDrawable; check its layers
+//            TransitionDrawable fadingIn = (TransitionDrawable) drawable;
+//            for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
+//                if (fadingIn.getDrawable(i) instanceof GifDrawable) {
+//                    gifDrawable = (GifDrawable) fadingIn.getDrawable(i);
+//                    break;
+//                }
+//            }
+//        }
+//
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_UP:
+//            case MotionEvent.ACTION_CANCEL:
+//                if (gifDrawable != null && gifDrawable.isRunning()) {
+//                    gifDrawable.stop();
+//                }
+//                break;
+//        }
+//        return superOnTouchEvent;
+//    }
+//
+//    @Override
+//    public boolean onLongClick(View v) {
+//        //如果是gif图片 长按播放 up和cancel停止
+//        Drawable drawable = getDrawable();
+//        GifDrawable gifDrawable = null;
+//        if (drawable instanceof GifDrawable) {
+//            gifDrawable = (GifDrawable) drawable;
+//        }else if (drawable instanceof TransitionDrawable) {
+//            // we fade in images on load which uses a TransitionDrawable; check its layers
+//            TransitionDrawable fadingIn = (TransitionDrawable) drawable;
+//            for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
+//                if (fadingIn.getDrawable(i) instanceof GifDrawable) {
+//                    gifDrawable = (GifDrawable) fadingIn.getDrawable(i);
+//                    break;
+//                }
+//            }
+//        }
+//        if (gifDrawable != null) {
+//            gifDrawable.start();
+//        }
+//        return true;
+//    }
 
 }

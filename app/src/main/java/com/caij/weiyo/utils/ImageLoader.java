@@ -3,7 +3,9 @@ package com.caij.weiyo.utils;
 import android.content.Context;
 import android.widget.ImageView;
 
+import com.bumptech.glide.BitmapTypeRequest;
 import com.bumptech.glide.DrawableTypeRequest;
+import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.caij.weiyo.utils.glide.CropCircleTransformation;
@@ -46,9 +48,9 @@ public class ImageLoader {
         private int width;
         private boolean isCircle;
         private int priority;
-        private boolean isGifAutoPlay;
         private int diskCacheStrategy;
         private boolean isCacheMemory;
+        private boolean isSupportGif;
 
         private ImageConfig(ImageConfigBuild build) {
             scaleType = build.scaleType;
@@ -56,9 +58,9 @@ public class ImageLoader {
             width = build.width;
             isCircle = build.isCircle;
             priority = build.priority;
-            isGifAutoPlay = build.isGifAutoPlay;
             diskCacheStrategy = build.diskCacheStrategy;
             isCacheMemory = build.isCacheMemory;
+            isSupportGif = build.isSupportGif;
         }
     }
 
@@ -68,9 +70,9 @@ public class ImageLoader {
         private int width = -1;
         private boolean isCircle = false;
         private int priority = Priority.NORMAL;
-        private boolean isGifAutoPlay = true;
         private int diskCacheStrategy = CacheConfig.RESULT;
         private boolean isCacheMemory = true;
+        private boolean isSupportGif = false;
 
         public ImageConfigBuild(){
 
@@ -98,11 +100,6 @@ public class ImageLoader {
             return this;
         }
 
-        public ImageConfigBuild setGifAutoPlay(boolean isGifAutoPlay) {
-            this.isGifAutoPlay = isGifAutoPlay;
-            return this;
-        }
-
         public ImageConfigBuild setDiskCacheStrategy(int diskCacheStrategy) {
             this.diskCacheStrategy = diskCacheStrategy;
             return this;
@@ -113,6 +110,11 @@ public class ImageLoader {
             return this;
         }
 
+        public ImageConfigBuild setSupportGif(boolean isSupportGif) {
+            this.isSupportGif = isSupportGif;
+            return this;
+        }
+
         public ImageConfig build() {
             return new ImageConfig(this);
         }
@@ -120,64 +122,90 @@ public class ImageLoader {
 
     public static void load(Context context, ImageView view, String url, int resourceId,  ImageConfig imageConfig) {
         DrawableTypeRequest<String> request = createRequest(context, url);
-        switch (imageConfig.scaleType) {
-            case ScaleType.CENTER_CROP:
-                request.centerCrop();
-                break;
 
-            case ScaleType.FIT_CENTER:
-                request.fitCenter();
-                break;
+        GenericRequestBuilder genericRequestBuilder;
+        if (!imageConfig.isSupportGif) {
+            BitmapTypeRequest bitmapTypeRequest = request.asBitmap();
+            switch (imageConfig.scaleType) {
+                case ScaleType.CENTER_CROP:
+                    bitmapTypeRequest.centerCrop();
+                    break;
 
-            case ScaleType.TOP:
-                request.bitmapTransform(new TopTransformation(context));
-                break;
+                case ScaleType.FIT_CENTER:
+                    bitmapTypeRequest.fitCenter();
+                    break;
+
+                case ScaleType.TOP:
+                    bitmapTypeRequest.transform(new TopTransformation(context));
+                    break;
+            }
+
+            if (imageConfig.isCircle) {
+                bitmapTypeRequest.transform(new CropCircleTransformation(context));
+            }
+
+            genericRequestBuilder  = bitmapTypeRequest;
+        }else {
+            switch (imageConfig.scaleType) {
+                case ScaleType.CENTER_CROP:
+                    request.centerCrop();
+                    break;
+
+                case ScaleType.FIT_CENTER:
+                    request.fitCenter();
+                    break;
+
+                case ScaleType.TOP:
+                    request.bitmapTransform(new TopTransformation(context));
+                    break;
+            }
+
+            if (imageConfig.isCircle) {
+                request.bitmapTransform(new CropCircleTransformation(context));
+            }
+
+            genericRequestBuilder = request;
         }
+
+
         if (imageConfig.width > 0 && imageConfig.height > 0) {
-            request.override(imageConfig.width, imageConfig.height);
-        }
-
-        if (imageConfig.isCircle) {
-            request.bitmapTransform(new CropCircleTransformation(context));
+            genericRequestBuilder.override(imageConfig.width, imageConfig.height);
         }
 
         switch (imageConfig.priority) {
             case Priority.HIGH:
-                request.priority(com.bumptech.glide.Priority.HIGH);
+                genericRequestBuilder.priority(com.bumptech.glide.Priority.HIGH);
                 break;
 
             case Priority.LOW:
-                request.priority(com.bumptech.glide.Priority.LOW);
+                genericRequestBuilder.priority(com.bumptech.glide.Priority.LOW);
                 break;
 
             default:
-                request.priority(com.bumptech.glide.Priority.NORMAL);
+                genericRequestBuilder.priority(com.bumptech.glide.Priority.NORMAL);
                 break;
         }
 
         switch (imageConfig.diskCacheStrategy) {
             case CacheConfig.All:
-                request.diskCacheStrategy(DiskCacheStrategy.ALL);
+                genericRequestBuilder.diskCacheStrategy(DiskCacheStrategy.ALL);
                 break;
 
             case CacheConfig.RESULT:
-                request.diskCacheStrategy(DiskCacheStrategy.RESULT);
+                genericRequestBuilder.diskCacheStrategy(DiskCacheStrategy.RESULT);
                 break;
 
             case CacheConfig.SOURCE:
-                request.diskCacheStrategy(DiskCacheStrategy.SOURCE);
+                genericRequestBuilder.diskCacheStrategy(DiskCacheStrategy.SOURCE);
                 break;
         }
 
-        request.skipMemoryCache(!imageConfig.isCacheMemory);
+        genericRequestBuilder.skipMemoryCache(!imageConfig.isCacheMemory);
 
-        request.placeholder(resourceId);
+        genericRequestBuilder.placeholder(resourceId);
 
-        if (imageConfig.isGifAutoPlay) {
-            request.into(view);
-        }else {
-            request.into(new GifTarget(view, false));
-        }
+        genericRequestBuilder.into(view);
+
     }
 
     public static void load(Context context, ItemImageView imgView, String url, int imagePlaceholder) {
@@ -185,9 +213,8 @@ public class ImageLoader {
     }
 
     private static DrawableTypeRequest<String> createRequest(Context context, String url) {
-        return (DrawableTypeRequest<String>) Glide.with(context).
-                load(url).
-                diskCacheStrategy(DiskCacheStrategy.RESULT);
+        return Glide.with(context).
+                load(url);
     }
 
 

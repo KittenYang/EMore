@@ -1,6 +1,7 @@
 package com.caij.weiyo.view.weibo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +10,10 @@ import android.widget.LinearLayout;
 
 import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Weibo;
+import com.caij.weiyo.ui.WeiboDetialActivity;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by Caij on 2016/6/13.
@@ -79,6 +82,13 @@ public class WeiboDetailItemView extends WeiboItemView {
                             ViewGroup.LayoutParams.WRAP_CONTENT));
             imagesView.setPics(weibo.getPic_urls());
         }
+    }
+
+    @OnClick(R.id.ll_re)
+    public void onRePostLineaLayoutClick(View view) {
+        Weibo weibo = (Weibo) view.getTag();
+        Intent intent = WeiboDetialActivity.newIntent(getContext(), weibo);
+        getContext().startActivity(intent);
     }
 
 }

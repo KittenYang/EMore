@@ -1,5 +1,6 @@
 package com.caij.weiyo.ui;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -115,7 +116,8 @@ public class MainActivity extends BaseActivity implements UserView {
     @OnCheckedChanged(R.id.rb_message)
     public void onMessageCheck(RadioButton view, boolean isCheck) {
         if (isCheck) {
-
+            Intent intent = new Intent(this, EmotionActivity.class);
+            startActivity(intent);
         }
     }
 }

@@ -21,4 +21,5 @@ public interface Key {
     String OBJ = "obj";
 
     String ID = "id";
+    String TYPE = "type";
 }

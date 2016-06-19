@@ -53,10 +53,10 @@ public class DateUtil {
                     }else {
                         buffer.append(res.getString(R.string.msg_today)).append(" ").append(formatDate(createCal.getTimeInMillis(), "HH:mm"));
                     }
-                }
-                // 前一天
-                else if (currentcal.get(Calendar.DAY_OF_MONTH) - createCal.get(Calendar.DAY_OF_MONTH) == 1) {
+                }else if (currentcal.get(Calendar.DAY_OF_MONTH) - createCal.get(Calendar.DAY_OF_MONTH) == 1) { // 前一天
                     buffer.append(res.getString(R.string.msg_yesterday)).append(" ").append(formatDate(createCal.getTimeInMillis(), "HH:mm"));
+                }else {
+                    buffer.append(formatDate(createCal.getTimeInMillis(), "MM-dd HH:mm"));
                 }
             }else {
                 buffer.append(formatDate(createCal.getTimeInMillis(), "MM-dd HH:mm"));

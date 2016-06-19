@@ -57,6 +57,7 @@ public class WeiboDetailItemPicsView extends WeiboItemPicsView{
         //详情页是一张图片的时候不存到内存中
         if (mPicUrls == null || mPicUrls.size() == 1) {
             build.setCacheMemory(false);
+            build.setSupportGif(true);
         }
     }
 }

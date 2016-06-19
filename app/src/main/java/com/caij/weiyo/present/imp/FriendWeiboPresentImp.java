@@ -222,7 +222,7 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
                         mView.setFriendWeibo(mWeibos);
-                        mView.onLoadComplite(weibos.size() >= PAGE_COUNT);
+                        mView.onLoadComplite(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
                     }
                 });
         mLoginCompositeSubscription.add(subscription);

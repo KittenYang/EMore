@@ -96,6 +96,8 @@ public class FixClickableSpanBugTextView extends TextView {
             int line = layout.getLineForVertical(y);
             int off = layout.getOffsetForHorizontal(line, x);
 
+            LogUtil.d(this, "line = %s  off = %s   x = %s", line, off, x);
+
             MyURLSpan[] link = spannable.getSpans(off, off, MyURLSpan.class);
             MyURLSpan touchedSpan = null;
             if (link.length > 0) {

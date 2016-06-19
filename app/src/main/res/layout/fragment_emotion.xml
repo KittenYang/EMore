@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_marginBottom="@dimen/spacing_large">
+
+    </android.support.v4.view.ViewPager>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:checkedButton="@+id/rb_default">
+
+        <RadioButton
+            android:id="@+id/rb_default"
+            style="@style/EmotionText"
+            android:text="默认"/>
+
+        <RadioButton
+            android:id="@+id/rb_emoji"
+            style="@style/EmotionText"
+            android:text="Emoji"/>
+
+        <RadioButton
+            android:id="@+id/rb_langxiaohua"
+            style="@style/EmotionText"
+            android:text="浪小花" />
+
+    </RadioGroup>
+
+</LinearLayout>

@@ -34,4 +34,17 @@
         <item name="android:textColor">@color/text_80</item>
     </style>
 
+    <style name="EmotionText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/text_54</item>
+        <item name="android:paddingTop">@dimen/spacing_medium</item>
+        <item name="android:paddingBottom">@dimen/spacing_medium</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/bg_navmenu_item_selector</item>
+    </style>
+
 </resources>

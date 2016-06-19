@@ -80,7 +80,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                         if (comments.size() == 0) {
                             mWeiboCommentsView.onEmpty();
                         }else {
-                            mWeiboCommentsView.onLoadComplite(comments.size() >= PAGE_COUNET);
+                            mWeiboCommentsView.onLoadComplite(comments.size() >= 10);
                         }
                     }
                 });
@@ -133,7 +133,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                     public void onNext(List<Comment> comments) {
                         mComments.addAll(comments);
                         mWeiboCommentsView.setComments(mComments);
-                        mWeiboCommentsView.onLoadComplite(comments.size() > PAGE_COUNET);
+                        mWeiboCommentsView.onLoadComplite(comments.size() > 10);
                     }
                 });
 

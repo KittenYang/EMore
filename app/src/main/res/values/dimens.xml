@@ -7,6 +7,8 @@
     <dimen name="spacing_weibo_item">10dp</dimen>
     <dimen name="spacing_weibo_detail_item">18dp</dimen>
 
+    <dimen name="spacing_emotion">10dp</dimen>
+
     <dimen name="activity_horizontal_margin">@dimen/spacing_large</dimen>
     <dimen name="activity_vertical_margin">@dimen/spacing_large</dimen>
 
@@ -23,4 +25,5 @@
     <dimen name="weibo_image_space">4dp</dimen>
     <dimen name="profile_cover">200dp</dimen>
     <dimen name="divider">0.67dp</dimen>
+    <dimen name="comm_h_gap">10dp</dimen>
 </resources>
