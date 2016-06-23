@@ -1,0 +1,5 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+	<item android:drawable="@color/image_picker_folder_panel_pressed" android:state_pressed="true" />
+    <item android:drawable="@color/image_picker_folder_panel_normal" android:state_enabled="true" />
+    <item android:drawable="@color/image_picker_folder_panel_normal" android:state_enabled="false" />
+</selector>

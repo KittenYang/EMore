@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2015/9/23.
  */
-public abstract class RecyclerViewFragment<E> extends LazyFragment {
+public abstract class RecyclerViewFragment extends LazyFragment {
 
     @BindView(R.id.recycler_view)
     LoadMoreRecyclerView mLoadMoreLoadMoreRecyclerView;
@@ -28,8 +28,12 @@ public abstract class RecyclerViewFragment<E> extends LazyFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.include_recycle_view, container, false);
+        View view = inflater.inflate(getLayoutId(), container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    protected int getLayoutId() {
+        return R.layout.include_recycle_view;
     }
 }

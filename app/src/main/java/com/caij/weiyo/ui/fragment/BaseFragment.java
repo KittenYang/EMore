@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.caij.weiyo.R;
 import com.caij.weiyo.present.view.BaseView;
-import com.caij.weiyo.ui.LoginActivity;
+import com.caij.weiyo.ui.activity.LoginActivity;
 import com.caij.weiyo.utils.ActivityStack;
 import com.caij.weiyo.utils.ToastUtil;
 

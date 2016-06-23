@@ -26,4 +26,9 @@
     <dimen name="profile_cover">200dp</dimen>
     <dimen name="divider">0.67dp</dimen>
     <dimen name="comm_h_gap">10dp</dimen>
+
+    <dimen name="publish_btns_height">48dp</dimen>
+
+    <dimen name="image_item_space">1.5dp</dimen>
+
 </resources>

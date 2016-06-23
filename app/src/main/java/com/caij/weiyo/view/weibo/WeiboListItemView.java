@@ -12,7 +12,7 @@ import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.Weibo;
-import com.caij.weiyo.ui.WeiboDetialActivity;
+import com.caij.weiyo.ui.activity.WeiboDetialActivity;
 import com.caij.weiyo.utils.DateUtil;
 
 import butterknife.BindView;

@@ -1,12 +1,9 @@
-package com.caij.weiyo.ui;
+package com.caij.weiyo.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.caij.weiyo.Key;
@@ -47,7 +44,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Weibo weibo = (Weibo) getIntent().getSerializableExtra(Key.OBJ);
+        final Weibo weibo = (Weibo) getIntent().getSerializableExtra(Key.OBJ);
         ButterKnife.bind(this);
         //这里需要重新解析文本spand 因为通过序列化SpannableString不会序列化
         SpannableStringUtil.paraeSpannable(weibo, getApplicationContext());

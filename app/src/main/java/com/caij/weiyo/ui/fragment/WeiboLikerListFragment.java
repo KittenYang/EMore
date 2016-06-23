@@ -5,7 +5,7 @@ import com.caij.weiyo.bean.Weibo;
 /**
  * Created by Caij on 2016/6/14.
  */
-public class WeiboLikerListFragment extends RecyclerViewFragment<Weibo>{
+public class WeiboLikerListFragment extends RecyclerViewFragment {
     @Override
     protected void onUserFirstVisible() {
         

@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.caij.weiyo.view.SquareImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="@color/image_item_shaw"/>
+
+    <com.caij.weiyo.view.SquareImageView
+        android:id="@+id/view_shaw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/image_item_shaw"/>
+
+    <ImageView
+        android:id="@+id/select_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/check_box_selector"
+        android:paddingTop="@dimen/spacing_medium"
+        android:paddingRight="@dimen/spacing_medium"
+        android:paddingLeft="@dimen/spacing_large"
+        android:paddingBottom="@dimen/spacing_large"
+        android:layout_alignParentRight="true"
+        android:background="@null"
+        android:visibility="visible"
+        tools:visibility="visible"/>
+
+</RelativeLayout>

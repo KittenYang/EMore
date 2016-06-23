@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 
 import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Weibo;
-import com.caij.weiyo.ui.WeiboDetialActivity;
+import com.caij.weiyo.ui.activity.WeiboDetialActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;

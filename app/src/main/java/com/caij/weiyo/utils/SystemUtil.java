@@ -1,11 +1,15 @@
 package com.caij.weiyo.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 /**
  * Created by Caij on 2016/6/4.
@@ -64,12 +68,51 @@ public class SystemUtil {
         return netType;
     }
 
-//    public static int getScreenWidth(Context context) {
-//        DisplayMetrics dm = new DisplayMetrics();
-//        WindowManager windowManager = (WindowManager) context.getSystemService("window");
-//        windowManager.getDefaultDisplay().getMetrics(dm);
-//        screenWidth = dm.widthPixels;
-//        screenHeight = dm.heightPixels;
-//        density = dm.density;
-//    }
+    public static void showKeyBoard(Activity activity) {
+        try {
+            InputMethodManager imm = (InputMethodManager) activity
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                View view = activity.getCurrentFocus();
+                if (view != null) {
+                    imm.showSoftInputFromInputMethod(view.getWindowToken(), 0);
+                    imm.toggleSoftInputFromWindow(view.getWindowToken(), 0,
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void hideKeyBoard(Activity activity) {
+        try {
+            InputMethodManager imm = (InputMethodManager) activity
+                    .getSystemService(Activity.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                View view = activity.getCurrentFocus();
+                if (view != null) {
+                    if (imm.isActive(view)) {
+                        imm.hideSoftInputFromWindow(view.getWindowToken(),
+                                InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean isKeyBoardShow(Activity paramActivity) {
+        int height = DensityUtil.getScreenHeight(paramActivity) - getStatusBarHeight(paramActivity) - getAppHeight(paramActivity);
+        return height != 0;
+    }
+
+    public static int getAppHeight(Activity paramActivity) {
+        Rect localRect = new Rect();
+        paramActivity.getWindow().getDecorView().getWindowVisibleDisplayFrame(localRect);
+        return localRect.height();
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.caij.weiyo.ui;
+package com.caij.weiyo.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;

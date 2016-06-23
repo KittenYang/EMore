@@ -19,19 +19,19 @@ import butterknife.Unbinder;
  */
 public class PublishBottomFragment extends BaseFragment {
 
-    @BindView(R.id.btnLocation)
+    @BindView(R.id.btn_location)
     LinearLayout btnLocation;
     @BindView(R.id.btnCamera)
     LinearLayout btnCamera;
-    @BindView(R.id.btnEmotion)
+    @BindView(R.id.btn_emotion)
     LinearLayout btnEmotion;
-    @BindView(R.id.btnMention)
+    @BindView(R.id.btn_mention)
     LinearLayout btnMention;
-    @BindView(R.id.btnTrends)
+    @BindView(R.id.btn_trends)
     LinearLayout btnTrends;
-    @BindView(R.id.btnOverflow)
+    @BindView(R.id.btn_overflow)
     LinearLayout btnOverflow;
-    @BindView(R.id.btnSend)
+    @BindView(R.id.btn_send)
     LinearLayout btnSend;
     @BindView(R.id.layBtns)
     LinearLayout layBtns;

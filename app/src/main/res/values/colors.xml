@@ -43,4 +43,9 @@
     <color name="link_text_press_color">#c0cddc</color>
 
     <color name="divider_timeline_item">#ebeef4</color>
+
+    <color name="image_item_shaw">#44000000</color>
+
+    <color name="image_picker_folder_panel_normal">#da000000</color>
+    <color name="image_picker_folder_panel_pressed">#e0000000</color>
 </resources>

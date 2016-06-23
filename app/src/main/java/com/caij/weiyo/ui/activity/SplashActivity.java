@@ -1,14 +1,11 @@
-package com.caij.weiyo.ui;
+package com.caij.weiyo.ui.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.caij.weiyo.Key;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
-import com.caij.weiyo.database.dao.DBManager;
 
 /**
  * Created by Caij on 2016/5/28.

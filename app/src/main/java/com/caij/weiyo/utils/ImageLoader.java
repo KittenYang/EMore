@@ -121,8 +121,18 @@ public class ImageLoader {
     }
 
     public static void load(Context context, ImageView view, String url, int resourceId,  ImageConfig imageConfig) {
-        DrawableTypeRequest<String> request = createRequest(context, url);
+        DrawableTypeRequest request = createRequest(context, url);
+        GenericRequestBuilder genericRequestBuilder = configRequest(context, request, resourceId, imageConfig);
+        genericRequestBuilder.into(view);
+    }
 
+    public static void load(Context context, ImageView view, File file, int resourceId,  ImageConfig imageConfig) {
+        DrawableTypeRequest request = createRequest(context, file);
+        GenericRequestBuilder genericRequestBuilder = configRequest(context, request, resourceId, imageConfig);
+        genericRequestBuilder.into(view);
+    }
+
+    private static GenericRequestBuilder configRequest(Context context, DrawableTypeRequest request, int resourceId,  ImageConfig imageConfig) {
         GenericRequestBuilder genericRequestBuilder;
         if (!imageConfig.isSupportGif) {
             BitmapTypeRequest bitmapTypeRequest = request.asBitmap();
@@ -204,17 +214,22 @@ public class ImageLoader {
 
         genericRequestBuilder.placeholder(resourceId);
 
-        genericRequestBuilder.into(view);
-
+        return genericRequestBuilder;
     }
 
-    public static void load(Context context, ItemImageView imgView, String url, int imagePlaceholder) {
+    public static void load(Context context, ImageView imgView, String url, int imagePlaceholder) {
         load(context, imgView, url, imagePlaceholder, new ImageConfigBuild().build());
     }
 
-    private static DrawableTypeRequest<String> createRequest(Context context, String url) {
+
+    private static DrawableTypeRequest createRequest(Context context, String url) {
         return Glide.with(context).
                 load(url);
+    }
+
+    private static DrawableTypeRequest createRequest(Context context, File file) {
+        return Glide.with(context).
+                load(file);
     }
 
 
@@ -229,7 +244,7 @@ public class ImageLoader {
      * 这个方法需要在子线程中调用
      */
     public static File getFile(Context context, String url, int width, int height) throws ExecutionException, InterruptedException {
-        return createRequest(context, url).downloadOnly(width, height).get();
+        return (File) createRequest(context, url).downloadOnly(width, height).get();
     }
 
 }

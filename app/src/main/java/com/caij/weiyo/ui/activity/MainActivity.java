@@ -1,4 +1,4 @@
-package com.caij.weiyo.ui;
+package com.caij.weiyo.ui.activity;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -10,6 +10,8 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -25,6 +27,8 @@ import com.caij.weiyo.present.imp.UserPresentImp;
 import com.caij.weiyo.present.view.UserView;
 import com.caij.weiyo.source.local.LocalUserSource;
 import com.caij.weiyo.source.server.ServerUserSource;
+import com.caij.weiyo.ui.activity.publish.PublishActivity;
+import com.caij.weiyo.ui.activity.publish.PublishWeiboActivity;
 import com.caij.weiyo.ui.fragment.FriendWeiboFragment;
 import com.caij.weiyo.utils.ImageLoader;
 import com.caij.weiyo.utils.SystemUtil;
@@ -56,7 +60,7 @@ public class MainActivity extends BaseActivity implements UserView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
+        setSupportActionBar(mToolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.app_name, R.string.app_name);
         toggle.syncState();
         mDrawerLayout.addDrawerListener(toggle);
@@ -79,7 +83,6 @@ public class MainActivity extends BaseActivity implements UserView {
         Drawable iconWeiboDrawable = createNavMenuItemDrawable(R.mipmap.ic_weibo);
         mRbWeibo.setCompoundDrawables(iconWeiboDrawable, null, null, null);
 
-
         getSupportFragmentManager().beginTransaction().add(R.id.attach_container,
                 new FriendWeiboFragment()).commit();
     }
@@ -95,6 +98,27 @@ public class MainActivity extends BaseActivity implements UserView {
         DrawableCompat.setTintList(drawableIcon, mIconTints);
         drawableIcon.setBounds(0, 0 , drawableIcon.getIntrinsicWidth(), drawableIcon.getIntrinsicHeight());
         return drawableIcon;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.publish:
+                Intent intent = new Intent(this, PublishWeiboActivity.class);
+                startActivity(intent);
+                break;
+
+            case R.id.search:
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -116,8 +140,7 @@ public class MainActivity extends BaseActivity implements UserView {
     @OnCheckedChanged(R.id.rb_message)
     public void onMessageCheck(RadioButton view, boolean isCheck) {
         if (isCheck) {
-            Intent intent = new Intent(this, EmotionActivity.class);
-            startActivity(intent);
+
         }
     }
 }

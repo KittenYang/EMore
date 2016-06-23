@@ -10,15 +10,12 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.caij.weiyo.R;
-import com.caij.weiyo.UserPrefs;
-import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.User;
 import com.caij.weiyo.bean.Weibo;
-import com.caij.weiyo.ui.UserInfoActivity;
+import com.caij.weiyo.ui.activity.UserInfoActivity;
 import com.caij.weiyo.utils.DateUtil;
 import com.caij.weiyo.utils.ImageLoader;
 

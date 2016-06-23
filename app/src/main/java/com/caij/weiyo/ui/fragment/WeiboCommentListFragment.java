@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/14.
  */
-public class WeiboCommentListFragment extends RecyclerViewFragment<Weibo> implements WeiboCommentsView, LoadMoreRecyclerView.OnLoadMoreListener {
+public class WeiboCommentListFragment extends RecyclerViewFragment implements WeiboCommentsView, LoadMoreRecyclerView.OnLoadMoreListener {
 
     private WeiboCommentsPresent mWeiboCommentsPresent;
     private CommentAdapter mCommentAdapter;

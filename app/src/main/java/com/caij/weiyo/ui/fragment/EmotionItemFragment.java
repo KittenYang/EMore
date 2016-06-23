@@ -1,6 +1,7 @@
 package com.caij.weiyo.ui.fragment;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
@@ -11,16 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.caij.weiyo.Key;
 import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Emotion;
 import com.caij.weiyo.ui.adapter.BaseAdapter;
 import com.caij.weiyo.ui.adapter.BaseViewHolder;
-import com.caij.weiyo.utils.DensityUtil;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
-import com.caij.weiyo.view.recyclerview.SpaceItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,8 +99,16 @@ public class EmotionItemFragment extends BaseFragment {
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 7);
             recyclerView.setLayoutManager(gridLayoutManager);
-            recyclerView.addItemDecoration(new SpaceItemDecoration(getContext().
-                    getResources().getDimensionPixelSize(R.dimen.spacing_emotion)));
+            recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+                @Override
+                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                    if (parent.getChildLayoutPosition(view) >= 14) { //最下面一行不要间距
+                        outRect.bottom = 0;
+                    }else {
+                        outRect.bottom =  getResources().getDimensionPixelSize(R.dimen.spacing_emotion);
+                    }
+                }
+            });
             recyclerView.setAdapter(new MyGridAdapter(container.getContext(), emotions, position));
             container.addView(view);
             return view;

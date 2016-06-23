@@ -1,4 +1,4 @@
-package com.caij.weiyo.ui;
+package com.caij.weiyo.ui.activity;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;

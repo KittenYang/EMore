@@ -1,4 +1,4 @@
-package com.caij.weiyo.ui;
+package com.caij.weiyo.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,12 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.caij.weiyo.Key;
 import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
@@ -29,10 +23,7 @@ import com.caij.weiyo.present.imp.UserPresentImp;
 import com.caij.weiyo.present.view.UserView;
 import com.caij.weiyo.source.local.LocalUserSource;
 import com.caij.weiyo.source.server.ServerUserSource;
-import com.caij.weiyo.utils.ImageLoader;
-import com.caij.weiyo.utils.LogUtil;
 import com.caij.weiyo.utils.SpannableStringUtil;
-import com.caij.weiyo.utils.glide.CropCircleTransformation;
 import com.caij.weiyo.view.ProfileCollapsingToolbarLayout;
 
 import butterknife.BindView;

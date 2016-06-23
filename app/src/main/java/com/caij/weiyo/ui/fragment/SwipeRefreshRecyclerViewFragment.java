@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2015/11/4.
  */
-public abstract class SwipeRefreshRecyclerViewFragment<E> extends RecyclerViewFragment<E> implements SwipeRefreshLayout.OnRefreshListener {
+public abstract class SwipeRefreshRecyclerViewFragment<E> extends RecyclerViewFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;

@@ -17,11 +17,14 @@
     <string name="msg_ten_thousand">万</string>
     <string name="msg_hour">小时前</string>
 
-      <string name="cheese_ipsum">Jarlsberg lancashire edam. Dolcelatte hard cheese brie st. agur blue
-    cheese caerphilly bavarian bergkase cheese and biscuits mascarpone. Cheeseburger swiss bavarian
-    bergkase cream cheese fromage frais cheesy feet port-salut airedale. St. agur blue cheese rubber
-    cheese caerphilly cheddar cheesecake cream cheese manchego lancashire. Roquefort squirty cheese
-    the big cheese.</string>
     <string name="image_load_error">图片加载失败</string>
     <string name="no_more">没有更多内容啦</string>
+    <string name="share_news">分享新鲜事...</string>
+
+    <string name="main_search">搜索</string>
+    <string name="search_hint">搜索用户或者微博</string>
+    <string name="exitapp">退出</string>
+    <string name="group_add">新增分组</string>
+    <string name="publish">写微博</string>
+    <string name="image_count">张</string>
 </resources>
