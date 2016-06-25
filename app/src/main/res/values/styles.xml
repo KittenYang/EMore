@@ -12,6 +12,10 @@
 
     </style>
 
+    <style name="ImagePrewActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/color_black</item>

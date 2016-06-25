@@ -24,7 +24,7 @@ public class ExecutorServiceUtil {
         EXECUTOR_SERVICE.submit(runnable);
     }
 
-    public static void executeAsyncTask(AsyncTask asyncTask) {
+    public static <Params, Progress, Result> void executeAsyncTask(AsyncTask<Params, Progress, Result>  asyncTask) {
         asyncTask.executeOnExecutor(EXECUTOR_SERVICE);
     }
 }

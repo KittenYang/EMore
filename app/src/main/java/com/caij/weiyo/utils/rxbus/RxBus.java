@@ -32,7 +32,7 @@ public class RxBus {
     private RxBus() {
     }
 
-    public <T> Observable<T> register(@NonNull Object tag, @NonNull Class<T> clazz) {
+    public <T> Observable<T> register(@NonNull Object tag) {
         List<Subject> subjects = subjectMapper.get(tag);
         if (subjects == null) {
             subjects = new ArrayList<>();

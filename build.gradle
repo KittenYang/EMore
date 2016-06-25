@@ -37,6 +37,8 @@ ext {
     glideVersion = "3.7.0"
     glideIntegrationVersion = "1.4.0"
     flexibledividerVersion = "1.2.6"
+    photoViewVersion = "1.2.6"
+    jsoupVersion = "1.8.2"
 }
 
 

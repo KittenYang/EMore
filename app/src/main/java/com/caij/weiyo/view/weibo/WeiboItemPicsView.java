@@ -2,21 +2,21 @@ package com.caij.weiyo.view.weibo;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.caij.weiyo.R;
 import com.caij.weiyo.bean.PicUrl;
 import com.caij.weiyo.utils.ImageLoader;
-import com.caij.weiyo.utils.LogUtil;
+import com.caij.weiyo.utils.NavigationUtil;
 
-import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +29,6 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
     protected int mSpaceWidth;
     protected List<PicUrl> mPicUrls;
     protected Handler mMainHandler;
-    private ImageClickListener mImageClickListener;
 
     public WeiboItemPicsView(Context context) {
         super(context);
@@ -254,19 +253,21 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
         return imageView;
     }
 
-    public void setImageClickListener(ImageClickListener imageClickListener) {
-        mImageClickListener = imageClickListener;
-    }
-
     @Override
     public void onClick(View v) {
-        if (mImageClickListener != null) {
-            mImageClickListener.onClick((ItemImageView)v, (String) v.getTag());
+        ArrayList<String> paths = new ArrayList<>();
+        int position = 0;
+        for (int i = 0; i < mPicUrls.size(); i ++) {
+            PicUrl picUrl = mPicUrls.get(i);
+            View child = getChildAt(i);
+            paths.add(picUrl.getBmiddle_pic());
+            if (child == v) {
+                position = i;
+            }
         }
-        LogUtil.d(this, v + "onclick");
+
+        Intent intent = NavigationUtil.newImagePreActivityIntent(getContext(), paths, position);
+        getContext().startActivity(intent);
     }
 
-    public static interface ImageClickListener {
-        public void onClick(ItemImageView view, String url);
-    }
 }

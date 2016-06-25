@@ -21,6 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HEAD;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -98,11 +99,13 @@ public interface WeiBoService {
     @Multipart
     @POST("2/statuses/upload.json")
     Observable<Weibo> publishWeiboOfOneImage(@Header("Authorization") String accessToken,
+                                             @Part("source") String source,
                                              @Part("status") String status, @Part MultipartBody.Part file);
 
     @Multipart
     @POST("2/statuses/upload_pic.json")
-    Observable<UploadImageResponse> uploadWeiboOfOneImage(@Part("access_token") String accessToken,
+    Observable<UploadImageResponse> uploadWeiboOfOneImage(@Header("Authorization") String accessToken,
+                                                          @Part("access_token") String access_token,
                                                           @Part("source") String source, @Part MultipartBody.Part file);
 
 //    已经上传的图片pid，多个时使用英文半角逗号符分隔，最多不超过9个。
@@ -110,6 +113,7 @@ public interface WeiBoService {
     Observable<Weibo> publishWeiboOfMultiImage(@Field("access_token") String accessToken,
                                              @Field("status") String status, @Field("pic_id") String picIds);
 
+    @FormUrlEncoded
     @POST("2/statuses/update.json")
     Observable<Weibo> publishWeiboOfOnlyText(@Field("access_token") String accessToken,
                                                @Field("status") String status);

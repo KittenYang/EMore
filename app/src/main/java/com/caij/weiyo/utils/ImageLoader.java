@@ -8,6 +8,12 @@ import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.target.ViewTarget;
 import com.caij.weiyo.utils.glide.CropCircleTransformation;
 import com.caij.weiyo.utils.glide.GifTarget;
 import com.caij.weiyo.utils.glide.TopTransformation;
@@ -20,8 +26,6 @@ import java.util.concurrent.ExecutionException;
  * Created by Caij on 2016/6/7.
  */
 public class ImageLoader {
-
-
 
     public static interface ScaleType {
         int CENTER_CROP = 1;
@@ -120,6 +124,11 @@ public class ImageLoader {
         }
     }
 
+    public static interface ImageLoadListener {
+        public void onFail(Exception e);
+        public void onSuccess();
+    }
+
     public static void load(Context context, ImageView view, String url, int resourceId,  ImageConfig imageConfig) {
         DrawableTypeRequest request = createRequest(context, url);
         GenericRequestBuilder genericRequestBuilder = configRequest(context, request, resourceId, imageConfig);
@@ -129,6 +138,25 @@ public class ImageLoader {
     public static void load(Context context, ImageView view, File file, int resourceId,  ImageConfig imageConfig) {
         DrawableTypeRequest request = createRequest(context, file);
         GenericRequestBuilder genericRequestBuilder = configRequest(context, request, resourceId, imageConfig);
+        genericRequestBuilder.into(view);
+    }
+
+    public static void load(Context context, ImageView view, String url, int resourceId, ImageConfig imageConfig, final ImageLoadListener loadListener) {
+        DrawableTypeRequest request = createRequest(context, url);
+        GenericRequestBuilder genericRequestBuilder = configRequest(context, request, resourceId, imageConfig);
+        genericRequestBuilder.listener(new RequestListener() {
+            @Override
+            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+                loadListener.onFail(e);
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+                loadListener.onSuccess();
+                return false;
+            }
+        });
         genericRequestBuilder.into(view);
     }
 
@@ -218,7 +246,7 @@ public class ImageLoader {
     }
 
     public static void load(Context context, ImageView imgView, String url, int imagePlaceholder) {
-        load(context, imgView, url, imagePlaceholder, new ImageConfigBuild().build());
+        load(context, imgView, url, imagePlaceholder, new ImageConfigBuild().setScaleType(ScaleType.CENTER_CROP).build());
     }
 
 

@@ -35,7 +35,8 @@ public class ServerPublishWeiboSourceImp implements PublishWeiboSource {
     }
 
     @Override
-    public Observable<Weibo> publishWeiboOfOneImage(final String token, final String content, final String imagePath) {
+    public Observable<Weibo> publishWeiboOfOneImage(final String token, final String source,
+                                                    final String content, final String imagePath) {
         final File file = new File(imagePath);
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
@@ -56,7 +57,7 @@ public class ServerPublishWeiboSourceImp implements PublishWeiboSource {
                         RequestBody.create(MediaType.parse("image/" + type), file);
                 MultipartBody.Part body =
                         MultipartBody.Part.createFormData("pic", file.getName(), requestFile);
-                return mWeiBoService.publishWeiboOfOneImage(token, content, body);
+                return mWeiBoService.publishWeiboOfOneImage("OAuth2 " + token, source, content, body);
             }
         });
     }
@@ -74,7 +75,7 @@ public class ServerPublishWeiboSourceImp implements PublishWeiboSource {
                                     RequestBody.create(MediaType.parse("image/" + type), file);
                             MultipartBody.Part body =
                                     MultipartBody.Part.createFormData("pic", file.getName(), requestFile);
-                            return mWeiBoService.uploadWeiboOfOneImage(token, source, body);
+                            return mWeiBoService.uploadWeiboOfOneImage("OAuth2 " + token, token, source, body);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }

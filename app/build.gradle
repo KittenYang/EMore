@@ -77,7 +77,7 @@ android {
 
 repositories {
     maven {
-        url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo'
+        url "https://jitpack.io"
     }
 }
 
@@ -110,6 +110,8 @@ dependencies {
         exclude module: 'okhttp'
     }
     compile "org.greenrobot:greendao:${rootProject.ext.greendaoVersion}"
+    compile "com.github.chrisbanes:PhotoView:${rootProject.ext.photoViewVersion}"
+    compile "org.jsoup:jsoup:${rootProject.ext.jsoupVersion}"
 
     compile "com.jakewharton:butterknife:${rootProject.ext.butterknifeVersion}"
     apt "com.jakewharton:butterknife-compiler:${rootProject.ext.butterknifeVersion}"
@@ -117,6 +119,4 @@ dependencies {
     debugCompile "com.facebook.stetho:stetho:${rootProject.ext.stethoVersion}"
     debugCompile "com.facebook.stetho:stetho-okhttp3:${rootProject.ext.stethoVersion}"
     debugCompile "com.squareup.leakcanary:leakcanary-android:${rootProject.ext.leakcanaryVersion}"
-
-
 }

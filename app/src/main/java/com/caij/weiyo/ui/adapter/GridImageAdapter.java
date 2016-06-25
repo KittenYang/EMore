@@ -22,6 +22,7 @@ import butterknife.ButterKnife;
 public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
 
     private ImageLoader.ImageConfig mImageConfig;
+    private ImageSelectListener mImageSelectListener;
 
     public GridImageAdapter(Context context) {
         super(context);
@@ -29,12 +30,11 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
                 setScaleType(ImageLoader.ScaleType.CENTER_CROP).build();
     }
 
-
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == 2) {
             View view = mInflater.inflate(R.layout.item_image, parent, false);
-            ImageViewHolder imageViewHolder = new ImageViewHolder(view, mOnItemClickListener);
+            ImageViewHolder imageViewHolder = new ImageViewHolder(view, mOnItemClickListener, mImageSelectListener);
             return imageViewHolder;
         }else {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -45,10 +45,13 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
         }
     }
 
-
     @Override
     public int getItemViewType(int position) {
         return getItem(position).getType();
+    }
+
+    public void setOnSelectListener(ImageSelectListener imageSelectListener) {
+        this.mImageSelectListener = imageSelectListener;
     }
 
     @Override
@@ -76,24 +79,29 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
         @BindView(R.id.view_shaw)
         View viewShaw;
 
-        public ImageViewHolder(final View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
+        public ImageViewHolder(final View itemView,
+                               RecyclerViewOnItemClickListener onItemClickListener,
+                               final ImageSelectListener imageSelectListener) {
             super(itemView, onItemClickListener);
             ButterKnife.bind(this, itemView);
             selectCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Image image = (Image) v.getTag();
-                    v.setSelected(!image.isSelected());
-                    image.setSelected(!image.isSelected());
-                    if (image.isSelected()) {
-                        viewShaw.setVisibility(View.VISIBLE);
-                        AnimatorSet animatorSet = new AnimatorSet();
-                        ObjectAnimator scaleAnimatorX = ObjectAnimator.ofFloat(v, View.SCALE_X, 1f, 1.15f, 1f);
-                        ObjectAnimator scaleAnimatorY = ObjectAnimator.ofFloat(v, View.SCALE_Y, 1f, 1.15f, 1f);
-                        animatorSet.playTogether(scaleAnimatorY, scaleAnimatorX);
-                        animatorSet.start();
-                    }else {
-                        viewShaw.setVisibility(View.GONE);
+                    if (imageSelectListener != null && imageSelectListener.onSelect(!image.isSelected(), image)) {
+                        image.setSelected(!image.isSelected());
+
+                        v.setSelected(image.isSelected());
+                        if (image.isSelected()) {
+                            viewShaw.setVisibility(View.VISIBLE);
+                            AnimatorSet animatorSet = new AnimatorSet();
+                            ObjectAnimator scaleAnimatorX = ObjectAnimator.ofFloat(v, View.SCALE_X, 1f, 1.15f, 1f);
+                            ObjectAnimator scaleAnimatorY = ObjectAnimator.ofFloat(v, View.SCALE_Y, 1f, 1.15f, 1f);
+                            animatorSet.playTogether(scaleAnimatorY, scaleAnimatorX);
+                            animatorSet.start();
+                        }else {
+                            viewShaw.setVisibility(View.GONE);
+                        }
                     }
                 }
             });
@@ -108,5 +116,9 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
             super(itemView, onItemClickListener);
             imageView = (SquareImageView) itemView;
         }
+    }
+
+    public static interface ImageSelectListener {
+        public boolean onSelect(boolean isSelect, Image image);
     }
 }

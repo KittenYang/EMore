@@ -157,4 +157,15 @@ public class SpannableStringUtil {
         comment.setTextSpannableString(contentSpannableString);
     }
 
+    public static void paraeSpannable(Spannable text, Context applicationContent) {
+        int color = applicationContent.getResources().getColor(R.color.link_text_color);
+        int pressColor = applicationContent.getResources().getColor(R.color.link_text_press_color);
+        SpannableStringUtil.praseName(text);
+        SpannableStringUtil.praseHttpUrl(text);
+        SpannableStringUtil.praseTopic(text);
+        SpannableStringUtil.praseDefaultEmotions(applicationContent, text);
+        SpannableStringUtil.praseSoftEmotions(applicationContent, text);
+        SpannableStringUtil.urlSpan2ClickSpan(text, color, pressColor);
+    }
+
 }

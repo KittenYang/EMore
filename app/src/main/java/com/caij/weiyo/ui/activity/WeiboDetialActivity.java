@@ -46,8 +46,6 @@ public class WeiboDetialActivity extends BaseToolBarActivity {
         super.onCreate(savedInstanceState);
         final Weibo weibo = (Weibo) getIntent().getSerializableExtra(Key.OBJ);
         ButterKnife.bind(this);
-        //这里需要重新解析文本spand 因为通过序列化SpannableString不会序列化
-        SpannableStringUtil.paraeSpannable(weibo, getApplicationContext());
         weiboItemView.setWeibo(weibo);
         List<BaseFragment> fragments = new ArrayList<>(3);
         Bundle bundle = new Bundle();

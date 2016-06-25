@@ -18,6 +18,8 @@ import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Emotion;
 import com.caij.weiyo.ui.adapter.BaseAdapter;
 import com.caij.weiyo.ui.adapter.BaseViewHolder;
+import com.caij.weiyo.utils.LogUtil;
+import com.caij.weiyo.utils.rxbus.RxBus;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.ArrayList;
@@ -139,11 +141,24 @@ public class EmotionItemFragment extends BaseFragment {
         public void onBindViewHolder(EmotionViewHolder holder, int position) {
             if (position == 20) {
                 holder.imageView.setImageResource(R.mipmap.compose_emotion_delete);
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        RxBus.get().post(Key.ON_EMOTION_DELETE_CLICK, null);
+                    }
+                });
             }else {
                 int index = this.position * 20 + position;
                 if (index < getEntities().size()) {
-                    Emotion emotion = getItem(index);
+                    final Emotion emotion = getItem(index);
                     holder.imageView.setImageResource(emotion.drawableId);
+                    holder.imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            RxBus.get().post(Key.ON_EMOTION_CLICK, emotion);
+                            LogUtil.d(emotion, "emotion click key " + emotion.key);
+                        }
+                    });
                 }else {
                     holder.imageView.setImageResource(R.mipmap.d_aini);
                     holder.itemView.setVisibility(View.GONE);

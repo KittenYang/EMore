@@ -18,7 +18,7 @@ public class LocalPublishWeiboSourceImp implements PublishWeiboSource {
     }
 
     @Override
-    public Observable<Weibo> publishWeiboOfOneImage(String token, String content, String imagePath) {
+    public Observable<Weibo> publishWeiboOfOneImage(String token, String source, String content, String imagePath) {
         return null;
     }
 

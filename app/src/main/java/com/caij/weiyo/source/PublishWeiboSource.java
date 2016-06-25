@@ -13,7 +13,7 @@ public interface PublishWeiboSource {
 
     public Observable<Weibo> publishWeiboOfText(String token, String content);
 
-    public Observable<Weibo> publishWeiboOfOneImage(String token, String content, String imagePath);
+    public Observable<Weibo> publishWeiboOfOneImage(String token, String source, String content, String imagePath);
 
     public Observable<Weibo> publishWeiboOfMultiImage(String token, String source, String content, List<String> imagePaths);
 }

@@ -17,8 +17,8 @@ public class SplashActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
         AccessToken accessToken = UserPrefs.get().getToken();
         final Intent intent;
-        if (accessToken == null) {
-            intent = new Intent(this, LoginActivity.class);
+        if (accessToken == null || accessToken.isExpired()) {
+            intent = LoginActivity.newWeiYoLoginIntent(this, null, null);
         }else {
             intent = new Intent(this, MainActivity.class);
         }
