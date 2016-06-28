@@ -4,6 +4,7 @@ import com.caij.weiyo.Key;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.Weibo;
+import com.caij.weiyo.bean.response.QueryRepostWeiboResponse;
 import com.caij.weiyo.bean.response.QueryWeiboCommentResponse;
 import com.caij.weiyo.bean.response.QueryWeiboResponse;
 import com.caij.weiyo.bean.User;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.util.List;
 
 import okhttp3.MultipartBody;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -81,11 +83,11 @@ public interface WeiBoService {
      * @param id 微博id
      * @return
      */
+    @FormUrlEncoded
     @POST("2/comments/create.json")
-    Observable<QueryWeiboResponse> createCommentOfWeibo(@Field("access_token") String accessToken,
-                                                  @Field("comment") String comment,
-                                                  @Field("id") boolean id,
-                                                  @Field("comment_ori") int comment_ori);
+    Observable<Comment> createCommentForWeibo(@Field("access_token") String accessToken,
+                                               @Field("comment") String comment,
+                                               @Field("id") long id);
 
     @GET("2/comments/show.json")
     Observable<QueryWeiboCommentResponse> getCommentsByWeibo(@Query("access_token") String accessToken,
@@ -99,14 +101,14 @@ public interface WeiBoService {
     @Multipart
     @POST("2/statuses/upload.json")
     Observable<Weibo> publishWeiboOfOneImage(@Header("Authorization") String accessToken,
-                                             @Part("source") String source,
                                              @Part("status") String status, @Part MultipartBody.Part file);
 
     @Multipart
     @POST("2/statuses/upload_pic.json")
     Observable<UploadImageResponse> uploadWeiboOfOneImage(@Header("Authorization") String accessToken,
                                                           @Part("access_token") String access_token,
-                                                          @Part("source") String source, @Part MultipartBody.Part file);
+                                                          @Part("source") String source,
+                                                          @Part MultipartBody.Part file);
 
 //    已经上传的图片pid，多个时使用英文半角逗号符分隔，最多不超过9个。
     @POST("2/statuses/upload_url_text.json")
@@ -117,5 +119,19 @@ public interface WeiBoService {
     @POST("2/statuses/update.json")
     Observable<Weibo> publishWeiboOfOnlyText(@Field("access_token") String accessToken,
                                                @Field("status") String status);
+
+    @FormUrlEncoded
+    @POST("2/statuses/repost.json")
+    Observable<Weibo> repostWeibo(@Field("access_token") String accessToken,
+                                  @Field("id") long id,
+                                  @Field("status") String status);
+
+    @GET("2/statuses/repost_timeline.json")
+    Observable<QueryRepostWeiboResponse> getRepostWeibos(@Query("access_token") String accessToken,
+                                                            @Query("id") long id,
+                                                            @Query("since_id") long since_id,
+                                                            @Query("max_id") long max_id,
+                                                            @Query("count") int count,
+                                                            @Query("page") int page);
 
 }

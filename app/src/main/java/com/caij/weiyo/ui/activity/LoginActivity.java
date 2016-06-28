@@ -1,5 +1,6 @@
 package com.caij.weiyo.ui.activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +15,13 @@ import com.caij.weiyo.Key;
 import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
+import com.caij.weiyo.bean.Account;
 import com.caij.weiyo.database.dao.DBManager;
 import com.caij.weiyo.present.LoginPresent;
 import com.caij.weiyo.present.imp.LoginPresentImp;
 import com.caij.weiyo.present.view.LoginView;
 import com.caij.weiyo.source.server.LoginSourceImp;
+import com.caij.weiyo.utils.DialogUtil;
 import com.caij.weiyo.utils.ExecutorServiceUtil;
 import com.caij.weiyo.utils.FileUtil;
 import com.caij.weiyo.utils.LogUtil;
@@ -30,6 +33,8 @@ import org.jsoup.nodes.Element;
 
 import java.util.Map;
 
+import retrofit2.http.Part;
+
 /**
  * Created by Caij on 2016/5/28.
  */
@@ -39,7 +44,7 @@ public class LoginActivity extends WebActivity implements LoginView {
     private final static int TYPE_WEICO = 2;
 
     private static final String TAG = "LoginActivity";
-    private ProgressDialog mLoginDialog;
+    private Dialog mLoginDialog;
 
     private LoginPresent mLoginPresent;
     private String mAccount;
@@ -71,10 +76,10 @@ public class LoginActivity extends WebActivity implements LoginView {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         mLoginPresent = new LoginPresentImp(new LoginSourceImp(), this);
         mLoginPresent.onCreate();
-        mLoginDialog = new ProgressDialog(this);
-        mLoginDialog.setMessage(getString(R.string.logining));
-        mLoginDialog.setCancelable(false);
-        mLoginDialog.setProgressStyle(R.style.AppCompatAlertDialogStyle);
+//        mLoginDialog = new ProgressDialog(this);
+//        mLoginDialog.setMessage(getString(R.string.logining));
+//        mLoginDialog.setCancelable(false);
+//        mLoginDialog.setProgressStyle(R.style.AppCompatAlertDialogStyle);
     }
 
     @Override
@@ -209,10 +214,21 @@ public class LoginActivity extends WebActivity implements LoginView {
 
     @Override
     public void onLoginSuccess(AccessToken accessToken) {
-        UserPrefs.get().setToken(accessToken);
+        Account account = new Account();
+        account.setUsername(mAccount);
+        account.setPwd(mPassword);
+        if (mLoginType == TYPE_WEIYO) {
+            account.setWeiyoToken(accessToken);
+            account.setWeicoToken(UserPrefs.get().getWeiCoToken());
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }else if (mLoginType == TYPE_WEICO) {
+            account.setWeicoToken(accessToken);
+            account.setWeiyoToken(UserPrefs.get().getWeiYoToken());
+            setResult(RESULT_OK);
+        }
+        UserPrefs.get().setAccount(account);
         initDB(accessToken.getUid());
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
         finish();
     }
 
@@ -223,18 +239,20 @@ public class LoginActivity extends WebActivity implements LoginView {
     @Override
     public void showLoading(boolean isVisible) {
         if (isVisible) {
-            mLoginDialog.show();
+            if (mLoginDialog  == null) {
+                mLoginDialog = DialogUtil.showProgressDialog(this, null, getString(R.string.logining));
+            }else {
+                mLoginDialog.show();
+            }
         }else {
-            mLoginDialog.dismiss();
+            if (mLoginDialog != null) {
+                mLoginDialog.dismiss();
+            }
         }
     }
 
     @Override
     protected void onDestroy() {
-        if (mLoginDialog.isShowing()) {
-            mLoginDialog.dismiss();
-            mLoginDialog = null;
-        }
         if (mHtmlAsyncTask != null && !mHtmlAsyncTask.isCancelled()) {
             mHtmlAsyncTask.cancel(true);
         }

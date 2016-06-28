@@ -4,16 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.caij.weiyo.Key;
 import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.Comment;
-import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.WeiboCommentsPresent;
 import com.caij.weiyo.present.imp.WeiboCommentsPresentImp;
 import com.caij.weiyo.present.view.WeiboCommentsView;
@@ -36,12 +33,13 @@ public class WeiboCommentListFragment extends RecyclerViewFragment implements We
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        AccessToken token = UserPrefs.get().getToken();
+        AccessToken token = UserPrefs.get().getWeiYoToken();
         long weiId = getArguments().getLong(Key.ID);
         mWeiboCommentsPresent = new WeiboCommentsPresentImp(token.getAccess_token(), weiId,
                 new ServerCommentSource(), this);
         mCommentAdapter = new CommentAdapter(getActivity());
         mLoadMoreLoadMoreRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mLoadMoreLoadMoreRecyclerView.setBackgroundColor(getResources().getColor(R.color.white));
         mLoadMoreLoadMoreRecyclerView.setAdapter(mCommentAdapter);
         mLoadMoreLoadMoreRecyclerView.setOnLoadMoreListener(this);
         mLoadMoreLoadMoreRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).

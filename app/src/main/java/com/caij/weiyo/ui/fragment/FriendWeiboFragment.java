@@ -11,7 +11,7 @@ import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.FriendWeiboPresent;
-import com.caij.weiyo.present.imp.FriendWeiboPresentImp;
+import com.caij.weiyo.present.FriendWeiboPresentImp;
 import com.caij.weiyo.present.view.FriendWeiboView;
 import com.caij.weiyo.source.local.LocalWeiboSource;
 import com.caij.weiyo.source.server.ServerWeiboSource;
@@ -37,7 +37,7 @@ public class FriendWeiboFragment extends SwipeRefreshRecyclerViewFragment<Weibo>
         mLoadMoreLoadMoreRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mLoadMoreLoadMoreRecyclerView.setAdapter(mAdapter);
         mLoadMoreLoadMoreRecyclerView.setOnLoadMoreListener(this);
-        AccessToken token = UserPrefs.get().getToken();
+        AccessToken token = UserPrefs.get().getWeiYoToken();
         mFriendWeiboPresent = new FriendWeiboPresentImp(token.getAccess_token(), this,
                 new ServerWeiboSource(), new LocalWeiboSource());
         mFriendWeiboPresent.onCreate();

@@ -18,21 +18,22 @@ public abstract class DefaultResponseSubscriber<T> extends Subscriber<T> {
         this.mBaseView = baseView;
     }
 
-    @Override
     public void onError(Throwable e) {
         if (e instanceof IOException) { // network is bad
-            onError(e);
+            onFail(e);
         }else if (e instanceof HttpException){
             HttpException httpException = (HttpException) e;
             int code  = httpException.code();
             if (code == 401 || code == 403) {//AuthFailureError
                 mBaseView.onAuthenticationError();
             }else {
-                onError(e);
+                onFail(e);
             }
+        }else {
+            onFail(e);
         }
     }
 
-    protected abstract void onError(Exception e);
+    protected abstract void onFail(Throwable e);
 
 }

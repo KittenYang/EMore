@@ -2,10 +2,12 @@ package com.caij.weiyo.bean;
 
 import android.text.SpannableString;
 
+import java.io.Serializable;
+
 /**
  * Created by Caij on 2016/6/16.
  */
-public class Comment {
+public class Comment implements Serializable {
 
     private String created_at;
     private long id;

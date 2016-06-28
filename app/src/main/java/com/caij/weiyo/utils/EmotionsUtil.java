@@ -341,247 +341,247 @@ public class EmotionsUtil {
         //-------------------------------------------------------------------
 
         softEmotionMap.put(0x1f603, R.mipmap.emoji_0x1f603);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f603), R.mipmap.emoji_0x1f603));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f603)), R.mipmap.emoji_0x1f603));
 
         softEmotionMap.put(0x1f60d, R.mipmap.emoji_0x1f60d);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f60d), R.mipmap.emoji_0x1f60d));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f60d)), R.mipmap.emoji_0x1f60d));
 
         softEmotionMap.put(0x1f612, R.mipmap.emoji_0x1f612);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f612), R.mipmap.emoji_0x1f612));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f612)), R.mipmap.emoji_0x1f612));
 
         softEmotionMap.put(0x1f633, R.mipmap.emoji_0x1f633);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f633), R.mipmap.emoji_0x1f633));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f633)), R.mipmap.emoji_0x1f633));
 
         softEmotionMap.put(0x1f601, R.mipmap.emoji_0x1f601);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f601), R.mipmap.emoji_0x1f601));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f601)), R.mipmap.emoji_0x1f601));
 
         softEmotionMap.put(0x1f618, R.mipmap.emoji_0x1f618);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f618), R.mipmap.emoji_0x1f618));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f618)), R.mipmap.emoji_0x1f618));
 
         softEmotionMap.put(0x1f609, R.mipmap.emoji_0x1f609);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f609), R.mipmap.emoji_0x1f609));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f609)), R.mipmap.emoji_0x1f609));
 
         softEmotionMap.put(0x1f620, R.mipmap.emoji_0x1f620);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f620), R.mipmap.emoji_0x1f620));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f620)), R.mipmap.emoji_0x1f620));
 
         softEmotionMap.put(0x1f61e, R.mipmap.emoji_0x1f61e);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f61e), R.mipmap.emoji_0x1f61e));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f61e)), R.mipmap.emoji_0x1f61e));
 
         softEmotionMap.put(0x1f625, R.mipmap.emoji_0x1f625);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f625), R.mipmap.emoji_0x1f625));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f625)), R.mipmap.emoji_0x1f625));
 
         softEmotionMap.put(0x1f62d, R.mipmap.emoji_0x1f62d);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f62d), R.mipmap.emoji_0x1f62d));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f62d)), R.mipmap.emoji_0x1f62d));
 
         softEmotionMap.put(0x1f61d, R.mipmap.emoji_0x1f61d);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f61d), R.mipmap.emoji_0x1f61d));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f61d)), R.mipmap.emoji_0x1f61d));
 
         softEmotionMap.put(0x1f621, R.mipmap.emoji_0x1f621);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f621), R.mipmap.emoji_0x1f621));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f621)), R.mipmap.emoji_0x1f621));
 
         softEmotionMap.put(0x1f623, R.mipmap.emoji_0x1f623);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f623), R.mipmap.emoji_0x1f623));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f623)), R.mipmap.emoji_0x1f623));
 
         softEmotionMap.put(0x1f614, R.mipmap.emoji_0x1f614);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f614), R.mipmap.emoji_0x1f614));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f614)), R.mipmap.emoji_0x1f614));
 
         softEmotionMap.put(0x1f604, R.mipmap.emoji_0x1f604);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f604), R.mipmap.emoji_0x1f604));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f604)), R.mipmap.emoji_0x1f604));
 
         softEmotionMap.put(0x1f637, R.mipmap.emoji_0x1f637);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f637), R.mipmap.emoji_0x1f637));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f637)), R.mipmap.emoji_0x1f637));
 
         softEmotionMap.put(0x1f61a, R.mipmap.emoji_0x1f61a);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f61a), R.mipmap.emoji_0x1f61a));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f61a)), R.mipmap.emoji_0x1f61a));
 
         softEmotionMap.put(0x1f613, R.mipmap.emoji_0x1f613);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f613), R.mipmap.emoji_0x1f613));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f613)), R.mipmap.emoji_0x1f613));
 
         softEmotionMap.put(0x1f602, R.mipmap.emoji_0x1f602);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f602), R.mipmap.emoji_0x1f602));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f602)), R.mipmap.emoji_0x1f602));
 
 //        softEmotionMap.put(0x1f622, R.mipmap.emoji_0x1f622);
 //        softEmotionList.add(new Emotion(String.valueOf(0x1f622), R.mipmap.emoji_0x1f622));
 
         softEmotionMap.put(0x1f60a, R.mipmap.emoji_0x1f60a);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f60a), R.mipmap.emoji_0x1f60a));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f60a)), R.mipmap.emoji_0x1f60a));
 
         softEmotionMap.put(0x1f622, R.mipmap.emoji_0x1f622);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f622), R.mipmap.emoji_0x1f622));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f622)), R.mipmap.emoji_0x1f622));
 
         softEmotionMap.put(0x1f61c, R.mipmap.emoji_0x1f61c);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f61c), R.mipmap.emoji_0x1f61c));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f61c)), R.mipmap.emoji_0x1f61c));
 
         softEmotionMap.put(0x1f628, R.mipmap.emoji_0x1f628);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f628), R.mipmap.emoji_0x1f628));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f628)), R.mipmap.emoji_0x1f628));
 
         softEmotionMap.put(0x1f630, R.mipmap.emoji_0x1f630);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f630), R.mipmap.emoji_0x1f630));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f630)), R.mipmap.emoji_0x1f630));
 
         softEmotionMap.put(0x1f632, R.mipmap.emoji_0x1f632);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f632), R.mipmap.emoji_0x1f632));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f632)), R.mipmap.emoji_0x1f632));
 
         softEmotionMap.put(0x1f60f, R.mipmap.emoji_0x1f60f);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f60f), R.mipmap.emoji_0x1f60f));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f60f)), R.mipmap.emoji_0x1f60f));
 
         softEmotionMap.put(0x1f631, R.mipmap.emoji_0x1f631);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f631), R.mipmap.emoji_0x1f631));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f631)), R.mipmap.emoji_0x1f631));
 
         softEmotionMap.put(0x1f62a, R.mipmap.emoji_0x1f62a);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f62a), R.mipmap.emoji_0x1f62a));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f62a)), R.mipmap.emoji_0x1f62a));
 
         softEmotionMap.put(0x1f616, R.mipmap.emoji_0x1f616);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f616), R.mipmap.emoji_0x1f616));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f616)), R.mipmap.emoji_0x1f616));
 
         softEmotionMap.put(0x1f60c, R.mipmap.emoji_0x1f60c);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f60c), R.mipmap.emoji_0x1f60c));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f60c)), R.mipmap.emoji_0x1f60c));
 
         softEmotionMap.put(0x1f47f, R.mipmap.emoji_0x1f47f);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f47f), R.mipmap.emoji_0x1f47f));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f47f)), R.mipmap.emoji_0x1f47f));
 
         softEmotionMap.put(0x1f47b, R.mipmap.emoji_0x1f47b);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f47b), R.mipmap.emoji_0x1f47b));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f47b)), R.mipmap.emoji_0x1f47b));
 
         softEmotionMap.put(0x1f385, R.mipmap.emoji_0x1f385);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f385), R.mipmap.emoji_0x1f385));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f385)), R.mipmap.emoji_0x1f385));
 
         softEmotionMap.put(0x1f467, R.mipmap.emoji_0x1f467);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f467), R.mipmap.emoji_0x1f467));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f467)), R.mipmap.emoji_0x1f467));
 
         softEmotionMap.put(0x1f466, R.mipmap.emoji_0x1f466);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f466), R.mipmap.emoji_0x1f466));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f466)), R.mipmap.emoji_0x1f466));
 
         softEmotionMap.put(0x1f469, R.mipmap.emoji_0x1f469);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f469), R.mipmap.emoji_0x1f469));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f469)), R.mipmap.emoji_0x1f469));
 
         softEmotionMap.put(0x1f468, R.mipmap.emoji_0x1f468);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f468), R.mipmap.emoji_0x1f468));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f468)), R.mipmap.emoji_0x1f468));
 
         softEmotionMap.put(0x1f436, R.mipmap.emoji_0x1f436);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f436), R.mipmap.emoji_0x1f436));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f436)), R.mipmap.emoji_0x1f436));
 
         softEmotionMap.put(0x1f431, R.mipmap.emoji_0x1f431);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f431), R.mipmap.emoji_0x1f431));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f431)), R.mipmap.emoji_0x1f431));
 
         softEmotionMap.put(0x1f44d, R.mipmap.emoji_0x1f44d);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f44d), R.mipmap.emoji_0x1f44d));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f44d)), R.mipmap.emoji_0x1f44d));
 
         softEmotionMap.put(0x1f44e, R.mipmap.emoji_0x1f44e);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f44e), R.mipmap.emoji_0x1f44e));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f44e)), R.mipmap.emoji_0x1f44e));
 
         softEmotionMap.put(0x1f44a, R.mipmap.emoji_0x1f44a);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f44a), R.mipmap.emoji_0x1f44a));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f44a)), R.mipmap.emoji_0x1f44a));
 
         softEmotionMap.put(0x270a, R.mipmap.emoji_0x270a);
-        softEmotionList.add(new Emotion(String.valueOf(0x270a), R.mipmap.emoji_0x270a));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x270a)), R.mipmap.emoji_0x270a));
 
         softEmotionMap.put(0x270c, R.mipmap.emoji_0x270c);
-        softEmotionList.add(new Emotion(String.valueOf(0x270c), R.mipmap.emoji_0x270c));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x270c)), R.mipmap.emoji_0x270c));
 
         softEmotionMap.put(0x1f4aa, R.mipmap.emoji_0x1f4aa);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f4aa), R.mipmap.emoji_0x1f4aa));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f4aa)), R.mipmap.emoji_0x1f4aa));
 
         softEmotionMap.put(0x1f44f, R.mipmap.emoji_0x1f44f);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f44f), R.mipmap.emoji_0x1f44f));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f44f)), R.mipmap.emoji_0x1f44f));
 
         softEmotionMap.put(0x1f448, R.mipmap.emoji_0x1f448);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f448), R.mipmap.emoji_0x1f448));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f448)), R.mipmap.emoji_0x1f448));
 
         softEmotionMap.put(0x1f446, R.mipmap.emoji_0x1f446);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f446), R.mipmap.emoji_0x1f446));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f446)), R.mipmap.emoji_0x1f446));
 
         softEmotionMap.put(0x1f449, R.mipmap.emoji_0x1f449);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f449), R.mipmap.emoji_0x1f449));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f449)), R.mipmap.emoji_0x1f449));
 
         softEmotionMap.put(0x1f447, R.mipmap.emoji_0x1f447);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f447), R.mipmap.emoji_0x1f447));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f447)), R.mipmap.emoji_0x1f447));
 
         softEmotionMap.put(0x1f44c, R.mipmap.emoji_0x1f44c);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f44c), R.mipmap.emoji_0x1f44c));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f44c)), R.mipmap.emoji_0x1f44c));
 
         softEmotionMap.put(0x2764, R.mipmap.emoji_0x2764);
-        softEmotionList.add(new Emotion(String.valueOf(0x2764), R.mipmap.emoji_0x2764));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x2764)), R.mipmap.emoji_0x2764));
 
         softEmotionMap.put(0x1f494, R.mipmap.emoji_0x1f494);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f494), R.mipmap.emoji_0x1f494));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f494)), R.mipmap.emoji_0x1f494));
 
         softEmotionMap.put(0x1f64f, R.mipmap.emoji_0x1f64f);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f64f), R.mipmap.emoji_0x1f64f));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f64f)), R.mipmap.emoji_0x1f64f));
 
         softEmotionMap.put(0x2600, R.mipmap.emoji_0x2600);
-        softEmotionList.add(new Emotion(String.valueOf(0x2600), R.mipmap.emoji_0x2600));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x2600)), R.mipmap.emoji_0x2600));
 
         softEmotionMap.put(0x1f319, R.mipmap.emoji_0x1f319);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f319), R.mipmap.emoji_0x1f319));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f319)), R.mipmap.emoji_0x1f319));
 
         softEmotionMap.put(0x1f31f, R.mipmap.emoji_0x1f31f);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f31f), R.mipmap.emoji_0x1f31f));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f31f)), R.mipmap.emoji_0x1f31f));
 
         softEmotionMap.put(0x26a1, R.mipmap.emoji_0x26a1);
-        softEmotionList.add(new Emotion(String.valueOf(0x26a1), R.mipmap.emoji_0x26a1));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x26a1)), R.mipmap.emoji_0x26a1));
 
         softEmotionMap.put(0x2601, R.mipmap.emoji_0x2601);
-        softEmotionList.add(new Emotion(String.valueOf(0x2601), R.mipmap.emoji_0x2601));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x2601)), R.mipmap.emoji_0x2601));
 
         softEmotionMap.put(0x2614, R.mipmap.emoji_0x2614);
-        softEmotionList.add(new Emotion(String.valueOf(0x2614), R.mipmap.emoji_0x2614));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x2614)), R.mipmap.emoji_0x2614));
 
         softEmotionMap.put(0x1f341, R.mipmap.emoji_0x1f341);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f341), R.mipmap.emoji_0x1f341));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f341)), R.mipmap.emoji_0x1f341));
 
         softEmotionMap.put(0x1f33b, R.mipmap.emoji_0x1f33b);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f33b), R.mipmap.emoji_0x1f33b));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f33b)), R.mipmap.emoji_0x1f33b));
 
         softEmotionMap.put(0x1f343, R.mipmap.emoji_0x1f343);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f343), R.mipmap.emoji_0x1f343));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f343)), R.mipmap.emoji_0x1f343));
 
         softEmotionMap.put(0x1f457, R.mipmap.emoji_0x1f457);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f457), R.mipmap.emoji_0x1f457));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f457)), R.mipmap.emoji_0x1f457));
 
         softEmotionMap.put(0x1f380, R.mipmap.emoji_0x1f380);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f380), R.mipmap.emoji_0x1f380));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f380)), R.mipmap.emoji_0x1f380));
 
         softEmotionMap.put(0x1f444, R.mipmap.emoji_0x1f444);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f444), R.mipmap.emoji_0x1f444));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f444)), R.mipmap.emoji_0x1f444));
 
         softEmotionMap.put(0x1f339, R.mipmap.emoji_0x1f339);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f339), R.mipmap.emoji_0x1f339));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f339)), R.mipmap.emoji_0x1f339));
 
         softEmotionMap.put(0x2615, R.mipmap.emoji_0x2615);
-        softEmotionList.add(new Emotion(String.valueOf(0x2615), R.mipmap.emoji_0x2615));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x2615)), R.mipmap.emoji_0x2615));
 
         softEmotionMap.put(0x1f382, R.mipmap.emoji_0x1f382);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f382), R.mipmap.emoji_0x1f382));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f382)), R.mipmap.emoji_0x1f382));
 
         softEmotionMap.put(0x1f559, R.mipmap.emoji_0x1f559);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f559), R.mipmap.emoji_0x1f559));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f559)), R.mipmap.emoji_0x1f559));
 
         softEmotionMap.put(0x1f37a, R.mipmap.emoji_0x1f37a);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f37a), R.mipmap.emoji_0x1f37a));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f37a)), R.mipmap.emoji_0x1f37a));
 
         softEmotionMap.put(0x1f50d, R.mipmap.emoji_0x1f50d);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f50d), R.mipmap.emoji_0x1f50d));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f50d)), R.mipmap.emoji_0x1f50d));
 
         softEmotionMap.put(0x1f4f1, R.mipmap.emoji_0x1f4f1);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f4f1), R.mipmap.emoji_0x1f4f1));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f4f1)), R.mipmap.emoji_0x1f4f1));
 
         softEmotionMap.put(0x1f3e0, R.mipmap.emoji_0x1f3e0);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f3e0), R.mipmap.emoji_0x1f3e0));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f3e0)), R.mipmap.emoji_0x1f3e0));
 
         softEmotionMap.put(0x1f697, R.mipmap.emoji_0x1f697);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f697), R.mipmap.emoji_0x1f697));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f697)), R.mipmap.emoji_0x1f697));
 
         softEmotionMap.put(0x1f381, R.mipmap.emoji_0x1f381);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f381), R.mipmap.emoji_0x1f381));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f381)), R.mipmap.emoji_0x1f381));
 
         softEmotionMap.put(0x26bd, R.mipmap.emoji_0x26bd);
-        softEmotionList.add(new Emotion(String.valueOf(0x26bd), R.mipmap.emoji_0x26bd));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x26bd)), R.mipmap.emoji_0x26bd));
 
         softEmotionMap.put(0x1f4a3, R.mipmap.emoji_0x1f4a3);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f4a3), R.mipmap.emoji_0x1f4a3));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f4a3)), R.mipmap.emoji_0x1f4a3));
 
         softEmotionMap.put(0x1f48e, R.mipmap.emoji_0x1f48e);
-        softEmotionList.add(new Emotion(String.valueOf(0x1f48e), R.mipmap.emoji_0x1f48e));
+        softEmotionList.add(new Emotion(String.valueOf(Character.toChars(0x1f48e)), R.mipmap.emoji_0x1f48e));
 
         //-----------------------------------------------------------------------------------
 

@@ -133,7 +133,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                     public void onNext(List<Comment> comments) {
                         mComments.addAll(comments);
                         mWeiboCommentsView.setComments(mComments);
-                        mWeiboCommentsView.onLoadComplite(comments.size() > 10);
+                        mWeiboCommentsView.onLoadComplite(comments.size() > 15);
                     }
                 });
 

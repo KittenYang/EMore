@@ -71,6 +71,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/ImagePrewActivity"/>
 
+        <activity android:name=".ui.activity.publish.CommentWeiboActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity android:name=".ui.activity.publish.RepostWeiboActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
     </application>
 
 </manifest>

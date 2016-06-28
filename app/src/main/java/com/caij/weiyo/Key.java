@@ -34,4 +34,5 @@ public interface Key {
     String ON_EMOTION_DELETE_CLICK = "on_emotion_delete_click";
     String USERNAME = "username";
     String PWD = "pwd";
+    int AUTH = 1;
 }

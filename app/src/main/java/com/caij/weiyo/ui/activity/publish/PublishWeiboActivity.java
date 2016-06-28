@@ -1,5 +1,6 @@
 package com.caij.weiyo.ui.activity.publish;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -12,11 +13,15 @@ import com.caij.weiyo.Key;
 import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
+import com.caij.weiyo.bean.Account;
 import com.caij.weiyo.bean.Emotion;
 import com.caij.weiyo.present.WeiboPublishPresent;
 import com.caij.weiyo.present.imp.WeiboPublishPresentImp;
+import com.caij.weiyo.present.view.WeiboPublishView;
 import com.caij.weiyo.source.server.ServerPublishWeiboSourceImp;
+import com.caij.weiyo.ui.activity.LoginActivity;
 import com.caij.weiyo.ui.adapter.PublishImageAdapter;
+import com.caij.weiyo.utils.DialogUtil;
 import com.caij.weiyo.utils.NavigationUtil;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
@@ -28,7 +33,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2016/6/22.
  */
-public class PublishWeiboActivity extends PublishActivity implements RecyclerViewOnItemClickListener {
+public class PublishWeiboActivity extends PublishActivity implements RecyclerViewOnItemClickListener, WeiboPublishView {
 
 
     @BindView(R.id.et_content)
@@ -42,10 +47,7 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
-        AccessToken token = UserPrefs.get().getToken();
-        mWeiboPublishPresent = new WeiboPublishPresentImp(token.getAccess_token(), Key.WEIBO_APP_ID,
-                new ServerPublishWeiboSourceImp());
+        initPresent();
         setTitle(R.string.publish_weibo);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -63,6 +65,11 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
         mPublishImageAdapter.setOnItemClickListener(this);
 
         mWeiboPublishPresent.onCreate();
+    }
+
+    private void initPresent() {
+        mWeiboPublishPresent = new WeiboPublishPresentImp(UserPrefs.get().getAccount(),
+                new ServerPublishWeiboSourceImp(), this);
     }
 
     @Override
@@ -103,5 +110,28 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
     protected void onDestroy() {
         super.onDestroy();
         mWeiboPublishPresent.onDestroy();
+    }
+
+    @Override
+    public void toAuthWeico() {
+        DialogUtil.showHintDialog(this, "提示", "需要认证高级权限", "确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Account account = UserPrefs.get().getAccount();
+                Intent intent = LoginActivity.newWeiCoLoginIntent(PublishWeiboActivity.this,
+                        account.getUsername(), account.getPwd());
+                startActivityForResult(intent, Key.AUTH);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == Key.AUTH) {
+                initPresent();
+            }
+        }
     }
 }

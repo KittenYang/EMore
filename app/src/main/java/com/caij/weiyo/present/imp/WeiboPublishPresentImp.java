@@ -1,12 +1,15 @@
 package com.caij.weiyo.present.imp;
 
+import android.text.TextUtils;
+
+import com.caij.weiyo.bean.Account;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.WeiboPublishPresent;
+import com.caij.weiyo.present.view.WeiboPublishView;
 import com.caij.weiyo.source.PublishWeiboSource;
 import com.caij.weiyo.utils.LogUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -22,13 +25,15 @@ public class WeiboPublishPresentImp implements WeiboPublishPresent {
 
     private final CompositeSubscription mLoginCompositeSubscription;
     private PublishWeiboSource mServerPublishWeiboSource;
-    private String mToken;
-    private String mSource;
 
-    public WeiboPublishPresentImp(String token, String source, PublishWeiboSource serverPublishWeiboSource) {
+    private WeiboPublishView mWeiboPublishView;
+    private Account mAccount;
+
+    public WeiboPublishPresentImp(Account account,
+                                  PublishWeiboSource serverPublishWeiboSource, WeiboPublishView weiboPublishView) {
         mServerPublishWeiboSource = serverPublishWeiboSource;
-        mToken = token;
-        mSource = source;
+        mAccount = account;
+        mWeiboPublishView = weiboPublishView;
         mLoginCompositeSubscription = new CompositeSubscription();
     }
 
@@ -46,12 +51,20 @@ public class WeiboPublishPresentImp implements WeiboPublishPresent {
     public void publishWeibo(String content, ArrayList<String> imagePaths) {
         Observable<Weibo> publishWeiboObservable;
         if (imagePaths == null || imagePaths.size() == 0) {
-            publishWeiboObservable = mServerPublishWeiboSource.publishWeiboOfText(mToken, content);
+            publishWeiboObservable = mServerPublishWeiboSource.
+                    publishWeiboOfText(mAccount.getWeiyoToken().getAccess_token(), content);
         }else if (imagePaths.size() == 1) {
-            publishWeiboObservable = mServerPublishWeiboSource.publishWeiboOfOneImage(mToken, mSource, content,
+            publishWeiboObservable = mServerPublishWeiboSource.
+                    publishWeiboOfOneImage(mAccount.getWeiyoToken().getAccess_token(), content,
                     imagePaths.get(0));
         }else {
-            publishWeiboObservable = mServerPublishWeiboSource.publishWeiboOfMultiImage(mToken, mSource, content, imagePaths);
+            if (mAccount.getWeicoToken() == null) {
+                mWeiboPublishView.toAuthWeico();
+                return;
+            }
+            publishWeiboObservable = mServerPublishWeiboSource.publishWeiboOfMultiImage(mAccount.getWeiyoToken().getAccess_token()
+                    , mAccount.getWeicoToken().getAccess_token(),
+                    content, imagePaths);
         }
         Subscription subscription = publishWeiboObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

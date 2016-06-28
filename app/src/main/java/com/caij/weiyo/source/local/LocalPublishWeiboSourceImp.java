@@ -12,18 +12,20 @@ import rx.Observable;
  */
 public class LocalPublishWeiboSourceImp implements PublishWeiboSource {
 
+
     @Override
     public Observable<Weibo> publishWeiboOfText(String token, String content) {
         return null;
     }
 
     @Override
-    public Observable<Weibo> publishWeiboOfOneImage(String token, String source, String content, String imagePath) {
+    public Observable<Weibo> publishWeiboOfOneImage(String token, String content, String imagePath) {
         return null;
     }
 
     @Override
-    public Observable<Weibo> publishWeiboOfMultiImage(String token, String source, String content, List<String> imagePaths) {
+    public Observable<Weibo> publishWeiboOfMultiImage(String weiyoToken, String weicoToken,
+                                                      String content, List<String> imagePaths) {
         return null;
     }
 }

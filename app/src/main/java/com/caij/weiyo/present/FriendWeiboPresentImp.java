@@ -1,4 +1,4 @@
-package com.caij.weiyo.present.imp;
+package com.caij.weiyo.present;
 
 import android.text.SpannableString;
 import android.text.TextUtils;

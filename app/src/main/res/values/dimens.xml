@@ -31,5 +31,6 @@
     <dimen name="publish_btns_height">48dp</dimen>
 
     <dimen name="image_item_space">1.5dp</dimen>
+    <dimen name="fab_spacing">10dp</dimen>
 
 </resources>

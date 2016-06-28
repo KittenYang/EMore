@@ -5,6 +5,8 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -27,7 +29,6 @@ import com.caij.weiyo.present.imp.UserPresentImp;
 import com.caij.weiyo.present.view.UserView;
 import com.caij.weiyo.source.local.LocalUserSource;
 import com.caij.weiyo.source.server.ServerUserSource;
-import com.caij.weiyo.ui.activity.publish.PublishActivity;
 import com.caij.weiyo.ui.activity.publish.PublishWeiboActivity;
 import com.caij.weiyo.ui.fragment.FriendWeiboFragment;
 import com.caij.weiyo.utils.ImageLoader;
@@ -39,6 +40,8 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 
 public class MainActivity extends BaseActivity implements UserView {
+
+    private static final String FRIEND_WEIBO_FRAGMENT_TAG = "friend_weibo_fragment_tag";
 
     @BindView(R.id.img_navigation_avatar)
     ImageView mImgNavigationAvatar;
@@ -65,7 +68,7 @@ public class MainActivity extends BaseActivity implements UserView {
         toggle.syncState();
         mDrawerLayout.addDrawerListener(toggle);
 
-        AccessToken token = UserPrefs.get().getToken();
+        AccessToken token = UserPrefs.get().getWeiYoToken();
         UserPresent userPresent = new UserPresentImp(token.getAccess_token(),
                 this, new ServerUserSource(), new LocalUserSource());
         userPresent.getWeiboUserInfoByUid(Long.parseLong(token.getUid()));
@@ -82,9 +85,18 @@ public class MainActivity extends BaseActivity implements UserView {
 
         Drawable iconWeiboDrawable = createNavMenuItemDrawable(R.mipmap.ic_weibo);
         mRbWeibo.setCompoundDrawables(iconWeiboDrawable, null, null, null);
-
-        getSupportFragmentManager().beginTransaction().add(R.id.attach_container,
-                new FriendWeiboFragment()).commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (savedInstanceState == null) {
+            transaction.add(R.id.attach_container,
+                    new FriendWeiboFragment(), FRIEND_WEIBO_FRAGMENT_TAG).commit();
+        }else {
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRIEND_WEIBO_FRAGMENT_TAG);
+            if (fragment.isAdded()) {
+                transaction.show(fragment).commit();
+            }else {
+                transaction.add(R.id.attach_container, fragment).commit();
+            }
+        }
     }
 
     private Drawable createNavMenuItemDrawable(int drawableId) {
@@ -99,6 +111,16 @@ public class MainActivity extends BaseActivity implements UserView {
         drawableIcon.setBounds(0, 0 , drawableIcon.getIntrinsicWidth(), drawableIcon.getIntrinsicHeight());
         return drawableIcon;
     }
+
+    public void switchContent(Fragment from, Fragment to, int id) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (!to.isAdded()) {
+            transaction.hide(from).add(id, to).commit();
+        } else {
+            transaction.hide(from).show(to).commit();
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

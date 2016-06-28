@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.ui.activity.WeiboDetialActivity;
+import com.caij.weiyo.utils.SpannableStringUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -50,6 +51,7 @@ public class WeiboDetailItemView extends WeiboItemView {
 
     @Override
     public void setWeibo(Weibo weibo) {
+        SpannableStringUtil.paraeSpannable(weibo, getContext());
         super.setWeibo(weibo);
         Weibo reWeibo = weibo.getRetweeted_status();
         if (reWeibo == null) {
@@ -69,13 +71,17 @@ public class WeiboDetailItemView extends WeiboItemView {
     }
 
     private void setImages(Weibo weibo, ViewGroup viewGroup) {
-        if (weibo.getPic_urls() != null && weibo.getPic_urls().size() == 1 && weibo.getPic_urls().get(0).isBigImageAndHeightBtWidth()) {
+        if (weibo.getPic_urls() == null || weibo.getPic_urls().size() == 0) {
+            viewGroup.setVisibility(GONE);
+        }else if (weibo.getPic_urls() != null && weibo.getPic_urls().size() == 1 && weibo.getPic_urls().get(0).isBigImageAndHeightBtWidth()) {
+            viewGroup.setVisibility(VISIBLE);
             WeiboDetailItemPicsViewOf1BigImage imagesView = new WeiboDetailItemPicsViewOf1BigImage(getContext());
             viewGroup.addView(imagesView,
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
             imagesView.setPics(weibo.getPic_urls());
         } else {
+            viewGroup.setVisibility(VISIBLE);
             WeiboDetailItemPicsView imagesView = new WeiboDetailItemPicsView(getContext());
             viewGroup.addView(imagesView,
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

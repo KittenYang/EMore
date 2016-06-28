@@ -80,7 +80,7 @@ public class UserInfoActivity extends BaseActivity implements UserView {
         ButterKnife.bind(this);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         setTitle("");
-        AccessToken token = UserPrefs.get().getToken();
+        AccessToken token = UserPrefs.get().getWeiYoToken();
         mUserPresent = new UserPresentImp(token.getAccess_token(), this,
                 new ServerUserSource(), new LocalUserSource());
         Intent intent = getIntent();

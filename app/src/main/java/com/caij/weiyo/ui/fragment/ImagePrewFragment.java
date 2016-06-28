@@ -49,8 +49,8 @@ public class ImagePrewFragment extends BaseFragment {
         if (path != null && path.startsWith("/")) {
             path = "file://" + path;
         }
-        ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild().
-                setScaleType(ImageLoader.ScaleType.FIT_CENTER).build();
+        ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild()
+                .setScaleType(ImageLoader.ScaleType.FIT_CENTER).build();
         ImageLoader.load(getActivity(), mIvImage, path, android.R.color.black, config);
     }
 

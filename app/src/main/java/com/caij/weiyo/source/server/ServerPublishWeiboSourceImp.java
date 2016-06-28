@@ -1,5 +1,6 @@
 package com.caij.weiyo.source.server;
 
+import com.caij.weiyo.Key;
 import com.caij.weiyo.api.WeiBoService;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.bean.response.UploadImageResponse;
@@ -35,7 +36,7 @@ public class ServerPublishWeiboSourceImp implements PublishWeiboSource {
     }
 
     @Override
-    public Observable<Weibo> publishWeiboOfOneImage(final String token, final String source,
+    public Observable<Weibo> publishWeiboOfOneImage(final String token,
                                                     final String content, final String imagePath) {
         final File file = new File(imagePath);
         return Observable.create(new Observable.OnSubscribe<String>() {
@@ -57,13 +58,14 @@ public class ServerPublishWeiboSourceImp implements PublishWeiboSource {
                         RequestBody.create(MediaType.parse("image/" + type), file);
                 MultipartBody.Part body =
                         MultipartBody.Part.createFormData("pic", file.getName(), requestFile);
-                return mWeiBoService.publishWeiboOfOneImage("OAuth2 " + token, source, content, body);
+                return mWeiBoService.publishWeiboOfOneImage("OAuth2 " + token, content, body);
             }
         });
     }
 
     @Override
-    public Observable<Weibo> publishWeiboOfMultiImage(final String token, final String source, final String content, List<String> imagePaths) {
+    public Observable<Weibo> publishWeiboOfMultiImage(final String weiyoToken, final String weicoToken,
+                                                      final String content, List<String> imagePaths) {
         return Observable.from(imagePaths)
                 .flatMap(new Func1<String, Observable<UploadImageResponse>>() {
                     @Override
@@ -75,7 +77,7 @@ public class ServerPublishWeiboSourceImp implements PublishWeiboSource {
                                     RequestBody.create(MediaType.parse("image/" + type), file);
                             MultipartBody.Part body =
                                     MultipartBody.Part.createFormData("pic", file.getName(), requestFile);
-                            return mWeiBoService.uploadWeiboOfOneImage("OAuth2 " + token, token, source, body);
+                            return mWeiBoService.uploadWeiboOfOneImage("OAuth2 " + weicoToken, weicoToken, Key.WEICO_APP_ID, body);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -89,7 +91,7 @@ public class ServerPublishWeiboSourceImp implements PublishWeiboSource {
                         for (UploadImageResponse uploadImageResponse : uploadImageResponses) {
                             sb.append(uploadImageResponse.getPic_id()).append(",");
                         }
-                        return mWeiBoService.publishWeiboOfMultiImage(token, content, sb.toString());
+                        return mWeiBoService.publishWeiboOfMultiImage(weiyoToken, content, sb.toString());
                     }
                 });
     }

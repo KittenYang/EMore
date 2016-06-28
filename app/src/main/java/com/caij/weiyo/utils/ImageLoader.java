@@ -8,16 +8,8 @@ import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.target.ViewTarget;
 import com.caij.weiyo.utils.glide.CropCircleTransformation;
-import com.caij.weiyo.utils.glide.GifTarget;
 import com.caij.weiyo.utils.glide.TopTransformation;
-import com.caij.weiyo.view.weibo.ItemImageView;
 
 import java.io.File;
 import java.util.concurrent.ExecutionException;
@@ -115,7 +107,7 @@ public class ImageLoader {
         }
 
         public ImageConfigBuild setSupportGif(boolean isSupportGif) {
-            this.isSupportGif = isSupportGif;
+//            this.isSupportGif = isSupportGif; //暂时不支持gif  Glide加载gif太慢
             return this;
         }
 
@@ -131,37 +123,15 @@ public class ImageLoader {
 
     public static void load(Context context, ImageView view, String url, int resourceId,  ImageConfig imageConfig) {
         DrawableTypeRequest request = createRequest(context, url);
-        GenericRequestBuilder genericRequestBuilder = configRequest(context, request, resourceId, imageConfig);
-        genericRequestBuilder.into(view);
+        loadImage(context, view, request, resourceId, imageConfig);
     }
 
     public static void load(Context context, ImageView view, File file, int resourceId,  ImageConfig imageConfig) {
         DrawableTypeRequest request = createRequest(context, file);
-        GenericRequestBuilder genericRequestBuilder = configRequest(context, request, resourceId, imageConfig);
-        genericRequestBuilder.into(view);
+        loadImage(context, view, request, resourceId, imageConfig);
     }
 
-    public static void load(Context context, ImageView view, String url, int resourceId, ImageConfig imageConfig, final ImageLoadListener loadListener) {
-        DrawableTypeRequest request = createRequest(context, url);
-        GenericRequestBuilder genericRequestBuilder = configRequest(context, request, resourceId, imageConfig);
-        genericRequestBuilder.listener(new RequestListener() {
-            @Override
-            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
-                loadListener.onFail(e);
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
-                loadListener.onSuccess();
-                return false;
-            }
-        });
-        genericRequestBuilder.into(view);
-    }
-
-    private static GenericRequestBuilder configRequest(Context context, DrawableTypeRequest request, int resourceId,  ImageConfig imageConfig) {
-        GenericRequestBuilder genericRequestBuilder;
+    private static void loadImage(Context context, ImageView view, DrawableTypeRequest request, int resourceId, ImageConfig imageConfig) {
         if (!imageConfig.isSupportGif) {
             BitmapTypeRequest bitmapTypeRequest = request.asBitmap();
             switch (imageConfig.scaleType) {
@@ -182,7 +152,43 @@ public class ImageLoader {
                 bitmapTypeRequest.transform(new CropCircleTransformation(context));
             }
 
-            genericRequestBuilder  = bitmapTypeRequest;
+            if (imageConfig.width > 0 && imageConfig.height > 0) {
+                bitmapTypeRequest.override(imageConfig.width, imageConfig.height);
+            }
+
+            switch (imageConfig.priority) {
+                case Priority.HIGH:
+                    bitmapTypeRequest.priority(com.bumptech.glide.Priority.HIGH);
+                    break;
+
+                case Priority.LOW:
+                    bitmapTypeRequest.priority(com.bumptech.glide.Priority.LOW);
+                    break;
+
+                default:
+                    bitmapTypeRequest.priority(com.bumptech.glide.Priority.NORMAL);
+                    break;
+            }
+
+            switch (imageConfig.diskCacheStrategy) {
+                case CacheConfig.All:
+                    bitmapTypeRequest.diskCacheStrategy(DiskCacheStrategy.ALL);
+                    break;
+
+                case CacheConfig.RESULT:
+                    bitmapTypeRequest.diskCacheStrategy(DiskCacheStrategy.RESULT);
+                    break;
+
+                case CacheConfig.SOURCE:
+                    bitmapTypeRequest.diskCacheStrategy(DiskCacheStrategy.SOURCE);
+                    break;
+            }
+
+            bitmapTypeRequest.skipMemoryCache(!imageConfig.isCacheMemory);
+
+            bitmapTypeRequest.placeholder(resourceId);
+
+            bitmapTypeRequest.into(view);
         }else {
             switch (imageConfig.scaleType) {
                 case ScaleType.CENTER_CROP:
@@ -191,58 +197,56 @@ public class ImageLoader {
 
                 case ScaleType.FIT_CENTER:
                     request.fitCenter();
-                    break;
+                break;
 
                 case ScaleType.TOP:
                     request.bitmapTransform(new TopTransformation(context));
-                    break;
+                break;
             }
 
             if (imageConfig.isCircle) {
                 request.bitmapTransform(new CropCircleTransformation(context));
             }
 
-            genericRequestBuilder = request;
+            if (imageConfig.width > 0 && imageConfig.height > 0) {
+                request.override(imageConfig.width, imageConfig.height);
+            }
+
+            switch (imageConfig.priority) {
+                case Priority.HIGH:
+                    request.priority(com.bumptech.glide.Priority.HIGH);
+                    break;
+
+                case Priority.LOW:
+                    request.priority(com.bumptech.glide.Priority.LOW);
+                    break;
+
+                default:
+                    request.priority(com.bumptech.glide.Priority.NORMAL);
+                    break;
+            }
+
+            switch (imageConfig.diskCacheStrategy) {
+                case CacheConfig.All:
+                    request.diskCacheStrategy(DiskCacheStrategy.ALL);
+                    break;
+
+                case CacheConfig.RESULT:
+                    request.diskCacheStrategy(DiskCacheStrategy.RESULT);
+                    break;
+
+                case CacheConfig.SOURCE:
+                    request.diskCacheStrategy(DiskCacheStrategy.SOURCE);
+                    break;
+            }
+
+            request.skipMemoryCache(!imageConfig.isCacheMemory);
+
+            request.placeholder(resourceId);
+
+            request.into(view);
         }
 
-
-        if (imageConfig.width > 0 && imageConfig.height > 0) {
-            genericRequestBuilder.override(imageConfig.width, imageConfig.height);
-        }
-
-        switch (imageConfig.priority) {
-            case Priority.HIGH:
-                genericRequestBuilder.priority(com.bumptech.glide.Priority.HIGH);
-                break;
-
-            case Priority.LOW:
-                genericRequestBuilder.priority(com.bumptech.glide.Priority.LOW);
-                break;
-
-            default:
-                genericRequestBuilder.priority(com.bumptech.glide.Priority.NORMAL);
-                break;
-        }
-
-        switch (imageConfig.diskCacheStrategy) {
-            case CacheConfig.All:
-                genericRequestBuilder.diskCacheStrategy(DiskCacheStrategy.ALL);
-                break;
-
-            case CacheConfig.RESULT:
-                genericRequestBuilder.diskCacheStrategy(DiskCacheStrategy.RESULT);
-                break;
-
-            case CacheConfig.SOURCE:
-                genericRequestBuilder.diskCacheStrategy(DiskCacheStrategy.SOURCE);
-                break;
-        }
-
-        genericRequestBuilder.skipMemoryCache(!imageConfig.isCacheMemory);
-
-        genericRequestBuilder.placeholder(resourceId);
-
-        return genericRequestBuilder;
     }
 
     public static void load(Context context, ImageView imgView, String url, int imagePlaceholder) {

@@ -3,6 +3,7 @@ package com.caij.weiyo;
 import android.text.TextUtils;
 
 import com.caij.weiyo.bean.AccessToken;
+import com.caij.weiyo.bean.Account;
 import com.caij.weiyo.utils.GsonUtils;
 import com.caij.weiyo.utils.LogUtil;
 import com.caij.weiyo.utils.SPUtil;
@@ -12,16 +13,16 @@ import com.caij.weiyo.utils.SPUtil;
  */
 public class UserPrefs {
 
-    public static final String USER_TOKEN = "user_token";
+    public static final String ACCOUNT = "account";
 
     private static UserPrefs singleton;
 
-    private AccessToken token;
+    private Account mAccount;
 
     public UserPrefs() {
-        String jsonTokenStr  = SPUtil.getString(USER_TOKEN, "");
+        String jsonTokenStr  = SPUtil.getString(ACCOUNT, "");
         if (!TextUtils.isEmpty(jsonTokenStr)) {
-            token = GsonUtils.fromJson(jsonTokenStr, AccessToken.class);
+            mAccount = GsonUtils.fromJson(jsonTokenStr, Account.class);
         }
     }
 
@@ -36,15 +37,30 @@ public class UserPrefs {
         return singleton;
     }
 
-    public void setToken(AccessToken token) {
-        this.token = token;
-        String jsonTokenStr  = GsonUtils.toJson(token);
-        LogUtil.d(this, jsonTokenStr);
-        SPUtil.saveString(USER_TOKEN, jsonTokenStr);
+    public AccessToken getWeiYoToken(){
+        if (mAccount != null) {
+            return mAccount.getWeiyoToken();
+        }
+        return null;
     }
 
-    public AccessToken getToken(){
-        return token;
+
+    public AccessToken getWeiCoToken(){
+        if (mAccount != null) {
+            return mAccount.getWeicoToken();
+        }
+        return null;
+    }
+
+    public void setAccount(Account account) {
+        this.mAccount = account;
+        String json = GsonUtils.toJson(mAccount);
+        LogUtil.d(this, json);
+        SPUtil.saveString(ACCOUNT, json);
+    }
+
+    public Account getAccount() {
+        return mAccount;
     }
 
 }

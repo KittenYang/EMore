@@ -47,7 +47,7 @@ public class EmotionTextView extends FixClickableSpanBugTextView {
                 @Override
                 protected void onPostExecute(Spannable spannable) {
                     super.onPostExecute(spannable);
-                    EmotionTextView.super.setText(text, type);
+                    EmotionTextView.super.setText(spannable, type);
                 }
             });
         }else {

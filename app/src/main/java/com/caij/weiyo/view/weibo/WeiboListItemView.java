@@ -13,6 +13,8 @@ import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.ui.activity.WeiboDetialActivity;
+import com.caij.weiyo.ui.activity.publish.CommentWeiboActivity;
+import com.caij.weiyo.ui.activity.publish.RepostWeiboActivity;
 import com.caij.weiyo.utils.DateUtil;
 
 import butterknife.BindView;
@@ -21,7 +23,7 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/16.
  */
-public class WeiboListItemView extends WeiboItemView{
+public class WeiboListItemView extends WeiboItemView {
 
     @BindView(R.id.tv_like)
     TextView tvLike;
@@ -94,6 +96,8 @@ public class WeiboListItemView extends WeiboItemView{
         }
 
         tvLike.setTag(weibo);
+        tvCommentCount.setTag(weibo);
+        tvRepostCount.setTag(weibo);
     }
 
     @OnClick(R.id.ll_re)
@@ -107,6 +111,27 @@ public class WeiboListItemView extends WeiboItemView{
     @OnClick(R.id.tv_like)
     public void onLikeClick(View view) {
         Weibo weibo = (Weibo) view.getTag();
-        AccessToken token = UserPrefs.get().getToken();
+        AccessToken token = UserPrefs.get().getWeiYoToken();
+    }
+
+    @OnClick({R.id.tv_like, R.id.tv_comment_count, R.id.tv_repost_count})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_like:
+                break;
+            case R.id.tv_comment_count: {
+                Weibo weibo = (Weibo) view.getTag();
+                Intent intent = CommentWeiboActivity.newIntent(getContext(), weibo.getId());
+                getContext().startActivity(intent);
+                break;
+            }
+            case R.id.tv_repost_count: {
+                Weibo weibo = (Weibo) view.getTag();
+                Intent intent = RepostWeiboActivity.newIntent(getContext(), weibo);
+                getContext().startActivity(intent);
+                break;
+            }
+
+        }
     }
 }

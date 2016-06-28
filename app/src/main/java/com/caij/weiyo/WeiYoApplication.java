@@ -19,7 +19,7 @@ public class WeiYoApplication extends Application{
     }
 
     private void initDB() {
-        AccessToken accessToken = UserPrefs.get().getToken();
+        AccessToken accessToken = UserPrefs.get().getWeiYoToken();
         if (accessToken != null) {
             DBManager.initDB(this, Key.DB_NAME + accessToken.getUid());
         }
