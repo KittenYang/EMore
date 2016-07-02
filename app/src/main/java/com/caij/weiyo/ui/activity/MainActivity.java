@@ -24,13 +24,14 @@ import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.User;
-import com.caij.weiyo.present.UserPresent;
+import com.caij.weiyo.present.SimpleUserPresent;
 import com.caij.weiyo.present.imp.UserPresentImp;
-import com.caij.weiyo.present.view.UserView;
+import com.caij.weiyo.present.view.DetailUserView;
+import com.caij.weiyo.present.view.SimpleUserView;
 import com.caij.weiyo.source.local.LocalUserSource;
 import com.caij.weiyo.source.server.ServerUserSource;
 import com.caij.weiyo.ui.activity.publish.PublishWeiboActivity;
-import com.caij.weiyo.ui.fragment.FriendWeiboFragment;
+import com.caij.weiyo.ui.fragment.weibo.FriendWeiboFragment;
 import com.caij.weiyo.utils.ImageLoader;
 import com.caij.weiyo.utils.SystemUtil;
 
@@ -39,7 +40,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 
-public class MainActivity extends BaseActivity implements UserView {
+public class MainActivity extends BaseActivity implements SimpleUserView {
 
     private static final String FRIEND_WEIBO_FRAGMENT_TAG = "friend_weibo_fragment_tag";
 
@@ -69,11 +70,11 @@ public class MainActivity extends BaseActivity implements UserView {
         mDrawerLayout.addDrawerListener(toggle);
 
         AccessToken token = UserPrefs.get().getWeiYoToken();
-        UserPresent userPresent = new UserPresentImp(token.getAccess_token(),
+        SimpleUserPresent simpleUserPresent = new UserPresentImp(token.getAccess_token(),Long.parseLong(token.getUid()),
                 this, new ServerUserSource(), new LocalUserSource());
-        userPresent.getWeiboUserInfoByUid(Long.parseLong(token.getUid()));
+        simpleUserPresent.getWeiboUserInfoByUid();
 
-        if (Build.VERSION.SDK_INT >= 19) { // fitsSystemWindows
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // fitsSystemWindows
             int statusBarHeight = SystemUtil.getStatusBarHeight(this);
             ViewGroup.LayoutParams headParams = mRlNavHead.getLayoutParams();
             headParams.height += statusBarHeight;
@@ -150,6 +151,11 @@ public class MainActivity extends BaseActivity implements UserView {
             ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild().setCircle(true).build();
             ImageLoader.load(this, mImgNavigationAvatar,  user.getAvatar_large(), R.mipmap.ic_default_circle_head_image, config);
         }
+    }
+
+    @Override
+    public void showGetUserLoading(boolean isShow) {
+
     }
 
     @OnCheckedChanged(R.id.rb_weibo)

@@ -3,7 +3,7 @@ package com.caij.weiyo.bean.response;
 /**
  * Created by Caij on 2016/6/22.
  */
-public class UploadImageResponse {
+public class UploadImageResponse extends Response {
 
     private String pic_id;
 

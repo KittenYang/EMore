@@ -23,6 +23,9 @@
         <meta-data android:name="com.caij.weiyo.utils.glide.MyGlideModule"
             android:value="GlideModule"/>
 
+        <service android:name=".service.WeiyoService"/>
+        <service android:name=".service.WeiyoService$GrayInnerService"/>
+
         <activity android:name=".ui.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

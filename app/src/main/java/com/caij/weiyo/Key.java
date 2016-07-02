@@ -35,4 +35,5 @@ public interface Key {
     String USERNAME = "username";
     String PWD = "pwd";
     int AUTH = 1;
+    String PUBLISH_WEIBO = "publish_weibo";
 }

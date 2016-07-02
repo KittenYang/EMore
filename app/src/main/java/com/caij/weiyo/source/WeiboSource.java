@@ -1,6 +1,7 @@
 package com.caij.weiyo.source;
 
 import com.caij.weiyo.bean.Weibo;
+import com.caij.weiyo.bean.response.UserWeiboResponse;
 
 import java.util.List;
 
@@ -24,5 +25,8 @@ public interface WeiboSource {
                                                   int count, int page);
 
     public void saveFriendWeibo(String accessToken, List<Weibo> weibos);
+
+    public Observable<UserWeiboResponse> getUseWeibo(String accessToken,  String name, int feature, long since_id, long max_id,
+                                                     int count, int page);
 
 }

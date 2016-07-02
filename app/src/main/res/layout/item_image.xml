@@ -1,19 +1,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.caij.weiyo.view.SquareImageView
+    <com.caij.weiyo.view.RatioImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="@color/image_item_shaw"/>
+        android:foreground="@color/image_item_shaw"
+        app:ratio="1"/>
 
-    <com.caij.weiyo.view.SquareImageView
+    <com.caij.weiyo.view.RatioImageView
         android:id="@+id/view_shaw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/image_item_shaw"/>
+        android:background="@color/image_item_shaw"
+        app:ratio="1"/>
 
     <ImageView
         android:id="@+id/select_check_box"

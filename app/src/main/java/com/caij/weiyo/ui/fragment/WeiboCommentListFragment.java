@@ -11,6 +11,7 @@ import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.Comment;
+import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.WeiboCommentsPresent;
 import com.caij.weiyo.present.imp.WeiboCommentsPresentImp;
 import com.caij.weiyo.present.view.WeiboCommentsView;
@@ -29,6 +30,14 @@ public class WeiboCommentListFragment extends RecyclerViewFragment implements We
 
     private WeiboCommentsPresent mWeiboCommentsPresent;
     private CommentAdapter mCommentAdapter;
+
+    public static WeiboCommentListFragment newInstance(long weiboId) {
+        Bundle args = new Bundle();
+        args.putLong(Key.ID, weiboId);
+        WeiboCommentListFragment fragment = new WeiboCommentListFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -49,7 +58,7 @@ public class WeiboCommentListFragment extends RecyclerViewFragment implements We
 
     @Override
     protected void onUserFirstVisible() {
-        LogUtil.d(this, "onUserFirstVisible");
+        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
         mWeiboCommentsPresent.onFirstVisible();
     }
 

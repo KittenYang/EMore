@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.caij.weiyo.R;
+import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.present.view.BaseView;
 import com.caij.weiyo.ui.activity.LoginActivity;
 import com.caij.weiyo.utils.ActivityStack;
@@ -16,9 +17,11 @@ public class BaseFragment extends Fragment implements BaseView{
 
     @Override
     public void onAuthenticationError() {
+        showToast("身份信息失效, 需要重新认证");
         ActivityStack.getInstance().remove(getActivity());
         ActivityStack.getInstance().finishAllActivity();
         Intent intent = new Intent(getActivity(), LoginActivity.class);
+        UserPrefs.get().clear();
         startActivity(intent);
         getActivity().finish();
     }

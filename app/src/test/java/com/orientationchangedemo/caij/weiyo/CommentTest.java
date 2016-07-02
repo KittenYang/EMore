@@ -22,7 +22,7 @@ public class CommentTest {
     public void getCommentsByWeibo() {
         CommentSource source = new ServerCommentSource();
         source.getCommentsByWeibo(Key.token, 3987011179777802L, 0, 0 , 20, 1)
-        .subscribe(new Subscriber<QueryWeiboCommentResponse>() {
+        .subscribe(new Subscriber<List<Comment>>() {
             @Override
             public void onCompleted() {
 
@@ -30,12 +30,12 @@ public class CommentTest {
 
             @Override
             public void onError(Throwable e) {
-                System.out.print(e.getMessage());
+
             }
 
             @Override
-            public void onNext(QueryWeiboCommentResponse queryWeiboCommentResponse) {
-                assertFalse(queryWeiboCommentResponse != null && queryWeiboCommentResponse.getComments().size() > 0);
+            public void onNext(List<Comment> comments) {
+
             }
         });
     }

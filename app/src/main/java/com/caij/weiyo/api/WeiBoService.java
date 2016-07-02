@@ -9,6 +9,7 @@ import com.caij.weiyo.bean.response.QueryWeiboCommentResponse;
 import com.caij.weiyo.bean.response.QueryWeiboResponse;
 import com.caij.weiyo.bean.User;
 import com.caij.weiyo.bean.response.UploadImageResponse;
+import com.caij.weiyo.bean.response.UserWeiboResponse;
 import com.caij.weiyo.utils.okhttp.OkHttpClientProvider;
 import com.caij.weiyo.utils.GsonUtils;
 
@@ -16,6 +17,7 @@ import java.io.File;
 import java.util.List;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -105,12 +107,11 @@ public interface WeiBoService {
 
     @Multipart
     @POST("2/statuses/upload_pic.json")
-    Observable<UploadImageResponse> uploadWeiboOfOneImage(@Header("Authorization") String accessToken,
-                                                          @Part("access_token") String access_token,
-                                                          @Part("source") String source,
+    Observable<UploadImageResponse> uploadWeiboOfOneImage(@Part("access_token") RequestBody access_token,
                                                           @Part MultipartBody.Part file);
 
 //    已经上传的图片pid，多个时使用英文半角逗号符分隔，最多不超过9个。
+    @FormUrlEncoded
     @POST("2/statuses/upload_url_text.json")
     Observable<Weibo> publishWeiboOfMultiImage(@Field("access_token") String accessToken,
                                              @Field("status") String status, @Field("pic_id") String picIds);
@@ -133,5 +134,24 @@ public interface WeiBoService {
                                                             @Query("max_id") long max_id,
                                                             @Query("count") int count,
                                                             @Query("page") int page);
+
+    @GET("2/statuses/user_timeline.json")
+    Observable<UserWeiboResponse> getUserWeibos(@Query("access_token") String accessToken,
+                                                @Query("screen_name") String screen_name,
+                                                @Query("feature") int feature,
+                                                @Query("since_id") long since_id,
+                                                @Query("max_id") long max_id,
+                                                @Query("count") int count,
+                                                @Query("page") int page);
+
+    @FormUrlEncoded
+    @POST("2/friendships/create.json")
+    Observable<User> followUser(@Field("access_token") String accessToken,
+                                              @Field("screen_name") String screen_name);
+
+    @FormUrlEncoded
+    @POST("2/friendships/destroy.json")
+    Observable<User> unfollowUser(@Field("access_token") String accessToken,
+                                @Field("screen_name") String screen_name);
 
 }

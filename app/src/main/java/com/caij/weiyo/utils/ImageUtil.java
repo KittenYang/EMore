@@ -32,8 +32,8 @@ public class ImageUtil {
 
     public static BitmapFactory.Options getImageOptions(String url) throws IOException {
         OkHttpClient okHttpClient = OkHttpClientProvider.getDefaultOkHttpClient();
-        okHttpClient = okHttpClient.newBuilder().readTimeout(5000, TimeUnit.MILLISECONDS)
-                .writeTimeout(5000, TimeUnit.MILLISECONDS).build();
+        okHttpClient = okHttpClient.newBuilder().readTimeout(3000, TimeUnit.MILLISECONDS)
+                .writeTimeout(3000, TimeUnit.MILLISECONDS).build();
         okhttp3.Request.Builder okHttpRequestBuilder = new okhttp3.Request.Builder();
         okHttpRequestBuilder.url(url);
         okhttp3.Request okHttpRequest = okHttpRequestBuilder.build();

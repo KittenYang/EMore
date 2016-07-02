@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 public abstract class RecyclerViewFragment extends LazyFragment {
 
     @BindView(R.id.recycler_view)
-    LoadMoreRecyclerView mLoadMoreLoadMoreRecyclerView;
+    public LoadMoreRecyclerView mLoadMoreLoadMoreRecyclerView;
 
     @Nullable
     @Override

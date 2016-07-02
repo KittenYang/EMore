@@ -24,7 +24,8 @@ public abstract class DefaultResponseSubscriber<T> extends Subscriber<T> {
         }else if (e instanceof HttpException){
             HttpException httpException = (HttpException) e;
             int code  = httpException.code();
-            if (code == 401 || code == 403) {//AuthFailureError
+            if (code == 401) {//AuthFailureError
+//                || code == 403 可能是没有权限
                 mBaseView.onAuthenticationError();
             }else {
                 onFail(e);

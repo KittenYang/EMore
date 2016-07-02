@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Image;
 import com.caij.weiyo.utils.ImageLoader;
-import com.caij.weiyo.view.SquareImageView;
+import com.caij.weiyo.view.RatioImageView;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import butterknife.BindView;
@@ -38,7 +38,8 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
             return imageViewHolder;
         }else {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            SquareImageView imageView = new SquareImageView(context);
+            RatioImageView imageView = new RatioImageView(context);
+            imageView.setRatio(1);
             imageView.setLayoutParams(params);
             CameraViewHolder viewHolder = new CameraViewHolder(imageView, mOnItemClickListener);
             return viewHolder;
@@ -73,7 +74,7 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
     public static class ImageViewHolder extends BaseViewHolder {
 
         @BindView(R.id.image_view)
-        SquareImageView imageView;
+        RatioImageView imageView;
         @BindView(R.id.select_check_box)
         ImageView selectCheckBox;
         @BindView(R.id.view_shaw)
@@ -110,11 +111,11 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
 
     public static class CameraViewHolder extends BaseViewHolder {
 
-        SquareImageView imageView;
+        RatioImageView imageView;
 
         public CameraViewHolder(final View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);
-            imageView = (SquareImageView) itemView;
+            imageView = (RatioImageView) itemView;
         }
     }
 

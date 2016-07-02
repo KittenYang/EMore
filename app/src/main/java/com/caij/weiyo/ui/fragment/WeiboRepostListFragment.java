@@ -31,10 +31,18 @@ public class WeiboRepostListFragment extends RecyclerViewFragment implements Wei
 
     private RepostAdapter mRepostAdapter;
 
+    public static WeiboRepostListFragment newInstance(long weiboId) {
+        Bundle args = new Bundle();
+        args.putLong(Key.ID, weiboId);
+        WeiboRepostListFragment fragment = new WeiboRepostListFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        AccessToken token = UserPrefs.get().getWeiYoToken();
+        AccessToken token = UserPrefs.get().getWeiCoToken();
         long weiId = getArguments().getLong(Key.ID);
         mWeiboRepostsPresent = new WeiboRepostsPresentImp(token.getAccess_token(), weiId,
                 new ServerRepostSource(), this);
@@ -50,7 +58,7 @@ public class WeiboRepostListFragment extends RecyclerViewFragment implements Wei
 
     @Override
     protected void onUserFirstVisible() {
-        LogUtil.d(this, "onUserFirstVisible");
+        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
         mWeiboRepostsPresent.onFirstVisible();
     }
 

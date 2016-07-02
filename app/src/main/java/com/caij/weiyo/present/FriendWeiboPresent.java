@@ -6,9 +6,6 @@ import com.caij.weiyo.present.BasePresent;
 /**
  * Created by Caij on 2016/5/31.
  */
-public interface FriendWeiboPresent extends BasePresent{
+public interface FriendWeiboPresent extends TimeLinePresent{
 
-    public void onLoadMore();
-
-    public void onRefresh();
 }

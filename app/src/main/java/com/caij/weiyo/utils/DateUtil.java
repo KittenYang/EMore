@@ -75,24 +75,9 @@ public class DateUtil {
         return time;
     }
 
-    public static String getCounter(Context context, int count, String append) {
-        Resources res = context.getResources();
-
-        if (count < 10000)
-            return String.valueOf(count) + append;
-        else if (count < 100 * 10000)
-            return new DecimalFormat("#.0").format(count * 1.0f / 10000) + append + res.getString(R.string.msg_ten_thousand);
-        else
-            return new DecimalFormat("#").format(count * 1.0f / 10000) + append + res.getString(R.string.msg_ten_thousand);
-    }
-
-    public static String getCounter(Context context, int count) {
-        return getCounter(context, count, "");
-    }
-
     public static String formatDate(long time, String format) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(time);
-        return (new SimpleDateFormat(format)).format(cal.getTime());
+        return new SimpleDateFormat(format).format(cal.getTime());
     }
 }

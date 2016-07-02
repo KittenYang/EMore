@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class QueryRepostWeiboResponse {
+public class QueryRepostWeiboResponse extends Response {
 
     private List<Weibo> reposts;
 

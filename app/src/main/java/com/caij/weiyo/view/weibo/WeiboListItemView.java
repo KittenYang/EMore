@@ -15,6 +15,7 @@ import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.ui.activity.WeiboDetialActivity;
 import com.caij.weiyo.ui.activity.publish.CommentWeiboActivity;
 import com.caij.weiyo.ui.activity.publish.RepostWeiboActivity;
+import com.caij.weiyo.utils.CountUtil;
 import com.caij.weiyo.utils.DateUtil;
 
 import butterknife.BindView;
@@ -65,14 +66,14 @@ public class WeiboListItemView extends WeiboItemView {
     public void setWeibo(Weibo weibo) {
         super.setWeibo(weibo);
 
-        tvRepostCount.setText(DateUtil.getCounter(getContext(), weibo.getReposts_count()));
+        tvRepostCount.setText(CountUtil.getCounter(getContext(), weibo.getReposts_count()));
 
         if (weibo.getVisible() == null || "0".equals(weibo.getVisible().getType())) //非正常可见微博禁止转发
             tvRepostCount.setVisibility(View.VISIBLE);
         else
             tvRepostCount.setVisibility(View.GONE);
 
-        tvCommentCount.setText(DateUtil.getCounter(getContext(), weibo.getComments_count()));
+        tvCommentCount.setText(CountUtil.getCounter(getContext(), weibo.getComments_count()));
 
         tvContent.setText(weibo.getContentSpannableString());
 

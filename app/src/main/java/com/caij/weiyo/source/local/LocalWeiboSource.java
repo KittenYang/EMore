@@ -1,6 +1,7 @@
 package com.caij.weiyo.source.local;
 
 import com.caij.weiyo.bean.Weibo;
+import com.caij.weiyo.bean.response.UserWeiboResponse;
 import com.caij.weiyo.database.bean.FriendWeibo;
 import com.caij.weiyo.database.dao.DBManager;
 import com.caij.weiyo.database.dao.FriendWeiboDao;
@@ -58,5 +59,10 @@ public class LocalWeiboSource implements WeiboSource {
             friendWeibos.add(friendWeibo);
         }
         dao.insertOrReplaceInTx(friendWeibos);
+    }
+
+    @Override
+    public Observable<UserWeiboResponse> getUseWeibo(String accessToken, String name,  int feature, long since_id, long max_id, int count, int page) {
+        return null;
     }
 }

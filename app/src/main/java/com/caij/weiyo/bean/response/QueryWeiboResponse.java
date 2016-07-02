@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class QueryWeiboResponse {
+public class QueryWeiboResponse extends Response {
 
     private long since_id;
 

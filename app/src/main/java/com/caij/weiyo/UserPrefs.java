@@ -63,4 +63,8 @@ public class UserPrefs {
         return mAccount;
     }
 
+    public void clear() {
+        mAccount = null;
+        SPUtil.saveString(ACCOUNT, "");
+    }
 }

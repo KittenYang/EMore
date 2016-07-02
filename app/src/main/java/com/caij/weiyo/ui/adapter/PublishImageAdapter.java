@@ -7,7 +7,7 @@ import android.widget.ImageView;
 
 import com.caij.weiyo.R;
 import com.caij.weiyo.utils.ImageLoader;
-import com.caij.weiyo.view.SquareImageView;
+import com.caij.weiyo.view.RatioImageView;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class PublishImageAdapter extends BaseAdapter<String, PublishImageAdapter
     public static class ImageViewHolder extends BaseViewHolder {
 
         @BindView(R.id.siv_image)
-        SquareImageView sivImage;
+        RatioImageView sivImage;
         @BindView(R.id.iv_delete)
         ImageView ivDelete;
 

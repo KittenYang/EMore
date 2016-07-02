@@ -1,5 +1,7 @@
 package com.caij.weiyo.ui.activity.publish;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -15,6 +17,7 @@ import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.Account;
 import com.caij.weiyo.bean.Emotion;
+import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.WeiboPublishPresent;
 import com.caij.weiyo.present.imp.WeiboPublishPresentImp;
 import com.caij.weiyo.present.view.WeiboPublishView;
@@ -23,6 +26,7 @@ import com.caij.weiyo.ui.activity.LoginActivity;
 import com.caij.weiyo.ui.adapter.PublishImageAdapter;
 import com.caij.weiyo.utils.DialogUtil;
 import com.caij.weiyo.utils.NavigationUtil;
+import com.caij.weiyo.utils.ToastUtil;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.ArrayList;
@@ -40,6 +44,8 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
     EditText etContent;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
+
+    private Dialog mPublishDialog;
 
     private PublishImageAdapter mPublishImageAdapter;
     private WeiboPublishPresent mWeiboPublishPresent;
@@ -123,6 +129,31 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
                 startActivityForResult(intent, Key.AUTH);
             }
         });
+    }
+
+    @Override
+    public Context getContent() {
+        return this;
+    }
+
+    @Override
+    public void onPublishSuccess(Weibo weibo) {
+        Intent intent = new Intent();
+        intent.putExtra(Key.OBJ, weibo);
+        setResult(RESULT_OK, intent);
+        ToastUtil.show(this, getString(R.string.publish_success));
+        finish();
+    }
+
+    @Override
+    public void showPublishLoading(boolean isShow) {
+        if (isShow) {
+            if (mPublishDialog == null) {
+                mPublishDialog = DialogUtil.showProgressDialog(this, null, getString(R.string.publish_loading));
+            }
+        }else {
+            mPublishDialog.dismiss();
+        }
     }
 
     @Override

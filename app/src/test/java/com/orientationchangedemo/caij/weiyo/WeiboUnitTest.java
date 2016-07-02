@@ -1,7 +1,9 @@
 package com.orientationchangedemo.caij.weiyo;
 
+import com.caij.weiyo.api.WeiBoService;
 import com.caij.weiyo.bean.User;
 import com.caij.weiyo.bean.Weibo;
+import com.caij.weiyo.bean.response.UserWeiboResponse;
 import com.caij.weiyo.source.UserSource;
 import com.caij.weiyo.source.WeiboSource;
 import com.caij.weiyo.source.server.ServerUserSource;
@@ -59,5 +61,27 @@ public class WeiboUnitTest {
                 System.out.print("onNext");
             }
         });
+    }
+
+    @Test
+    public void loadUserWeibo() throws Exception {
+        WeiBoService weiBoService = WeiBoService.Factory.create();
+        weiBoService.getUserWeibos(Key.token, "GitCafe", 0, 0, 20, 1)
+                .subscribe(new Subscriber<UserWeiboResponse>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.print("onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.print(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(UserWeiboResponse userWeiboResponse) {
+                        System.out.print("onCompleted");
+                    }
+                });
     }
 }

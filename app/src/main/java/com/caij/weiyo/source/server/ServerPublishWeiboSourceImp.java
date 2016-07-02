@@ -7,6 +7,7 @@ import com.caij.weiyo.bean.response.UploadImageResponse;
 import com.caij.weiyo.source.PublishWeiboSource;
 import com.caij.weiyo.utils.ImageUtil;
 import com.caij.weiyo.utils.LogUtil;
+import com.caij.weiyo.utils.okhttp.OkHttpClientProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +15,8 @@ import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
@@ -73,11 +76,13 @@ public class ServerPublishWeiboSourceImp implements PublishWeiboSource {
                         File file = new File(s);
                         try {
                             String type = ImageUtil.getImageType(file);
-                            RequestBody requestFile =
+                            RequestBody fileBody =
                                     RequestBody.create(MediaType.parse("image/" + type), file);
-                            MultipartBody.Part body =
-                                    MultipartBody.Part.createFormData("pic", file.getName(), requestFile);
-                            return mWeiBoService.uploadWeiboOfOneImage("OAuth2 " + weicoToken, weicoToken, Key.WEICO_APP_ID, body);
+                            MultipartBody.Part filePart =
+                                    MultipartBody.Part.createFormData("pic", file.getName(), fileBody);
+                            RequestBody tokenBody =
+                                    RequestBody.create(null, weicoToken);
+                            return mWeiBoService.uploadWeiboOfOneImage(tokenBody, filePart);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -91,7 +96,7 @@ public class ServerPublishWeiboSourceImp implements PublishWeiboSource {
                         for (UploadImageResponse uploadImageResponse : uploadImageResponses) {
                             sb.append(uploadImageResponse.getPic_id()).append(",");
                         }
-                        return mWeiBoService.publishWeiboOfMultiImage(weiyoToken, content, sb.toString());
+                        return mWeiBoService.publishWeiboOfMultiImage(weicoToken, content, sb.toString());
                     }
                 });
     }

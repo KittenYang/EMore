@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class QueryWeiboCommentResponse {
+public class QueryWeiboCommentResponse extends Response {
 
     private List<Comment> comments;
 
