@@ -56,6 +56,7 @@
     <string name="publish_fail">微博发送失败</string>
     <string name="publish_success_hint">刷新微博列表就能看见自己发送的微博</string>
     <string name="publish_fail_hint">失败后微博已经自动存入草稿箱</string>
+    <string name="replay_success">评论成功</string>
 
     <string-array name="user_headers">
         <item>全部</item>

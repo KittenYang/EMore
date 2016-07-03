@@ -1,14 +1,27 @@
 package com.caij.weiyo.source.server;
 
 import com.caij.weiyo.api.WeiBoService;
+import com.caij.weiyo.bean.Comment;
+import com.caij.weiyo.bean.response.FavoritesCreateResponse;
+import com.caij.weiyo.bean.response.QueryRepostWeiboResponse;
+import com.caij.weiyo.bean.response.QueryWeiboCommentResponse;
 import com.caij.weiyo.bean.response.QueryWeiboResponse;
 import com.caij.weiyo.bean.Weibo;
+import com.caij.weiyo.bean.response.UploadImageResponse;
 import com.caij.weiyo.bean.response.UserWeiboResponse;
 import com.caij.weiyo.source.WeiboSource;
+import com.caij.weiyo.utils.ImageUtil;
+import com.caij.weiyo.utils.LogUtil;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Func1;
 
 /**
@@ -42,5 +55,125 @@ public class ServerWeiboSource implements WeiboSource{
     @Override
     public Observable<UserWeiboResponse> getUseWeibo(String accessToken, String name,  int feature, long since_id, long max_id, int count, int page) {
         return mWeiBoService.getUserWeibos(accessToken, name, feature, since_id, max_id, count, page);
+    }
+
+
+    @Override
+    public Observable<Weibo> publishWeiboOfText(String token, String content) {
+        return mWeiBoService.publishWeiboOfOnlyText(token, content);
+    }
+
+    @Override
+    public Observable<Weibo> publishWeiboOfOneImage(final String token,
+                                                    final String content, final String imagePath) {
+        final File file = new File(imagePath);
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try {
+                    String type  = ImageUtil.getImageType(file);
+                    subscriber.onNext(type);
+                    subscriber.onCompleted();
+                } catch (IOException e) {
+                    LogUtil.d(ServerWeiboSource.this, e.getMessage());
+                    subscriber.onError(e);
+                }
+            }
+        }).flatMap(new Func1<String, Observable<Weibo>>() {
+            @Override
+            public Observable<Weibo> call(String type) {
+                RequestBody requestFile =
+                        RequestBody.create(MediaType.parse("image/" + type), file);
+                MultipartBody.Part body =
+                        MultipartBody.Part.createFormData("pic", file.getName(), requestFile);
+                return mWeiBoService.publishWeiboOfOneImage("OAuth2 " + token, content, body);
+            }
+        });
+    }
+
+    @Override
+    public Observable<Weibo> publishWeiboOfMultiImage(final String weiyoToken, final String weicoToken,
+                                                      final String content, List<String> imagePaths) {
+        return Observable.from(imagePaths)
+                .flatMap(new Func1<String, Observable<UploadImageResponse>>() {
+                    @Override
+                    public Observable<UploadImageResponse> call(String s) {
+                        File file = new File(s);
+                        try {
+                            String type = ImageUtil.getImageType(file);
+                            RequestBody fileBody =
+                                    RequestBody.create(MediaType.parse("image/" + type), file);
+                            MultipartBody.Part filePart =
+                                    MultipartBody.Part.createFormData("pic", file.getName(), fileBody);
+                            RequestBody tokenBody =
+                                    RequestBody.create(null, weicoToken);
+                            return mWeiBoService.uploadWeiboOfOneImage(tokenBody, filePart);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                })
+                .toList()
+                .flatMap(new Func1<List<UploadImageResponse>, Observable<Weibo>>() {
+                    @Override
+                    public Observable<Weibo> call(List<UploadImageResponse> uploadImageResponses) {
+                        StringBuilder sb = new StringBuilder();
+                        for (UploadImageResponse uploadImageResponse : uploadImageResponses) {
+                            sb.append(uploadImageResponse.getPic_id()).append(",");
+                        }
+                        return mWeiBoService.publishWeiboOfMultiImage(weicoToken, content, sb.toString());
+                    }
+                });
+    }
+
+    @Override
+    public Observable<Weibo> deleteWeibo(String accessToken, long id) {
+        return mWeiBoService.statusesDestroy(accessToken, id);
+    }
+
+    @Override
+    public Observable<FavoritesCreateResponse> collectWeibo(String accessToken, long id) {
+        return mWeiBoService.favoritesCreate(accessToken, id);
+    }
+
+    @Override
+    public Observable<FavoritesCreateResponse> uncollectWeibo(String accessToken, long id) {
+        return mWeiBoService.favoritesDestroy(accessToken, id);
+    }
+
+    @Override
+    public Observable<List<Comment>> getCommentsByWeibo(String accessToken, long id, long since_id, long max_id, int count, int page) {
+        return mWeiBoService.getCommentsByWeibo(accessToken, id, since_id, max_id, count, page)
+                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<List<Comment>>>() {
+                    @Override
+                    public Observable<List<Comment>> call(QueryWeiboCommentResponse queryWeiboCommentResponse) {
+                        return Observable.just(queryWeiboCommentResponse.getComments());
+                    }
+                });
+    }
+
+    @Override
+    public Observable<Comment> commentForWeibo(String accessToken, String comment, long weiboId) {
+        return mWeiBoService.createCommentForWeibo(accessToken, comment, weiboId);
+    }
+
+    @Override
+    public Observable<Comment> deleteComment(String accessToken, long cid) {
+        return mWeiBoService.deleteComment(accessToken, cid);
+    }
+
+    @Override
+    public Observable<Comment> replyComment(String accessToken, String comment, long cid, long weiboId) {
+        return mWeiBoService.replyComment(accessToken, cid, weiboId, comment);
+    }
+
+    @Override
+    public Observable<Weibo> repostWeibo(String accessToken, String status, long weiboId) {
+        return mWeiBoService.repostWeibo(accessToken, weiboId, status);
+    }
+
+    @Override
+    public Observable<QueryRepostWeiboResponse> getRepostWeibos(String accessToken, long id, long since_id, long max_id, int count, int page) {
+        return mWeiBoService.getRepostWeibos(accessToken, id, since_id, max_id, count, page);
     }
 }

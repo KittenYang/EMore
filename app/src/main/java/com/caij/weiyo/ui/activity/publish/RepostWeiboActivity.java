@@ -12,12 +12,13 @@ import com.caij.weiyo.Key;
 import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
+import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.Emotion;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.RepostWeiboPresent;
 import com.caij.weiyo.present.imp.RepostWeiboPresentImp;
 import com.caij.weiyo.present.view.RepostWeiboView;
-import com.caij.weiyo.source.server.ServerRepostSource;
+import com.caij.weiyo.source.server.ServerWeiboSource;
 import com.caij.weiyo.utils.DialogUtil;
 import com.caij.weiyo.utils.ImageLoader;
 import com.caij.weiyo.utils.ToastUtil;
@@ -51,15 +52,23 @@ public class RepostWeiboActivity extends PublishActivity implements RepostWeiboV
         return intent;
     }
 
+    public static Intent newIntent(Context context, Weibo weibo, Comment comment) {
+        Intent intent = new Intent(context, RepostWeiboActivity.class);
+        intent.putExtra(Key.OBJ, weibo);
+        intent.putExtra(Key.COMMENT, comment);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AccessToken accessToken = UserPrefs.get().getWeiYoToken();
         Weibo weibo = (Weibo) getIntent().getSerializableExtra(Key.OBJ);
+        Comment comment = (Comment) getIntent().getSerializableExtra(Key.COMMENT);
         mRepostWeiboPresent = new RepostWeiboPresentImp(accessToken.getAccess_token(), weibo.getId(),
-                new ServerRepostSource(), this);
+                new ServerWeiboSource(), this);
 
-        setWeibo(weibo);
+        setWeibo(weibo, comment);
     }
 
     @Override
@@ -100,7 +109,7 @@ public class RepostWeiboActivity extends PublishActivity implements RepostWeiboV
     public void showLoading(boolean isShow) {
         if (isShow) {
             if (mRepostDialog == null) {
-                mRepostDialog = DialogUtil.showProgressDialog(this, null, getString(R.string.wait_comment));
+                mRepostDialog = DialogUtil.showProgressDialog(this, null, getString(R.string.requesting));
             }else {
                 mRepostDialog.show();
             }
@@ -111,19 +120,27 @@ public class RepostWeiboActivity extends PublishActivity implements RepostWeiboV
         }
     }
 
-    public void setWeibo(Weibo weibo) {
+    public void setWeibo(Weibo weibo, Comment comment) {
         if (TextUtils.isEmpty(weibo.getBmiddle_pic())) {
             ImageLoader.load(this, imageView, weibo.getUser().getAvatar_large(), R.drawable.weibo_image_placeholder);
         }else {
             ImageLoader.load(this, imageView, weibo.getBmiddle_pic(), R.drawable.weibo_image_placeholder);
         }
+
+        if (comment != null) {
+            etContent.setText("//@" + comment.getUser().getName() + ":" + comment.getText());
+        }else {
+            if (weibo.getRetweeted_status() != null) {
+                etContent.setText("//@" + weibo.getUser().getName() + ":" + weibo.getText());
+            }
+        }
+
         if (weibo.getRetweeted_status() == null) {
             tvName.setText("@" + weibo.getUser().getName());
             tvDesc.setText(weibo.getText());
         }else {
             tvName.setText("@" + weibo.getRetweeted_status().getUser().getName());
             tvDesc.setText(weibo.getRetweeted_status().getText());
-            etContent.setText("//@" + weibo.getUser().getName() + ":" + weibo.getText());
         }
     }
 }

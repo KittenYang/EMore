@@ -4,6 +4,8 @@ import com.caij.weiyo.Key;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.Weibo;
+import com.caij.weiyo.bean.response.FavoritesCreateResponse;
+import com.caij.weiyo.bean.response.FriendshipResponse;
 import com.caij.weiyo.bean.response.QueryRepostWeiboResponse;
 import com.caij.weiyo.bean.response.QueryWeiboCommentResponse;
 import com.caij.weiyo.bean.response.QueryWeiboResponse;
@@ -153,5 +155,45 @@ public interface WeiBoService {
     @POST("2/friendships/destroy.json")
     Observable<User> unfollowUser(@Field("access_token") String accessToken,
                                 @Field("screen_name") String screen_name);
+
+    @FormUrlEncoded
+    @POST("2/favorites/create.json")
+    Observable<FavoritesCreateResponse> favoritesCreate(@Field("access_token") String accessToken,
+                                                        @Field("id") long id);
+
+    @FormUrlEncoded
+    @POST("2/favorites/destroy.json")
+    Observable<FavoritesCreateResponse> favoritesDestroy(@Field("access_token") String accessToken,
+                                    @Field("id") long id);
+
+    @FormUrlEncoded
+    @POST("2/statuses/destroy.json")
+    Observable<Weibo> statusesDestroy(@Field("access_token") String accessToken,
+                                      @Field("id") long id);
+
+    @FormUrlEncoded
+    @POST("2/comments/destroy.json")
+    Observable<Comment> deleteComment(@Field("access_token") String accessToken,
+                                      @Field("cid") long cid);
+
+    @FormUrlEncoded
+    @POST("2/comments/reply.json")
+    Observable<Comment> replyComment(@Field("access_token") String accessToken,
+                                      @Field("cid") long cid, @Field("id") long weiboId,
+                                     @Field("comment") String comment);
+
+    @GET("2/friendships/friends.json")
+    Observable<FriendshipResponse> getFriends(@Query("access_token") String accessToken,
+                                              @Query("uid") long uid,
+                                              @Query("count") int count,
+                                              @Query("trim_status") int trim_status,
+                                              @Query("cursor") long cursor);
+
+    @GET("2/friendships/followers.json")
+    Observable<FriendshipResponse> getFollowers(@Query("access_token") String accessToken,
+                                              @Query("uid") long uid,
+                                              @Query("count") int count,
+                                              @Query("trim_status") int trim_status,
+                                              @Query("cursor") long cursor);
 
 }

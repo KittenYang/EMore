@@ -41,6 +41,7 @@ public class WeiboListItemView extends WeiboItemView {
     LinearLayout llRe;
     @BindView(R.id.pics_view)
     WeiboItemPicsView picsView;
+    private OnClickListener onMenuClickListenet;
 
     public WeiboListItemView(Context context) {
         super(context);
@@ -99,6 +100,7 @@ public class WeiboListItemView extends WeiboItemView {
         tvLike.setTag(weibo);
         tvCommentCount.setTag(weibo);
         tvRepostCount.setTag(weibo);
+        btnMenus.setTag(weibo);
     }
 
     @OnClick(R.id.ll_re)
@@ -109,13 +111,7 @@ public class WeiboListItemView extends WeiboItemView {
     }
 
 
-    @OnClick(R.id.tv_like)
-    public void onLikeClick(View view) {
-        Weibo weibo = (Weibo) view.getTag();
-        AccessToken token = UserPrefs.get().getWeiYoToken();
-    }
-
-    @OnClick({R.id.tv_like, R.id.tv_comment_count, R.id.tv_repost_count})
+    @OnClick({R.id.tv_like, R.id.tv_comment_count, R.id.tv_repost_count, R.id.btn_menus})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_like:
@@ -132,7 +128,16 @@ public class WeiboListItemView extends WeiboItemView {
                 getContext().startActivity(intent);
                 break;
             }
+            case R.id.btn_menus:
+                if (onMenuClickListenet != null) {
+                    onMenuClickListenet.onClick(view);
+                }
+                break;
 
         }
+    }
+
+    public void setOnMenuClickListenet(OnClickListener onMenuClickListenet) {
+        this.onMenuClickListenet = onMenuClickListenet;
     }
 }

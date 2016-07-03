@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/spacing_large"
+    android:paddingLeft="@dimen/spacing_large"
+    android:paddingRight="@dimen/spacing_large"
+    android:paddingTop="@dimen/spacing_large"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/imgPhoto"
+        android:layout_width="42dip"
+        android:layout_height="42dip" />
+
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="56dip"
+        android:singleLine="true"
+        android:text="我是名字"
+        android:textColor="@color/text_80"
+        android:textSize="@dimen/text_size_medium_min" />
+
+    <TextView
+        android:id="@+id/txtDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtName"
+        android:layout_marginLeft="56dip"
+        android:layout_marginTop="4dip"
+        android:singleLine="true"
+        android:text="我的备注"
+        android:textColor="@color/text_54"
+        android:textSize="@dimen/text_size_medium_min" />
+</RelativeLayout>
+

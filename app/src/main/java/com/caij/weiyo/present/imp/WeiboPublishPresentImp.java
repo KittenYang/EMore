@@ -1,32 +1,16 @@
 package com.caij.weiyo.present.imp;
 
-import android.text.TextUtils;
 
-import com.caij.weiyo.Key;
 import com.caij.weiyo.bean.Account;
 import com.caij.weiyo.bean.PublishBean;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.WeiboPublishPresent;
 import com.caij.weiyo.present.view.WeiboPublishView;
-import com.caij.weiyo.source.PublishWeiboSource;
-import com.caij.weiyo.utils.ExecutorServiceUtil;
-import com.caij.weiyo.utils.ImageUtil;
-import com.caij.weiyo.utils.LogUtil;
+import com.caij.weiyo.source.WeiboSource;
 import com.caij.weiyo.utils.PublishWeiboUtil;
-import com.caij.weiyo.utils.okhttp.OkHttpClientProvider;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import okhttp3.Call;
-import okhttp3.Headers;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -40,13 +24,13 @@ import rx.subscriptions.CompositeSubscription;
 public class WeiboPublishPresentImp implements WeiboPublishPresent {
 
     private final CompositeSubscription mLoginCompositeSubscription;
-    private PublishWeiboSource mServerPublishWeiboSource;
+    private WeiboSource mServerPublishWeiboSource;
 
     private WeiboPublishView mWeiboPublishView;
     private Account mAccount;
 
     public WeiboPublishPresentImp(Account account,
-                                  PublishWeiboSource serverPublishWeiboSource, WeiboPublishView weiboPublishView) {
+                                  WeiboSource serverPublishWeiboSource, WeiboPublishView weiboPublishView) {
         mServerPublishWeiboSource = serverPublishWeiboSource;
         mAccount = account;
         mWeiboPublishView = weiboPublishView;

@@ -3,7 +3,7 @@ package com.caij.weiyo.present.imp;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.RepostWeiboPresent;
 import com.caij.weiyo.present.view.RepostWeiboView;
-import com.caij.weiyo.source.RepostSource;
+import com.caij.weiyo.source.WeiboSource;
 
 import rx.Subscriber;
 import rx.Subscription;
@@ -19,11 +19,11 @@ public class RepostWeiboPresentImp implements RepostWeiboPresent {
     private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private long mWeiboId;
-    private RepostSource mRepostSource;
+    private WeiboSource mRepostSource;
     private RepostWeiboView mRepostWeiboView;
 
     public RepostWeiboPresentImp(String token, long weiboId,
-                                 RepostSource repostSource, RepostWeiboView repostWeiboView) {
+                                 WeiboSource repostSource, RepostWeiboView repostWeiboView) {
         this.mToken = token;
         this.mWeiboId = weiboId;
         this.mRepostSource = repostSource;
@@ -33,7 +33,7 @@ public class RepostWeiboPresentImp implements RepostWeiboPresent {
 
     @Override
     public void repostWeibo(String status) {
-        Subscription subscription = mRepostSource.commentForWeibo(mToken, status, mWeiboId)
+        Subscription subscription = mRepostSource.repostWeibo(mToken, status, mWeiboId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Weibo>() {

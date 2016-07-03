@@ -3,7 +3,6 @@ package com.caij.weiyo.present.imp;
 import com.caij.weiyo.bean.User;
 import com.caij.weiyo.present.UserInfoDetailPresent;
 import com.caij.weiyo.present.view.DetailUserView;
-import com.caij.weiyo.source.FollowSource;
 import com.caij.weiyo.source.UserSource;
 
 import rx.Subscriber;
@@ -22,19 +21,16 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
     private DetailUserView mUserView;
     private UserSource mServerUserSource;
     private UserSource mLocalUserSource;
-    private FollowSource mFollowSource;
     private String mToken;
     private String mName;
 
     public UserInfoDetailPresentImp(String token, String name, DetailUserView userView,
-                                    UserSource serverUserSource, UserSource localUserSource,
-                                    FollowSource followSource) {
+                                    UserSource serverUserSource, UserSource localUserSource) {
         mUserView = userView;
         mServerUserSource = serverUserSource;
         mLocalUserSource = localUserSource;
         mToken = token;
         mName = name;
-        mFollowSource = followSource;
         mLoginCompositeSubscription = new CompositeSubscription();
     }
 
@@ -42,7 +38,7 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
     @Override
     public void follow() {
         mUserView.showFollowLoading(true);
-        Subscription subscription = mFollowSource.followUser(mToken, mName)
+        Subscription subscription = mServerUserSource.followUser(mToken, mName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<User>() {
@@ -68,7 +64,7 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
     @Override
     public void unFollow() {
         mUserView.showFollowLoading(true);
-        Subscription subscription = mFollowSource.unfollowUser(mToken, mName)
+        Subscription subscription = mServerUserSource.unfollowUser(mToken, mName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<User>() {

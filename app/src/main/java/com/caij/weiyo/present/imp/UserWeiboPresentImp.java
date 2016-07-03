@@ -30,28 +30,18 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class UserWeiboPresentImp implements UserWeiboPresent {
+public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeiboPresent {
 
     private final static int PAGE_COUNT = 20;
 
-    private String mToken;
-    private TimeLineWeiboView mView;
-    private WeiboSource mServerWeiboSource;
-    private CompositeSubscription mLoginCompositeSubscription;
     private List<Weibo> mWeibos;
-    private ImageSouce mServerImageSouce;
-    private ImageSouce mLocalImageSouce;
+
     private String mUsername;
     private int mFeature = 0;
 
     public UserWeiboPresentImp(String token, String name, TimeLineWeiboView view, WeiboSource serverWeiboSource) {
-        mToken = token;
-        mView = view;
+        super(token, view, serverWeiboSource);
         mUsername = name;
-        mServerWeiboSource = serverWeiboSource;
-        mLoginCompositeSubscription = new CompositeSubscription();
-        mLocalImageSouce = new LocalImageSource();
-        mServerImageSouce = new ServerImageSource();
         mWeibos = new ArrayList<>();
     }
 
@@ -108,25 +98,30 @@ public class UserWeiboPresentImp implements UserWeiboPresent {
         mLoginCompositeSubscription.add(subscription);
     }
 
-    private void toGetImageSize(Weibo weibo) {
-        Weibo realWeibo = weibo.getRetweeted_status() != null ? weibo.getRetweeted_status() : weibo;
-        if (realWeibo.getPic_urls() != null && realWeibo.getPic_urls().size() == 1) {
-            PicUrl picUrl = realWeibo.getPic_urls().get(0);
-            try {
-                LocakImage image = mLocalImageSouce.get(picUrl.getThumbnail_pic());
-                if (image == null) {
-                    image = mServerImageSouce.get(picUrl.getThumbnail_pic());
-                    mLocalImageSouce.save(image);
-                    LogUtil.d(this, picUrl.getThumbnail_pic() + "pic width and height from server");
-                }
-                picUrl.setWidth(image.getWidth());
-                picUrl.setHeight(image.getHeight());
-                LogUtil.d(this, picUrl.getThumbnail_pic() + "  width:" + image.getWidth()
-                        + "  height:" + image.getHeight());
-            } catch (IOException e) {
-                LogUtil.d(this, "%s 图片尺寸获取失败", picUrl.getThumbnail_pic());
-            }
-        }
+    @Override
+    public void deleteWeibo(final Weibo weibo) {
+        mView.showDialogLoging(true);
+        mServerWeiboSource.deleteWeibo(mToken, weibo.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Weibo>() {
+                    @Override
+                    public void onCompleted() {
+                        mView.onDeleteWeiboSuccess(weibo);
+                        mView.showDialogLoging(false);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.onComnLoadError();
+                        mView.showDialogLoging(false);
+                    }
+
+                    @Override
+                    public void onNext(Weibo weibo) {
+
+                    }
+                });
     }
 
 

@@ -14,9 +14,8 @@ import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.WeiboRepostsPresent;
 import com.caij.weiyo.present.imp.WeiboRepostsPresentImp;
 import com.caij.weiyo.present.view.WeiboRepostsView;
-import com.caij.weiyo.source.server.ServerRepostSource;
+import com.caij.weiyo.source.server.ServerWeiboSource;
 import com.caij.weiyo.ui.adapter.RepostAdapter;
-import com.caij.weiyo.utils.LogUtil;
 import com.caij.weiyo.view.recyclerview.LoadMoreRecyclerView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -25,7 +24,8 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/14.
  */
-public class WeiboRepostListFragment extends RecyclerViewFragment implements WeiboRepostsView, LoadMoreRecyclerView.OnLoadMoreListener {
+public class WeiboRepostListFragment extends RecyclerViewFragment implements WeiboRepostsView,
+        LoadMoreRecyclerView.OnLoadMoreListener {
 
     private WeiboRepostsPresent mWeiboRepostsPresent;
 
@@ -45,7 +45,7 @@ public class WeiboRepostListFragment extends RecyclerViewFragment implements Wei
         AccessToken token = UserPrefs.get().getWeiCoToken();
         long weiId = getArguments().getLong(Key.ID);
         mWeiboRepostsPresent = new WeiboRepostsPresentImp(token.getAccess_token(), weiId,
-                new ServerRepostSource(), this);
+                new ServerWeiboSource(), this);
         mRepostAdapter = new RepostAdapter(getActivity());
         mLoadMoreLoadMoreRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mLoadMoreLoadMoreRecyclerView.setBackgroundColor(getResources().getColor(R.color.white));

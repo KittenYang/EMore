@@ -1,6 +1,7 @@
 package com.caij.weiyo.source.local;
 
 import com.caij.weiyo.bean.User;
+import com.caij.weiyo.bean.response.FriendshipResponse;
 import com.caij.weiyo.database.bean.LocalUser;
 import com.caij.weiyo.database.dao.DBManager;
 import com.caij.weiyo.database.dao.LocalUserDao;
@@ -61,5 +62,25 @@ public class LocalUserSource implements UserSource{
     public void saveWeiboUser(final User user) {
         LocalUserDao dao = DBManager.getDaoSession().getLocalUserDao();
         dao.insertOrReplace(User.user2LocalUser(user));
+    }
+
+    @Override
+    public Observable<User> followUser(String accessToken, String screen_name) {
+        return null;
+    }
+
+    @Override
+    public Observable<User> unfollowUser(String accessToken, String screen_name) {
+        return null;
+    }
+
+    @Override
+    public Observable<FriendshipResponse> getFriends(String accessToken, long uid, int count, int trim_status, long cursor) {
+        return null;
+    }
+
+    @Override
+    public Observable<FriendshipResponse> getFollowers(String accessToken, long uid, int count, int trim_status, long cursor) {
+        return null;
     }
 }

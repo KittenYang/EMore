@@ -8,7 +8,7 @@ import com.caij.weiyo.bean.response.QueryRepostWeiboResponse;
 import com.caij.weiyo.present.WeiboRepostsPresent;
 import com.caij.weiyo.present.view.WeiboRepostsView;
 import com.caij.weiyo.source.DefaultResponseSubscriber;
-import com.caij.weiyo.source.RepostSource;
+import com.caij.weiyo.source.WeiboSource;
 import com.caij.weiyo.utils.SpannableStringUtil;
 
 import java.util.ArrayList;
@@ -32,11 +32,11 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
     private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private long mWeiboId;
-    RepostSource mServerRepostSource;
+    WeiboSource mServerRepostSource;
     WeiboRepostsView mWeiboRepostsView;
     List<Weibo> mWeobos;
 
-    public WeiboRepostsPresentImp(String token, long weiboId, RepostSource repostSource, WeiboRepostsView repostsView) {
+    public WeiboRepostsPresentImp(String token, long weiboId, WeiboSource repostSource, WeiboRepostsView repostsView) {
         mToken = token;
         mServerRepostSource = repostSource;
         mWeiboRepostsView = repostsView;

@@ -13,8 +13,8 @@ import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.Emotion;
-import com.caij.weiyo.present.CommentWeiboPresent;
-import com.caij.weiyo.present.imp.CommentWeiboPresentImp;
+import com.caij.weiyo.present.ReplyCommentWeiboPresent;
+import com.caij.weiyo.present.imp.ReplyCommentPresentImp;
 import com.caij.weiyo.present.view.CommentWeiboView;
 import com.caij.weiyo.source.server.ServerWeiboSource;
 import com.caij.weiyo.utils.DialogUtil;
@@ -25,30 +25,32 @@ import java.util.ArrayList;
 import butterknife.BindView;
 
 /**
- * Created by Caij on 2016/6/27.
+ * Created by Caij on 2016/7/2.
  */
-public class CommentWeiboActivity extends PublishActivity implements CommentWeiboView {
+public class ReplyCommentActivity extends PublishActivity implements CommentWeiboView {
 
     @BindView(R.id.et_content)
     EditText etContent;
-
-    private CommentWeiboPresent mCommentWeiboPresent;
+    private ReplyCommentWeiboPresent mCommentWeiboPresent;
     private Dialog mCommentDialog;
 
-    public static Intent newIntent(Context context, long weiboId) {
-        Intent intent = new Intent(context, CommentWeiboActivity.class);
-        intent.putExtra(Key.ID, weiboId);
+    public static Intent newIntent(Context context, long weibiId, long cid) {
+        Intent intent = new Intent(context, ReplyCommentActivity.class);
+        intent.putExtra(Key.ID, weibiId);
+        intent.putExtra(Key.CID, cid);
         return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("回复评论");
         btnCamera.setVisibility(View.GONE);
         AccessToken token = UserPrefs.get().getWeiYoToken();
         long weiboId = getIntent().getLongExtra(Key.ID, -1);
-        mCommentWeiboPresent = new CommentWeiboPresentImp(token.getAccess_token(),
-                weiboId ,new ServerWeiboSource(), this);
+        long cid = getIntent().getLongExtra(Key.CID, -1);
+        mCommentWeiboPresent = new ReplyCommentPresentImp(token.getAccess_token(),
+                weiboId , cid, new ServerWeiboSource(), this);
         mCommentWeiboPresent.onCreate();
     }
 
@@ -69,7 +71,7 @@ public class CommentWeiboActivity extends PublishActivity implements CommentWeib
 
     @Override
     protected void onSendClick() {
-        mCommentWeiboPresent.toCommentWeibo(etContent.getText().toString());
+        mCommentWeiboPresent.toReplyComment(etContent.getText().toString());
     }
 
     @Override
@@ -79,7 +81,7 @@ public class CommentWeiboActivity extends PublishActivity implements CommentWeib
 
     @Override
     public void onCommentSuccess(Comment comment) {
-        ToastUtil.show(this, getString(R.string.comment_success));
+        ToastUtil.show(this, getString(R.string.replay_success));
         Intent intent = new Intent();
         intent.putExtra(Key.OBJ, comment);
         setResult(RESULT_OK, intent);
@@ -90,7 +92,7 @@ public class CommentWeiboActivity extends PublishActivity implements CommentWeib
     public void showLoading(boolean isShow) {
         if (isShow) {
             if (mCommentDialog  == null) {
-                mCommentDialog = DialogUtil.showProgressDialog(this, null, getString(R.string.wait_comment));
+                mCommentDialog = DialogUtil.showProgressDialog(this, null, getString(R.string.requesting));
             }else {
                 mCommentDialog.show();
             }
@@ -99,11 +101,5 @@ public class CommentWeiboActivity extends PublishActivity implements CommentWeib
                 mCommentDialog.dismiss();
             }
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mCommentWeiboPresent.onDestroy();
     }
 }

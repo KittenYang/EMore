@@ -1,10 +1,9 @@
 package com.caij.weiyo.present.imp;
 
 import com.caij.weiyo.bean.Comment;
-import com.caij.weiyo.bean.response.QueryWeiboCommentResponse;
 import com.caij.weiyo.present.WeiboCommentsPresent;
 import com.caij.weiyo.present.view.WeiboCommentsView;
-import com.caij.weiyo.source.CommentSource;
+import com.caij.weiyo.source.WeiboSource;
 import com.caij.weiyo.utils.SpannableStringUtil;
 
 import java.util.ArrayList;
@@ -28,12 +27,12 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
     private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private long mWeiboId;
-    CommentSource mServerCommentSource;
+    WeiboSource mServerCommentSource;
     WeiboCommentsView mWeiboCommentsView;
     List<Comment> mComments;
 
     public WeiboCommentsPresentImp(String token, long weiboId,
-                                   CommentSource serverCommentSource,
+                                   WeiboSource serverCommentSource,
                                    WeiboCommentsView weiboCommentsView) {
         mToken = token;
         mServerCommentSource = serverCommentSource;
@@ -139,6 +138,33 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
 
         mLoginCompositeSubscription.add(subscription);
     }
+
+    @Override
+    public void deleteComment(final Comment comment) {
+        mWeiboCommentsView.showDialogLoading(true);
+        Subscription subscription = mServerCommentSource.deleteComment(mToken, comment.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Comment>() {
+                    @Override
+                    public void onCompleted() {
+                        mWeiboCommentsView.showDialogLoading(false);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mWeiboCommentsView.onComnLoadError();
+                        mWeiboCommentsView.showDialogLoading(false);
+                    }
+
+                    @Override
+                    public void onNext(Comment c) {
+                        mWeiboCommentsView.onDeleteSuccess(comment);
+                    }
+                });
+        mLoginCompositeSubscription.add(subscription);
+    }
+
 
     @Override
     public void onCreate() {

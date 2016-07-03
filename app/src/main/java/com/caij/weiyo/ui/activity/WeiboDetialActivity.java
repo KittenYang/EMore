@@ -109,7 +109,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity {
     private void doNext() {
         List<BaseFragment> fragments = new ArrayList<>(3);
         fragments.add(WeiboRepostListFragment.newInstance(mWeibo.getId()));
-        fragments.add(WeiboCommentListFragment.newInstance(mWeibo.getId()));
+        fragments.add(WeiboCommentListFragment.newInstance(mWeibo));
         fragments.add(WeiboLikerListFragment.newInstance(mWeibo.getId()));
         List<String> titles = new ArrayList<>(3);
         titles.add("转发 " + mWeibo.getReposts_count());

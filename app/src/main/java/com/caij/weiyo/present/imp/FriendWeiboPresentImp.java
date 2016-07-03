@@ -2,6 +2,7 @@ package com.caij.weiyo.present.imp;
 
 import com.caij.weiyo.bean.PicUrl;
 import com.caij.weiyo.bean.Weibo;
+import com.caij.weiyo.bean.response.FavoritesCreateResponse;
 import com.caij.weiyo.database.bean.LocakImage;
 import com.caij.weiyo.present.FriendWeiboPresent;
 import com.caij.weiyo.present.view.TimeLineWeiboView;
@@ -29,29 +30,18 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class FriendWeiboPresentImp implements FriendWeiboPresent {
+public class FriendWeiboPresentImp extends AbsTimeLinePresent implements FriendWeiboPresent {
 
     private final static int PAGE_COUNT = 20;
 
-    private String mToken;
-    private TimeLineWeiboView mView;
-    private WeiboSource mServerWeiboSource;
     private WeiboSource mLocalWeiboSource;
-    private CompositeSubscription mLoginCompositeSubscription;
     private List<Weibo> mWeibos;
-    private ImageSouce mLocalImageSouce;
-    private ImageSouce mServerImageSouce;
 
     public FriendWeiboPresentImp(String token, TimeLineWeiboView view, WeiboSource serverWeiboSource,
                                  WeiboSource localWeiboSource) {
-        mToken = token;
-        mView = view;
-        mServerWeiboSource = serverWeiboSource;
+        super(token, view, serverWeiboSource);
         mLocalWeiboSource = localWeiboSource;
-        mLoginCompositeSubscription = new CompositeSubscription();
         mWeibos = new ArrayList<>();
-        mLocalImageSouce = new LocalImageSource();
-        mServerImageSouce = new ServerImageSource();
     }
 
     @Override
@@ -148,28 +138,6 @@ public class FriendWeiboPresentImp implements FriendWeiboPresent {
                 });
         mLoginCompositeSubscription.add(subscription);
     }
-
-    private void toGetImageSize(Weibo weibo) {
-        Weibo realWeibo = weibo.getRetweeted_status() != null ? weibo.getRetweeted_status() : weibo;
-        if (realWeibo.getPic_urls() != null && realWeibo.getPic_urls().size() == 1) {
-            PicUrl picUrl = realWeibo.getPic_urls().get(0);
-            try {
-                LocakImage image = mLocalImageSouce.get(picUrl.getThumbnail_pic());
-                if (image == null) {
-                    image = mServerImageSouce.get(picUrl.getThumbnail_pic());
-                    mLocalImageSouce.save(image);
-                    LogUtil.d(this, picUrl.getThumbnail_pic() + "pic width and height from server");
-                }
-                picUrl.setWidth(image.getWidth());
-                picUrl.setHeight(image.getHeight());
-                LogUtil.d(this, picUrl.getThumbnail_pic() + "  width:" + image.getWidth()
-                        + "  height:" + image.getHeight());
-            } catch (IOException e) {
-                LogUtil.d(this, "%s 图片尺寸获取失败", picUrl.getThumbnail_pic());
-            }
-        }
-    }
-
 
     @Override
     public void onLoadMore() {

@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2016/6/29.
  */
-public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> implements View.OnClickListener, DialogUtil.SingleSelectListener {
+public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> implements View.OnClickListener, DialogInterface.OnClickListener {
 
     private Dialog mFilterDialog;
 
@@ -83,9 +83,9 @@ public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> i
     }
 
     @Override
-    public void onSelect(int position) {
+    public void onClick(DialogInterface dialog, int which) {
         mFilterDialog.dismiss();
-        mTimeLineWeiboPresent.filter(position);
+        mTimeLineWeiboPresent.filter(which);
         mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
     }
 }

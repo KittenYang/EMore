@@ -28,7 +28,6 @@ import com.caij.weiyo.present.UserInfoDetailPresent;
 import com.caij.weiyo.present.imp.UserInfoDetailPresentImp;
 import com.caij.weiyo.present.view.DetailUserView;
 import com.caij.weiyo.source.local.LocalUserSource;
-import com.caij.weiyo.source.server.ServerFollowSource;
 import com.caij.weiyo.source.server.ServerUserSource;
 import com.caij.weiyo.ui.adapter.WeiboFragmentPagerAdapter;
 import com.caij.weiyo.ui.fragment.BaseFragment;
@@ -46,6 +45,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Caij on 2016/6/8.
@@ -131,7 +131,7 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
                     finish();
                 }
             });
-        }else {
+        } else {
             doNext();
         }
     }
@@ -148,12 +148,12 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
                 userName = userName.replace("@", "");
             }
             mUserInfoDetailPresent = new UserInfoDetailPresentImp(token.getAccess_token(), userName, this,
-                    new ServerUserSource(), new LocalUserSource(), new ServerFollowSource());
+                    new ServerUserSource(), new LocalUserSource());
             mUserInfoDetailPresent.getWeiboUserInfoByName();
         } else {
             User user = (User) intent.getSerializableExtra(Key.OBJ);
             mUserInfoDetailPresent = new UserInfoDetailPresentImp(token.getAccess_token(), user.getScreen_name(), this,
-                    new ServerUserSource(), new LocalUserSource(), new ServerFollowSource());
+                    new ServerUserSource(), new LocalUserSource());
             mUser = user;
             fillDate(user);
         }
@@ -203,7 +203,7 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
         getMenuInflater().inflate(R.menu.menu_profile_pager, menu);
         menuItem = menu.findItem(R.id.follow);
         if (mUser != null) {
-           updateMenu(mUser, menuItem);
+            updateMenu(mUser, menuItem);
         }
         return true;
     }
@@ -219,7 +219,7 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
                 if (mUser != null) {
                     if (mUser.isFollowing()) {
                         mUserInfoDetailPresent.unFollow();
-                    }else {
+                    } else {
                         mUserInfoDetailPresent.follow();
                     }
                 }
@@ -245,15 +245,26 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
 
     }
 
+    @OnClick({R.id.txtFriendsCounter, R.id.txtFollowersCounter})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.txtFriendsCounter:
+            case R.id.txtFollowersCounter:
+                Intent intent = FriendshipActivity.newIntent(this, mUser.getId());
+                startActivity(intent);
+                break;
+        }
+    }
+
     @Override
     public void showFollowLoading(boolean b) {
         if (b) {
             if (mFollowDialog == null) {
                 mFollowDialog = DialogUtil.showProgressDialog(this, null, getString(R.string.requesting));
-            }else {
+            } else {
                 mFollowDialog.show();
             }
-        }else {
+        } else {
             mFollowDialog.dismiss();
         }
     }

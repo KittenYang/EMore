@@ -21,7 +21,7 @@ import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.WeiboPublishPresent;
 import com.caij.weiyo.present.imp.WeiboPublishPresentImp;
 import com.caij.weiyo.present.view.WeiboPublishView;
-import com.caij.weiyo.source.server.ServerPublishWeiboSourceImp;
+import com.caij.weiyo.source.server.ServerWeiboSource;
 import com.caij.weiyo.ui.activity.LoginActivity;
 import com.caij.weiyo.ui.adapter.PublishImageAdapter;
 import com.caij.weiyo.utils.DialogUtil;
@@ -75,7 +75,7 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
 
     private void initPresent() {
         mWeiboPublishPresent = new WeiboPublishPresentImp(UserPrefs.get().getAccount(),
-                new ServerPublishWeiboSourceImp(), this);
+                new ServerWeiboSource(), this);
     }
 
     @Override

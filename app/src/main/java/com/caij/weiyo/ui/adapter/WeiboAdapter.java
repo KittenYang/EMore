@@ -9,6 +9,7 @@ import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.view.weibo.WeiboItemView;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.weiyo.view.weibo.WeiboListItemView;
 
 import java.util.List;
 
@@ -20,6 +21,8 @@ import butterknife.ButterKnife;
  */
 public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHoller> {
 
+    private View.OnClickListener mMenuClickListener;
+
     public WeiboAdapter(Context context) {
         super(context);
     }
@@ -28,9 +31,11 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHolle
         super(context, entities);
     }
 
-    public WeiboAdapter(Context context, RecyclerViewOnItemClickListener onItemClickListener) {
+    public WeiboAdapter(Context context, RecyclerViewOnItemClickListener onItemClickListener,
+                        View.OnClickListener menuClickListener) {
         this(context);
         mOnItemClickListener = onItemClickListener;
+        mMenuClickListener= menuClickListener;
     }
 
     @Override
@@ -41,12 +46,13 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHolle
     @Override
     public void onBindViewHolder(WeiboViewHoller holder, int position) {
         holder.weiboItemView.setWeibo(getItem(position));
+        holder.weiboItemView.setOnMenuClickListenet(mMenuClickListener);
     }
 
     static class WeiboViewHoller extends BaseViewHolder {
 
         @BindView(R.id.weibo_item_view)
-        WeiboItemView weiboItemView;
+        WeiboListItemView weiboItemView;
         @BindView(R.id.cardView)
         CardView cardView;
 

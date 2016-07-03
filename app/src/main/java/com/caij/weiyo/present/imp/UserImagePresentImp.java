@@ -39,8 +39,6 @@ public class UserImagePresentImp implements UserWeiboPresent {
     private WeiboSource mServerWeiboSource;
     private CompositeSubscription mLoginCompositeSubscription;
     private List<Weibo> mWeibos;
-    private ImageSouce mServerImageSouce;
-    private ImageSouce mLocalImageSouce;
     private String mUsername;
     private List<PicUrl> mPicUrl;
 
@@ -50,8 +48,6 @@ public class UserImagePresentImp implements UserWeiboPresent {
         mUsername = name;
         mServerWeiboSource = serverWeiboSource;
         mLoginCompositeSubscription = new CompositeSubscription();
-        mLocalImageSouce = new LocalImageSource();
-        mServerImageSouce = new ServerImageSource();
         mWeibos = new ArrayList<>();
         mPicUrl = new ArrayList<>();
     }
@@ -104,6 +100,21 @@ public class UserImagePresentImp implements UserWeiboPresent {
                     }
                 });
         mLoginCompositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void deleteWeibo(Weibo weibo) {
+
+    }
+
+    @Override
+    public void collectWeibo(Weibo weibo) {
+
+    }
+
+    @Override
+    public void uncollectWeibo(Weibo weibo) {
+
     }
 
 

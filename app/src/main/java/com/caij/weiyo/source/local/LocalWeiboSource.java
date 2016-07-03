@@ -1,6 +1,9 @@
 package com.caij.weiyo.source.local;
 
+import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.Weibo;
+import com.caij.weiyo.bean.response.FavoritesCreateResponse;
+import com.caij.weiyo.bean.response.QueryRepostWeiboResponse;
 import com.caij.weiyo.bean.response.UserWeiboResponse;
 import com.caij.weiyo.database.bean.FriendWeibo;
 import com.caij.weiyo.database.dao.DBManager;
@@ -63,6 +66,68 @@ public class LocalWeiboSource implements WeiboSource {
 
     @Override
     public Observable<UserWeiboResponse> getUseWeibo(String accessToken, String name,  int feature, long since_id, long max_id, int count, int page) {
+        return null;
+    }
+
+
+    @Override
+    public Observable<Weibo> publishWeiboOfText(String token, String content) {
+        return null;
+    }
+
+    @Override
+    public Observable<Weibo> publishWeiboOfOneImage(String token, String content, String imagePath) {
+        return null;
+    }
+
+    @Override
+    public Observable<Weibo> publishWeiboOfMultiImage(String weiyoToken, String weicoToken,
+                                                      String content, List<String> imagePaths) {
+        return null;
+    }
+
+    @Override
+    public Observable<Weibo> deleteWeibo(String accessToken, long id) {
+        return null;
+    }
+
+    @Override
+    public Observable<FavoritesCreateResponse> collectWeibo(String accessToken, long id) {
+        return null;
+    }
+
+    @Override
+    public Observable<FavoritesCreateResponse> uncollectWeibo(String accessToken, long id) {
+        return null;
+    }
+
+    @Override
+    public Observable<Comment> commentForWeibo(String accessToken, String status, long weiboId) {
+        return null;
+    }
+
+    @Override
+    public Observable<QueryRepostWeiboResponse> getRepostWeibos(String accessToken, long id, long since_id, long max_id, int count, int page) {
+        return null;
+    }
+
+    @Override
+    public Observable<List<Comment>> getCommentsByWeibo(String accessToken, long id, long since_id, long max_id, int count, int page) {
+        return null;
+    }
+
+    @Override
+    public Observable<Comment> deleteComment(String accessToken, long cid) {
+        return null;
+    }
+
+    @Override
+    public Observable<Comment> replyComment(String accessToken, String comment, long cid, long weiboId) {
+        return null;
+    }
+
+    @Override
+    public Observable<Weibo> repostWeibo(String accessToken, String status, long weiboId) {
         return null;
     }
 }

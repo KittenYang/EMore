@@ -18,7 +18,7 @@ public abstract class BaseToolBarActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_toolbar);
+        setContentView(getContentLayoutId());
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mAttachContainer = (FrameLayout) findViewById(R.id.attach_container);
         setSupportActionBar(mToolbar);
@@ -27,6 +27,10 @@ public abstract class BaseToolBarActivity extends BaseActivity {
         if (getAttachLayoutId() > 0) {
             getLayoutInflater().inflate(getAttachLayoutId(), mAttachContainer, true);
         }
+    }
+
+    protected int getContentLayoutId() {
+        return R.layout.activity_base_toolbar;
     }
 
     public abstract int getAttachLayoutId();

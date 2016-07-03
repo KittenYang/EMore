@@ -15,4 +15,8 @@ public interface WeiboCommentsView extends BaseListView {
     public void setComments(List<Comment> comments);
 
     Context getContent();
+
+    void showDialogLoading(boolean isShow);
+
+    void onDeleteSuccess(Comment comment);
 }

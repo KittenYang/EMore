@@ -36,4 +36,6 @@ public interface Key {
     String PWD = "pwd";
     int AUTH = 1;
     String PUBLISH_WEIBO = "publish_weibo";
+    String CID = "cid";
+    String COMMENT = "comment";
 }

@@ -17,4 +17,11 @@ public interface TimeLineWeiboView extends RefreshListView {
 
     Context getContent();
 
+    void onDeleteWeiboSuccess(Weibo weibo);
+
+    void showDialogLoging(boolean isShow);
+
+    void onCollectSuccess(Weibo weibo);
+
+    void onUncollectSuccess(Weibo weibo);
 }

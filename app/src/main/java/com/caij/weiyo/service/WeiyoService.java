@@ -15,8 +15,8 @@ import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.Account;
 import com.caij.weiyo.bean.PublishBean;
 import com.caij.weiyo.bean.Weibo;
-import com.caij.weiyo.source.PublishWeiboSource;
-import com.caij.weiyo.source.server.ServerPublishWeiboSourceImp;
+import com.caij.weiyo.source.WeiboSource;
+import com.caij.weiyo.source.server.ServerWeiboSource;
 import com.caij.weiyo.utils.PublishWeiboUtil;
 import com.caij.weiyo.utils.ToastUtil;
 
@@ -36,7 +36,7 @@ public class WeiyoService extends Service {
     private static final int PUBLISH_WEIBO_NOTIFICATION_ID = 1000;
 
     Observable<PublishBean> mPublishWeiboObservable;
-    PublishWeiboSource mPublishWeiboSource;
+    WeiboSource mPublishWeiboSource;
     NotificationManager mNotificationManager;
 
     @Nullable
@@ -60,7 +60,7 @@ public class WeiyoService extends Service {
             startForeground(SERVICE_ID, new Notification());
         }
 
-        mPublishWeiboSource = new ServerPublishWeiboSourceImp();
+        mPublishWeiboSource = new ServerWeiboSource();
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         mPublishWeiboObservable = PublishWeiboUtil.registPublishEvent();
