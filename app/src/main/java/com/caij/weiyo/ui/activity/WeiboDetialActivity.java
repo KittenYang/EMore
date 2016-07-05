@@ -160,4 +160,13 @@ public class WeiboDetialActivity extends BaseToolBarActivity {
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        if (actionMenu.isExpanded()) {
+            actionMenu.collapse();
+            return;
+        }
+        super.onBackPressed();
+    }
 }

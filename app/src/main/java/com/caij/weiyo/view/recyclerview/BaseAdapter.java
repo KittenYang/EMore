@@ -1,12 +1,11 @@
-package com.caij.weiyo.ui.adapter;
+package com.caij.weiyo.view.recyclerview;
 
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 
-import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.weiyo.ui.adapter.IAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public abstract class BaseAdapter<E, VH extends BaseViewHolder> extends Recycler
 
     private List<E> mEntities;
 
-    protected Context context;
+    protected Context mContext;
 
     protected LayoutInflater mInflater;
 
@@ -31,7 +30,7 @@ public abstract class BaseAdapter<E, VH extends BaseViewHolder> extends Recycler
     }
 
     public BaseAdapter(Context context, List<E> entities) {
-        this.context = context;
+        this.mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mEntities = entities;
     }

@@ -2,8 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground" android:orientation="vertical"
-                android:paddingBottom="8dip" android:paddingLeft="16dip" android:paddingTop="8dip">
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingBottom="8dip"
+    android:paddingLeft="16dip"
+    android:paddingTop="8dip">
 
     <ImageView
         android:id="@+id/imgPhoto"
@@ -15,39 +18,39 @@
         android:id="@+id/ll_head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/imgPhoto"
         android:layout_toRightOf="@id/imgPhoto"
-        android:orientation="vertical"
-        android:layout_alignBaseline="@id/imgPhoto">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/txtName"
-            android:textColor="@color/text_80"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="名字"
-            android:textSize="@dimen/text_size_medium_min"/>
+            android:textColor="@color/text_80"
+            android:textSize="@dimen/text_size_medium_min" />
 
         <TextView
             android:id="@+id/txtDesc"
-            android:textColor="@color/text_54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_micro"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="昨天 来自Aisen微博"
-            android:textSize="@dimen/text_size_small"
-            android:layout_marginTop="@dimen/spacing_micro"/>
+            android:textColor="@color/text_54"
+            android:textSize="@dimen/text_size_small" />
 
     </LinearLayout>
 
 
     <com.caij.weiyo.view.FixClickableSpanBugTextView
         android:id="@+id/txtContent"
-        android:textColor="@color/text_54"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/ll_head"
         android:layout_below="@id/imgPhoto"
         android:layout_marginBottom="8dip"
         android:layout_marginTop="8dip"
@@ -56,7 +59,7 @@
         android:minHeight="26dip"
         android:paddingRight="16dip"
         android:text="我是评论正文"
-        android:textSize="@dimen/text_size_medium"
-        android:layout_alignLeft="@id/ll_head"/>
+        android:textColor="@color/text_54"
+        android:textSize="@dimen/text_size_medium" />
 
 </RelativeLayout>

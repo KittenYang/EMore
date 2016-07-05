@@ -11,6 +11,8 @@ import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Image;
 import com.caij.weiyo.utils.ImageLoader;
 import com.caij.weiyo.view.RatioImageView;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
+import com.caij.weiyo.view.recyclerview.BaseViewHolder;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import butterknife.BindView;
@@ -38,7 +40,7 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
             return imageViewHolder;
         }else {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            RatioImageView imageView = new RatioImageView(context);
+            RatioImageView imageView = new RatioImageView(mContext);
             imageView.setRatio(1);
             imageView.setLayoutParams(params);
             CameraViewHolder viewHolder = new CameraViewHolder(imageView, mOnItemClickListener);
@@ -64,7 +66,7 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
             imageView.selectCheckBox.setTag(image);
             imageView.viewShaw.setVisibility(image.isSelected() ? View.VISIBLE : View.GONE);
             String path = "file://" + image.getPath();
-            ImageLoader.load(context, imageView.imageView, path, R.drawable.weibo_image_placeholder, mImageConfig);
+            ImageLoader.load(mContext, imageView.imageView, path, R.drawable.weibo_image_placeholder, mImageConfig);
         }else if (holder instanceof  CameraViewHolder){
             CameraViewHolder cameraViewHolder = (CameraViewHolder) holder;
             cameraViewHolder.imageView.setBackgroundResource(R.mipmap.image_picker_take_image);

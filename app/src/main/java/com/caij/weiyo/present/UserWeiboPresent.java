@@ -6,5 +6,4 @@ package com.caij.weiyo.present;
 public interface UserWeiboPresent extends TimeLinePresent {
     public void onFirstVisible();
     public void filter(int feature);
-
 }

@@ -1,4 +1,4 @@
-package com.caij.weiyo.ui.adapter;
+package com.caij.weiyo.view.recyclerview;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -20,8 +20,10 @@ public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        if (mOnItemClickListener != null) {
-            mOnItemClickListener.onItemClick(v, getLayoutPosition());
+        if (v == itemView) {
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onItemClick(v, getLayoutPosition());
+            }
         }
     }
 }

@@ -42,7 +42,7 @@ public abstract class AbsTimeLinePresent implements TimeLinePresent {
     }
 
     @Override
-    public void deleteWeibo(final Weibo weibo) {
+    public void deleteWeibo(final Weibo weibo, final int position) {
         mView.showDialogLoging(true);
         Subscription subscription = mServerWeiboSource.deleteWeibo(mToken, weibo.getId())
                 .subscribeOn(Schedulers.io())
@@ -50,7 +50,7 @@ public abstract class AbsTimeLinePresent implements TimeLinePresent {
                 .subscribe(new Subscriber<Weibo>() {
                     @Override
                     public void onCompleted() {
-                        mView.onDeleteWeiboSuccess(weibo);
+                        mView.onDeleteWeiboSuccess(weibo, position);
                         mView.showDialogLoging(false);
                     }
 

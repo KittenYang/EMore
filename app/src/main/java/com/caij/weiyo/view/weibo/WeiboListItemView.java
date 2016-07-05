@@ -9,14 +9,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.caij.weiyo.R;
-import com.caij.weiyo.UserPrefs;
-import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.ui.activity.WeiboDetialActivity;
 import com.caij.weiyo.ui.activity.publish.CommentWeiboActivity;
 import com.caij.weiyo.ui.activity.publish.RepostWeiboActivity;
 import com.caij.weiyo.utils.CountUtil;
-import com.caij.weiyo.utils.DateUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;

@@ -4,11 +4,12 @@ import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.bean.response.FavoritesCreateResponse;
 import com.caij.weiyo.bean.response.QueryRepostWeiboResponse;
+import com.caij.weiyo.bean.response.QueryWeiboCommentResponse;
+import com.caij.weiyo.bean.response.QueryWeiboResponse;
 import com.caij.weiyo.bean.response.UserWeiboResponse;
 
 import java.util.List;
 
-import retrofit2.http.Field;
 import rx.Observable;
 
 /**
@@ -62,4 +63,16 @@ public interface WeiboSource {
     public Observable<Comment> replyComment(String accessToken, String comment, long cid,long weiboId);
 
     public Observable<Weibo> repostWeibo(String accessToken, String status, long weiboId);
+
+    Observable<QueryWeiboResponse> getWeiboMentions(String accessToken, long since_id, long max_id,
+                                                           int count, int page);
+
+    Observable<QueryWeiboCommentResponse> getCommentsMentions(String accessToken, long since_id, long max_id,
+                                                               int count, int page);
+
+    Observable<QueryWeiboCommentResponse> getPublishComments(String accessToken, long since_id, long max_id,
+                                                             int count, int page);
+
+    Observable<QueryWeiboCommentResponse> getAcceptComments(String accessToken, long since_id, long max_id,
+                                                            int count,  int page);
 }

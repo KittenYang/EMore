@@ -15,6 +15,7 @@ public class Comment implements Serializable {
     private String source;
     private User user;
     private Comment reply_comment;
+    private Weibo status;
 
     private transient SpannableString textSpannableString;
 
@@ -72,6 +73,14 @@ public class Comment implements Serializable {
 
     public void setTextSpannableString(SpannableString textSpannableString) {
         this.textSpannableString = textSpannableString;
+    }
+
+    public Weibo getStatus() {
+        return status;
+    }
+
+    public void setStatus(Weibo status) {
+        this.status = status;
     }
 
     @Override

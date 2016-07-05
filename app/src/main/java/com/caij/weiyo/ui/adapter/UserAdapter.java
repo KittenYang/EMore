@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.caij.weiyo.R;
 import com.caij.weiyo.bean.User;
 import com.caij.weiyo.utils.ImageLoader;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
+import com.caij.weiyo.view.recyclerview.BaseViewHolder;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import butterknife.BindView;
@@ -41,7 +43,7 @@ public class UserAdapter extends BaseAdapter<User, UserAdapter.UserViewHolder> {
         User user = getItem(position);
         holder.txtName.setText(user.getScreen_name());
         holder.txtDesc.setText(user.getDescription());
-        ImageLoader.load(context, holder.imgPhoto, user.getAvatar_large(),
+        ImageLoader.load(mContext, holder.imgPhoto, user.getAvatar_large(),
                 R.mipmap.ic_default_circle_head_image, mImageConfig);
     }
 

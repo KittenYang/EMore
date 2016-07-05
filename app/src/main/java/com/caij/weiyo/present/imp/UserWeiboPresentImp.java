@@ -1,20 +1,12 @@
 package com.caij.weiyo.present.imp;
 
-import com.caij.weiyo.bean.PicUrl;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.bean.response.UserWeiboResponse;
-import com.caij.weiyo.database.bean.LocakImage;
-import com.caij.weiyo.present.FriendWeiboPresent;
 import com.caij.weiyo.present.UserWeiboPresent;
 import com.caij.weiyo.present.view.TimeLineWeiboView;
-import com.caij.weiyo.source.ImageSouce;
 import com.caij.weiyo.source.WeiboSource;
-import com.caij.weiyo.source.local.LocalImageSource;
-import com.caij.weiyo.source.server.ServerImageSource;
-import com.caij.weiyo.utils.LogUtil;
 import com.caij.weiyo.utils.SpannableStringUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +14,8 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/5/31.
@@ -99,7 +89,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeibo
     }
 
     @Override
-    public void deleteWeibo(final Weibo weibo) {
+    public void deleteWeibo(final Weibo weibo, final int position) {
         mView.showDialogLoging(true);
         mServerWeiboSource.deleteWeibo(mToken, weibo.getId())
                 .subscribeOn(Schedulers.io())
@@ -107,7 +97,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeibo
                 .subscribe(new Subscriber<Weibo>() {
                     @Override
                     public void onCompleted() {
-                        mView.onDeleteWeiboSuccess(weibo);
+                        mView.onDeleteWeiboSuccess(weibo, position);
                         mView.showDialogLoging(false);
                     }
 

@@ -12,6 +12,8 @@ import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.utils.DateUtil;
 import com.caij.weiyo.utils.ImageLoader;
 import com.caij.weiyo.view.FixClickableSpanBugTextView;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
+import com.caij.weiyo.view.recyclerview.BaseViewHolder;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import butterknife.BindView;
@@ -44,7 +46,7 @@ public class CommentAdapter extends BaseAdapter<Comment, CommentAdapter.CommentV
         holder.txtName.setText(comment.getUser().getName());
 
         ImageLoader.ImageConfig imageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
-        ImageLoader.load(context, holder.imgPhoto, comment.getUser().getAvatar_large(),
+        ImageLoader.load(mContext, holder.imgPhoto, comment.getUser().getAvatar_large(),
                 R.mipmap.ic_default_circle_head_image, imageConfig);
     }
 

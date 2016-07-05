@@ -14,7 +14,6 @@ import android.widget.EditText;
 import com.caij.weiyo.Key;
 import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
-import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.Account;
 import com.caij.weiyo.bean.Emotion;
 import com.caij.weiyo.bean.Weibo;
@@ -32,7 +31,6 @@ import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Caij on 2016/6/22.

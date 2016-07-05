@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import com.caij.weiyo.R;
 import com.caij.weiyo.utils.ImageLoader;
 import com.caij.weiyo.view.RatioImageView;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
+import com.caij.weiyo.view.recyclerview.BaseViewHolder;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.List;
@@ -37,7 +39,7 @@ public class PublishImageAdapter extends BaseAdapter<String, PublishImageAdapter
 
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
-        ImageLoader.load(context, holder.sivImage, getItem(position), R.drawable.weibo_image_placeholder);
+        ImageLoader.load(mContext, holder.sivImage, getItem(position), R.drawable.weibo_image_placeholder);
         holder.ivDelete.setTag(getItem(position));
     }
 

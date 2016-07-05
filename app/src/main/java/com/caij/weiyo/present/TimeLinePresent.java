@@ -11,7 +11,7 @@ public interface TimeLinePresent extends BasePresent {
 
     public void onRefresh();
 
-    void deleteWeibo(Weibo weibo);
+    void deleteWeibo(Weibo weibo, int position);
 
     void collectWeibo(Weibo weibo);
 

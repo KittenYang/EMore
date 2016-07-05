@@ -69,7 +69,6 @@
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:singleLine="true"
-                            android:text="Caij"
                             android:textColor="@color/text_100_inverse"
                             android:textSize="@dimen/text_size_large" />
 
@@ -135,7 +134,6 @@
                         android:layout_marginTop="2dp"
                         android:lineSpacingExtra="2dip"
                         android:singleLine="true"
-                        android:text="简洁附近的手机放到了撒酒疯"
                         android:textColor="@color/text_87_inverse"
                         android:textSize="@dimen/text_size_medium_min" />
 

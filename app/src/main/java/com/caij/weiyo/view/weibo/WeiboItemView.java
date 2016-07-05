@@ -34,7 +34,7 @@ public abstract class WeiboItemView extends FrameLayout {
     TextView tvName;
     @BindView(R.id.img_verified)
     ImageView imgVerified;
-    @BindView(R.id.tv_desc)
+    @BindView(R.id.tv_source)
     TextView tvDesc;
     @BindView(R.id.tv_content)
     TextView tvContent;

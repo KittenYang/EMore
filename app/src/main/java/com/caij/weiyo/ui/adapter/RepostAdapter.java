@@ -2,21 +2,13 @@ package com.caij.weiyo.ui.adapter;
 
 import android.content.Context;
 import android.text.Html;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.caij.weiyo.R;
-import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.utils.DateUtil;
 import com.caij.weiyo.utils.ImageLoader;
-import com.caij.weiyo.view.FixClickableSpanBugTextView;
-import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
 
 /**
  * Created by Caij on 2016/6/16.
@@ -45,7 +37,7 @@ public class RepostAdapter extends BaseAdapter<Weibo, CommentAdapter.CommentView
         holder.txtName.setText(weibo.getUser().getName());
 
         ImageLoader.ImageConfig imageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
-        ImageLoader.load(context, holder.imgPhoto, weibo.getUser().getAvatar_large(),
+        ImageLoader.load(mContext, holder.imgPhoto, weibo.getUser().getAvatar_large(),
                 R.mipmap.ic_default_circle_head_image, imageConfig);
     }
 

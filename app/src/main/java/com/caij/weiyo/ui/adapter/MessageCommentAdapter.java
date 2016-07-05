@@ -1,0 +1,136 @@
+package com.caij.weiyo.ui.adapter;
+
+import android.content.Context;
+import android.content.Intent;
+import android.text.Html;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.caij.weiyo.R;
+import com.caij.weiyo.bean.Comment;
+import com.caij.weiyo.bean.Weibo;
+import com.caij.weiyo.ui.activity.WeiboDetialActivity;
+import com.caij.weiyo.ui.activity.publish.ReplyCommentActivity;
+import com.caij.weiyo.utils.DateUtil;
+import com.caij.weiyo.utils.ImageLoader;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
+import com.caij.weiyo.view.recyclerview.BaseViewHolder;
+import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/**
+ * Created by Caij on 2016/7/4.
+ */
+public class MessageCommentAdapter extends BaseAdapter<Comment, MessageCommentAdapter.CommentMentionViewHolder> {
+
+    private ImageLoader.ImageConfig mImageConfig;
+
+    public MessageCommentAdapter(Context context) {
+        super(context);
+        mImageConfig = new ImageLoader.ImageConfigBuild().setScaleType(ImageLoader.ScaleType.CENTER_CROP)
+                .setCircle(true).build();
+    }
+
+    @Override
+    public CommentMentionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = mInflater.inflate(R.layout.item_comment_mention, parent, false);
+        return new CommentMentionViewHolder(view, mOnItemClickListener, new RecyclerViewOnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = WeiboDetialActivity.newIntent(mContext, getItem(position).getStatus());
+                mContext.startActivity(intent);
+            }
+        }, new RecyclerViewOnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Comment comment = getItem(position);
+                Intent intent = ReplyCommentActivity.newIntent(mContext, comment.getStatus().getId(), comment.getId());
+                mContext.startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public void onBindViewHolder(CommentMentionViewHolder holder, int position) {
+        Comment comment = getItem(position);
+        ImageLoader.load(mContext, holder.sdvAvatar, comment.getUser().getAvatar_large(),
+                R.mipmap.ic_default_circle_head_image, mImageConfig);
+        holder.tvHeadName.setText(comment.getUser().getName());
+        holder.tvComment.setText(comment.getText());
+
+        Weibo weibo = comment.getStatus();
+        holder.tvBottomName.setText("@" + weibo.getUser().getName());
+        holder.tvWeibo.setText(weibo.getText());
+        ImageLoader.load(mContext, holder.imageView,
+                weibo.getBmiddle_pic() != null ?  weibo.getBmiddle_pic() : weibo.getUser().getAvatar_large(),
+                R.drawable.weibo_image_placeholder);
+
+        String createAt = "";
+        if (!TextUtils.isEmpty(weibo.getCreated_at()))
+            createAt = DateUtil.convDate(mContext, weibo.getCreated_at());
+        String from = "";
+        if (!TextUtils.isEmpty(weibo.getSource()))
+            from = String.format("%s", Html.fromHtml(weibo.getSource()));
+        String desc = String.format("%s %s", createAt, from);
+        holder.tvSource.setText(desc);
+
+    }
+
+    public static class CommentMentionViewHolder extends BaseViewHolder {
+
+        @BindView(R.id.sdv_avatar)
+        ImageView sdvAvatar;
+        @BindView(R.id.img_verified)
+        ImageView imgVerified;
+        @BindView(R.id.tv_source)
+        TextView tvSource;
+        @BindView(R.id.tv_comment)
+        TextView tvComment;
+        @BindView(R.id.image_view)
+        ImageView imageView;
+        @BindView(R.id.tv_weibo)
+        TextView tvWeibo;
+        @BindView(R.id.tv_reply)
+        TextView tvReplay;
+
+        TextView tvHeadName;
+        TextView tvBottomName;
+
+        private RecyclerViewOnItemClickListener onWeiboViewClickListener;
+        private RecyclerViewOnItemClickListener onReplayClickListener;
+
+        public CommentMentionViewHolder(final View itemView, RecyclerViewOnItemClickListener onItemClickListener,
+                                        final RecyclerViewOnItemClickListener onWeiboViewClickListener,
+                                        final RecyclerViewOnItemClickListener onReplayClickListener) {
+            super(itemView, onItemClickListener);
+            ButterKnife.bind(this, itemView);
+            this.onWeiboViewClickListener = onWeiboViewClickListener;
+            this.onReplayClickListener = onReplayClickListener;
+            tvHeadName = (TextView) itemView.findViewById(R.id.item_head).findViewById(R.id.tv_name);
+            View bottomView = itemView.findViewById(R.id.item_bottom);
+            tvBottomName = (TextView) bottomView.findViewById(R.id.tv_name);
+            bottomView.setOnClickListener(this);
+            tvReplay.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            super.onClick(v);
+            if (v.getId() == R.id.item_bottom) {
+                if (onWeiboViewClickListener != null) {
+                    onWeiboViewClickListener.onItemClick(v, getLayoutPosition());
+                }
+            }else if (v.getId() ==  R.id.tv_reply) {
+                if (onReplayClickListener != null) {
+                    onReplayClickListener.onItemClick(v, getLayoutPosition());
+                }
+            }
+        }
+    }
+
+}

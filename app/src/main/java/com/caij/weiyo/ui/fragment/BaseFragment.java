@@ -31,6 +31,11 @@ public class BaseFragment extends Fragment implements BaseView{
         showToast(R.string.net_request_error);
     }
 
+    @Override
+    public void showHint(int stringId) {
+        showToast(stringId);
+    }
+
     protected void showToast(String msg) {
         ToastUtil.show(getActivity(), msg);
     }

@@ -2,16 +2,12 @@ package com.caij.weiyo.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.caij.weiyo.R;
-import com.caij.weiyo.ui.adapter.BaseAdapter;
 import com.caij.weiyo.view.recyclerview.LoadMoreRecyclerView;
-import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

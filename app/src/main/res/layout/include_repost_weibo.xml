@@ -20,49 +20,11 @@
             android:textColor="@color/text_80"
             android:textSize="@dimen/text_size_medium" />
 
-        <LinearLayout
+        <include layout="@layout/include_weibo_simple"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="64dp"
-            android:gravity="center_vertical"
-            android:background="@drawable/repost_content_bg_selector">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"/>
             
-            <ImageView
-                android:id="@+id/image_view"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@color/color_black"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="@dimen/spacing_large">
-
-                <TextView
-                    android:id="@+id/tv_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_80"
-                    android:text="caij"
-                    android:textSize="@dimen/text_size_medium"
-                    android:singleLine="true"/>
-
-                <com.caij.weiyo.view.emotion.EmotionTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tv_desc"
-                    android:text="fskdjfkajflkdjalkfjksajfksaljfkjas"
-                    android:textColor="@color/text_54"
-                    android:textSize="@dimen/text_size_medium_min"
-                    android:lineSpacingExtra="2dip"
-                    android:layout_marginTop="2dp"
-                    android:maxLines="2"/>
-
-            </LinearLayout>
-            
-        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>

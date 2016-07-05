@@ -143,7 +143,7 @@ public class HeaderAndFooterRecyclerViewAdapter extends RecyclerView.Adapter<Rec
         if (viewType < TYPE_HEADER_VIEW + headerViewsCountCount) {
             return new ViewHolder(mHeaderViews.get(viewType - TYPE_HEADER_VIEW));
         } else if (viewType >= TYPE_FOOTER_VIEW && viewType < Integer.MAX_VALUE / 2) {
-            return new ViewHolder(mFooterViews.get(viewType - TYPE_FOOTER_VIEW));
+            return new ViewHolder(mFooterViews.get(viewType - TYPE_FOOTER_VIEW  - headerViewsCountCount - mInnerAdapter.getItemCount()));
         } else {
             return mInnerAdapter.onCreateViewHolder(parent, viewType - Integer.MAX_VALUE / 2);
         }
@@ -195,7 +195,7 @@ public class HeaderAndFooterRecyclerViewAdapter extends RecyclerView.Adapter<Rec
             }
             return innerItemViewType + Integer.MAX_VALUE / 2;
         } else {
-            return TYPE_FOOTER_VIEW + position - headerViewsCountCount - innerCount;
+            return TYPE_FOOTER_VIEW + position;
         }
     }
 

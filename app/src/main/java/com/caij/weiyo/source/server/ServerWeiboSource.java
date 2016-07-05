@@ -173,6 +173,26 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
+    public Observable<QueryWeiboResponse> getWeiboMentions(String accessToken, long since_id, long max_id, int count, int page) {
+        return mWeiBoService.getWeiboMentions(accessToken, since_id, max_id, count, page);
+    }
+
+    @Override
+    public Observable<QueryWeiboCommentResponse> getCommentsMentions(String accessToken, long since_id, long max_id, int count, int page) {
+        return mWeiBoService.getCommentsMentions(accessToken, since_id, max_id, count, page);
+    }
+
+    @Override
+    public Observable<QueryWeiboCommentResponse> getPublishComments(String accessToken, long since_id, long max_id, int count, int page) {
+        return mWeiBoService.getPublishComments(accessToken, since_id, max_id, count, page);
+    }
+
+    @Override
+    public Observable<QueryWeiboCommentResponse> getAcceptComments(String accessToken, long since_id, long max_id, int count, int page) {
+        return mWeiBoService.getAcceptComments(accessToken, since_id, max_id, count, page);
+    }
+
+    @Override
     public Observable<QueryRepostWeiboResponse> getRepostWeibos(String accessToken, long id, long since_id, long max_id, int count, int page) {
         return mWeiBoService.getRepostWeibos(accessToken, id, since_id, max_id, count, page);
     }

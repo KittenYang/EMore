@@ -40,7 +40,7 @@ public class RepostWeiboActivity extends PublishActivity implements RepostWeiboV
     ImageView imageView;
     @BindView(R.id.tv_name)
     TextView tvName;
-    @BindView(R.id.tv_desc)
+    @BindView(R.id.tv_weibo)
     EmotionTextView tvDesc;
 
     private RepostWeiboPresent mRepostWeiboPresent;

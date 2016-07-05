@@ -1,7 +1,5 @@
 package com.caij.weiyo.present.view;
 
-import android.content.Context;
-
 import com.caij.weiyo.bean.PicUrl;
 import com.caij.weiyo.bean.Weibo;
 

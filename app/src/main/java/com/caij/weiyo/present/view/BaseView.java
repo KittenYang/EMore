@@ -8,4 +8,6 @@ public interface BaseView {
     void onAuthenticationError();
 
     void onComnLoadError();
+
+    void showHint(int stringId);
 }

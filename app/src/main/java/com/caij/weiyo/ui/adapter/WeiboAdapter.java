@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 
 import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Weibo;
-import com.caij.weiyo.view.weibo.WeiboItemView;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
+import com.caij.weiyo.view.recyclerview.BaseViewHolder;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 import com.caij.weiyo.view.weibo.WeiboListItemView;
 
@@ -21,7 +22,7 @@ import butterknife.ButterKnife;
  */
 public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHoller> {
 
-    private View.OnClickListener mMenuClickListener;
+    private final ThreadLocal<RecyclerViewOnItemClickListener> mMenuClickListener = new ThreadLocal<>();
 
     public WeiboAdapter(Context context) {
         super(context);
@@ -32,21 +33,21 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHolle
     }
 
     public WeiboAdapter(Context context, RecyclerViewOnItemClickListener onItemClickListener,
-                        View.OnClickListener menuClickListener) {
+                        RecyclerViewOnItemClickListener menuClickListener) {
         this(context);
         mOnItemClickListener = onItemClickListener;
-        mMenuClickListener= menuClickListener;
+        mMenuClickListener.set(menuClickListener);
     }
 
     @Override
     public WeiboViewHoller onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new WeiboViewHoller(mInflater.inflate(R.layout.item_weibo, parent, false), mOnItemClickListener);
+        return new WeiboViewHoller(mInflater.inflate(R.layout.item_weibo, parent, false),
+                mOnItemClickListener, mOnItemClickListener);
     }
 
     @Override
     public void onBindViewHolder(WeiboViewHoller holder, int position) {
         holder.weiboItemView.setWeibo(getItem(position));
-        holder.weiboItemView.setOnMenuClickListenet(mMenuClickListener);
     }
 
     static class WeiboViewHoller extends BaseViewHolder {
@@ -56,9 +57,18 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHolle
         @BindView(R.id.cardView)
         CardView cardView;
 
-        public WeiboViewHoller(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
+        public WeiboViewHoller(View itemView, RecyclerViewOnItemClickListener onItemClickListener,
+                               final RecyclerViewOnItemClickListener onItemMenuClickListener) {
             super(itemView, onItemClickListener);
             ButterKnife.bind(this, itemView);
+            weiboItemView.setOnMenuClickListenet(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onItemMenuClickListener != null) {
+                        onItemMenuClickListener.onItemClick(v, getLayoutPosition());
+                    }
+                }
+            });
         }
     }
 

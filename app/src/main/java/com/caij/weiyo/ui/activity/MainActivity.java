@@ -12,6 +12,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.caij.weiyo.present.view.SimpleUserView;
 import com.caij.weiyo.source.local.LocalUserSource;
 import com.caij.weiyo.source.server.ServerUserSource;
 import com.caij.weiyo.ui.activity.publish.PublishWeiboActivity;
+import com.caij.weiyo.ui.fragment.MessageFragment;
 import com.caij.weiyo.ui.fragment.weibo.FriendWeiboFragment;
 import com.caij.weiyo.utils.ImageLoader;
 import com.caij.weiyo.utils.SystemUtil;
@@ -43,6 +45,7 @@ import butterknife.OnCheckedChanged;
 public class MainActivity extends BaseActivity implements SimpleUserView {
 
     private static final String FRIEND_WEIBO_FRAGMENT_TAG = "friend_weibo_fragment_tag";
+    private static final String MESSAGE_FRAGMENT_TAG = "message_fragment_tag";
 
     @BindView(R.id.img_navigation_avatar)
     ImageView mImgNavigationAvatar;
@@ -58,6 +61,16 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
     RadioButton mRbWeibo;
     @BindView(R.id.rb_message)
     RadioButton mRbMessage;
+
+    private Fragment mFriendWeiboFragment;
+    private Fragment mMessageFragment;
+
+    private Fragment mVisibleFragment;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,18 +99,22 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
 
         Drawable iconWeiboDrawable = createNavMenuItemDrawable(R.mipmap.ic_weibo);
         mRbWeibo.setCompoundDrawables(iconWeiboDrawable, null, null, null);
+
+        Drawable iconMessageDrawable = createNavMenuItemDrawable(R.mipmap.ic_message);
+        mRbMessage.setCompoundDrawables(iconMessageDrawable, null, null, null);
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
+            mFriendWeiboFragment  = new FriendWeiboFragment();
+            mMessageFragment = new MessageFragment();
             transaction.add(R.id.attach_container,
-                    new FriendWeiboFragment(), FRIEND_WEIBO_FRAGMENT_TAG).commit();
+                    mFriendWeiboFragment, FRIEND_WEIBO_FRAGMENT_TAG).commit();
         }else {
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRIEND_WEIBO_FRAGMENT_TAG);
-            if (fragment.isAdded()) {
-                transaction.show(fragment).commit();
-            }else {
-                transaction.add(R.id.attach_container, fragment).commit();
-            }
+            mFriendWeiboFragment = getSupportFragmentManager().findFragmentByTag(FRIEND_WEIBO_FRAGMENT_TAG);
+            mMessageFragment = getSupportFragmentManager().findFragmentByTag(MESSAGE_FRAGMENT_TAG);
         }
+
+        mVisibleFragment = mFriendWeiboFragment;
     }
 
     private Drawable createNavMenuItemDrawable(int drawableId) {
@@ -113,10 +130,10 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
         return drawableIcon;
     }
 
-    public void switchContent(Fragment from, Fragment to, int id) {
+    public void switchContent(Fragment from, Fragment to, int id, String tag) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (!to.isAdded()) {
-            transaction.hide(from).add(id, to).commit();
+            transaction.hide(from).add(id, to, tag).commit();
         } else {
             transaction.hide(from).show(to).commit();
         }
@@ -161,14 +178,18 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
     @OnCheckedChanged(R.id.rb_weibo)
     public void onWeiboCheck(RadioButton view, boolean isCheck) {
         if (isCheck) {
-
+            switchContent(mVisibleFragment, mFriendWeiboFragment, R.id.attach_container, FRIEND_WEIBO_FRAGMENT_TAG);
+            mVisibleFragment = mFriendWeiboFragment;
+            mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     }
 
     @OnCheckedChanged(R.id.rb_message)
     public void onMessageCheck(RadioButton view, boolean isCheck) {
         if (isCheck) {
-
+            switchContent(mVisibleFragment, mMessageFragment, R.id.attach_container, MESSAGE_FRAGMENT_TAG);
+            mVisibleFragment = mMessageFragment;
+            mDrawerLayout.closeDrawer(Gravity.LEFT);
         }
     }
 }

@@ -88,6 +88,12 @@
         <activity android:name=".ui.activity.FriendshipActivity"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".ui.activity.MentionActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.activity.CommentsActivity"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

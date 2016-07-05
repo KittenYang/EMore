@@ -1,20 +1,12 @@
 package com.caij.weiyo.present.imp;
 
-import com.caij.weiyo.bean.PicUrl;
 import com.caij.weiyo.bean.Weibo;
-import com.caij.weiyo.bean.response.FavoritesCreateResponse;
-import com.caij.weiyo.database.bean.LocakImage;
 import com.caij.weiyo.present.FriendWeiboPresent;
 import com.caij.weiyo.present.view.TimeLineWeiboView;
 import com.caij.weiyo.source.DefaultResponseSubscriber;
-import com.caij.weiyo.source.ImageSouce;
 import com.caij.weiyo.source.WeiboSource;
-import com.caij.weiyo.source.local.LocalImageSource;
-import com.caij.weiyo.source.server.ServerImageSource;
-import com.caij.weiyo.utils.LogUtil;
 import com.caij.weiyo.utils.SpannableStringUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +17,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/5/31.

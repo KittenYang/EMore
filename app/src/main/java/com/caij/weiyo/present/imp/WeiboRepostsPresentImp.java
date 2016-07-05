@@ -2,7 +2,6 @@ package com.caij.weiyo.present.imp;
 
 import android.text.SpannableString;
 
-import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.bean.response.QueryRepostWeiboResponse;
 import com.caij.weiyo.present.WeiboRepostsPresent;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;

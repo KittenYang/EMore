@@ -47,4 +47,9 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
     public void onComnLoadError() {
         showToast(R.string.net_request_error);
     }
+
+    @Override
+    public void showHint(int stringId) {
+        showToast(stringId);
+    }
 }

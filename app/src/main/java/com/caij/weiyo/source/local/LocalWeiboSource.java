@@ -4,6 +4,8 @@ import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.bean.response.FavoritesCreateResponse;
 import com.caij.weiyo.bean.response.QueryRepostWeiboResponse;
+import com.caij.weiyo.bean.response.QueryWeiboCommentResponse;
+import com.caij.weiyo.bean.response.QueryWeiboResponse;
 import com.caij.weiyo.bean.response.UserWeiboResponse;
 import com.caij.weiyo.database.bean.FriendWeibo;
 import com.caij.weiyo.database.dao.DBManager;
@@ -128,6 +130,26 @@ public class LocalWeiboSource implements WeiboSource {
 
     @Override
     public Observable<Weibo> repostWeibo(String accessToken, String status, long weiboId) {
+        return null;
+    }
+
+    @Override
+    public Observable<QueryWeiboResponse> getWeiboMentions(String accessToken, long since_id, long max_id, int count, int page) {
+        return null;
+    }
+
+    @Override
+    public Observable<QueryWeiboCommentResponse> getCommentsMentions(String accessToken, long since_id, long max_id, int count, int page) {
+        return null;
+    }
+
+    @Override
+    public Observable<QueryWeiboCommentResponse> getPublishComments(String accessToken, long since_id, long max_id, int count, int page) {
+        return null;
+    }
+
+    @Override
+    public Observable<QueryWeiboCommentResponse> getAcceptComments(String accessToken, long since_id, long max_id, int count, int page) {
         return null;
     }
 }

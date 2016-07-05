@@ -1,6 +1,5 @@
 package com.caij.weiyo.bean.response;
 
-import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.Weibo;
 
 import java.util.List;

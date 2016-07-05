@@ -1,10 +1,13 @@
 package com.caij.weiyo.present.imp;
 
+import com.caij.weiyo.R;
 import com.caij.weiyo.bean.User;
 import com.caij.weiyo.present.UserInfoDetailPresent;
 import com.caij.weiyo.present.view.DetailUserView;
+import com.caij.weiyo.source.DefaultResponseSubscriber;
 import com.caij.weiyo.source.UserSource;
 
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -67,16 +70,16 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
         Subscription subscription = mServerUserSource.unfollowUser(mToken, mName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<User>() {
+                .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
                     @Override
                     public void onCompleted() {
                         mUserView.showFollowLoading(false);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mUserView.onComnLoadError();
+                    protected void onFail(Throwable e) {
                         mUserView.showFollowLoading(false);
+                        mUserView.onComnLoadError();
                     }
 
                     @Override
@@ -126,8 +129,16 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mUserView.onComnLoadError();
                         mUserView.showGetUserLoading(false);
+                        if (e instanceof HttpException) {
+                            HttpException httpException = (HttpException) e;
+                            int code  = httpException.code();
+                            if (code == 400) {
+                                mUserView.showHint(R.string.user_undefine);
+                                return;
+                            }
+                        }
+                        mUserView.onComnLoadError();
                     }
 
                     @Override

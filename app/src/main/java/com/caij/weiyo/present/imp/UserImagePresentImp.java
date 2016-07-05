@@ -3,18 +3,10 @@ package com.caij.weiyo.present.imp;
 import com.caij.weiyo.bean.PicUrl;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.bean.response.UserWeiboResponse;
-import com.caij.weiyo.database.bean.LocakImage;
 import com.caij.weiyo.present.UserWeiboPresent;
 import com.caij.weiyo.present.view.TimeLineWeiboImageView;
-import com.caij.weiyo.present.view.TimeLineWeiboView;
-import com.caij.weiyo.source.ImageSouce;
 import com.caij.weiyo.source.WeiboSource;
-import com.caij.weiyo.source.local.LocalImageSource;
-import com.caij.weiyo.source.server.ServerImageSource;
-import com.caij.weiyo.utils.LogUtil;
-import com.caij.weiyo.utils.SpannableStringUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +95,7 @@ public class UserImagePresentImp implements UserWeiboPresent {
     }
 
     @Override
-    public void deleteWeibo(Weibo weibo) {
+    public void deleteWeibo(Weibo weibo, int position) {
 
     }
 

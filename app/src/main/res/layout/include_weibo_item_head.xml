@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/sdv_avatar"
+        android:layout_width="42dip"
+        android:layout_height="42dip"
+        android:layout_marginRight="8dip" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/sdv_avatar"
+        android:singleLine="true"
+        android:text="名字"
+        android:textColor="@color/text_100"
+        android:textSize="@dimen/text_size_medium" />
+
+    <ImageView
+        android:id="@+id/img_verified"
+        android:layout_width="18dip"
+        android:layout_height="18dip"
+        android:layout_marginLeft="4dip"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@id/tv_name"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name"
+        android:layout_marginTop="2dip"
+        android:layout_toRightOf="@id/sdv_avatar"
+        android:singleLine="true"
+        android:text="来自Aisen 2015-01-26"
+        android:textColor="@color/text_54"
+        android:textSize="@dimen/text_size_medium_min" />
+
+</RelativeLayout>
+

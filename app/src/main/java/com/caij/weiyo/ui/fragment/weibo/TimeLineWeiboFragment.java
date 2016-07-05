@@ -13,18 +13,15 @@ import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.TimeLinePresent;
-import com.caij.weiyo.present.imp.UserWeiboPresentImp;
 import com.caij.weiyo.present.view.TimeLineWeiboView;
 import com.caij.weiyo.ui.activity.WeiboDetialActivity;
 import com.caij.weiyo.ui.adapter.WeiboAdapter;
 import com.caij.weiyo.ui.fragment.RecyclerViewFragment;
-import com.caij.weiyo.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.weiyo.utils.DialogUtil;
 import com.caij.weiyo.view.recyclerview.LoadMoreRecyclerView;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,21 +30,15 @@ import java.util.List;
 public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends RecyclerViewFragment
         implements TimeLineWeiboView, RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener {
 
-    P mTimeLineWeiboPresent;
-    WeiboAdapter mAdapter;
+    protected P mTimeLineWeiboPresent;
+    protected WeiboAdapter mAdapter;
 
     private Dialog mLoadDialog;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAdapter = new WeiboAdapter(getActivity(), this, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Weibo weibo = (Weibo) v.getTag();
-                onMenuClick(weibo);
-            }
-        });
+        mAdapter = new WeiboAdapter(getActivity(), this, this);
         mLoadMoreLoadMoreRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mLoadMoreLoadMoreRecyclerView.setAdapter(mAdapter);
         mLoadMoreLoadMoreRecyclerView.setOnLoadMoreListener(this);
@@ -66,8 +57,12 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends R
 
     @Override
     public void onItemClick(View view, int position) {
-        Intent intent = WeiboDetialActivity.newIntent(getActivity(), mAdapter.getItem(position));
-        startActivity(intent);
+        if (view.getId() == R.id.btn_menus) {
+            onMenuClick(mAdapter.getItem(position), position);
+        }else {
+            Intent intent = WeiboDetialActivity.newIntent(getActivity(), mAdapter.getItem(position));
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -99,7 +94,7 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends R
         return getActivity().getApplication();
     }
 
-    private void onMenuClick(final Weibo weibo) {
+    private void onMenuClick(final Weibo weibo, final int position) {
         List<String> items = new ArrayList<>();
         if (weibo.isFavorited()) {
             items.add("取消收藏");
@@ -124,15 +119,15 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends R
                         break;
 
                     case 1:
-                        deleteWeibo(weibo);
+                        deleteWeibo(weibo, position);
                         break;
                 }
             }
         });
     }
 
-    private void deleteWeibo(Weibo weibo) {
-        mTimeLineWeiboPresent.deleteWeibo(weibo);
+    private void deleteWeibo(Weibo weibo, int position) {
+        mTimeLineWeiboPresent.deleteWeibo(weibo, position);
     }
 
     private void collectWeibo(Weibo weibo) {
@@ -160,9 +155,9 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends R
     }
 
     @Override
-    public void onDeleteWeiboSuccess(Weibo weibo) {
+    public void onDeleteWeiboSuccess(Weibo weibo, int position) {
         mAdapter.removeEntity(weibo);
-        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyItemRemoved(position);
     }
 
     @Override

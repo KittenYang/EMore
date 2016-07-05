@@ -15,24 +15,18 @@ import com.caij.weiyo.bean.response.UserWeiboResponse;
 import com.caij.weiyo.utils.okhttp.OkHttpClientProvider;
 import com.caij.weiyo.utils.GsonUtils;
 
-import java.io.File;
-import java.util.List;
-
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.HEAD;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
-import retrofit2.http.PartMap;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -196,4 +190,31 @@ public interface WeiBoService {
                                               @Query("trim_status") int trim_status,
                                               @Query("cursor") long cursor);
 
+    @GET("2/statuses/mentions.json")
+    Observable<QueryWeiboResponse> getWeiboMentions(@Query("access_token") String accessToken,
+                                                         @Query("since_id") long since_id,
+                                                         @Query("max_id") long max_id,
+                                                         @Query("count") int count,
+                                                         @Query("page") int page);
+
+    @GET("2/comments/mentions.json")
+    Observable<QueryWeiboCommentResponse> getCommentsMentions(@Query("access_token") String accessToken,
+                                                             @Query("since_id") long since_id,
+                                                             @Query("max_id") long max_id,
+                                                             @Query("count") int count,
+                                                             @Query("page") int page);
+
+    @GET("2/comments/by_me.json")
+    Observable<QueryWeiboCommentResponse> getPublishComments(@Query("access_token") String accessToken,
+                                                              @Query("since_id") long since_id,
+                                                              @Query("max_id") long max_id,
+                                                              @Query("count") int count,
+                                                              @Query("page") int page);
+
+    @GET("2/comments/to_me.json")
+    Observable<QueryWeiboCommentResponse> getAcceptComments(@Query("access_token") String accessToken,
+                                                             @Query("since_id") long since_id,
+                                                             @Query("max_id") long max_id,
+                                                             @Query("count") int count,
+                                                             @Query("page") int page);
 }
