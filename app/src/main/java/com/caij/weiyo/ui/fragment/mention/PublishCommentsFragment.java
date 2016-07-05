@@ -95,7 +95,7 @@ public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment im
     }
 
     protected PublishCommentsPresent createPresent() {
-        AccessToken accessToken = UserPrefs.get().getWeiCoToken();
+        AccessToken accessToken = UserPrefs.get().getWeiYoToken();
         return new PublishCommentsPresentImp(accessToken.getAccess_token(), new ServerWeiboSource(), this);
     }
 

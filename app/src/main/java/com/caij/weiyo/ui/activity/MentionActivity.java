@@ -1,15 +1,22 @@
 package com.caij.weiyo.ui.activity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 
+import com.caij.weiyo.Key;
 import com.caij.weiyo.R;
+import com.caij.weiyo.UserPrefs;
+import com.caij.weiyo.bean.AccessToken;
+import com.caij.weiyo.bean.Account;
 import com.caij.weiyo.ui.adapter.WeiboFragmentPagerAdapter;
 import com.caij.weiyo.ui.fragment.BaseFragment;
 import com.caij.weiyo.ui.fragment.mention.CommentMentionFragment;
 import com.caij.weiyo.ui.fragment.mention.WeiboMentionFragment;
+import com.caij.weiyo.utils.DialogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +39,28 @@ public class MentionActivity extends BaseToolBarActivity {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         setTitle("@我");
+        AccessToken weicoToken = UserPrefs.get().getWeiCoToken();
+        if (weicoToken == null || weicoToken.isExpired()) {
+            DialogUtil.showHintDialog(this, getString(R.string.hint), getString(R.string.aouth_high_hint), getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Account account = UserPrefs.get().getAccount();
+                    Intent intent = LoginActivity.newWeiCoLoginIntent(MentionActivity.this,
+                            account.getUsername(), account.getPwd());
+                    startActivityForResult(intent, Key.AUTH);
+                }
+            }, getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+        } else {
+            doNext();
+        }
+    }
+
+    private void doNext() {
         List<BaseFragment> fragments = new ArrayList<>();
         fragments.add(new WeiboMentionFragment());
         fragments.add(new CommentMentionFragment());

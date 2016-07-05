@@ -5,4 +5,6 @@ ext{
     key_password = properties.getProperty("keyPassword")
     store_password = properties.getProperty("storePassword")
     key_store = properties.getProperty("keystore.dir")
+    bugly_app_id = properties.getProperty("bugly_app_id")
+    bugly_app_key = properties.getProperty("bugly_app_key")
 }

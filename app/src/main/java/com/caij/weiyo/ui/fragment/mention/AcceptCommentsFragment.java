@@ -91,7 +91,7 @@ public class AcceptCommentsFragment extends SwipeRefreshRecyclerViewFragment imp
     }
 
     protected MentionPresent createPresent() {
-        AccessToken accessToken = UserPrefs.get().getWeiCoToken();
+        AccessToken accessToken = UserPrefs.get().getWeiYoToken();
         return new AcceptCommentsPresentImp(accessToken.getAccess_token(), new ServerWeiboSource(), this);
     }
 

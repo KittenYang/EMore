@@ -20,6 +20,8 @@ public interface Key {
     String WEICO_APP_SECRET = "63b64d531b98c2dbff2443816f274dd3";
     String WEIYO_CALLBACK_URL =  "http://oauth.weico.cc";
 
+    String BUGLY_KEY = "900037371";
+
     String SP_CONFIG = "sp_config";
     String URL = "url";
     String OBJ = "obj";

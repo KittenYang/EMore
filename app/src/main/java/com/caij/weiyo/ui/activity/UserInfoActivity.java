@@ -295,7 +295,9 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mUserInfoDetailPresent.onDestroy();
+        if (mUserInfoDetailPresent != null) {
+            mUserInfoDetailPresent.onDestroy();
+        }
     }
 
 }

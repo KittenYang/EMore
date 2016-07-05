@@ -20,21 +20,6 @@
 #-keepattributes Signature
 #-keep class sun.misc.Unsafe { *; }
 
-# LeakCanary
--keep class org.eclipse.mat.** { *; }
--keep class com.squareup.leakcanary.** { *; }
-
-#butterknife
-#-keep class butterknife.** { *; }
-#-dontwarn butterknife.internal.**
-#-keep class **$$ViewBinder { *; }
-#-keepclasseswithmembernames class * {
-#    @butterknife.* <fields>;
-#}
-#-keepclasseswithmembernames class * {
-#    @butterknife.* <methods>;
-#}
-
 # okhttp
 -dontwarn okio.*
 
@@ -56,3 +41,31 @@
 -keep class retrofit2.** { *; }
 -keepattributes Signature
 -keepattributes Exceptions
+
+#Glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+    **[] $VALUES;
+    public *;
+}
+
+# 数据库
+-keepclassmembers class * extends de.greenrobot.dao.AbstractDao {
+    public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
+
+###
+-keep class org.jsoup.** { *; }
+
+-keep class com.caij.weiyo.bean.** { *; }
+
+-keepattributes Annotation
+-keepattributes JavascriptInterface
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+
+### bugly
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}

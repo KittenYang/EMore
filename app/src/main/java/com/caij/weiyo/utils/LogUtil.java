@@ -3,6 +3,8 @@ package com.caij.weiyo.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.caij.weiyo.BuildConfig;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,7 +14,7 @@ import org.json.JSONObject;
  */
 public class LogUtil {
 
-    public static boolean LOG_DEBUG = true;
+    public static boolean LOG_DEBUG = BuildConfig.DEBUG;
 
     /**
      * It is used for json pretty print
