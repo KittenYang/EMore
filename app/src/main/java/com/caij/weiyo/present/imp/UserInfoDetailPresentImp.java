@@ -40,20 +40,20 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
 
     @Override
     public void follow() {
-        mUserView.showFollowLoading(true);
+        mUserView.showDialogLoading(true);
         Subscription subscription = mServerUserSource.followUser(mToken, mName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public void onCompleted() {
-                        mUserView.showFollowLoading(false);
+                        mUserView.showDialogLoading(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        mUserView.onComnLoadError();
-                        mUserView.showFollowLoading(false);
+                        mUserView.onDefaultLoadError();
+                        mUserView.showDialogLoading(false);
                     }
 
                     @Override
@@ -66,20 +66,20 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
 
     @Override
     public void unFollow() {
-        mUserView.showFollowLoading(true);
+        mUserView.showDialogLoading(true);
         Subscription subscription = mServerUserSource.unfollowUser(mToken, mName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
                     @Override
                     public void onCompleted() {
-                        mUserView.showFollowLoading(false);
+                        mUserView.showDialogLoading(false);
                     }
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mUserView.showFollowLoading(false);
-                        mUserView.onComnLoadError();
+                        mUserView.showDialogLoading(false);
+                        mUserView.onDefaultLoadError();
                     }
 
                     @Override
@@ -92,7 +92,7 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
 
     @Override
     public void getWeiboUserInfoByName() {
-        mUserView.showGetUserLoading(true);
+        mUserView.showDialogLoading(true);
         Subscription localSubscription = mLocalUserSource.getWeiboUserInfoByName(mToken, mName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -124,12 +124,12 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public void onCompleted() {
-                        mUserView.showGetUserLoading(false);
+                        mUserView.showDialogLoading(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        mUserView.showGetUserLoading(false);
+                        mUserView.showDialogLoading(false);
                         if (e instanceof HttpException) {
                             HttpException httpException = (HttpException) e;
                             int code  = httpException.code();
@@ -138,7 +138,7 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                                 return;
                             }
                         }
-                        mUserView.onComnLoadError();
+                        mUserView.onDefaultLoadError();
                     }
 
                     @Override

@@ -106,7 +106,7 @@ public class RepostWeiboActivity extends PublishActivity implements RepostWeiboV
     }
 
     @Override
-    public void showLoading(boolean isShow) {
+    public void showDialogLoading(boolean isShow) {
         if (isShow) {
             if (mRepostDialog == null) {
                 mRepostDialog = DialogUtil.showProgressDialog(this, null, getString(R.string.requesting));

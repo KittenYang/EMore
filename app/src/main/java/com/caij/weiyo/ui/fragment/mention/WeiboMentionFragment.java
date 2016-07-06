@@ -10,13 +10,13 @@ import android.view.ViewGroup;
 import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
-import com.caij.weiyo.present.FriendWeiboPresent;
+import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.WeiboMentionPresent;
-import com.caij.weiyo.present.imp.FriendWeiboPresentImp;
 import com.caij.weiyo.present.imp.WeiboMentionPresentImp;
-import com.caij.weiyo.source.local.LocalWeiboSource;
 import com.caij.weiyo.source.server.ServerWeiboSource;
 import com.caij.weiyo.ui.fragment.weibo.TimeLineWeiboFragment;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
+import com.caij.weiyo.view.recyclerview.BaseViewHolder;
 import com.caij.weiyo.view.recyclerview.LoadMoreRecyclerView;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
@@ -51,6 +51,7 @@ public class WeiboMentionFragment extends TimeLineWeiboFragment<WeiboMentionPres
                 getResources().getColor(R.color.gplus_color_4));
     }
 
+
     @Override
     protected WeiboMentionPresent createPresent() {
         AccessToken token = UserPrefs.get().getWeiCoToken();
@@ -59,24 +60,14 @@ public class WeiboMentionFragment extends TimeLineWeiboFragment<WeiboMentionPres
 
     @Override
     public void onRefresh() {
-        mTimeLineWeiboPresent.onRefresh();
+        mPresent.refresh();
     }
 
-    @Override
-    public void toRefresh() {
-        super.toRefresh();
-        mSwipeRefreshLayout.setRefreshing(true);
-    }
-
-    @Override
-    public void onRefreshComplite() {
-        super.onRefreshComplite();
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
 
     @Override
     protected void onUserFirstVisible() {
-        mTimeLineWeiboPresent.onUserFirstVisible();
+        super.onUserFirstVisible();
+        mSwipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -84,4 +75,8 @@ public class WeiboMentionFragment extends TimeLineWeiboFragment<WeiboMentionPres
 
     }
 
+    @Override
+    public void onRefreshComplete() {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/title_ad_common">
+
+        <Preference
+            android:key="pTheme" android:title="@string/settings_md_colors"/>
+
+        <Preference
+            android:key="pNotification"
+            android:title="@string/settings_notify" />
+
+        <Preference
+            android:key="pFlow"
+            android:title="@string/settings_flow" />
+
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pInnerBrowser"
+            android:title="@string/settings_inner_browser" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="缓存">
+
+        <Preference
+            android:key="clear_cache" android:title="清除缓存"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

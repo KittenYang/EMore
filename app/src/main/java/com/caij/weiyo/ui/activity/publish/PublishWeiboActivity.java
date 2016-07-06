@@ -43,8 +43,6 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    private Dialog mPublishDialog;
-
     private PublishImageAdapter mPublishImageAdapter;
     private WeiboPublishPresent mWeiboPublishPresent;
 
@@ -143,16 +141,6 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
         finish();
     }
 
-    @Override
-    public void showPublishLoading(boolean isShow) {
-        if (isShow) {
-            if (mPublishDialog == null) {
-                mPublishDialog = DialogUtil.showProgressDialog(this, null, getString(R.string.publish_loading));
-            }
-        }else {
-            mPublishDialog.dismiss();
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -44,7 +44,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
     }
 
     @Override
-    public void onFirstVisible() {
+    public void userFirstVisible() {
         Subscription subscription = mServerRepostSource.getRepostWeibos(mToken, mWeiboId, 0, 0, PAGE_COUNET, 1)
                 .flatMap(new Func1<QueryRepostWeiboResponse, Observable<Weibo>>() {
                     @Override
@@ -67,7 +67,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mWeiboRepostsView) {
                     @Override
                     protected void onFail(Throwable e) {
-                        mWeiboRepostsView.onComnLoadError();
+                        mWeiboRepostsView.onDefaultLoadError();
                     }
 
                     @Override
@@ -78,11 +78,11 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeobos.addAll(weibos);
-                        mWeiboRepostsView.setWeibos(weibos);
+                        mWeiboRepostsView.setEntities(weibos);
                         if (weibos.size() == 0) {
                             mWeiboRepostsView.onEmpty();
                         }else {
-                            mWeiboRepostsView.onLoadComplite(weibos.size() >= PAGE_COUNET);
+                            mWeiboRepostsView.onLoadComplete(weibos.size() >= PAGE_COUNET);
                         }
                     }
                 });
@@ -91,7 +91,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
     }
 
     @Override
-    public void onLoadMore() {
+    public void loadMore() {
         long maxId = 0;
         if (mWeobos.size() > 0) {
             maxId = mWeobos.get(mWeobos.size() - 1).getId();
@@ -124,7 +124,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mWeiboRepostsView) {
                     @Override
                     protected void onFail(Throwable e) {
-                        mWeiboRepostsView.onComnLoadError();
+                        mWeiboRepostsView.onDefaultLoadError();
                     }
 
                     @Override
@@ -135,8 +135,8 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeobos.addAll(weibos);
-                        mWeiboRepostsView.setWeibos(weibos);
-                        mWeiboRepostsView.onLoadComplite(weibos.size() >= 15);
+                        mWeiboRepostsView.setEntities(weibos);
+                        mWeiboRepostsView.onLoadComplete(weibos.size() >= 15);
                     }
                 });
 

@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcel;
+import android.provider.Browser;
 import android.text.ParcelableSpan;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 
+import com.caij.weiyo.AppSettings;
 import com.caij.weiyo.utils.LogUtil;
+import com.caij.weiyo.utils.SpannableStringUtil;
 
 /**
  * Created by Caij on 2016/6/8.
@@ -46,11 +49,13 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
     }
 
     public void onClick(View widget) {
-        LogUtil.v(MyURLSpan.class.getSimpleName(), String.format("the link(%s) was clicked ", new Object[]{this.getURL()}));
         Uri uri = Uri.parse(this.getURL());
         Context context = widget.getContext();
-        Intent intent;
-        intent = new Intent(Intent.ACTION_VIEW, uri);
+        if (SpannableStringUtil.HTTP_SCHEME.contains(uri.getScheme()) && !AppSettings.isInnerBrower()) {
+            uri = Uri.parse(getURL().replace(SpannableStringUtil.HTTP_SCHEME, ""));
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
         context.startActivity(intent);
     }
 

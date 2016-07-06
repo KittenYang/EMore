@@ -79,12 +79,12 @@
                             android:id="@+id/imgVerified" android:layout_width="20dip"
                             android:layout_height="20dip"
                             android:layout_marginLeft="8dip" android:layout_marginTop="2dip"
-                            android:src="@mipmap/ic_default_circle_head_image"/>
+                            android:src="@drawable/circle_image_placeholder"/>
 
                         <ImageView
                             android:id="@+id/imgGender" android:layout_width="20dip" android:layout_height="20dip"
                             android:layout_marginLeft="8dip" android:layout_marginTop="2dip"
-                            android:src="@mipmap/ic_default_circle_head_image"/>
+                            android:src="@drawable/circle_image_placeholder"/>
 
                     </LinearLayout>
 
@@ -251,6 +251,6 @@
         android:layout_height="100dip"
         android:layout_marginLeft="@dimen/spacing_large"
         android:visibility="invisible"
-        android:src="@mipmap/ic_default_circle_head_image"/>
+        android:src="@drawable/circle_image_placeholder"/>
 
 </android.support.design.widget.CoordinatorLayout>

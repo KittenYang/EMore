@@ -5,5 +5,4 @@ package com.caij.weiyo.present;
  */
 public interface WeiboMentionPresent extends TimeLinePresent {
 
-    void onUserFirstVisible();
 }

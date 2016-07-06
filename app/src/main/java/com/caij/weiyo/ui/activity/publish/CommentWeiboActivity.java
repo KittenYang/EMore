@@ -87,7 +87,7 @@ public class CommentWeiboActivity extends PublishActivity implements CommentWeib
     }
 
     @Override
-    public void showLoading(boolean isShow) {
+    public void showDialogLoading(boolean isShow) {
         if (isShow) {
             if (mCommentDialog  == null) {
                 mCommentDialog = DialogUtil.showProgressDialog(this, null, getString(R.string.wait_comment));

@@ -44,7 +44,7 @@ public class UserAdapter extends BaseAdapter<User, UserAdapter.UserViewHolder> {
         holder.txtName.setText(user.getScreen_name());
         holder.txtDesc.setText(user.getDescription());
         ImageLoader.load(mContext, holder.imgPhoto, user.getAvatar_large(),
-                R.mipmap.ic_default_circle_head_image, mImageConfig);
+                R.drawable.circle_image_placeholder, mImageConfig);
     }
 
     public static class UserViewHolder extends BaseViewHolder {

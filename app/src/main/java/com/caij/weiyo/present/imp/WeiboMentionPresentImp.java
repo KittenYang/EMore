@@ -1,11 +1,8 @@
 package com.caij.weiyo.present.imp;
 
 import com.caij.weiyo.bean.Weibo;
-import com.caij.weiyo.bean.response.QueryWeiboCommentResponse;
 import com.caij.weiyo.bean.response.QueryWeiboResponse;
-import com.caij.weiyo.present.MentionPresent;
 import com.caij.weiyo.present.WeiboMentionPresent;
-import com.caij.weiyo.present.view.MentionView;
 import com.caij.weiyo.present.view.TimeLineWeiboView;
 import com.caij.weiyo.source.WeiboSource;
 import com.caij.weiyo.utils.SpannableStringUtil;
@@ -44,12 +41,12 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
     }
 
     @Override
-    public void onUserFirstVisible() {
-        mTimeLineWeiboView.toRefresh();
+    public void userFirstVisible() {
+        refresh();
     }
 
     @Override
-    public void onRefresh() {
+    public void refresh() {
         Subscription su =  mWeiboSource.getWeiboMentions(mToken, 0 ,0, COUNT, 1)
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
@@ -62,7 +59,7 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
-                        SpannableStringUtil.paraeSpannable(weibo, mView.getContent().getApplicationContext());
+                        SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;
                     }
                 })
@@ -77,24 +74,24 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
 
                     @Override
                     public void onError(Throwable e) {
-                        mTimeLineWeiboView.onComnLoadError();
-                        mTimeLineWeiboView.onRefreshComplite();
+                        mTimeLineWeiboView.onDefaultLoadError();
+                        mTimeLineWeiboView.onRefreshComplete();
                     }
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
-                        mTimeLineWeiboView.setWeibos(mWeibos);
+                        mTimeLineWeiboView.setEntities(mWeibos);
 
-                        mTimeLineWeiboView.onRefreshComplite();
-                        mTimeLineWeiboView.onLoadComplite(weibos.size() > COUNT - 1);
+                        mTimeLineWeiboView.onRefreshComplete();
+                        mTimeLineWeiboView.onLoadComplete(weibos.size() > COUNT - 1);
                     }
                 });
         mLoginCompositeSubscription.add(su);
     }
 
     @Override
-    public void onLoadMore() {
+    public void loadMore() {
         long maxId = 0;
         if (mWeibos != null && mWeibos.size() > 1) {
             maxId = mWeibos.get(mWeibos.size() - 1).getId();
@@ -117,7 +114,7 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
-                        SpannableStringUtil.paraeSpannable(weibo, mView.getContent().getApplicationContext());
+                        SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;
                     }
                 })
@@ -132,16 +129,16 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
 
                     @Override
                     public void onError(Throwable e) {
-                        mTimeLineWeiboView.onComnLoadError();
-                        mTimeLineWeiboView.onLoadComplite(true);
+                        mTimeLineWeiboView.onDefaultLoadError();
+                        mTimeLineWeiboView.onLoadComplete(true);
                     }
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
-                        mTimeLineWeiboView.setWeibos(mWeibos);
+                        mTimeLineWeiboView.setEntities(mWeibos);
 
-                        mTimeLineWeiboView.onLoadComplite(weibos.size() > COUNT - 1);
+                        mTimeLineWeiboView.onLoadComplete(weibos.size() > COUNT - 1);
                     }
                 });
         mLoginCompositeSubscription.add(su);
@@ -156,4 +153,6 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
     }
+
+
 }

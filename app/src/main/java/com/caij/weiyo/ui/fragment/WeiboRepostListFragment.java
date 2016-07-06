@@ -16,6 +16,8 @@ import com.caij.weiyo.present.imp.WeiboRepostsPresentImp;
 import com.caij.weiyo.present.view.WeiboRepostsView;
 import com.caij.weiyo.source.server.ServerWeiboSource;
 import com.caij.weiyo.ui.adapter.RepostAdapter;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
+import com.caij.weiyo.view.recyclerview.BaseViewHolder;
 import com.caij.weiyo.view.recyclerview.LoadMoreRecyclerView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -24,12 +26,8 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/14.
  */
-public class WeiboRepostListFragment extends RecyclerViewFragment implements WeiboRepostsView,
+public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRepostsPresent> implements WeiboRepostsView,
         LoadMoreRecyclerView.OnLoadMoreListener {
-
-    private WeiboRepostsPresent mWeiboRepostsPresent;
-
-    private RepostAdapter mRepostAdapter;
 
     public static WeiboRepostListFragment newInstance(long weiboId) {
         Bundle args = new Bundle();
@@ -42,39 +40,31 @@ public class WeiboRepostListFragment extends RecyclerViewFragment implements Wei
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        AccessToken token = UserPrefs.get().getWeiCoToken();
-        long weiId = getArguments().getLong(Key.ID);
-        mWeiboRepostsPresent = new WeiboRepostsPresentImp(token.getAccess_token(), weiId,
-                new ServerWeiboSource(), this);
-        mRepostAdapter = new RepostAdapter(getActivity());
-        mLoadMoreLoadMoreRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mLoadMoreLoadMoreRecyclerView.setBackgroundColor(getResources().getColor(R.color.white));
-        mLoadMoreLoadMoreRecyclerView.setAdapter(mRepostAdapter);
-        mLoadMoreLoadMoreRecyclerView.setOnLoadMoreListener(this);
         mLoadMoreLoadMoreRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item))
                 .size(getResources().getDimensionPixelSize(R.dimen.divider)).build());
     }
 
     @Override
+    protected BaseAdapter<Weibo, ? extends BaseViewHolder> createRecyclerViewAdapter() {
+       return  new RepostAdapter(getActivity());
+    }
+
+    @Override
+    protected WeiboRepostsPresent createPresent() {
+        AccessToken token = UserPrefs.get().getWeiCoToken();
+        long weiId = getArguments().getLong(Key.ID);
+        return  new WeiboRepostsPresentImp(token.getAccess_token(), weiId,
+                new ServerWeiboSource(), this);
+    }
+
+    @Override
     protected void onUserFirstVisible() {
+        super.onUserFirstVisible();
         mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
-        mWeiboRepostsPresent.onFirstVisible();
     }
 
-    @Override
-    public void onLoadMore() {
-        mWeiboRepostsPresent.onLoadMore();
-    }
-
-    @Override
-    public void onLoadComplite(boolean isHaveMore) {
-        if (isHaveMore) {
-            mLoadMoreLoadMoreRecyclerView.completeLoading();
-        }else {
-            mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_NO_MORE);
-        }
-    }
 
     @Override
     public void onEmpty() {
@@ -83,13 +73,12 @@ public class WeiboRepostListFragment extends RecyclerViewFragment implements Wei
     }
 
     @Override
-    public void setWeibos(List<Weibo> weibos) {
-        mRepostAdapter.setEntities(weibos);
-        mRepostAdapter.notifyDataSetChanged();
+    public Context getContent() {
+        return getActivity();
     }
 
     @Override
-    public Context getContent() {
-        return getActivity();
+    public void onItemClick(View view, int position) {
+
     }
 }

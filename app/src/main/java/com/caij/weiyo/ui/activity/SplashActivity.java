@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.caij.weiyo.R;
 import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
 
@@ -15,6 +16,7 @@ public class SplashActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
         AccessToken accessToken = UserPrefs.get().getWeiYoToken();
         final Intent intent;
         if (accessToken == null || accessToken.isExpired()) {

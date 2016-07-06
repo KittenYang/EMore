@@ -237,7 +237,7 @@ public class LoginActivity extends WebActivity implements LoginView {
     }
 
     @Override
-    public void showLoading(boolean isVisible) {
+    public void showDialogLoading(boolean isVisible) {
         if (isVisible) {
             if (mLoginDialog  == null) {
                 mLoginDialog = DialogUtil.showProgressDialog(this, null, getString(R.string.logining));

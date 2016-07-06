@@ -1,5 +1,6 @@
 package com.caij.weiyo.present.imp;
 
+import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.bean.response.UserWeiboResponse;
 import com.caij.weiyo.present.UserWeiboPresent;
@@ -35,13 +36,56 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeibo
         mWeibos = new ArrayList<>();
     }
 
+
+    @Override
+    public void deleteWeibo(final Weibo weibo, final int position) {
+        mView.showDialogLoading(true, R.string.deleting);
+        mServerWeiboSource.deleteWeibo(mToken, weibo.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Weibo>() {
+                    @Override
+                    public void onCompleted() {
+                        mView.onDeleteWeiboSuccess(weibo, position);
+                        mView.showDialogLoading(false, R.string.deleting);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.onDefaultLoadError();
+                        mView.showDialogLoading(false, R.string.deleting);
+                    }
+
+                    @Override
+                    public void onNext(Weibo weibo) {
+
+                    }
+                });
+    }
+
+
     @Override
     public void onCreate() {
 
     }
 
     @Override
-    public void onRefresh() {
+    public void onDestroy() {
+        mLoginCompositeSubscription.clear();
+    }
+
+    @Override
+    public void filter(int feature) {
+        if (mFeature != feature) {
+            mFeature = feature;
+            mWeibos.clear();
+            mView.setEntities(mWeibos);
+            refresh();
+        }
+    }
+
+    @Override
+    public void refresh() {
         Subscription subscription = mServerWeiboSource.getUseWeibo(mToken, mUsername, mFeature, 0, 0, PAGE_COUNT, 1)
                 .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
                     @Override
@@ -54,7 +98,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeibo
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
-                        SpannableStringUtil.paraeSpannable(weibo, mView.getContent().getApplicationContext());
+                        SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;
                     }
                 })
@@ -64,24 +108,24 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeibo
                 .subscribe(new Subscriber<List<Weibo>>() {
                     @Override
                     public void onCompleted() {
-                        mView.onRefreshComplite();
+                        mView.onRefreshComplete();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.onComnLoadError();
-                        mView.onRefreshComplite();
+                        mView.onDefaultLoadError();
+                        mView.onRefreshComplete();
                     }
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.clear();
                         mWeibos.addAll(weibos);
-                        mView.setWeibos(mWeibos);
+                        mView.setEntities(mWeibos);
                         if (weibos.size() == 0) {
                             mView.onEmpty();
                         }else {
-                            mView.onLoadComplite(weibos.size() >= PAGE_COUNT);
+                            mView.onLoadComplete(weibos.size() >= PAGE_COUNT);
                         }
                     }
                 });
@@ -89,34 +133,12 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeibo
     }
 
     @Override
-    public void deleteWeibo(final Weibo weibo, final int position) {
-        mView.showDialogLoging(true);
-        mServerWeiboSource.deleteWeibo(mToken, weibo.getId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Weibo>() {
-                    @Override
-                    public void onCompleted() {
-                        mView.onDeleteWeiboSuccess(weibo, position);
-                        mView.showDialogLoging(false);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.onComnLoadError();
-                        mView.showDialogLoging(false);
-                    }
-
-                    @Override
-                    public void onNext(Weibo weibo) {
-
-                    }
-                });
+    public void userFirstVisible() {
+        refresh();
     }
 
-
     @Override
-    public void onLoadMore() {
+    public void loadMore() {
         long maxId = 0;
         if (mWeibos.size() > 0) {
             maxId = mWeibos.get(mWeibos.size() - 1).getId();
@@ -139,7 +161,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeibo
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
-                        SpannableStringUtil.paraeSpannable(weibo, mView.getContent().getApplicationContext());
+                        SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;
                     }
                 })
@@ -154,37 +176,17 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeibo
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.onComnLoadError();
-                        mView.onLoadComplite(true);
+                        mView.onDefaultLoadError();
+                        mView.onLoadComplete(true);
                     }
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
-                        mView.setWeibos(mWeibos);
-                        mView.onLoadComplite(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
+                        mView.setEntities(mWeibos);
+                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
                     }
                 });
         mLoginCompositeSubscription.add(subscription);
-    }
-
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
-    }
-
-    @Override
-    public void onFirstVisible() {
-        onRefresh();
-    }
-
-    @Override
-    public void filter(int feature) {
-        if (mFeature != feature) {
-            mFeature = feature;
-            mWeibos.clear();
-            mView.setWeibos(mWeibos);
-            onRefresh();
-        }
     }
 }

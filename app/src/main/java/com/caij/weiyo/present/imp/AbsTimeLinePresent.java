@@ -1,5 +1,6 @@
 package com.caij.weiyo.present.imp;
 
+import com.caij.weiyo.R;
 import com.caij.weiyo.bean.PicUrl;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.bean.response.FavoritesCreateResponse;
@@ -23,16 +24,16 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/2.
  */
-public abstract class AbsTimeLinePresent implements TimeLinePresent {
+public abstract class AbsTimeLinePresent<V extends TimeLineWeiboView> implements TimeLinePresent {
 
-    protected TimeLineWeiboView mView;
+    protected V mView;
     protected ImageSouce mServerImageSouce;
     protected ImageSouce mLocalImageSouce;
     protected WeiboSource mServerWeiboSource;
     protected String mToken;
     protected CompositeSubscription mLoginCompositeSubscription;
 
-    public AbsTimeLinePresent(String token, TimeLineWeiboView view,  WeiboSource serverWeiboSource) {
+    public AbsTimeLinePresent(String token, V view,  WeiboSource serverWeiboSource) {
         mView = view;
         mToken = token;
         mLocalImageSouce = new LocalImageSource();
@@ -43,7 +44,7 @@ public abstract class AbsTimeLinePresent implements TimeLinePresent {
 
     @Override
     public void deleteWeibo(final Weibo weibo, final int position) {
-        mView.showDialogLoging(true);
+        mView.showDialogLoading(true, R.string.deleting);
         Subscription subscription = mServerWeiboSource.deleteWeibo(mToken, weibo.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -51,13 +52,13 @@ public abstract class AbsTimeLinePresent implements TimeLinePresent {
                     @Override
                     public void onCompleted() {
                         mView.onDeleteWeiboSuccess(weibo, position);
-                        mView.showDialogLoging(false);
+                        mView.showDialogLoading(false, R.string.deleting);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.onComnLoadError();
-                        mView.showDialogLoging(false);
+                        mView.onDefaultLoadError();
+                        mView.showDialogLoading(false, R.string.deleting);
                     }
 
                     @Override
@@ -70,7 +71,7 @@ public abstract class AbsTimeLinePresent implements TimeLinePresent {
 
     @Override
     public void collectWeibo(final Weibo weibo) {
-        mView.showDialogLoging(true);
+        mView.showDialogLoading(true, R.string.collecting);
         Subscription subscription = mServerWeiboSource.collectWeibo(mToken, weibo.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -78,13 +79,13 @@ public abstract class AbsTimeLinePresent implements TimeLinePresent {
                     @Override
                     public void onCompleted() {
                         mView.onCollectSuccess(weibo);
-                        mView.showDialogLoging(false);
+                        mView.showDialogLoading(false, R.string.collecting);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.onComnLoadError();
-                        mView.showDialogLoging(false);
+                        mView.onDefaultLoadError();
+                        mView.showDialogLoading(false, R.string.collecting);
                     }
 
                     @Override
@@ -97,7 +98,7 @@ public abstract class AbsTimeLinePresent implements TimeLinePresent {
 
     @Override
     public void uncollectWeibo(final Weibo weibo) {
-        mView.showDialogLoging(true);
+        mView.showDialogLoading(true, R.string.uncollecting);
         Subscription subscription = mServerWeiboSource.uncollectWeibo(mToken, weibo.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -105,13 +106,13 @@ public abstract class AbsTimeLinePresent implements TimeLinePresent {
                     @Override
                     public void onCompleted() {
                         mView.onUncollectSuccess(weibo);
-                        mView.showDialogLoging(false);
+                        mView.showDialogLoading(false, R.string.uncollecting);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.onComnLoadError();
-                        mView.showDialogLoging(false);
+                        mView.onDefaultLoadError();
+                        mView.showDialogLoading(false, R.string.uncollecting);
                     }
 
                     @Override

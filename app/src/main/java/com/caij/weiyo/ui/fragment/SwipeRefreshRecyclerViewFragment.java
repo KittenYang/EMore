@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.caij.weiyo.R;
+import com.caij.weiyo.present.RefreshListPresent;
+import com.caij.weiyo.present.view.RefreshListView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -15,7 +17,8 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2015/11/4.
  */
-public abstract class SwipeRefreshRecyclerViewFragment extends RecyclerViewFragment implements SwipeRefreshLayout.OnRefreshListener {
+public abstract class SwipeRefreshRecyclerViewFragment<E, P extends RefreshListPresent> extends RecyclerViewFragment<E, P>
+        implements SwipeRefreshLayout.OnRefreshListener, RefreshListView<E> {
 
     @BindView(R.id.swipe_refresh_layout)
     public SwipeRefreshLayout mSwipeRefreshLayout;
@@ -40,4 +43,15 @@ public abstract class SwipeRefreshRecyclerViewFragment extends RecyclerViewFragm
 
     }
 
+    @Override
+    public void onRefresh() {
+        if (mPresent != null) {
+            mPresent.refresh();
+        }
+    }
+
+    @Override
+    public void onRefreshComplete() {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 }

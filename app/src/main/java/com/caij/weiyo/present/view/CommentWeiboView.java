@@ -9,5 +9,4 @@ public interface CommentWeiboView extends BaseView{
 
     public void onCommentSuccess(Comment comment);
 
-    void showLoading(boolean isShow);
 }

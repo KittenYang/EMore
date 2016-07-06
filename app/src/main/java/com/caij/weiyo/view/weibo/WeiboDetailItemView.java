@@ -51,7 +51,7 @@ public class WeiboDetailItemView extends WeiboItemView {
 
     @Override
     public void setWeibo(Weibo weibo) {
-        SpannableStringUtil.paraeSpannable(weibo, getContext());
+        SpannableStringUtil.paraeSpannable(weibo);
         super.setWeibo(weibo);
         Weibo reWeibo = weibo.getRetweeted_status();
         if (reWeibo == null) {

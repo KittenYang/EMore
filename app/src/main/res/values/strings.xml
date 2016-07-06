@@ -58,10 +58,66 @@
     <string name="publish_fail_hint">失败后微博已经自动存入草稿箱</string>
     <string name="replay_success">评论成功</string>
     <string name="user_undefine">用户不存在</string>
+    <string name="deleting">正在删除...</string>
+    <string name="collecting">正在收藏...</string>
+    <string name="uncollecting">正在取消收藏...</string>
+    <string name="commenting">正在评论...</string>
 
     <string-array name="user_headers">
         <item>全部</item>
         <item>原创</item>
         <item>图片</item>
     </string-array>
+
+    <!-- 高级设置 -->
+    <string name="title_advanced">高级设置</string>
+    <string name="title_ad_common">通用设置</string>
+    <string name="title_ad_habit">操作习惯</string>
+    <string name="title_rom_adaptive">系统适配</string>
+
+    <!-- 程序设置 -->
+    <string name="title_settings">设置</string>
+    <string name="settings_account_sumary">%d个授权账号</string>
+    <string name="category_def">常规设置</string>
+    <string name="settings_basic">基本设置</string>
+    <string name="settings_feedback">操作反馈</string>
+    <string name="settings_diy">主题设置</string>
+    <string name="settings_habit">偏好设置</string>
+    <string name="settings_notify">通知中心</string>
+    <string name="settings_flow">流量控制</string>
+    <string name="settings_offline">离线设置</string>
+    <string name="category_advanced">高级设置</string>
+    <string name="settings_more_advanced">更多高级设置</string>
+    <string name="settings_manage_account">账号管理</string>
+    <string name="settings_publish_delay">内容延迟发布</string>
+    <string name="settings_publish_delay_summary">延迟5秒发布微博、评论，可点击撤销</string>
+    <string name="settings_pic_rotate">旋转照片</string>
+    <string name="settings_pic_rotate_summary">拍摄照片分享时将照片旋转90度</string>
+    <string name="settings_share_aisen">推荐给好友</string>
+    <string name="settings_grade">给我好评</string>
+    <string name="settings_inner_browser">使用内置浏览器</string>
+    <string name="settings_app_resident">应用常驻内存</string>
+    <string name="settings_md_colors">主题颜色</string>
+
+    <!-- 通知设置 -->
+    <string name="title_notification">通知中心</string>
+    <string name="title_notification_enable">开启通知提醒</string>
+    <string name="settings_open">开启</string>
+    <string name="settings_close">关闭</string>
+    <string name="category_general">常规设置</string>
+    <string name="settings_dt_notify_interval">消息间隔</string>
+    <string name="settings_bother">夜间免打扰</string>
+    <string name="settings_bother_summary">凌晨1点-早上8点关闭通知提醒</string>
+    <string name="category_notify_type">通知类型</string>
+    <string name="settings_status_mention">\@我的微博</string>
+    <string name="settings_cmt_mention">\@我的评论</string>
+    <string name="settings_followers_notify">粉丝</string>
+    <string name="settings_cmt_notify">评论</string>
+    <string name="settings_dm_notify">私信</string>
+    <string name="category_notify_feedback">提醒方式</string>
+    <string name="settings_notify_sound">声音提醒</string>
+    <string name="settings_notify_virate">振动提醒</string>
+    <string name="settings_notify_led">LED提醒</string>
+    <string name="设置">设置</string>
+    <string name="setting">设置</string>
 </resources>

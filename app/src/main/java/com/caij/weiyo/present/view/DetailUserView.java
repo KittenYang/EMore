@@ -9,9 +9,6 @@ public interface DetailUserView extends BaseView{
 
     public void setUser(User user);
 
-    public void showGetUserLoading(boolean isShow);
-
-    void showFollowLoading(boolean b);
 
     void onFollowSuccess();
 

@@ -1,9 +1,13 @@
 package com.caij.weiyo.ui.fragment.weibo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -12,9 +16,10 @@ import com.caij.weiyo.UserPrefs;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.present.FriendWeiboPresent;
 import com.caij.weiyo.present.imp.FriendWeiboPresentImp;
-import com.caij.weiyo.present.imp.UserWeiboPresentImp;
+import com.caij.weiyo.present.view.FriendWeiboView;
 import com.caij.weiyo.source.local.LocalWeiboSource;
 import com.caij.weiyo.source.server.ServerWeiboSource;
+import com.caij.weiyo.ui.activity.publish.PublishWeiboActivity;
 import com.caij.weiyo.view.recyclerview.LoadMoreRecyclerView;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
@@ -25,7 +30,7 @@ import butterknife.ButterKnife;
  * Created by Caij on 2016/6/4.
  */
 public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresent> implements
-        RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+        RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, FriendWeiboView {
 
     @BindView(R.id.swipe_refresh_layout)
     public SwipeRefreshLayout mSwipeRefreshLayout;
@@ -41,6 +46,7 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeColors(
                 getResources().getColor(R.color.gplus_color_1),
@@ -56,20 +62,15 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
                 new ServerWeiboSource(), new LocalWeiboSource());
     }
 
-    @Override
-    public void onRefresh() {
-        mTimeLineWeiboPresent.onRefresh();
-    }
 
     @Override
     public void toRefresh() {
-        super.toRefresh();
         mSwipeRefreshLayout.setRefreshing(true);
+        mPresent.refresh();
     }
 
     @Override
-    public void onRefreshComplite() {
-        super.onRefreshComplite();
+    public void onRefreshComplete() {
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
@@ -83,4 +84,28 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
 
     }
 
+    @Override
+    public void onRefresh() {
+        mPresent.refresh();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.publish:
+                Intent intent = new Intent(getActivity(), PublishWeiboActivity.class);
+                startActivity(intent);
+                break;
+
+            case R.id.search:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

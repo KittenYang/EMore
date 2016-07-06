@@ -8,5 +8,4 @@ import com.caij.weiyo.present.LoginPresent;
  */
 public interface LoginView extends BaseView{
     public void onLoginSuccess(AccessToken accessToken);
-    public void showLoading(boolean isVisible);
 }

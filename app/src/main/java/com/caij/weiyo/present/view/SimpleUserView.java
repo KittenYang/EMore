@@ -9,6 +9,4 @@ public interface SimpleUserView extends BaseView{
 
     public void setUser(User user);
 
-    public void showGetUserLoading(boolean isShow);
-
 }

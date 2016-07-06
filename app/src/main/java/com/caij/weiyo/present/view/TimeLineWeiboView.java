@@ -9,17 +9,11 @@ import java.util.List;
 /**
  * Created by Caij on 2016/5/31.
  */
-public interface TimeLineWeiboView extends RefreshListView {
-
-    public void setWeibos(List<Weibo> weibos);
-
-    void toRefresh();
+public interface TimeLineWeiboView extends RefreshListView<Weibo> {
 
     Context getContent();
 
     void onDeleteWeiboSuccess(Weibo weibo, int position);
-
-    void showDialogLoging(boolean isShow);
 
     void onCollectSuccess(Weibo weibo);
 

@@ -46,15 +46,15 @@ public class ReplyCommentPresentImp implements ReplyCommentWeiboPresent {
 
     @Override
     public void toReplyComment(String comment) {
-        mCommentWeiboView.showLoading(true);
+        mCommentWeiboView.showDialogLoading(true);
         Subscription subscription = mCommentSource.replyComment(mToken, comment, mCid, mWeiboId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultResponseSubscriber<Comment>(mCommentWeiboView) {
                     @Override
                     protected void onFail(Throwable e) {
-                        mCommentWeiboView.showLoading(false);
-                        mCommentWeiboView.onComnLoadError();
+                        mCommentWeiboView.showDialogLoading(false);
+                        mCommentWeiboView.onDefaultLoadError();
                     }
 
                     @Override
@@ -64,7 +64,7 @@ public class ReplyCommentPresentImp implements ReplyCommentWeiboPresent {
 
                     @Override
                     public void onNext(Comment response) {
-                        mCommentWeiboView.showLoading(false);
+                        mCommentWeiboView.showDialogLoading(false);
                         mCommentWeiboView.onCommentSuccess(response);
                     }
                 });

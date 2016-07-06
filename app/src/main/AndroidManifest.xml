@@ -29,7 +29,8 @@
         <service android:name=".service.WeiyoService"/>
         <service android:name=".service.WeiyoService$GrayInnerService"/>
 
-        <activity android:name=".ui.activity.SplashActivity">
+        <activity android:name=".ui.activity.SplashActivity"
+            android:theme="@style/SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -95,6 +96,9 @@
             android:screenOrientation="portrait"/>
 
         <activity android:name=".ui.activity.CommentsActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.activity.SettingActivity"
             android:screenOrientation="portrait"/>
 
     </application>

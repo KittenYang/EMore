@@ -10,7 +10,9 @@ import android.text.TextUtils;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 
+import com.caij.weiyo.AppSettings;
 import com.caij.weiyo.R;
+import com.caij.weiyo.WeiYoApplication;
 import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.User;
 import com.caij.weiyo.bean.Weibo;
@@ -38,6 +40,7 @@ public class SpannableStringUtil {
     }
 
     public static void praseHttpUrl(Spannable spannableString) {
+        // 网页链接
         String scheme = HTTP_SCHEME;
         Linkify.addLinks(spannableString, Pattern.compile("http://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]"),
                 scheme);
@@ -78,7 +81,7 @@ public class SpannableStringUtil {
         }
     }
 
-    public static void praseSoftEmotions(Context context, Spannable spannableString) {
+    public static void praseSoftEmotions(Spannable spannableString) {
         for (int i = 0; i < spannableString.length(); i ++) {
             int unicode = Character.codePointAt(spannableString, i);
             int drawableId = EmotionsUtil.getSoftDrawableId(unicode);
@@ -86,6 +89,7 @@ public class SpannableStringUtil {
                 continue;
             }
             Bitmap bitmap = EmotionsUtil.getCacheEmotion(String.valueOf(unicode));
+            Context context = WeiYoApplication.getInstance();
             if (bitmap == null) {
                 bitmap = BitmapFactory.decodeResource(context.getResources(), drawableId);
                 int size = context.getResources().getDimensionPixelSize(R.dimen.text_size_medium);
@@ -114,7 +118,8 @@ public class SpannableStringUtil {
         }
     }
 
-    public static void paraeSpannable(Weibo weibo, Context applicationContent) {
+    public static void paraeSpannable(Weibo weibo) {
+        Context applicationContent = WeiYoApplication.getInstance();
         int color = applicationContent.getResources().getColor(R.color.link_text_color);
         int pressColor = applicationContent.getResources().getColor(R.color.link_text_press_color);
         SpannableString contentSpannableString = SpannableString.valueOf(weibo.getText());
@@ -122,7 +127,7 @@ public class SpannableStringUtil {
         SpannableStringUtil.praseHttpUrl(contentSpannableString);
         SpannableStringUtil.praseTopic(contentSpannableString);
         SpannableStringUtil.praseDefaultEmotions(applicationContent, contentSpannableString);
-        SpannableStringUtil.praseSoftEmotions(applicationContent, contentSpannableString);
+        SpannableStringUtil.praseSoftEmotions(contentSpannableString);
         SpannableStringUtil.urlSpan2ClickSpan(contentSpannableString, color, pressColor);
         weibo.setContentSpannableString(contentSpannableString);
 
@@ -137,7 +142,7 @@ public class SpannableStringUtil {
             SpannableStringUtil.praseHttpUrl(reContentSpannableString);
             SpannableStringUtil.praseTopic(reContentSpannableString);
             SpannableStringUtil.praseDefaultEmotions(applicationContent, reContentSpannableString);
-            SpannableStringUtil.praseSoftEmotions(applicationContent, contentSpannableString);
+            SpannableStringUtil.praseSoftEmotions(contentSpannableString);
             SpannableStringUtil.urlSpan2ClickSpan(reContentSpannableString, color, pressColor);
             reWeibo.setContentSpannableString(reContentSpannableString);
         }
@@ -151,7 +156,7 @@ public class SpannableStringUtil {
         SpannableStringUtil.praseHttpUrl(contentSpannableString);
         SpannableStringUtil.praseTopic(contentSpannableString);
         SpannableStringUtil.praseDefaultEmotions(applicationContent, contentSpannableString);
-        SpannableStringUtil.praseSoftEmotions(applicationContent, contentSpannableString);
+        SpannableStringUtil.praseSoftEmotions(contentSpannableString);
         SpannableStringUtil.urlSpan2ClickSpan(contentSpannableString, color, pressColor);
 
         comment.setTextSpannableString(contentSpannableString);
@@ -164,7 +169,7 @@ public class SpannableStringUtil {
         SpannableStringUtil.praseHttpUrl(text);
         SpannableStringUtil.praseTopic(text);
         SpannableStringUtil.praseDefaultEmotions(applicationContent, text);
-        SpannableStringUtil.praseSoftEmotions(applicationContent, text);
+        SpannableStringUtil.praseSoftEmotions(text);
         SpannableStringUtil.urlSpan2ClickSpan(text, color, pressColor);
     }
 

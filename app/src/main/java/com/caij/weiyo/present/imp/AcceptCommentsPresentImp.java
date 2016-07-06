@@ -2,8 +2,8 @@ package com.caij.weiyo.present.imp;
 
 import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.response.QueryWeiboCommentResponse;
-import com.caij.weiyo.present.MentionPresent;
-import com.caij.weiyo.present.view.MentionView;
+import com.caij.weiyo.present.RefreshListPresent;
+import com.caij.weiyo.present.view.RefreshListView;
 import com.caij.weiyo.source.WeiboSource;
 
 import java.util.ArrayList;
@@ -20,17 +20,17 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class AcceptCommentsPresentImp implements MentionPresent {
+public class AcceptCommentsPresentImp implements RefreshListPresent {
 
     private static final int COUNT = 20;
 
     private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private WeiboSource mWeiboSource;
-    private MentionView<Comment> mMentionView;
+    private RefreshListView<Comment> mMentionView;
     private List<Comment> mComments;
 
-    public AcceptCommentsPresentImp(String token, WeiboSource weiboSource, MentionView<Comment> mentionView) {
+    public AcceptCommentsPresentImp(String token, WeiboSource weiboSource, RefreshListView<Comment> mentionView) {
         mToken = token;
         mWeiboSource = weiboSource;
         mMentionView = mentionView;
@@ -39,12 +39,12 @@ public class AcceptCommentsPresentImp implements MentionPresent {
     }
 
     @Override
-    public void onUserFirstVisible() {
-        mMentionView.toRefresh();
+    public void userFirstVisible() {
+        refresh();
     }
 
     @Override
-    public void onRefresh() {
+    public void refresh() {
         Subscription su =  mWeiboSource.getAcceptComments(mToken, 0 ,0, COUNT, 1)
                 .flatMap(new Func1<QueryWeiboCommentResponse, Observable<List<Comment>>>() {
                     @Override
@@ -62,8 +62,8 @@ public class AcceptCommentsPresentImp implements MentionPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mMentionView.onComnLoadError();
-                        mMentionView.onRefreshComplite();
+                        mMentionView.onDefaultLoadError();
+                        mMentionView.onRefreshComplete();
                     }
 
                     @Override
@@ -71,15 +71,15 @@ public class AcceptCommentsPresentImp implements MentionPresent {
                         mComments.addAll(comments);
                         mMentionView.setEntities(mComments);
 
-                        mMentionView.onRefreshComplite();
-                        mMentionView.onLoadComplite(comments.size() > COUNT - 1);
+                        mMentionView.onRefreshComplete();
+                        mMentionView.onLoadComplete(comments.size() > COUNT - 1);
                     }
                 });
         mLoginCompositeSubscription.add(su);
     }
 
     @Override
-    public void onLoadMore() {
+    public void loadMore() {
         long maxId = 0;
         if (mComments != null && mComments.size() > 1) {
             maxId = mComments.get(mComments.size() - 1).getId();
@@ -108,8 +108,8 @@ public class AcceptCommentsPresentImp implements MentionPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mMentionView.onComnLoadError();
-                        mMentionView.onLoadComplite(true);
+                        mMentionView.onDefaultLoadError();
+                        mMentionView.onLoadComplete(true);
                     }
 
                     @Override
@@ -117,7 +117,7 @@ public class AcceptCommentsPresentImp implements MentionPresent {
                         mComments.addAll(comments);
                         mMentionView.setEntities(mComments);
 
-                        mMentionView.onLoadComplite(comments.size() > COUNT - 1);
+                        mMentionView.onLoadComplete(comments.size() > COUNT - 1);
                     }
                 });
         mLoginCompositeSubscription.add(su);
@@ -132,4 +132,6 @@ public class AcceptCommentsPresentImp implements MentionPresent {
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
     }
+
+
 }

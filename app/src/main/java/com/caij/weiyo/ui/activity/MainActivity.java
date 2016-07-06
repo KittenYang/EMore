@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -27,7 +29,6 @@ import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.User;
 import com.caij.weiyo.present.SimpleUserPresent;
 import com.caij.weiyo.present.imp.UserPresentImp;
-import com.caij.weiyo.present.view.DetailUserView;
 import com.caij.weiyo.present.view.SimpleUserView;
 import com.caij.weiyo.source.local.LocalUserSource;
 import com.caij.weiyo.source.server.ServerUserSource;
@@ -37,10 +38,10 @@ import com.caij.weiyo.ui.fragment.weibo.FriendWeiboFragment;
 import com.caij.weiyo.utils.ImageLoader;
 import com.caij.weiyo.utils.SystemUtil;
 
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity implements SimpleUserView {
 
@@ -83,7 +84,7 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
         mDrawerLayout.addDrawerListener(toggle);
 
         AccessToken token = UserPrefs.get().getWeiYoToken();
-        SimpleUserPresent simpleUserPresent = new UserPresentImp(token.getAccess_token(),Long.parseLong(token.getUid()),
+        SimpleUserPresent simpleUserPresent = new UserPresentImp(token.getAccess_token(), Long.parseLong(token.getUid()),
                 this, new ServerUserSource(), new LocalUserSource());
         simpleUserPresent.getWeiboUserInfoByUid();
 
@@ -105,16 +106,23 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
-            mFriendWeiboFragment  = new FriendWeiboFragment();
+            mFriendWeiboFragment = new FriendWeiboFragment();
             mMessageFragment = new MessageFragment();
             transaction.add(R.id.attach_container,
                     mFriendWeiboFragment, FRIEND_WEIBO_FRAGMENT_TAG).commit();
-        }else {
+        } else {
             mFriendWeiboFragment = getSupportFragmentManager().findFragmentByTag(FRIEND_WEIBO_FRAGMENT_TAG);
+            if (mFriendWeiboFragment == null) {
+                mFriendWeiboFragment = new FriendWeiboFragment();
+            }
             mMessageFragment = getSupportFragmentManager().findFragmentByTag(MESSAGE_FRAGMENT_TAG);
+            if (mMessageFragment == null) {
+                mMessageFragment = new MessageFragment();
+            }
         }
 
         mVisibleFragment = mFriendWeiboFragment;
+
     }
 
     private Drawable createNavMenuItemDrawable(int drawableId) {
@@ -126,7 +134,7 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
                 new int[]{selectedColor, defColor});
         Drawable drawableIcon = DrawableCompat.wrap(ContextCompat.getDrawable(this, drawableId));
         DrawableCompat.setTintList(drawableIcon, mIconTints);
-        drawableIcon.setBounds(0, 0 , drawableIcon.getIntrinsicWidth(), drawableIcon.getIntrinsicHeight());
+        drawableIcon.setBounds(0, 0, drawableIcon.getIntrinsicWidth(), drawableIcon.getIntrinsicHeight());
         return drawableIcon;
     }
 
@@ -139,41 +147,15 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
         }
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.publish:
-                Intent intent = new Intent(this, PublishWeiboActivity.class);
-                startActivity(intent);
-                break;
-
-            case R.id.search:
-
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public void setUser(User user) {
         if (user != null) {
             mTvNavigationUsername.setText(user.getName());
             ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild().setCircle(true).build();
-            ImageLoader.load(this, mImgNavigationAvatar,  user.getAvatar_large(), R.mipmap.ic_default_circle_head_image, config);
+            ImageLoader.load(this, mImgNavigationAvatar, user.getAvatar_large(), R.drawable.circle_image_placeholder, config);
         }
     }
 
-    @Override
-    public void showGetUserLoading(boolean isShow) {
-
-    }
 
     @OnCheckedChanged(R.id.rb_weibo)
     public void onWeiboCheck(RadioButton view, boolean isCheck) {
@@ -190,6 +172,16 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
             switchContent(mVisibleFragment, mMessageFragment, R.id.attach_container, MESSAGE_FRAGMENT_TAG);
             mVisibleFragment = mMessageFragment;
             mDrawerLayout.closeDrawer(Gravity.LEFT);
+        }
+    }
+
+    @OnClick({R.id.img_navigation_avatar, R.id.tv_setting})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_setting:
+                Intent intent = new Intent(this, SettingActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 }

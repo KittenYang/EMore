@@ -1,6 +1,7 @@
 package com.caij.weiyo.present.imp;
 
 
+import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Account;
 import com.caij.weiyo.bean.PublishBean;
 import com.caij.weiyo.bean.Weibo;
@@ -62,7 +63,7 @@ public class WeiboPublishPresentImp implements WeiboPublishPresent {
             return;
         }
 
-        mWeiboPublishView.showPublishLoading(true);
+        mWeiboPublishView.showDialogLoading(true, R.string.publish_loading);
         Observable<Weibo> publishWeiboObservable;
         if (imagePaths == null || imagePaths.size() == 0) {
             publishWeiboObservable = mServerPublishWeiboSource.
@@ -77,18 +78,17 @@ public class WeiboPublishPresentImp implements WeiboPublishPresent {
                 .subscribe(new Subscriber<Weibo>() {
                     @Override
                     public void onCompleted() {
-                        mWeiboPublishView.showPublishLoading(false);
+                        mWeiboPublishView.showDialogLoading(false, R.string.publish_loading);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        mWeiboPublishView.onComnLoadError();
-                        mWeiboPublishView.showPublishLoading(false);
+                        mWeiboPublishView.onDefaultLoadError();
+                        mWeiboPublishView.showDialogLoading(false, R.string.publish_loading);
                     }
 
                     @Override
                     public void onNext(Weibo weibo) {
-                        mWeiboPublishView.showPublishLoading(false);
                         mWeiboPublishView.onPublishSuccess(weibo);
                     }
                 });

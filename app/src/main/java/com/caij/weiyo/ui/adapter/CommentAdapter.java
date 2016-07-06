@@ -47,7 +47,7 @@ public class CommentAdapter extends BaseAdapter<Comment, CommentAdapter.CommentV
 
         ImageLoader.ImageConfig imageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
         ImageLoader.load(mContext, holder.imgPhoto, comment.getUser().getAvatar_large(),
-                R.mipmap.ic_default_circle_head_image, imageConfig);
+                R.drawable.circle_image_placeholder, imageConfig);
     }
 
     public static class CommentViewHolder extends BaseViewHolder {

@@ -10,13 +10,9 @@ import java.util.List;
 /**
  * Created by Caij on 2016/5/31.
  */
-public interface WeiboCommentsView extends BaseListView {
-
-    public void setComments(List<Comment> comments);
+public interface WeiboCommentsView extends BaseListView<Comment> {
 
     Context getContent();
-
-    void showDialogLoading(boolean isShow);
 
     void onDeleteSuccess(Comment comment);
 }

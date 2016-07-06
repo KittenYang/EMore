@@ -44,13 +44,13 @@ public class RepostWeiboPresentImp implements RepostWeiboPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mRepostWeiboView.showLoading(false);
-                        mRepostWeiboView.onComnLoadError();
+                        mRepostWeiboView.showDialogLoading(false);
+                        mRepostWeiboView.onDefaultLoadError();
                     }
 
                     @Override
                     public void onNext(Weibo weibo) {
-                        mRepostWeiboView.showLoading(false);
+                        mRepostWeiboView.showDialogLoading(false);
                         mRepostWeiboView.onRepostSuccess(weibo);
                     }
                 });

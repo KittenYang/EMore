@@ -21,6 +21,8 @@ import com.caij.weiyo.source.server.ServerWeiboSource;
 import com.caij.weiyo.ui.adapter.GridImageAdapter;
 import com.caij.weiyo.ui.adapter.UserGridImageAdapter;
 import com.caij.weiyo.ui.fragment.weibo.TimeLineWeiboFragment;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
+import com.caij.weiyo.view.recyclerview.BaseViewHolder;
 import com.caij.weiyo.view.recyclerview.LoadMoreRecyclerView;
 
 import java.util.List;
@@ -28,10 +30,8 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/29.
  */
-public class UserImageFragment extends RecyclerViewFragment implements TimeLineWeiboImageView, LoadMoreRecyclerView.OnLoadMoreListener {
+public class UserImageFragment extends RecyclerViewFragment<PicUrl, UserWeiboPresent> implements TimeLineWeiboImageView, LoadMoreRecyclerView.OnLoadMoreListener {
 
-    private UserWeiboPresent mTimeLineWeiboPresent;
-    private UserGridImageAdapter mImageAdapter;
 
     public static UserImageFragment newInstance(String username) {
         Bundle args = new Bundle();
@@ -44,15 +44,15 @@ public class UserImageFragment extends RecyclerViewFragment implements TimeLineW
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mTimeLineWeiboPresent = createPresent();
         initView();
     }
 
+    @Override
+    protected BaseAdapter<PicUrl, ? extends BaseViewHolder> createRecyclerViewAdapter() {
+        return new UserGridImageAdapter(getActivity());
+    }
+
     private void initView() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
-        mLoadMoreLoadMoreRecyclerView.setLayoutManager(gridLayoutManager);
-        mLoadMoreLoadMoreRecyclerView.setOnLoadMoreListener(this);
-        mImageAdapter = new UserGridImageAdapter(getActivity());
         mLoadMoreLoadMoreRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
@@ -62,7 +62,6 @@ public class UserImageFragment extends RecyclerViewFragment implements TimeLineW
                 outRect.right = getResources().getDimensionPixelSize(R.dimen.image_item_space);
             }
         });
-        mLoadMoreLoadMoreRecyclerView.setAdapter(mImageAdapter);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 getResources().getDimensionPixelOffset(R.dimen.spacing_medium));
         View headView  = new View(getActivity());
@@ -70,20 +69,18 @@ public class UserImageFragment extends RecyclerViewFragment implements TimeLineW
         mLoadMoreLoadMoreRecyclerView.getAdapter().addHeaderView(headView);
     }
 
+    @Override
+    protected RecyclerView.LayoutManager createRecyclerLayoutManager() {
+        return new GridLayoutManager(getActivity(), 3);
+    }
+
+    @Override
     protected UserWeiboPresent createPresent() {
         AccessToken accessToken = UserPrefs.get().getWeiCoToken();
         String username = getArguments().getString(Key.USERNAME);
         return new UserImagePresentImp(accessToken.getAccess_token(), username, this, new ServerWeiboSource());
     }
 
-    @Override
-    public void onLoadComplite(boolean isHaveMore) {
-        if (isHaveMore) {
-            mLoadMoreLoadMoreRecyclerView.completeLoading();
-        }else {
-            mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_NO_MORE);
-        }
-    }
 
     @Override
     public void onEmpty() {
@@ -92,23 +89,12 @@ public class UserImageFragment extends RecyclerViewFragment implements TimeLineW
 
     @Override
     protected void onUserFirstVisible() {
+        super.onUserFirstVisible();
         mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
-        mTimeLineWeiboPresent.onFirstVisible();
     }
 
     @Override
-    public void onLoadMore() {
-        mTimeLineWeiboPresent.onLoadMore();
-    }
-
-    @Override
-    public void setImages(List<PicUrl> picUrls) {
-        mImageAdapter.setEntities(picUrls);
-        mImageAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onRefreshComplite() {
+    public void onItemClick(View view, int position) {
 
     }
 }

@@ -7,7 +7,11 @@ public interface BaseView {
 
     void onAuthenticationError();
 
-    void onComnLoadError();
+    void onDefaultLoadError();
 
     void showHint(int stringId);
+
+    void showDialogLoading(boolean isShow, int hintStringId);
+
+    void showDialogLoading(boolean isShow);
 }

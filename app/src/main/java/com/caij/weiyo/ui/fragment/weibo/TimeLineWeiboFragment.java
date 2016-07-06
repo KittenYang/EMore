@@ -1,12 +1,8 @@
 package com.caij.weiyo.ui.fragment.weibo;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.caij.weiyo.R;
@@ -18,6 +14,8 @@ import com.caij.weiyo.ui.activity.WeiboDetialActivity;
 import com.caij.weiyo.ui.adapter.WeiboAdapter;
 import com.caij.weiyo.ui.fragment.RecyclerViewFragment;
 import com.caij.weiyo.utils.DialogUtil;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
+import com.caij.weiyo.view.recyclerview.BaseViewHolder;
 import com.caij.weiyo.view.recyclerview.LoadMoreRecyclerView;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 
@@ -27,61 +25,26 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/4.
  */
-public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends RecyclerViewFragment
+public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends RecyclerViewFragment<Weibo, P>
         implements TimeLineWeiboView, RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener {
 
-    protected P mTimeLineWeiboPresent;
-    protected WeiboAdapter mAdapter;
-
-    private Dialog mLoadDialog;
-
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mAdapter = new WeiboAdapter(getActivity(), this, this);
-        mLoadMoreLoadMoreRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mLoadMoreLoadMoreRecyclerView.setAdapter(mAdapter);
-        mLoadMoreLoadMoreRecyclerView.setOnLoadMoreListener(this);
-        mTimeLineWeiboPresent = createPresent();
-        if (mTimeLineWeiboPresent != null) {
-            mTimeLineWeiboPresent.onCreate();
-        }
-    }
-
-    protected abstract P createPresent();
-
-    @Override
-    public void onLoadMore() {
-        mTimeLineWeiboPresent.onLoadMore();
+    protected BaseAdapter<Weibo, ? extends BaseViewHolder> createRecyclerViewAdapter() {
+        return new WeiboAdapter(getActivity());
     }
 
     @Override
     public void onItemClick(View view, int position) {
         if (view.getId() == R.id.btn_menus) {
-            onMenuClick(mAdapter.getItem(position), position);
+            onMenuClick(mRecyclerViewAdapter.getItem(position), position);
         }else {
-            Intent intent = WeiboDetialActivity.newIntent(getActivity(), mAdapter.getItem(position));
+            Intent intent = WeiboDetialActivity.newIntent(getActivity(), mRecyclerViewAdapter.getItem(position));
             startActivity(intent);
         }
     }
 
     @Override
-    public void setWeibos(List<Weibo> weibos) {
-        mAdapter.setEntities(weibos);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void toRefresh() {
-        mTimeLineWeiboPresent.onRefresh();
-    }
-
-    @Override
-    public void onRefreshComplite() {
-    }
-
-    @Override
-    public void onLoadComplite(boolean isHaveMore) {
+    public void onLoadComplete(boolean isHaveMore) {
         if (isHaveMore) {
             mLoadMoreLoadMoreRecyclerView.completeLoading();
         }else {
@@ -127,37 +90,21 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends R
     }
 
     private void deleteWeibo(Weibo weibo, int position) {
-        mTimeLineWeiboPresent.deleteWeibo(weibo, position);
+        mPresent.deleteWeibo(weibo, position);
     }
 
     private void collectWeibo(Weibo weibo) {
-        mTimeLineWeiboPresent.collectWeibo(weibo);
+        mPresent.collectWeibo(weibo);
     }
 
     private void uncollectWeibo(Weibo weibo) {
-        mTimeLineWeiboPresent.uncollectWeibo(weibo);
-    }
-
-    @Override
-    public void showDialogLoging(boolean isShow) {
-        if (isShow) {
-            if (mLoadDialog == null) {
-                mLoadDialog = DialogUtil.showProgressDialog(getActivity(), null, getString(R.string.requesting));
-            }else {
-                mLoadDialog.show();
-            }
-        }else {
-            if (mLoadDialog != null) {
-                mLoadDialog.dismiss();
-            }
-        }
-
+        mPresent.uncollectWeibo(weibo);
     }
 
     @Override
     public void onDeleteWeiboSuccess(Weibo weibo, int position) {
-        mAdapter.removeEntity(weibo);
-        mAdapter.notifyItemRemoved(position);
+        mRecyclerViewAdapter.removeEntity(weibo);
+        mRecyclerViewAdapter.notifyItemRemoved(position);
     }
 
     @Override
@@ -170,9 +117,4 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends R
         weibo.setFavorited(false);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mTimeLineWeiboPresent.onDestroy();
-    }
 }

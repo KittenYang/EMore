@@ -35,6 +35,7 @@ public class WeiboDetailTabLayout extends TabLayout{
         super(context, attrs, defStyleAttr);
     }
 
+    @Override
     public void addTab(@NonNull Tab tab, boolean setSelected) {
         super.addTab(tab, setSelected);
         mTabsCount ++;
@@ -48,10 +49,9 @@ public class WeiboDetailTabLayout extends TabLayout{
                 vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                     @Override
                     public boolean onPreDraw() {
-                        ViewGroup parent = (ViewGroup) view.getParent();
                         int parentWidth =  DensityUtil.getScreenWidth(getContext());
-                        if (parent != null) {
-                            parentWidth = parent.getWidth();
+                        if (getMeasuredWidth() > 0) {
+                            parentWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
                         }
                         int viewWidth  =  view.getWidth();
                         LogUtil.d("onPreDraw", "parent width %s", parentWidth);

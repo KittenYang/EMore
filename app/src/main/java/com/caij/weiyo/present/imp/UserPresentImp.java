@@ -43,7 +43,6 @@ public class UserPresentImp implements SimpleUserPresent {
 
     @Override
     public void getWeiboUserInfoByUid() {
-        mUserView.showGetUserLoading(true);
         Subscription localSubscription = mLocalUserSource.getWeiboUserInfoByUid(mToken, mUid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -55,7 +54,7 @@ public class UserPresentImp implements SimpleUserPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mUserView.onComnLoadError();
+                        mUserView.onDefaultLoadError();
                     }
 
                     @Override
@@ -69,13 +68,10 @@ public class UserPresentImp implements SimpleUserPresent {
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public void onCompleted() {
-                        mUserView.showGetUserLoading(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        mUserView.onComnLoadError();
-                        mUserView.showGetUserLoading(false);
                     }
 
                     @Override

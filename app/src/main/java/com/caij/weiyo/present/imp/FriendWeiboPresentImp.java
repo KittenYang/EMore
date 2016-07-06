@@ -2,6 +2,7 @@ package com.caij.weiyo.present.imp;
 
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.FriendWeiboPresent;
+import com.caij.weiyo.present.view.FriendWeiboView;
 import com.caij.weiyo.present.view.TimeLineWeiboView;
 import com.caij.weiyo.source.DefaultResponseSubscriber;
 import com.caij.weiyo.source.WeiboSource;
@@ -21,14 +22,14 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class FriendWeiboPresentImp extends AbsTimeLinePresent implements FriendWeiboPresent {
+public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> implements FriendWeiboPresent {
 
     private final static int PAGE_COUNT = 20;
 
     private WeiboSource mLocalWeiboSource;
     private List<Weibo> mWeibos;
 
-    public FriendWeiboPresentImp(String token, TimeLineWeiboView view, WeiboSource serverWeiboSource,
+    public FriendWeiboPresentImp(String token, FriendWeiboView view, WeiboSource serverWeiboSource,
                                  WeiboSource localWeiboSource) {
         super(token, view, serverWeiboSource);
         mLocalWeiboSource = localWeiboSource;
@@ -48,7 +49,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent implements FriendW
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
-                        SpannableStringUtil.paraeSpannable(weibo, mView.getContent().getApplicationContext());
+                        SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;
                     }
                 })
@@ -69,7 +70,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent implements FriendW
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
-                        mView.setWeibos(mWeibos);
+                        mView.setEntities(mWeibos);
                         mView.toRefresh();
                     }
                 });
@@ -77,7 +78,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent implements FriendW
     }
 
     @Override
-    public void onRefresh() {
+    public void refresh() {
         Subscription subscription = mServerWeiboSource.getFriendWeibo(mToken, 0, 0, PAGE_COUNT, 1)
                 .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
                     @Override
@@ -90,7 +91,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent implements FriendW
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
-                        SpannableStringUtil.paraeSpannable(weibo, mView.getContent().getApplicationContext());
+                        SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;
                     }
                 })
@@ -106,24 +107,24 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent implements FriendW
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
                     @Override
                     public void onCompleted() {
-                        mView.onRefreshComplite();
+                        mView.onRefreshComplete();
                     }
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mView.onComnLoadError();
-                        mView.onRefreshComplite();
+                        mView.onDefaultLoadError();
+                        mView.onRefreshComplete();
                     }
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.clear();
                         mWeibos.addAll(weibos);
-                        mView.setWeibos(mWeibos);
+                        mView.setEntities(mWeibos);
                         if (weibos.size() == 0) {
                             mView.onEmpty();
                         }else {
-                            mView.onLoadComplite(weibos.size() >= PAGE_COUNT);
+                            mView.onLoadComplete(weibos.size() >= PAGE_COUNT);
                         }
                     }
                 });
@@ -131,7 +132,12 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent implements FriendW
     }
 
     @Override
-    public void onLoadMore() {
+    public void userFirstVisible() {
+
+    }
+
+    @Override
+    public void loadMore() {
         long maxId = 0;
         if (mWeibos.size() > 0) {
             maxId = mWeibos.get(mWeibos.size() - 1).getId();
@@ -154,7 +160,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent implements FriendW
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
-                        SpannableStringUtil.paraeSpannable(weibo, mView.getContent().getApplicationContext());
+                        SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;
                     }
                 })
@@ -169,15 +175,15 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent implements FriendW
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mView.onComnLoadError();
-                        mView.onLoadComplite(true);
+                        mView.onDefaultLoadError();
+                        mView.onLoadComplete(true);
                     }
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
-                        mView.setWeibos(mWeibos);
-                        mView.onLoadComplite(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
+                        mView.setEntities(mWeibos);
+                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
                     }
                 });
         mLoginCompositeSubscription.add(subscription);

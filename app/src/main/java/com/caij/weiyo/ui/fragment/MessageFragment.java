@@ -11,10 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.caij.weiyo.R;
+import com.caij.weiyo.present.ListPresent;
 import com.caij.weiyo.ui.activity.CommentsActivity;
 import com.caij.weiyo.ui.activity.MentionActivity;
 import com.caij.weiyo.ui.adapter.WeiboAdapter;
 import com.caij.weiyo.utils.DensityUtil;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 /**
@@ -40,9 +42,13 @@ public class MessageFragment extends SwipeRefreshRecyclerViewFragment {
         View commentView = layoutInflater.inflate(R.layout.item_message_head, mLoadMoreLoadMoreRecyclerView, false);
         View priseView = layoutInflater.inflate(R.layout.item_message_head, mLoadMoreLoadMoreRecyclerView, false);
 
-        setValue(mentionView, "@我的", R.mipmap.messagescenter_at);
-        setValue(commentView, "评论", R.mipmap.messagescenter_comments);
-        setValue(priseView, "赞", R.mipmap.messagescenter_good);
+//        setValue(mentionView, "@我的", R.mipmap.messagescenter_at);
+//        setValue(commentView, "评论", R.mipmap.messagescenter_comments);
+//        setValue(priseView, "赞", R.mipmap.messagescenter_good);
+
+        setValue(mentionView, "@我的", R.mipmap.ic_comment);
+        setValue(commentView, "评论", R.mipmap.ic_comment);
+        setValue(priseView, "赞", R.mipmap.ic_comment);
 
         mLoadMoreLoadMoreRecyclerView.getAdapter().addHeaderView(mentionView);
         mLoadMoreLoadMoreRecyclerView.getAdapter().addHeaderView(commentView);
@@ -72,6 +78,16 @@ public class MessageFragment extends SwipeRefreshRecyclerViewFragment {
         });
     }
 
+    @Override
+    protected BaseAdapter createRecyclerViewAdapter() {
+        return null;
+    }
+
+    @Override
+    protected ListPresent createPresent() {
+        return null;
+    }
+
     private void setValue(View view, String title, int drawable) {
         TextView tvTitle  = (TextView) view.findViewById(R.id.tv_title);
         ImageView ivIcon  = (ImageView) view.findViewById(R.id.iv_icon);
@@ -86,6 +102,16 @@ public class MessageFragment extends SwipeRefreshRecyclerViewFragment {
 
     @Override
     public void onRefresh() {
+
+    }
+
+    @Override
+    public void onEmpty() {
+
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
 
     }
 }

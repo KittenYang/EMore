@@ -43,7 +43,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
     }
 
     @Override
-    public void onFirstVisible() {
+    public void userFirstVisible() {
         Subscription subscription = mServerCommentSource.getCommentsByWeibo(mToken, mWeiboId, 0, 0, PAGE_COUNET, 1)
                 .flatMap(new Func1<List<Comment>, Observable<Comment>>() {
                     @Override
@@ -69,17 +69,17 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mWeiboCommentsView.onComnLoadError();
+                        mWeiboCommentsView.onDefaultLoadError();
                     }
 
                     @Override
                     public void onNext(List<Comment> comments) {
                         mComments.addAll(comments);
-                        mWeiboCommentsView.setComments(mComments);
+                        mWeiboCommentsView.setEntities(mComments);
                         if (comments.size() == 0) {
                             mWeiboCommentsView.onEmpty();
                         }else {
-                            mWeiboCommentsView.onLoadComplite(comments.size() >= 10);
+                            mWeiboCommentsView.onLoadComplete(comments.size() >= 10);
                         }
                     }
                 });
@@ -88,7 +88,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
     }
 
     @Override
-    public void onLoadMore() {
+    public void loadMore() {
         long maxId = 0;
         if (mComments.size() > 0) {
             maxId = mComments.get(mComments.size() - 1).getId();
@@ -124,15 +124,15 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mWeiboCommentsView.onComnLoadError();
-                        mWeiboCommentsView.onLoadComplite(true);
+                        mWeiboCommentsView.onDefaultLoadError();
+                        mWeiboCommentsView.onLoadComplete(true);
                     }
 
                     @Override
                     public void onNext(List<Comment> comments) {
                         mComments.addAll(comments);
-                        mWeiboCommentsView.setComments(mComments);
-                        mWeiboCommentsView.onLoadComplite(comments.size() > 15);
+                        mWeiboCommentsView.setEntities(mComments);
+                        mWeiboCommentsView.onLoadComplete(comments.size() > 15);
                     }
                 });
 
@@ -153,7 +153,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mWeiboCommentsView.onComnLoadError();
+                        mWeiboCommentsView.onDefaultLoadError();
                         mWeiboCommentsView.showDialogLoading(false);
                     }
 
@@ -175,4 +175,6 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
     }
+
+
 }

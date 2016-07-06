@@ -89,7 +89,6 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
 
     private User mUser;
     private MenuItem menuItem;
-    private Dialog mFollowDialog;
 
     public static Intent newIntent(Context context, User user) {
         Intent intent = new Intent(context, UserInfoActivity.class);
@@ -189,7 +188,7 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
         txtFollowersCounter.setText(CountUtil.getCounter(this, user.getFollowers_count()) + getString(R.string.fans));
         ImageLoader.ImageConfigBuild build = new ImageLoader.ImageConfigBuild().setCircle(true).
                 setScaleType(ImageLoader.ScaleType.CENTER_CROP);
-        ImageLoader.load(this, ivAvatar, user.getAvatar_large(), R.mipmap.ic_default_circle_head_image, build.build());
+        ImageLoader.load(this, ivAvatar, user.getAvatar_large(), R.drawable.circle_image_placeholder, build.build());
 
         initContent(user);
 
@@ -240,10 +239,6 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
         }
     }
 
-    @Override
-    public void showGetUserLoading(boolean isShow) {
-
-    }
 
     @OnClick({R.id.txtFriendsCounter, R.id.txtFollowersCounter})
     public void onClick(View view) {
@@ -253,19 +248,6 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
                 Intent intent = FriendshipActivity.newIntent(this, mUser.getId());
                 startActivity(intent);
                 break;
-        }
-    }
-
-    @Override
-    public void showFollowLoading(boolean b) {
-        if (b) {
-            if (mFollowDialog == null) {
-                mFollowDialog = DialogUtil.showProgressDialog(this, null, getString(R.string.requesting));
-            } else {
-                mFollowDialog.show();
-            }
-        } else {
-            mFollowDialog.dismiss();
         }
     }
 

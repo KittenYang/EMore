@@ -68,8 +68,8 @@ public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> i
 
     @Override
     protected void onUserFirstVisible() {
+        super.onUserFirstVisible();
         mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
-        mTimeLineWeiboPresent.onFirstVisible();
     }
 
     @Override
@@ -85,7 +85,18 @@ public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> i
     @Override
     public void onClick(DialogInterface dialog, int which) {
         mFilterDialog.dismiss();
-        mTimeLineWeiboPresent.filter(which);
+        mPresent.filter(which);
         mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        //这里因为加了head  现在需要 -1
+        super.onItemClick(view, position - 1);
+    }
+
+    @Override
+    public void onRefreshComplete() {
+
     }
 }

@@ -40,7 +40,17 @@ public class FriendPresentImp implements FriendshipPresent {
     }
 
     @Override
-    public void onFirstVisible() {
+    public void onCreate() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        mLoginCompositeSubscription.clear();
+    }
+
+    @Override
+    public void userFirstVisible() {
         Subscription subscription = mUserSource.getFriends(mToken, mUid, PAGE_SIZE, 0, 0)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -52,23 +62,23 @@ public class FriendPresentImp implements FriendshipPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mFriendshipView.onComnLoadError();
-                        mFriendshipView.onLoadComplite(false);
+                        mFriendshipView.onDefaultLoadError();
+                        mFriendshipView.onLoadComplete(false);
                     }
 
                     @Override
                     public void onNext(FriendshipResponse friendshipResponse) {
                         mLastFriendshipResponse = friendshipResponse;
                         mUsers.addAll(friendshipResponse.getUsers());
-                        mFriendshipView.setUsers(mUsers);
-                        mFriendshipView.onLoadComplite(friendshipResponse.getUsers().size() > PAGE_SIZE - 1);
+                        mFriendshipView.setEntities(mUsers);
+                        mFriendshipView.onLoadComplete(friendshipResponse.getUsers().size() > PAGE_SIZE - 1);
                     }
                 });
         mLoginCompositeSubscription.add(subscription);
     }
 
     @Override
-    public void onLoadMore() {
+    public void loadMore() {
         Subscription subscription = mUserSource.getFriends(mToken, mUid, PAGE_SIZE, 0, mLastFriendshipResponse.getNext_cursor())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -80,28 +90,18 @@ public class FriendPresentImp implements FriendshipPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mFriendshipView.onComnLoadError();
-                        mFriendshipView.onLoadComplite(true);
+                        mFriendshipView.onDefaultLoadError();
+                        mFriendshipView.onLoadComplete(true);
                     }
 
                     @Override
                     public void onNext(FriendshipResponse friendshipResponse) {
                         mLastFriendshipResponse = friendshipResponse;
                         mUsers.addAll(friendshipResponse.getUsers());
-                        mFriendshipView.setUsers(mUsers);
-                        mFriendshipView.onLoadComplite(friendshipResponse.getUsers().size() > PAGE_SIZE - 1);
+                        mFriendshipView.setEntities(mUsers);
+                        mFriendshipView.onLoadComplete(friendshipResponse.getUsers().size() > PAGE_SIZE - 1);
                     }
                 });
         mLoginCompositeSubscription.add(subscription);
-    }
-
-    @Override
-    public void onCreate() {
-
-    }
-
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
     }
 }

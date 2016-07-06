@@ -6,9 +6,8 @@ import com.caij.weiyo.bean.Comment;
 /**
  * Created by Caij on 2016/7/4.
  */
-public interface MyPublishComentsView extends MentionView<Comment> {
+public interface MyPublishComentsView extends RefreshListView<Comment> {
 
     void onDeleteCommentSuccess(Comment comment, int position);
 
-    void showDialogLoading(boolean isShow);
 }

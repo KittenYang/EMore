@@ -50,7 +50,32 @@ public class UserImagePresentImp implements UserWeiboPresent {
     }
 
     @Override
-    public void onRefresh() {
+    public void deleteWeibo(Weibo weibo, int position) {
+
+    }
+
+    @Override
+    public void collectWeibo(Weibo weibo) {
+
+    }
+
+    @Override
+    public void uncollectWeibo(Weibo weibo) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        mLoginCompositeSubscription.clear();
+    }
+
+    @Override
+    public void filter(int feature) {
+
+    }
+
+    @Override
+    public void refresh() {
         Subscription subscription = mServerWeiboSource.getUseWeibo(mToken, mUsername, 2, 0, 0, PAGE_COUNT, 1)
                 .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
                     @Override
@@ -70,24 +95,22 @@ public class UserImagePresentImp implements UserWeiboPresent {
                 .subscribe(new Subscriber<List<Weibo>>() {
                     @Override
                     public void onCompleted() {
-                        mView.onRefreshComplite();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.onComnLoadError();
-                        mView.onRefreshComplite();
+                        mView.onDefaultLoadError();
                     }
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.clear();
                         mWeibos.addAll(weibos);
-                        mView.setImages(mPicUrl);
+                        mView.setEntities(mPicUrl);
                         if (weibos.size() == 0) {
                             mView.onEmpty();
                         }else {
-                            mView.onLoadComplite(weibos.size() >= PAGE_COUNT);
+                            mView.onLoadComplete(weibos.size() >= PAGE_COUNT);
                         }
                     }
                 });
@@ -95,23 +118,12 @@ public class UserImagePresentImp implements UserWeiboPresent {
     }
 
     @Override
-    public void deleteWeibo(Weibo weibo, int position) {
-
+    public void userFirstVisible() {
+        refresh();
     }
 
     @Override
-    public void collectWeibo(Weibo weibo) {
-
-    }
-
-    @Override
-    public void uncollectWeibo(Weibo weibo) {
-
-    }
-
-
-    @Override
-    public void onLoadMore() {
+    public void loadMore() {
         long maxId = 0;
         if (mWeibos.size() > 0) {
             maxId = mWeibos.get(mWeibos.size() - 1).getId();
@@ -146,32 +158,17 @@ public class UserImagePresentImp implements UserWeiboPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.onComnLoadError();
-                        mView.onLoadComplite(true);
+                        mView.onDefaultLoadError();
+                        mView.onLoadComplete(true);
                     }
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
-                        mView.setImages(mPicUrl);
-                        mView.onLoadComplite(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
+                        mView.setEntities(mPicUrl);
+                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
                     }
                 });
         mLoginCompositeSubscription.add(subscription);
-    }
-
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
-    }
-
-    @Override
-    public void onFirstVisible() {
-        onRefresh();
-    }
-
-    @Override
-    public void filter(int feature) {
-
     }
 }

@@ -1,5 +1,6 @@
 package com.caij.weiyo.present.imp;
 
+import com.caij.weiyo.R;
 import com.caij.weiyo.bean.Comment;
 import com.caij.weiyo.bean.response.QueryWeiboCommentResponse;
 import com.caij.weiyo.present.PublishCommentsPresent;
@@ -39,12 +40,43 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
     }
 
     @Override
-    public void onUserFirstVisible() {
-        mMentionView.toRefresh();
+    public void onCreate() {
+
     }
 
     @Override
-    public void onRefresh() {
+    public void onDestroy() {
+        mLoginCompositeSubscription.clear();
+    }
+
+    @Override
+    public void deleteComment(final Comment comment, final int position) {
+        mMentionView.showDialogLoading(true, R.string.deleting);
+       Subscription subscription = mWeiboSource.deleteComment(mToken, comment.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Comment>() {
+                    @Override
+                    public void onCompleted() {
+                        mMentionView.showDialogLoading(false, R.string.deleting);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mMentionView.onDefaultLoadError();
+                        mMentionView.showDialogLoading(false, R.string.deleting);
+                    }
+
+                    @Override
+                    public void onNext(Comment c) {
+                        mMentionView.onDeleteCommentSuccess(comment, position);
+                    }
+                });
+        mLoginCompositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void refresh() {
         Subscription su =  mWeiboSource.getPublishComments(mToken, 0 ,0, COUNT, 1)
                 .flatMap(new Func1<QueryWeiboCommentResponse, Observable<List<Comment>>>() {
                     @Override
@@ -62,8 +94,8 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mMentionView.onComnLoadError();
-                        mMentionView.onRefreshComplite();
+                        mMentionView.onDefaultLoadError();
+                        mMentionView.onRefreshComplete();
                     }
 
                     @Override
@@ -71,15 +103,20 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
                         mComments.addAll(comments);
                         mMentionView.setEntities(mComments);
 
-                        mMentionView.onRefreshComplite();
-                        mMentionView.onLoadComplite(comments.size() > COUNT - 1);
+                        mMentionView.onRefreshComplete();
+                        mMentionView.onLoadComplete(comments.size() > COUNT - 1);
                     }
                 });
         mLoginCompositeSubscription.add(su);
     }
 
     @Override
-    public void onLoadMore() {
+    public void userFirstVisible() {
+        refresh();
+    }
+
+    @Override
+    public void loadMore() {
         long maxId = 0;
         if (mComments != null && mComments.size() > 1) {
             maxId = mComments.get(mComments.size() - 1).getId();
@@ -108,8 +145,8 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        mMentionView.onComnLoadError();
-                        mMentionView.onLoadComplite(true);
+                        mMentionView.onDefaultLoadError();
+                        mMentionView.onLoadComplete(true);
                     }
 
                     @Override
@@ -117,45 +154,9 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
                         mComments.addAll(comments);
                         mMentionView.setEntities(mComments);
 
-                        mMentionView.onLoadComplite(comments.size() > COUNT - 1);
+                        mMentionView.onLoadComplete(comments.size() > COUNT - 1);
                     }
                 });
         mLoginCompositeSubscription.add(su);
-    }
-
-    @Override
-    public void onCreate() {
-
-    }
-
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
-    }
-
-    @Override
-    public void deleteComment(final Comment comment, final int position) {
-        mMentionView.showDialogLoading(true);
-       Subscription subscription = mWeiboSource.deleteComment(mToken, comment.getId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Comment>() {
-                    @Override
-                    public void onCompleted() {
-                        mMentionView.showDialogLoading(false);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mMentionView.onComnLoadError();
-                        mMentionView.showDialogLoading(false);
-                    }
-
-                    @Override
-                    public void onNext(Comment c) {
-                        mMentionView.onDeleteCommentSuccess(comment, position);
-                    }
-                });
-        mLoginCompositeSubscription.add(subscription);
     }
 }

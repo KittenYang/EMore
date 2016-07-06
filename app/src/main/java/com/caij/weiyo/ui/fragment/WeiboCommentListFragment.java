@@ -26,6 +26,8 @@ import com.caij.weiyo.ui.activity.publish.RepostWeiboActivity;
 import com.caij.weiyo.ui.adapter.CommentAdapter;
 import com.caij.weiyo.utils.DialogUtil;
 import com.caij.weiyo.utils.ToastUtil;
+import com.caij.weiyo.view.recyclerview.BaseAdapter;
+import com.caij.weiyo.view.recyclerview.BaseViewHolder;
 import com.caij.weiyo.view.recyclerview.LoadMoreRecyclerView;
 import com.caij.weiyo.view.recyclerview.RecyclerViewOnItemClickListener;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -35,12 +37,9 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/14.
  */
-public class WeiboCommentListFragment extends RecyclerViewFragment implements WeiboCommentsView, LoadMoreRecyclerView.OnLoadMoreListener, RecyclerViewOnItemClickListener {
+public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, WeiboCommentsPresent> implements WeiboCommentsView, LoadMoreRecyclerView.OnLoadMoreListener, RecyclerViewOnItemClickListener {
 
     private static final int REPLY_COMMENT_REQUEST_CODE = 100;
-    private WeiboCommentsPresent mWeiboCommentsPresent;
-    private CommentAdapter mCommentAdapter;
-    private Dialog mCommentDialog;
     private ClipboardManager mClipboardManager;
     private Weibo mWeibo;
 
@@ -55,47 +54,30 @@ public class WeiboCommentListFragment extends RecyclerViewFragment implements We
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        AccessToken token = UserPrefs.get().getWeiYoToken();
-        mWeibo = (Weibo) getArguments().getSerializable(Key.OBJ);
-        mWeiboCommentsPresent = new WeiboCommentsPresentImp(token.getAccess_token(), mWeibo.getId(),
-                new ServerWeiboSource(), this);
-        mCommentAdapter = new CommentAdapter(getActivity());
-        mCommentAdapter.setOnItemClickListener(this);
-        mLoadMoreLoadMoreRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mLoadMoreLoadMoreRecyclerView.setBackgroundColor(getResources().getColor(R.color.white));
-        mLoadMoreLoadMoreRecyclerView.setAdapter(mCommentAdapter);
-        mLoadMoreLoadMoreRecyclerView.setOnLoadMoreListener(this);
         mLoadMoreLoadMoreRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item))
                 .size(getResources().getDimensionPixelSize(R.dimen.divider)).build());
-
         mClipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
     }
 
     @Override
+    protected BaseAdapter<Comment, ? extends BaseViewHolder> createRecyclerViewAdapter() {
+        return  new CommentAdapter(getActivity());
+    }
+
+    @Override
+    protected WeiboCommentsPresent createPresent() {
+        AccessToken token = UserPrefs.get().getWeiYoToken();
+        mWeibo = (Weibo) getArguments().getSerializable(Key.OBJ);
+        return new WeiboCommentsPresentImp(token.getAccess_token(), mWeibo.getId(),
+                new ServerWeiboSource(), this);
+    }
+
+    @Override
     protected void onUserFirstVisible() {
+        super.onUserFirstVisible();
         mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
-        mWeiboCommentsPresent.onFirstVisible();
-    }
-
-    @Override
-    public void onLoadMore() {
-        mWeiboCommentsPresent.onLoadMore();
-    }
-
-    @Override
-    public void setComments(List<Comment> comments) {
-        mCommentAdapter.setEntities(comments);
-        mCommentAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onLoadComplite(boolean isHaveMore) {
-        if (isHaveMore) {
-            mLoadMoreLoadMoreRecyclerView.completeLoading();
-        }else {
-            mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_NO_MORE);
-        }
     }
 
     @Override
@@ -110,36 +92,21 @@ public class WeiboCommentListFragment extends RecyclerViewFragment implements We
     }
 
     @Override
-    public void showDialogLoading(boolean isShow) {
-        if (isShow) {
-            if (mCommentDialog  == null) {
-                mCommentDialog = DialogUtil.showProgressDialog(getActivity(), null, getString(R.string.requesting));
-            }else {
-                mCommentDialog.show();
-            }
-        }else {
-            if (mCommentDialog != null) {
-                mCommentDialog.dismiss();
-            }
-        }
-    }
-
-    @Override
     public void onDeleteSuccess(Comment comment) {
-        mCommentAdapter.removeEntity(comment);
-        mCommentAdapter.notifyDataSetChanged();
+        mRecyclerViewAdapter.removeEntity(comment);
+        mRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        final Comment comment = mCommentAdapter.getItem(position);
+        final Comment comment = mRecyclerViewAdapter.getItem(position);
         if (comment.getUser().getId() == Long.parseLong(UserPrefs.get().getWeiYoToken().getUid())) {
             String[] array = new String[]{"删除", "复制"};
             DialogUtil.showItemDialog(getActivity(), null, array, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (which == 0) {
-                        mWeiboCommentsPresent.deleteComment(comment);
+                        mPresent.deleteComment(comment);
                     }else if (which == 1) {
                         // 将文本内容放到系统剪贴板里。
                         mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, comment.getText()));

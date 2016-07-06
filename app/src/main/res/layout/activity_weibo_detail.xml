@@ -15,23 +15,13 @@
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/collapsingToolbar"
+            <com.caij.weiyo.view.weibo.WeiboDetailItemView
+                android:id="@+id/weibo_item_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:statusBarScrim="?attr/colorPrimaryDark">
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <com.caij.weiyo.view.weibo.WeiboDetailItemView
-                    android:id="@+id/weibo_item_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                </com.caij.weiyo.view.weibo.WeiboDetailItemView>
-
-            </android.support.design.widget.CollapsingToolbarLayout>
+            </com.caij.weiyo.view.weibo.WeiboDetailItemView>
 
             <LinearLayout
                 android:layout_width="match_parent"

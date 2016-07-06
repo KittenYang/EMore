@@ -38,7 +38,7 @@ public class RepostAdapter extends BaseAdapter<Weibo, CommentAdapter.CommentView
 
         ImageLoader.ImageConfig imageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
         ImageLoader.load(mContext, holder.imgPhoto, weibo.getUser().getAvatar_large(),
-                R.mipmap.ic_default_circle_head_image, imageConfig);
+                R.drawable.circle_image_placeholder, imageConfig);
     }
 
 }

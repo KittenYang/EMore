@@ -126,5 +126,5 @@ dependencies {
     debugCompile "com.squareup.leakcanary:leakcanary-android:${rootProject.ext.leakcanaryVersion}"
 
     compile "com.tencent.bugly:crashreport:${rootProject.ext.crashreportVersion}"
-    compile "com.tencent.bugly:nativecrashreport:${rootProject.ext.nativecrashreportVersion}"
+//    compile "com.tencent.bugly:nativecrashreport:${rootProject.ext.nativecrashreportVersion}"
 }

@@ -1,5 +1,6 @@
 package com.caij.weiyo.ui.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,12 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import com.caij.weiyo.R;
 import com.caij.weiyo.present.view.BaseView;
 import com.caij.weiyo.utils.ActivityStack;
+import com.caij.weiyo.utils.DialogUtil;
 import com.caij.weiyo.utils.ToastUtil;
 
 /**
  * Created by Caij on 2016/5/27.
  */
 public class BaseActivity extends AppCompatActivity implements BaseView{
+
+    private Dialog mLoadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +48,26 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
     }
 
     @Override
-    public void onComnLoadError() {
+    public void onDefaultLoadError() {
         showToast(R.string.net_request_error);
     }
 
     @Override
     public void showHint(int stringId) {
         showToast(stringId);
+    }
+
+    @Override
+    public void showDialogLoading(boolean isShow, int hintStringId) {
+        if (isShow) {
+            mLoadingDialog = DialogUtil.showProgressDialog(this, null, getString(hintStringId));
+        }else {
+            mLoadingDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showDialogLoading(boolean isShow) {
+        showDialogLoading(isShow, R.string.loading);
     }
 }
