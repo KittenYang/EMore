@@ -38,6 +38,9 @@ public interface Key {
     String PWD = "pwd";
     int AUTH = 1;
     String PUBLISH_WEIBO = "publish_weibo";
+    String INTERVAL_MILLIS_UPDATE = "interval_millis_update";
+    String LOGIN_STATUE_EVENT = "login_statue_event";
     String CID = "cid";
     String COMMENT = "comment";
+    String DATE = "date";
 }

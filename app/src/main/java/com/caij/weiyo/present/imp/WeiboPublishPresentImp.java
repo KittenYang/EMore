@@ -8,7 +8,7 @@ import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.present.WeiboPublishPresent;
 import com.caij.weiyo.present.view.WeiboPublishView;
 import com.caij.weiyo.source.WeiboSource;
-import com.caij.weiyo.utils.PublishWeiboUtil;
+import com.caij.weiyo.utils.ServerEventUtil;
 
 import java.util.ArrayList;
 
@@ -53,26 +53,22 @@ public class WeiboPublishPresentImp implements WeiboPublishPresent {
         if (imagePaths != null && imagePaths.size() > 1) {
             if (mAccount.getWeicoToken() == null || mAccount.getWeicoToken().isExpired()) {
                 mWeiboPublishView.toAuthWeico();
-            }else {
-                PublishBean publishBean = new PublishBean();
-                publishBean.setText(content);
-                publishBean.setPics(imagePaths);
-                PublishWeiboUtil.publishWeibo(publishBean, mWeiboPublishView.getContent());
-                mWeiboPublishView.finish();
+                return;
             }
+        }
+
+        if (imagePaths != null && imagePaths.size() > 0) {
+            PublishBean publishBean = new PublishBean();
+            publishBean.setText(content);
+            publishBean.setPics(imagePaths);
+            ServerEventUtil.publishWeibo(publishBean);
+            mWeiboPublishView.finish();
             return;
         }
 
         mWeiboPublishView.showDialogLoading(true, R.string.publish_loading);
-        Observable<Weibo> publishWeiboObservable;
-        if (imagePaths == null || imagePaths.size() == 0) {
-            publishWeiboObservable = mServerPublishWeiboSource.
+        Observable<Weibo> publishWeiboObservable = mServerPublishWeiboSource.
                     publishWeiboOfText(mAccount.getWeiyoToken().getAccess_token(), content);
-        }else {
-            publishWeiboObservable = mServerPublishWeiboSource.
-                    publishWeiboOfOneImage(mAccount.getWeiyoToken().getAccess_token(), content,
-                    imagePaths.get(0));
-        }
         Subscription subscription = publishWeiboObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Weibo>() {

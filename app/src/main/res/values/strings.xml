@@ -120,4 +120,36 @@
     <string name="settings_notify_led">LED提醒</string>
     <string name="设置">设置</string>
     <string name="setting">设置</string>
+
+    <string name="key_notification_enable">pNotificationEnable</string>
+    <string name="key_message_interval">pInterval</string>
+    <string name="key_night_close">pNightClose</string>
+    <string name="key_status_mention">pStatusMention</string>
+    <string name="key_comment_mention">pCommentMention</string>
+    <string name="key_setting_follower">pFollower</string>
+    <string name="key_setting_comment">pComment</string>
+    <string name="key_setting_dm">pDm</string>
+    <string name="key_setting_notify_sound">pNotifySound</string>
+    <string name="key_setting_notify_vibrate">pNotifyVibrate</string>
+    <string name="key_setting_notify_led">pNotifyLED</string>
+    <string name="key_setting_theme">pTheme</string>
+    <string name="key_setting_browser">pInnerBrowser</string>
+    <string name="weibo_mention_count_hint">条@我的微博</string>
+    <string name="comment_mention_count_hint">条@我的评论</string>
+
+    <string-array name="txtUnread">
+        <item>1分钟</item>
+        <item>5分钟</item>
+        <item>15分钟</item>
+        <item>30分钟</item>
+        <item>1小时</item>
+    </string-array>
+
+    <string-array name="interval_time_value">
+        <item>60000</item>
+        <item>300000</item>
+        <item>900000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+    </string-array>
 </resources>

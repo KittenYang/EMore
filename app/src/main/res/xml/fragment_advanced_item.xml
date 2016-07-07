@@ -4,7 +4,7 @@
     <PreferenceCategory android:title="@string/title_ad_common">
 
         <Preference
-            android:key="pTheme" android:title="@string/settings_md_colors"/>
+            android:key="@string/key_setting_theme" android:title="@string/settings_md_colors"/>
 
         <Preference
             android:key="pNotification"
@@ -17,7 +17,7 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="pInnerBrowser"
+            android:key="@string/key_setting_browser"
             android:title="@string/settings_inner_browser" />
 
     </PreferenceCategory>
@@ -26,6 +26,16 @@
 
         <Preference
             android:key="clear_cache" android:title="清除缓存"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="账号">
+
+        <Preference
+            android:key="key_change_account" android:title="切换账号"/>
+
+        <Preference
+            android:key="key_exit" android:title="退出"/>
 
     </PreferenceCategory>
 

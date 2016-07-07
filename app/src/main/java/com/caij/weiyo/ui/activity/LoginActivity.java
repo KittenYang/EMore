@@ -25,6 +25,7 @@ import com.caij.weiyo.utils.DialogUtil;
 import com.caij.weiyo.utils.ExecutorServiceUtil;
 import com.caij.weiyo.utils.FileUtil;
 import com.caij.weiyo.utils.LogUtil;
+import com.caij.weiyo.utils.ServerEventUtil;
 import com.caij.weiyo.utils.UrlUtil;
 
 import org.jsoup.Jsoup;
@@ -222,13 +223,17 @@ public class LoginActivity extends WebActivity implements LoginView {
             account.setWeicoToken(UserPrefs.get().getWeiCoToken());
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            ServerEventUtil.postLoginEvent(true);
         }else if (mLoginType == TYPE_WEICO) {
-            account.setWeicoToken(accessToken);
-            account.setWeiyoToken(UserPrefs.get().getWeiYoToken());
-            setResult(RESULT_OK);
+            AccessToken weiyoToken = UserPrefs.get().getWeiYoToken();
+            if (accessToken.getUid().equals(weiyoToken.getUid())) {
+                account.setWeicoToken(accessToken);
+                account.setWeiyoToken(weiyoToken);
+                setResult(RESULT_OK);
+            }
         }
         UserPrefs.get().setAccount(account);
-        initDB(accessToken.getUid());
+        initDB(UserPrefs.get().getWeiYoToken().getUid());
         finish();
     }
 

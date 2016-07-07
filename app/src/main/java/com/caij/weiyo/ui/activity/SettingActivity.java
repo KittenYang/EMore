@@ -3,7 +3,7 @@ package com.caij.weiyo.ui.activity;
 import android.os.Bundle;
 
 import com.caij.weiyo.R;
-import com.caij.weiyo.ui.fragment.AdvancedSettingFragment;
+import com.caij.weiyo.ui.fragment.setting.AdvancedSettingFragment;
 
 /**
  * Created by Caij on 2016/7/6.

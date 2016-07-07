@@ -3,6 +3,7 @@ package com.caij.weiyo.api;
 import com.caij.weiyo.Key;
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.bean.Comment;
+import com.caij.weiyo.bean.UnreadMessage;
 import com.caij.weiyo.bean.Weibo;
 import com.caij.weiyo.bean.response.FavoritesCreateResponse;
 import com.caij.weiyo.bean.response.FriendshipResponse;
@@ -28,6 +29,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -217,4 +219,8 @@ public interface WeiBoService {
                                                              @Query("max_id") long max_id,
                                                              @Query("count") int count,
                                                              @Query("page") int page);
+
+    @GET
+    Observable<UnreadMessage> getUnReadMessage(@Url String url, @Query("access_token") String accessToken,
+                                               @Query("uid") long uid) ;
 }

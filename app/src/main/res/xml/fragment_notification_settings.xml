@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/key_notification_enable"
+        android:title="@string/title_notification_enable" />
+
+    <PreferenceCategory android:title="@string/category_general">
+        <ListPreference
+            android:defaultValue="0"
+            android:dialogTitle="@string/settings_dt_notify_interval"
+            android:entries="@array/txtUnread"
+            android:entryValues="@array/interval_time_value"
+            android:key="@string/key_message_interval"
+            android:title="@string/settings_dt_notify_interval" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_night_close"
+            android:summary="@string/settings_bother_summary"
+            android:title="@string/settings_bother" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/category_notify_type">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_status_mention"
+            android:title="@string/settings_status_mention" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_comment_mention"
+            android:title="@string/settings_cmt_mention" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_setting_follower"
+            android:title="@string/settings_followers_notify" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_setting_comment"
+            android:title="@string/settings_cmt_notify" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_setting_dm"
+            android:title="@string/settings_dm_notify" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/category_notify_feedback">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_setting_notify_sound"
+            android:title="@string/settings_notify_sound" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_setting_notify_vibrate"
+            android:title="@string/settings_notify_virate" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_setting_notify_led"
+            android:title="@string/settings_notify_led" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

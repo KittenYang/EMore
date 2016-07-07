@@ -80,4 +80,26 @@ public class DateUtil {
         cal.setTimeInMillis(time);
         return new SimpleDateFormat(format).format(cal.getTime());
     }
+
+    public static String formatTime(long milliseconds) {
+        long hours;
+        long minutes;
+        long seconds;
+        long day;
+
+        long totalSeconds = milliseconds / 1000;
+
+        day = totalSeconds / (24 * 60 * 60);
+        hours = (totalSeconds % (60 * 60 * 24)) / (60 * 60);
+        minutes = (totalSeconds % (60 * 60)) / 60;
+        seconds = (totalSeconds % (60 * 60)) % 60;
+
+        if (seconds > 0) {
+            minutes++;
+        }
+
+        return (day == 0 ? "" : day + "天")
+                + (hours == 0 ? "" : hours + "小时")
+                + (minutes == 0 ? "" : minutes + "分钟");
+    }
 }

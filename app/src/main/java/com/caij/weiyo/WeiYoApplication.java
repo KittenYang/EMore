@@ -7,6 +7,7 @@ import android.os.Build;
 
 import com.caij.weiyo.bean.AccessToken;
 import com.caij.weiyo.database.dao.DBManager;
+import com.caij.weiyo.service.WeiyoService;
 import com.caij.weiyo.utils.ChannelUtil;
 import com.caij.weiyo.utils.ExecutorServiceUtil;
 import com.caij.weiyo.utils.SPUtil;
@@ -25,6 +26,7 @@ public class WeiYoApplication extends Application{
         SPUtil.init(this, Key.SP_CONFIG);
         initDB();
         initCrashReport();
+        startWeiyoService();
     }
 
     private void initDB() {
@@ -49,6 +51,12 @@ public class WeiYoApplication extends Application{
                     CrashReport.initCrashReport(getApplicationContext(), Key.BUGLY_KEY, true, strategy);
                 }
             });
+        }
+    }
+
+    private void startWeiyoService() {
+        if (UserPrefs.get().getWeiYoToken() != null) {
+            WeiyoService.start(this);
         }
     }
 

@@ -51,7 +51,7 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
     public void onClick(View widget) {
         Uri uri = Uri.parse(this.getURL());
         Context context = widget.getContext();
-        if (SpannableStringUtil.HTTP_SCHEME.contains(uri.getScheme()) && !AppSettings.isInnerBrower()) {
+        if (SpannableStringUtil.HTTP_SCHEME.contains(uri.getScheme()) && !AppSettings.isInnerBrower(widget.getContext())) {
             uri = Uri.parse(getURL().replace(SpannableStringUtil.HTTP_SCHEME, ""));
         }
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
