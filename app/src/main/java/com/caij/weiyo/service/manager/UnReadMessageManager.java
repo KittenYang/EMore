@@ -26,9 +26,11 @@ import com.caij.weiyo.utils.ToastUtil;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/7.
@@ -49,6 +51,7 @@ public class UnReadMessageManager extends IManager {
     private Observable<Boolean> mLoginStatusObservable;
     private MessageSource mServerMessageSource;
     private NotificationManager mNotificationManager;
+    private CompositeSubscription mCompositeSubscription;
 
     public static UnReadMessageManager getInstance() {
         return inst;
@@ -58,6 +61,7 @@ public class UnReadMessageManager extends IManager {
     protected void doOnCreate() {
         mAlarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        mCompositeSubscription = new CompositeSubscription();
         mIntervalMillisUpdateObservable = ServerEventUtil.registIntervalMillisUpdateEvent();
         mLoginStatusObservable = ServerEventUtil.registLoginEvent();
         mServerMessageSource = new ServerMessageSource();
@@ -93,6 +97,7 @@ public class UnReadMessageManager extends IManager {
         cancelHeartbeatTimer();
         ServerEventUtil.unregistIntervalMillisUpdateEvent(mIntervalMillisUpdateObservable);
         ServerEventUtil.unregistLoginEvent(mLoginStatusObservable);
+        mCompositeSubscription.clear();
     }
 
     public void onLoginSuccess() {
@@ -149,7 +154,7 @@ public class UnReadMessageManager extends IManager {
         }
         AccessToken accessToken = UserPrefs.get().getWeiYoToken();
         if (accessToken != null) {
-            mServerMessageSource.getUnReadMessage(accessToken.getAccess_token(), Long.parseLong(accessToken.getUid()))
+            Subscription subscription = mServerMessageSource.getUnReadMessage(accessToken.getAccess_token(), Long.parseLong(accessToken.getUid()))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<UnreadMessage>() {
@@ -168,6 +173,7 @@ public class UnReadMessageManager extends IManager {
                             notifyMessage(unreadMessage);
                         }
                     });
+            mCompositeSubscription.add(subscription);
         }
     }
 
