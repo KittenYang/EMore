@@ -46,7 +46,7 @@
     </LinearLayout>
 
 
-    <com.caij.weiyo.view.FixClickableSpanBugTextView
+    <com.caij.emore.view.FixClickableSpanBugTextView
         android:id="@+id/txtContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

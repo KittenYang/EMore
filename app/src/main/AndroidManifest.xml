@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.caij.weiyo">
+    package="com.caij.emore">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -10,26 +10,27 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:name=".WeiYoApplication"
+        android:name="com.caij.emore.WeiYoApplication"
         android:theme="@style/AppTheme">
 
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
             tools:node="remove" />
 
-        <meta-data android:name="com.caij.weiyo.utils.glide.MyGlideModule"
+        <meta-data android:name="com.caij.emore.utils.glide.MyGlideModule"
             android:value="GlideModule"/>
 
-        <service android:name=".service.WeiyoService"/>
-        <service android:name=".service.WeiyoService$GrayInnerService"/>
+        <service android:name="com.caij.emore.service.WeiyoService"/>
+        <service android:name="com.caij.emore.service.WeiyoService$GrayInnerService"/>
 
-        <activity android:name=".ui.activity.SplashActivity"
+        <activity android:name="com.caij.emore.ui.activity.SplashActivity"
             android:theme="@style/SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,14 +39,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.LoginActivity"
+        <activity android:name="com.caij.emore.ui.activity.login.EMoreLoginActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.activity.MainActivity"
+        <activity android:name="com.caij.emore.ui.activity.login.WeiCoLoginActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name="com.caij.emore.ui.activity.MainActivity"
             android:theme="@style/AppTheme.Main"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.activity.UserInfoActivity"
+        <activity android:name="com.caij.emore.ui.activity.UserInfoActivity"
             android:theme="@style/AppTheme.Main"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -55,7 +59,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.WebActivity">
+        <activity android:name="com.caij.emore.ui.activity.WebActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -64,44 +68,44 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.WeiboDetialActivity"
+        <activity android:name="com.caij.emore.ui.activity.WeiboDetialActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.activity.publish.PublishWeiboActivity"
+        <activity android:name="com.caij.emore.ui.activity.publish.PublishWeiboActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity android:name=".ui.activity.SelectImageActivity"
+        <activity android:name="com.caij.emore.ui.activity.SelectImageActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.activity.ImagePrewActivity"
+        <activity android:name="com.caij.emore.ui.activity.ImagePrewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ImagePrewActivity"/>
 
-        <activity android:name=".ui.activity.publish.CommentWeiboActivity"
+        <activity android:name="com.caij.emore.ui.activity.publish.CommentWeiboActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity android:name=".ui.activity.publish.RepostWeiboActivity"
+        <activity android:name="com.caij.emore.ui.activity.publish.RepostWeiboActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity android:name=".ui.activity.publish.ReplyCommentActivity"
+        <activity android:name="com.caij.emore.ui.activity.publish.ReplyCommentActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.activity.FriendshipActivity"
+        <activity android:name="com.caij.emore.ui.activity.FriendshipActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.activity.MentionActivity"
+        <activity android:name="com.caij.emore.ui.activity.MentionActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.activity.CommentsActivity"
+        <activity android:name="com.caij.emore.ui.activity.CommentsActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.activity.SettingActivity"
+        <activity android:name="com.caij.emore.ui.activity.SettingActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.activity.DefaultFragmentActivity"
+        <activity android:name="com.caij.emore.ui.activity.DefaultFragmentActivity"
             android:screenOrientation="portrait"/>
 
     </application>

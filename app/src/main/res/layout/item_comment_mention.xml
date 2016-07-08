@@ -48,7 +48,7 @@
         </LinearLayout>
 
 
-        <com.caij.weiyo.view.emotion.EmotionTextView
+        <com.caij.emore.view.emotion.EmotionTextView
             android:id="@+id/tv_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

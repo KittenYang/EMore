@@ -24,7 +24,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:statusBarScrim="?attr/colorPrimaryDark">
 
-            <com.caij.weiyo.view.RatioImageView
+            <com.caij.emore.view.RatioImageView
                 android:id="@+id/imgCover"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

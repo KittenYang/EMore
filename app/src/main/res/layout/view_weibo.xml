@@ -15,7 +15,7 @@
            android:layout_height="wrap_content"
            android:layout_marginLeft="@dimen/spacing_weibo_item"/>
 
-        <com.caij.weiyo.view.FixClickableSpanBugTextView
+        <com.caij.emore.view.FixClickableSpanBugTextView
             android:id="@+id/tv_content"
             style="@style/WeiboTextBody"
             android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             android:paddingLeft="@dimen/spacing_weibo_item"
             android:paddingRight="@dimen/spacing_weibo_item"/>
 
-        <com.caij.weiyo.view.weibo.WeiboItemPicsView
+        <com.caij.emore.view.weibo.WeiboItemPicsView
             android:id="@+id/pics_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
             android:paddingTop="@dimen/spacing_medium"
             android:paddingBottom="@dimen/spacing_medium">
 
-        </com.caij.weiyo.view.weibo.WeiboItemPicsView>
+        </com.caij.emore.view.weibo.WeiboItemPicsView>
 
         <LinearLayout
             android:id="@+id/ll_re"
@@ -50,7 +50,7 @@
             android:paddingLeft="@dimen/spacing_weibo_item"
             android:paddingRight="@dimen/spacing_weibo_item">
 
-        <com.caij.weiyo.view.FixClickableSpanBugTextView
+        <com.caij.emore.view.FixClickableSpanBugTextView
             android:id="@+id/tv_re_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -59,14 +59,14 @@
             android:textColor="@color/text_54"
             android:textSize="@dimen/text_size_medium"/>
 
-            <com.caij.weiyo.view.weibo.WeiboItemPicsView
+            <com.caij.emore.view.weibo.WeiboItemPicsView
                 android:id="@+id/re_pics_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/spacing_medium"
                 android:paddingBottom="@dimen/spacing_medium">
 
-            </com.caij.weiyo.view.weibo.WeiboItemPicsView>
+            </com.caij.emore.view.weibo.WeiboItemPicsView>
 
         </LinearLayout>
 

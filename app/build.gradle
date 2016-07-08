@@ -14,7 +14,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.caij.weiyo"
+        applicationId "com.caij.emore"
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
@@ -24,6 +24,11 @@ android {
             // 设置支持的SO库架构
             abiFilters ("x86", "armeabi")
         }
+
+    }
+
+    sourceSets.main {
+        jniLibs.srcDirs = ['libs']
     }
 
     signingConfigs {

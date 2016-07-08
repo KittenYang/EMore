@@ -15,13 +15,13 @@
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-            <com.caij.weiyo.view.weibo.WeiboDetailItemView
+            <com.caij.emore.view.weibo.WeiboDetailItemView
                 android:id="@+id/weibo_item_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            </com.caij.weiyo.view.weibo.WeiboDetailItemView>
+            </com.caij.emore.view.weibo.WeiboDetailItemView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 android:paddingLeft="@dimen/spacing_medium"
                 android:paddingRight="@dimen/spacing_medium">
 
-                <com.caij.weiyo.view.WeiboDetailTabLayout
+                <com.caij.emore.view.WeiboDetailTabLayout
                     android:id="@+id/tabLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

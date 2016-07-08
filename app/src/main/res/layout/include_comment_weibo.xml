@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.caij.weiyo.view.emotion.EmotionEditText xmlns:android="http://schemas.android.com/apk/res/android"
+<com.caij.emore.view.emotion.EmotionEditText xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/et_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

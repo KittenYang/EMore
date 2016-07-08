@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WeiYo</string>
+    <string name="app_name">EMore</string>
 
     <string name="username_or_pwd_error">用户名密码错误</string>
     <string name="net_request_error">请求出错</string>

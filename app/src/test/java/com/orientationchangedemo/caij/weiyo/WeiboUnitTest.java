@@ -1,14 +1,14 @@
 package com.orientationchangedemo.caij.weiyo;
 
-import com.caij.weiyo.api.WeiBoService;
-import com.caij.weiyo.bean.User;
-import com.caij.weiyo.bean.Weibo;
-import com.caij.weiyo.bean.response.UserWeiboResponse;
-import com.caij.weiyo.source.UserSource;
-import com.caij.weiyo.source.WeiboSource;
-import com.caij.weiyo.source.server.ServerUserSource;
-import com.caij.weiyo.source.server.ServerWeiboSource;
-import com.caij.weiyo.utils.GsonUtils;
+import com.caij.emore.api.WeiBoService;
+import com.caij.emore.bean.User;
+import com.caij.emore.bean.Weibo;
+import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.source.UserSource;
+import com.caij.emore.source.WeiboSource;
+import com.caij.emore.source.server.ServerUserSource;
+import com.caij.emore.source.server.ServerWeiboSource;
+import com.caij.emore.utils.GsonUtils;
 
 import org.junit.Test;
 
