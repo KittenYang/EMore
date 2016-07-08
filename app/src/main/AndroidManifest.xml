@@ -17,7 +17,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:name="com.caij.emore.WeiYoApplication"
+        android:name=".EMoreApplication"
         android:theme="@style/AppTheme">
 
         <meta-data

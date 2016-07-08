@@ -7,7 +7,7 @@ import com.facebook.stetho.Stetho;
 /**
  * Created by Caij on 15/11/03.
  */
-public class WeiYoDebugApplication extends WeiYoApplication {
+public class EMoreDebugApplication extends EMoreApplication {
 
     @Override
     public void onCreate() {

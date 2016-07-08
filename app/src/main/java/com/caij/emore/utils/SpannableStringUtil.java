@@ -11,7 +11,7 @@ import android.text.style.URLSpan;
 import android.text.util.Linkify;
 
 import com.caij.emore.R;
-import com.caij.emore.WeiYoApplication;
+import com.caij.emore.EMoreApplication;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.User;
 import com.caij.emore.bean.Weibo;
@@ -88,7 +88,7 @@ public class SpannableStringUtil {
                 continue;
             }
             Bitmap bitmap = EmotionsUtil.getCacheEmotion(String.valueOf(unicode));
-            Context context = WeiYoApplication.getInstance();
+            Context context = EMoreApplication.getInstance();
             if (bitmap == null) {
                 bitmap = BitmapFactory.decodeResource(context.getResources(), drawableId);
                 int size = context.getResources().getDimensionPixelSize(R.dimen.text_size_medium);
@@ -118,7 +118,7 @@ public class SpannableStringUtil {
     }
 
     public static void paraeSpannable(Weibo weibo) {
-        Context applicationContent = WeiYoApplication.getInstance();
+        Context applicationContent = EMoreApplication.getInstance();
         int color = applicationContent.getResources().getColor(R.color.link_text_color);
         int pressColor = applicationContent.getResources().getColor(R.color.link_text_press_color);
         SpannableString contentSpannableString = SpannableString.valueOf(weibo.getText());

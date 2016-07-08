@@ -5,10 +5,13 @@ import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
 
+import java.util.Map;
+
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import rx.Observable;
@@ -41,5 +44,15 @@ public interface WeiCoService {
     public abstract Observable<WeiCoLoginResponse> loginForGsid(@Field("access_token") String access_token,
                                                                 @Field("source") String source, @Field("i") String i,
                                                                 @Field("getcookie") String getcookie);
+
+    @FormUrlEncoded
+    @POST("/2/like/set_like")
+    public abstract void attitudesWeibo(@FieldMap Map<String, Object> paramMap,
+                                        @Field("attitude") String attitude, @Field("id") long weiboId);
+
+    @FormUrlEncoded
+    @POST("/2/like/cancel_like")
+    public abstract void destoryAttitudesWeibo(@FieldMap Map<String, Object> paramMap,
+                                               @Field("attitude") String attitude, @Field("id") long weiboId);
 
 }

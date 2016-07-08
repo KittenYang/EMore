@@ -15,7 +15,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 /**
  * Created by Caij on 2016/5/27.
  */
-public class WeiYoApplication extends Application{
+public class EMoreApplication extends Application{
 
     private static Application mApplication;
 
@@ -54,9 +54,7 @@ public class WeiYoApplication extends Application{
     }
 
     private void startWeiyoService() {
-        if (UserPrefs.get().getEMoreToken() != null) {
-            WeiyoService.start(this);
-        }
+        WeiyoService.start(this);
     }
 
     public static Context getInstance() {

@@ -94,6 +94,7 @@ public class Weibo implements Serializable{
     private int mlevel;
     private Visible visible;
     private List<PicUrl> pic_urls;
+    private boolean isAttitudes;
 
     private transient SpannableString contentSpannableString;
 
