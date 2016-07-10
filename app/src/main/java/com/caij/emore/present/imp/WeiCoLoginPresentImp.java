@@ -3,7 +3,7 @@ package com.caij.emore.present.imp;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.AppApplication;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.present.LoginPresent;
@@ -42,7 +42,7 @@ public class WeiCoLoginPresentImp implements LoginPresent {
                     @Override
                     public Observable<WeiCoLoginResponse> call(AccessToken accessToken) {
                         UserPrefs.get().setWeiCoToken(accessToken);
-                        String str = WeiboSecurityUtils.getIValue(EMoreApplication.getInstance());
+                        String str = WeiboSecurityUtils.getIValue(AppApplication.getInstance());
                         return mLoginSource.weicoLogin(accessToken.getAccess_token(), Key.WEICO_APP_ID, str, "1");
                     }
                 })
@@ -64,7 +64,7 @@ public class WeiCoLoginPresentImp implements LoginPresent {
                     public void onNext(WeiCoLoginResponse response) {
                         mLoginView.onLoginSuccess(response);
                         try {
-                            response.setsValue(WeiboSecurityUtils.calculateSInJava(EMoreApplication.getInstance(),
+                            response.setsValue(WeiboSecurityUtils.calculateSInJava(AppApplication.getInstance(),
                                     String.valueOf(response.getUid()), WeicoSecurityUtils.decode(Key.UID_ENCODE_KEY)));
                         } catch (Exception e) {
                             e.printStackTrace();

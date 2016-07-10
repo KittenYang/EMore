@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.database.dao.DBManager;
-import com.caij.emore.service.WeiyoService;
+import com.caij.emore.service.EMoreService;
 import com.caij.emore.utils.ChannelUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.SPUtil;
@@ -15,7 +15,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 /**
  * Created by Caij on 2016/5/27.
  */
-public class EMoreApplication extends Application{
+public class AppApplication extends Application{
 
     private static Application mApplication;
 
@@ -54,7 +54,7 @@ public class EMoreApplication extends Application{
     }
 
     private void startWeiyoService() {
-        WeiyoService.start(this);
+        EMoreService.start(this);
     }
 
     public static Context getInstance() {
