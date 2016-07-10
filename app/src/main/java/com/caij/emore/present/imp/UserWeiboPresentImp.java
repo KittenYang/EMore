@@ -30,8 +30,8 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeibo
     private String mUsername;
     private int mFeature = 0;
 
-    public UserWeiboPresentImp(String token, String name, TimeLineWeiboView view, WeiboSource serverWeiboSource) {
-        super(token, view, serverWeiboSource);
+    public UserWeiboPresentImp(String token, String name, TimeLineWeiboView view, WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
+        super(token, view, serverWeiboSource, localWeiboSource);
         mUsername = name;
         mWeibos = new ArrayList<>();
     }
@@ -97,6 +97,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeibo
 
                     @Override
                     public Weibo call(Weibo weibo) {
+                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
                         toGetImageSize(weibo);
                         SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;
@@ -160,6 +161,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeibo
 
                     @Override
                     public Weibo call(Weibo weibo) {
+                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
                         toGetImageSize(weibo);
                         SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;

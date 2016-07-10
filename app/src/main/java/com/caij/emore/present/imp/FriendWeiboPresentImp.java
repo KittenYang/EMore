@@ -25,13 +25,11 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
     private final static int PAGE_COUNT = 20;
 
-    private WeiboSource mLocalWeiboSource;
     private List<Weibo> mWeibos;
 
     public FriendWeiboPresentImp(String token, FriendWeiboView view, WeiboSource serverWeiboSource,
                                  WeiboSource localWeiboSource) {
-        super(token, view, serverWeiboSource);
-        mLocalWeiboSource = localWeiboSource;
+        super(token, view, serverWeiboSource, localWeiboSource);
         mWeibos = new ArrayList<>();
     }
 
@@ -48,6 +46,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
+                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
                         SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;
                     }
@@ -90,6 +89,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                     @Override
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
+                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
                         SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;
                     }
@@ -158,6 +158,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
                     @Override
                     public Weibo call(Weibo weibo) {
+                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
                         toGetImageSize(weibo);
                         SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;

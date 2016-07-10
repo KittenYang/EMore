@@ -12,6 +12,7 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.present.WeiboMentionPresent;
 import com.caij.emore.present.imp.WeiboMentionPresentImp;
+import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.fragment.weibo.TimeLineWeiboFragment;
 import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
@@ -52,7 +53,7 @@ public class WeiboMentionFragment extends TimeLineWeiboFragment<WeiboMentionPres
     @Override
     protected WeiboMentionPresent createPresent() {
         AccessToken token = UserPrefs.get().getWeiCoToken();
-       return new WeiboMentionPresentImp(token.getAccess_token(), new ServerWeiboSource(), this);
+       return new WeiboMentionPresentImp(token.getAccess_token(), new ServerWeiboSource(), new LocalWeiboSource(), this);
     }
 
     @Override

@@ -65,6 +65,16 @@ public class UserImagePresentImp implements UserWeiboPresent {
     }
 
     @Override
+    public void attitudesWeibo(Weibo weibo) {
+
+    }
+
+    @Override
+    public void destoryAttitudesWeibo(Weibo weibo) {
+
+    }
+
+    @Override
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
     }

@@ -6,6 +6,8 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.caij.emore.utils.LogUtil;
+
 import java.util.ArrayList;
 
 /**

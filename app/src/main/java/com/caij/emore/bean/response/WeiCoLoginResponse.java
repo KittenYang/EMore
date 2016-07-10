@@ -41,6 +41,8 @@ public class WeiCoLoginResponse {
 
     private Cookie cookie;
 
+    private String sValue;
+
     public String getScreen_name() {
         return screen_name;
     }
@@ -143,5 +145,13 @@ public class WeiCoLoginResponse {
 
     public void setCookie(Cookie cookie) {
         this.cookie = cookie;
+    }
+
+    public String getsValue() {
+        return sValue;
+    }
+
+    public void setsValue(String sValue) {
+        this.sValue = sValue;
     }
 }

@@ -3,7 +3,8 @@ package com.caij.emore.api;
 import com.caij.emore.Key;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.UnreadMessage;
+import com.caij.emore.bean.MessageUser;
+import com.caij.emore.bean.UnreadMessageCount;
 import com.caij.emore.bean.Weibo;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.FriendshipResponse;
@@ -12,6 +13,7 @@ import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.User;
 import com.caij.emore.bean.response.UploadImageResponse;
+import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
 import com.caij.emore.utils.GsonUtils;
@@ -221,6 +223,19 @@ public interface WeiBoService {
                                                              @Query("page") int page);
 
     @GET
-    Observable<UnreadMessage> getUnReadMessage(@Url String url, @Query("access_token") String accessToken,
-                                               @Query("uid") long uid) ;
+    Observable<UnreadMessageCount> getUnReadMessage(@Url String url, @Query("access_token") String accessToken,
+                                                    @Query("uid") long uid) ;
+
+    @GET("/2/direct_messages/user_list.json")
+    Observable<MessageUser> getMessageUserList(@Query("access_token") String accessToken,
+                                               @Query("count") int count,
+                                               @Query("cursor") long cursor) ;
+
+    @GET("/2/direct_messages/conversation.json")
+    Observable<UserMessageResponse> getUserMessage(@Query("access_token") String accessToken,
+                                                   @Query("uid") long uid,
+                                                   @Query("since_id") long since_id,
+                                                   @Query("max_id") long max_id,
+                                                   @Query("count") int count,
+                                                   @Query("page") int page);
 }

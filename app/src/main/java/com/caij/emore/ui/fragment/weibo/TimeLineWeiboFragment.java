@@ -1,10 +1,12 @@
 package com.caij.emore.ui.fragment.weibo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 
+import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.Weibo;
@@ -14,6 +16,7 @@ import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.adapter.WeiboAdapter;
 import com.caij.emore.ui.fragment.RecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
+import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
 import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
@@ -26,21 +29,17 @@ import java.util.List;
  * Created by Caij on 2016/6/4.
  */
 public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends RecyclerViewFragment<Weibo, P>
-        implements TimeLineWeiboView, RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener {
+        implements TimeLineWeiboView, RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener, WeiboAdapter.OnItemActionClickListener {
 
     @Override
     protected BaseAdapter<Weibo, ? extends BaseViewHolder> createRecyclerViewAdapter() {
-        return new WeiboAdapter(getActivity());
+        return new WeiboAdapter(getActivity(), this, this);
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        if (view.getId() == R.id.btn_menus) {
-            onMenuClick(mRecyclerViewAdapter.getItem(position), position);
-        }else {
-            Intent intent = WeiboDetialActivity.newIntent(getActivity(), mRecyclerViewAdapter.getItem(position));
-            startActivity(intent);
-        }
+        Intent intent = WeiboDetialActivity.newIntent(getActivity(), mRecyclerViewAdapter.getItem(position));
+        startActivity(intent);
     }
 
     @Override
@@ -115,6 +114,30 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends R
     @Override
     public void onUncollectSuccess(Weibo weibo) {
         weibo.setFavorited(false);
+    }
+
+    @Override
+    public void onAttitudesSuccess(Weibo weibo) {
+        weibo.setAttitudes(!weibo.isAttitudes());
+        weibo.setAttitudes_count(weibo.getAttitudes_count() + 1);
+        mRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onMenuClick(View v, int position) {
+        onMenuClick(mRecyclerViewAdapter.getItem(position), position);
+    }
+
+    @Override
+    public void onLikeClick(View v, int position) {
+        if (WeicoAuthUtil.checkWeicoLogin(this, false)) {
+            Weibo weibo = mRecyclerViewAdapter.getItem(position);
+            if (weibo.isAttitudes()) {
+                mPresent.destoryAttitudesWeibo(weibo);
+            }else {
+                mPresent.attitudesWeibo(weibo);
+            }
+        }
     }
 
 }

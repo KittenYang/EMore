@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
  */
 public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHoller> {
 
-    private final ThreadLocal<RecyclerViewOnItemClickListener> mMenuClickListener = new ThreadLocal<>();
+    private OnItemActionClickListener mOnItemActionClickListener;
 
     public WeiboAdapter(Context context) {
         super(context);
@@ -32,17 +32,16 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHolle
         super(context, entities);
     }
 
-    public WeiboAdapter(Context context, RecyclerViewOnItemClickListener onItemClickListener,
-                        RecyclerViewOnItemClickListener menuClickListener) {
+    public WeiboAdapter(Context context, RecyclerViewOnItemClickListener onItemClickListener, OnItemActionClickListener onItemActionClickListener) {
         this(context);
         mOnItemClickListener = onItemClickListener;
-        mMenuClickListener.set(menuClickListener);
+        mOnItemActionClickListener = onItemActionClickListener;
     }
 
     @Override
     public WeiboViewHoller onCreateViewHolder(ViewGroup parent, int viewType) {
         return new WeiboViewHoller(mInflater.inflate(R.layout.item_weibo, parent, false),
-                mOnItemClickListener, mOnItemClickListener);
+                mOnItemClickListener, mOnItemActionClickListener);
     }
 
     @Override
@@ -57,19 +56,31 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHolle
         @BindView(R.id.cardView)
         CardView cardView;
 
-        public WeiboViewHoller(View itemView, RecyclerViewOnItemClickListener onItemClickListener,
-                               final RecyclerViewOnItemClickListener onItemMenuClickListener) {
+        public WeiboViewHoller(View itemView, final RecyclerViewOnItemClickListener onItemClickListener,
+                               final OnItemActionClickListener onItemActionClickListener) {
             super(itemView, onItemClickListener);
             ButterKnife.bind(this, itemView);
-            weiboItemView.setOnMenuClickListenet(new View.OnClickListener() {
+            weiboItemView.setOnMenuClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onItemMenuClickListener != null) {
-                        onItemMenuClickListener.onItemClick(v, getLayoutPosition());
+                    if (onItemActionClickListener != null) {
+                        onItemActionClickListener.onMenuClick(v, getLayoutPosition());
+                    }
+                }
+            });
+            weiboItemView.setLikeClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onItemActionClickListener != null) {
+                        onItemActionClickListener.onLikeClick(v, getLayoutPosition());
                     }
                 }
             });
         }
     }
 
+    public static interface OnItemActionClickListener {
+        void onMenuClick(View v, int position);
+        void onLikeClick(View v, int position);
+    }
 }

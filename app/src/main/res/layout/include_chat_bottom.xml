@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/chat_bottom_bg"
+    android:paddingLeft="@dimen/spacing_medium_plu"
+    android:paddingRight="@dimen/spacing_medium_plu"
+    android:paddingTop="@dimen/spacing_medium"
+    android:paddingBottom="@dimen/spacing_medium"
+    android:gravity="center_vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/chat_edit_text_bg"
+        android:paddingTop="@dimen/spacing_medium"
+        android:paddingBottom="@dimen/spacing_medium"
+        android:layout_weight="1"
+        android:layout_marginRight="@dimen/spacing_medium_plu">
+
+        <EditText
+            android:layout_toLeftOf="@+id/iv_emotion"
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:textSize="@dimen/text_size_medium_min"
+            android:textColor="@color/text_70"
+            android:text="消息测试"
+            android:layout_marginLeft="@dimen/spacing_micro"
+            android:layout_marginRight="@dimen/spacing_large"
+            android:layout_weight="1"
+            android:layout_centerInParent="true"/>
+
+        <ImageView
+            android:id="@+id/iv_emotion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/compose_emoticonbutton_background"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/spacing_micro_plu"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/navigationbar_subsribe_manage"/>
+
+        <TextView
+            android:id="@+id/tv_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发送"
+            android:textSize="@dimen/text_size_medium"
+            android:textColor="@color/white"
+            android:background="@drawable/chat_btn_bg"
+            android:padding="@dimen/spacing_micro_plu"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

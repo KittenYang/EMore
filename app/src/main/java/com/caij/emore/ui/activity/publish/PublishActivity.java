@@ -95,9 +95,9 @@ public abstract class PublishActivity extends BaseToolBarActivity {
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGES);
                 break;
             case R.id.btn_emotion:
-                SystemUtil.hideKeyBoard(this);
                 if (flEmotion.getVisibility() == View.VISIBLE) {
                     flEmotion.setVisibility(View.GONE);
+                    SystemUtil.showKeyBoard(this);
                 } else {
                     if (SystemUtil.isKeyBoardShow(this)) {
                         flEmotion.postDelayed(new Runnable() {
@@ -106,6 +106,7 @@ public abstract class PublishActivity extends BaseToolBarActivity {
                                 flEmotion.setVisibility(View.VISIBLE);
                             }
                         }, 200);
+                        SystemUtil.hideKeyBoard(this);
                     }else {
                         flEmotion.setVisibility(View.VISIBLE);
                     }

@@ -1,12 +1,14 @@
 package com.caij.emore.source.server;
 
 import com.caij.emore.api.WeiBoService;
+import com.caij.emore.api.WeiCoService;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.Weibo;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UploadImageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.source.WeiboSource;
@@ -16,6 +18,7 @@ import com.caij.emore.utils.LogUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -30,9 +33,11 @@ import rx.functions.Func1;
 public class ServerWeiboSource implements WeiboSource{
 
     private WeiBoService mWeiBoService;
+    private WeiCoService mWeiCoService;
 
     public ServerWeiboSource() {
         mWeiBoService = WeiBoService.Factory.create();
+        mWeiCoService = WeiCoService.WeiCoFactory.create();
     }
 
     @Override
@@ -191,6 +196,22 @@ public class ServerWeiboSource implements WeiboSource{
     public Observable<QueryWeiboCommentResponse> getAcceptComments(String accessToken, long since_id, long max_id, int count, int page) {
         return mWeiBoService.getAcceptComments(accessToken, since_id, max_id, count, page);
     }
+
+    @Override
+    public Observable<Response> attitudesWeibo(Map<String, Object> paramMap, String attitude, long weiboId) {
+        return mWeiCoService.attitudesWeibo(paramMap, attitude, weiboId);
+    }
+
+    @Override
+    public Observable<Response> destoryAttitudesWeibo(Map<String, Object> paramMap, String attitude, long weiboId) {
+        return mWeiCoService.destoryAttitudesWeibo(paramMap, attitude, weiboId);
+    }
+
+    @Override
+    public boolean getAttitudes(long id) {
+        return false;
+    }
+
 
     @Override
     public Observable<QueryRepostWeiboResponse> getRepostWeibos(String accessToken, long id, long since_id, long max_id, int count, int page) {

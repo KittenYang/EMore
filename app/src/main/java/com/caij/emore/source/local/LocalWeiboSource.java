@@ -6,14 +6,18 @@ import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.FriendWeibo;
+import com.caij.emore.database.bean.LikeBean;
 import com.caij.emore.database.dao.DBManager;
 import com.caij.emore.database.dao.FriendWeiboDao;
+import com.caij.emore.database.dao.LikeBeanDao;
 import com.caij.emore.source.WeiboSource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -151,5 +155,28 @@ public class LocalWeiboSource implements WeiboSource {
     @Override
     public Observable<QueryWeiboCommentResponse> getAcceptComments(String accessToken, long since_id, long max_id, int count, int page) {
         return null;
+    }
+
+    @Override
+    public Observable<Response> attitudesWeibo(Map<String, Object> paramMap, String attitude, long weiboId) {
+        LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
+        LikeBean likeBean = new LikeBean(weiboId, true);
+        dao.insertOrReplace(likeBean);
+        return null;
+    }
+
+    @Override
+    public Observable<Response> destoryAttitudesWeibo(Map<String, Object> paramMap, String attitude, long weiboId) {
+        LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
+        LikeBean likeBean = new LikeBean(weiboId, false);
+        dao.insertOrReplace(likeBean);
+        return null;
+    }
+
+    @Override
+    public boolean getAttitudes(long id) {
+        LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
+        LikeBean likeBean = dao.load(id);
+        return likeBean != null && likeBean.getIsLike();
     }
 }

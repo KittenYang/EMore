@@ -291,6 +291,14 @@ public class Weibo implements Serializable{
         this.contentSpannableString = contentSpannableString;
     }
 
+    public boolean isAttitudes() {
+        return isAttitudes;
+    }
+
+    public void setAttitudes(boolean attitudes) {
+        isAttitudes = attitudes;
+    }
+
     @Override
     public boolean equals(Object o) {
         Weibo weibo = (Weibo) o;

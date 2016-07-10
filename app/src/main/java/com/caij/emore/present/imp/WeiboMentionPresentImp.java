@@ -27,14 +27,12 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
 
     private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
-    private WeiboSource mWeiboSource;
     private TimeLineWeiboView mTimeLineWeiboView;
     private List<Weibo> mWeibos;
 
-    public WeiboMentionPresentImp(String token, WeiboSource weiboSource, TimeLineWeiboView timeLineWeiboView) {
-        super(token, timeLineWeiboView, weiboSource);
+    public WeiboMentionPresentImp(String token, WeiboSource serverWeiboSource, WeiboSource localWeiboSource, TimeLineWeiboView timeLineWeiboView) {
+        super(token, timeLineWeiboView, serverWeiboSource, localWeiboSource);
         mToken = token;
-        mWeiboSource = weiboSource;
         mTimeLineWeiboView = timeLineWeiboView;
         mWeibos = new ArrayList<>();
         mLoginCompositeSubscription = new CompositeSubscription();
@@ -47,7 +45,7 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
 
     @Override
     public void refresh() {
-        Subscription su =  mWeiboSource.getWeiboMentions(mToken, 0 ,0, COUNT, 1)
+        Subscription su =  mServerWeiboSource.getWeiboMentions(mToken, 0 ,0, COUNT, 1)
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(QueryWeiboResponse queryWeiboResponse) {
@@ -60,6 +58,7 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
                         SpannableStringUtil.paraeSpannable(weibo);
+                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
                         return weibo;
                     }
                 })
@@ -96,7 +95,7 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
         if (mWeibos != null && mWeibos.size() > 1) {
             maxId = mWeibos.get(mWeibos.size() - 1).getId();
         }
-        Subscription su = mWeiboSource.getWeiboMentions(mToken, 0, maxId, COUNT, 1)
+        Subscription su = mServerWeiboSource.getWeiboMentions(mToken, 0, maxId, COUNT, 1)
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(QueryWeiboResponse queryWeiboResponse) {
@@ -113,6 +112,7 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
 
                     @Override
                     public Weibo call(Weibo weibo) {
+                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
                         toGetImageSize(weibo);
                         SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;

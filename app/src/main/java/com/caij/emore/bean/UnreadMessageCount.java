@@ -3,7 +3,7 @@ package com.caij.emore.bean;
 /**
  * Created by Caij on 2016/7/7.
  */
-public class UnreadMessage {
+public class UnreadMessageCount {
 
 
     /**

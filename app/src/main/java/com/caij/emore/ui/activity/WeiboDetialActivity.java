@@ -24,6 +24,7 @@ import com.caij.emore.ui.fragment.WeiboCommentListFragment;
 import com.caij.emore.ui.fragment.WeiboLikerListFragment;
 import com.caij.emore.ui.fragment.WeiboRepostListFragment;
 import com.caij.emore.utils.DialogUtil;
+import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.view.weibo.WeiboDetailItemView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -86,23 +87,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity {
             }
         });
 
-        AccessToken weicoToken = UserPrefs.get().getWeiCoToken();
-        if (weicoToken == null || weicoToken.isExpired()) {
-            DialogUtil.showHintDialog(this, getString(R.string.hint), getString(R.string.aouth_high_hint), getString(R.string.ok), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Account account = UserPrefs.get().getAccount();
-                    Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(WeiboDetialActivity.this,
-                            account.getUsername(), account.getPwd());
-                    startActivityForResult(intent, Key.AUTH);
-                }
-            }, getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-        } else {
+        if (WeicoAuthUtil.checkWeicoLogin(this, true)) {
             doNext();
         }
     }
@@ -155,9 +140,11 @@ public class WeiboDetialActivity extends BaseToolBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == Key.AUTH) {
+        if (requestCode == Key.AUTH) {
+            if (resultCode == RESULT_OK) {
                 doNext();
+            }else {
+                finish();
             }
         }
     }

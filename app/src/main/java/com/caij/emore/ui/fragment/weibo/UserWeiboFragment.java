@@ -12,6 +12,7 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.present.imp.UserWeiboPresentImp;
+import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.view.recyclerview.HeaderAndFooterRecyclerViewAdapter;
@@ -46,7 +47,7 @@ public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> i
     protected UserWeiboPresent createPresent() {
         AccessToken accessToken = UserPrefs.get().getWeiCoToken();
         String username = getArguments().getString(Key.USERNAME);
-        return new UserWeiboPresentImp(accessToken.getAccess_token(), username, this, new ServerWeiboSource());
+        return new UserWeiboPresentImp(accessToken.getAccess_token(), username, this, new ServerWeiboSource(), new LocalWeiboSource());
     }
 
     @Override

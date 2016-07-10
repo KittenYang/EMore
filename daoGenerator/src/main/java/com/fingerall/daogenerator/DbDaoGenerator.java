@@ -8,14 +8,15 @@ public class DbDaoGenerator {
     private static final int VERSION = 3;
 
     public static void main(String[] args) throws Exception {
-        Schema sch = new Schema(VERSION, "com.caij.weiyo.database.bean");
-        sch.setDefaultJavaPackageDao("com.caij.weiyo.database.dao");
+        Schema sch = new Schema(VERSION, "com.caij.emore.database.bean");
+        sch.setDefaultJavaPackageDao("com.caij.emore.database.dao");
         sch.enableKeepSectionsByDefault();
         createUser(sch);
         createFriendWeibo(sch);
         createUserWeibo(sch);
         createImage(sch);
         createFile(sch);
+        createLikeBean(sch);
         new de.greenrobot.daogenerator.DaoGenerator().generateAll(sch, "./app/src/main/java");
     }
 
@@ -109,6 +110,12 @@ public class DbDaoGenerator {
         image.addStringProperty("url").primaryKey();
         image.addStringProperty("path");
         image.addIntProperty("status");
+    }
+
+    static void createLikeBean(Schema sch) {
+        Entity image = sch.addEntity("LikeBean");
+        image.addLongProperty("id").primaryKey();
+        image.addBooleanProperty("isLike");
     }
 
 

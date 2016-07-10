@@ -13,6 +13,7 @@
     <string name="msg_now">刚刚</string>
     <string name="msg_today">今天</string>
     <string name="msg_yesterday">昨天</string>
+    <string name="msg_before_yesterday">前天</string>
     <string name="msg_few_minutes_ago">分钟前</string>
     <string name="msg_ten_thousand">万</string>
     <string name="msg_hour">小时前</string>
@@ -136,6 +137,8 @@
     <string name="key_setting_browser">pInnerBrowser</string>
     <string name="weibo_mention_count_hint">条@我的微博</string>
     <string name="comment_mention_count_hint">条@我的评论</string>
+    <string name="emore_http_scheme">emorehttp://</string>
+    <string name="user_info_scheme">com.caij.weiyo.userinfo://</string>
 
     <string-array name="txtUnread">
         <item>1分钟</item>

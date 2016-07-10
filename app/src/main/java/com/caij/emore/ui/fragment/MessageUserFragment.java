@@ -3,33 +3,37 @@ package com.caij.emore.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.present.ListPresent;
+import com.caij.emore.UserPrefs;
+import com.caij.emore.bean.AccessToken;
+import com.caij.emore.bean.MessageUser;
+import com.caij.emore.present.MessageUserPresent;
+import com.caij.emore.present.imp.MessageUserPresentImp;
+import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.ui.activity.CommentsActivity;
+import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.MentionActivity;
-import com.caij.emore.ui.adapter.WeiboAdapter;
+import com.caij.emore.ui.adapter.MessageUserAdapter;
 import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.view.recyclerview.BaseAdapter;
+import com.caij.emore.view.recyclerview.BaseViewHolder;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 /**
  * Created by Caij on 2016/7/4.
  */
-public class MessageFragment extends SwipeRefreshRecyclerViewFragment {
+public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<MessageUser.UserListBean, MessageUserPresent> {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mSwipeRefreshLayout.setBackgroundColor(getResources().getColor(R.color.white));
-        mLoadMoreLoadMoreRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        WeiboAdapter weiboAdapter = new WeiboAdapter(getActivity());
-        mLoadMoreLoadMoreRecyclerView.setAdapter(weiboAdapter);
         mLoadMoreLoadMoreRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item)).
                 margin(DensityUtil.dip2px(getActivity(), 72), 0).
@@ -41,19 +45,13 @@ public class MessageFragment extends SwipeRefreshRecyclerViewFragment {
         View commentView = layoutInflater.inflate(R.layout.item_message_head, mLoadMoreLoadMoreRecyclerView, false);
         View priseView = layoutInflater.inflate(R.layout.item_message_head, mLoadMoreLoadMoreRecyclerView, false);
 
-//        setValue(mentionView, "@我的", R.mipmap.messagescenter_at);
-//        setValue(commentView, "评论", R.mipmap.messagescenter_comments);
-//        setValue(priseView, "赞", R.mipmap.messagescenter_good);
-
-        setValue(mentionView, "@我的", R.mipmap.ic_comment);
-        setValue(commentView, "评论", R.mipmap.ic_comment);
-        setValue(priseView, "赞", R.mipmap.ic_comment);
+        setValue(mentionView, "@我的", R.mipmap.messagescenter_at);
+        setValue(commentView, "评论", R.mipmap.messagescenter_comments);
+        setValue(priseView, "赞", R.mipmap.messagescenter_good);
 
         mLoadMoreLoadMoreRecyclerView.getAdapter().addHeaderView(mentionView);
         mLoadMoreLoadMoreRecyclerView.getAdapter().addHeaderView(commentView);
         mLoadMoreLoadMoreRecyclerView.getAdapter().addHeaderView(priseView);
-
-        weiboAdapter.notifyDataSetChanged();
 
         mentionView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,16 +73,21 @@ public class MessageFragment extends SwipeRefreshRecyclerViewFragment {
 
             }
         });
+
+        mSwipeRefreshLayout.setRefreshing(true);
+        mPresent.refresh();
     }
 
     @Override
-    protected BaseAdapter createRecyclerViewAdapter() {
-        return null;
+    protected BaseAdapter<MessageUser.UserListBean, ? extends BaseViewHolder> createRecyclerViewAdapter() {
+        return new MessageUserAdapter(getActivity());
     }
 
     @Override
-    protected ListPresent createPresent() {
-        return null;
+    protected MessageUserPresent createPresent() {
+        AccessToken accessToken = UserPrefs.get().getWeiCoToken();
+        return new MessageUserPresentImp(accessToken.getAccess_token(), new ServerMessageSource(),
+                null, this);
     }
 
     private void setValue(View view, String title, int drawable) {
@@ -95,22 +98,16 @@ public class MessageFragment extends SwipeRefreshRecyclerViewFragment {
     }
 
     @Override
-    protected void onUserFirstVisible() {
-
-    }
-
-    @Override
-    public void onRefresh() {
-
+    public void onItemClick(View view, int position) {
+        MessageUser.UserListBean bean = mRecyclerViewAdapter.getItem(position - 3);
+        Bundle bundle = new Bundle();
+        bundle.putLong(Key.ID, bean.getUser().getId());
+        Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), ChatFragment.class, bundle);
+        startActivity(intent);
     }
 
     @Override
     public void onEmpty() {
-
-    }
-
-    @Override
-    public void onItemClick(View view, int position) {
 
     }
 }

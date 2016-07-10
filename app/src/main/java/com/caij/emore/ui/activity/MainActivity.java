@@ -29,8 +29,9 @@ import com.caij.emore.present.imp.UserPresentImp;
 import com.caij.emore.present.view.SimpleUserView;
 import com.caij.emore.source.local.LocalUserSource;
 import com.caij.emore.source.server.ServerUserSource;
-import com.caij.emore.ui.fragment.MessageFragment;
+import com.caij.emore.ui.fragment.MessageUserFragment;
 import com.caij.emore.ui.fragment.weibo.FriendWeiboFragment;
+import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.SystemUtil;
 
@@ -103,7 +104,7 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
             mFriendWeiboFragment = new FriendWeiboFragment();
-            mMessageFragment = new MessageFragment();
+            mMessageFragment = new MessageUserFragment();
             transaction.add(R.id.attach_container,
                     mFriendWeiboFragment, FRIEND_WEIBO_FRAGMENT_TAG).commit();
         } else {
@@ -113,7 +114,7 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
             }
             mMessageFragment = getSupportFragmentManager().findFragmentByTag(MESSAGE_FRAGMENT_TAG);
             if (mMessageFragment == null) {
-                mMessageFragment = new MessageFragment();
+                mMessageFragment = new MessageUserFragment();
             }
         }
 
@@ -122,16 +123,7 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
     }
 
     private Drawable createNavMenuItemDrawable(int drawableId) {
-        int defColor = getResources().getColor(R.color.icon_normal_color);
-        int selectedColor = getResources().getColor(R.color.colorPrimary);
-        ColorStateList mIconTints = new ColorStateList(
-                new int[][]{{android.R.attr.state_checked},
-                        {}},
-                new int[]{selectedColor, defColor});
-        Drawable drawableIcon = DrawableCompat.wrap(ContextCompat.getDrawable(this, drawableId));
-        DrawableCompat.setTintList(drawableIcon, mIconTints);
-        drawableIcon.setBounds(0, 0, drawableIcon.getIntrinsicWidth(), drawableIcon.getIntrinsicHeight());
-        return drawableIcon;
+        return DrawableUtil.createCheckThemeDrawable(this, drawableId, R.color.icon_normal_color, R.color.colorPrimary);
     }
 
     public void switchContent(Fragment from, Fragment to, int id, String tag) {

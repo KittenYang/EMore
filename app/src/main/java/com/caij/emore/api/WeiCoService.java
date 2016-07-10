@@ -1,6 +1,7 @@
 package com.caij.emore.api;
 
 import com.caij.emore.Key;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
@@ -47,12 +48,12 @@ public interface WeiCoService {
 
     @FormUrlEncoded
     @POST("/2/like/set_like")
-    public abstract void attitudesWeibo(@FieldMap Map<String, Object> paramMap,
-                                        @Field("attitude") String attitude, @Field("id") long weiboId);
+    public Observable<Response> attitudesWeibo(@FieldMap Map<String, Object> paramMap,
+                                               @Field("attitude") String attitude, @Field("id") long weiboId);
 
     @FormUrlEncoded
     @POST("/2/like/cancel_like")
-    public abstract void destoryAttitudesWeibo(@FieldMap Map<String, Object> paramMap,
+    public Observable<Response> destoryAttitudesWeibo(@FieldMap Map<String, Object> paramMap,
                                                @Field("attitude") String attitude, @Field("id") long weiboId);
 
 }

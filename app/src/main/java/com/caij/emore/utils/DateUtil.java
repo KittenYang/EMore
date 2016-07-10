@@ -39,34 +39,35 @@ public class DateUtil {
 
             long diffTime = (currentcal.getTimeInMillis() - createCal.getTimeInMillis()) / 1000;
 
-            // 同一月
-            if (currentcal.get(Calendar.MONTH) == createCal.get(Calendar.MONTH)) {
-                // 同一天
-                if (currentcal.get(Calendar.DAY_OF_MONTH) == createCal.get(Calendar.DAY_OF_MONTH)) {
-                    if (diffTime < 3600 && diffTime >= 60) {
-                        buffer.append((diffTime / 60) + res.getString(R.string.msg_few_minutes_ago));
-                    } else if (diffTime < 60) {
-                        buffer.append(res.getString(R.string.msg_now));
-                    } else if (diffTime >= 3600 && diffTime < 3600 * 6) {
-                        buffer.append(diffTime / 3600).append(res.getString(R.string.msg_hour));
-                    }else {
-                        buffer.append(res.getString(R.string.msg_today)).append(" ").append(formatDate(createCal.getTimeInMillis(), "HH:mm"));
+            if (currentcal.get(Calendar.YEAR) == createCal.get(Calendar.YEAR)) {
+                // 同一月
+                if (currentcal.get(Calendar.MONTH) == createCal.get(Calendar.MONTH)) {
+                    // 同一天
+                    if (currentcal.get(Calendar.DAY_OF_MONTH) == createCal.get(Calendar.DAY_OF_MONTH)) {
+                        if (diffTime < 3600 && diffTime >= 60) {
+                            buffer.append((diffTime / 60) + res.getString(R.string.msg_few_minutes_ago));
+                        } else if (diffTime < 60) {
+                            buffer.append(res.getString(R.string.msg_now));
+                        } else if (diffTime >= 3600 && diffTime < 3600 * 6) {
+                            buffer.append(diffTime / 3600).append(res.getString(R.string.msg_hour));
+                        } else {
+                            buffer.append(res.getString(R.string.msg_today)).append(" ").append(formatDate(createCal.getTimeInMillis(), "HH:mm"));
+                        }
+                    } else if (currentcal.get(Calendar.DAY_OF_MONTH) - createCal.get(Calendar.DAY_OF_MONTH) == 1) { // 昨天
+                        buffer.append(res.getString(R.string.msg_yesterday)).append(" ").append(formatDate(createCal.getTimeInMillis(), "HH:mm"));
+                    } else if (currentcal.get(Calendar.DAY_OF_MONTH) - createCal.get(Calendar.DAY_OF_MONTH) == 2) { //前天
+                        buffer.append(res.getString(R.string.msg_before_yesterday)).append(" ").append(formatDate(createCal.getTimeInMillis(), "HH:mm"));
+                    } else {
+                        buffer.append(formatDate(createCal.getTimeInMillis(), "MM-dd"));
                     }
-                }else if (currentcal.get(Calendar.DAY_OF_MONTH) - createCal.get(Calendar.DAY_OF_MONTH) == 1) { // 前一天
-                    buffer.append(res.getString(R.string.msg_yesterday)).append(" ").append(formatDate(createCal.getTimeInMillis(), "HH:mm"));
-                }else {
-                    buffer.append(formatDate(createCal.getTimeInMillis(), "MM-dd HH:mm"));
+                } else {
+                    buffer.append(formatDate(createCal.getTimeInMillis(), "MM-dd"));
                 }
             }else {
-                buffer.append(formatDate(createCal.getTimeInMillis(), "MM-dd HH:mm"));
+                buffer.append(formatDate(createCal.getTimeInMillis(), "yyyy-MM-dd"));
             }
 
-            String timeStr = buffer.toString();
-            if (currentcal.get(Calendar.YEAR) != createCal.get(Calendar.YEAR)) {
-                timeStr = createCal.get(Calendar.YEAR) + " " + timeStr;
-            }
-
-            return timeStr;
+            return buffer.toString();
         } catch (Throwable e) {
             e.printStackTrace();
         }

@@ -25,6 +25,7 @@ import com.caij.emore.ui.adapter.PublishImageAdapter;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.ToastUtil;
+import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.ArrayList;
@@ -115,15 +116,7 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
 
     @Override
     public void toAuthWeico() {
-        DialogUtil.showHintDialog(this, "提示", "需要认证高级权限", "确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Account account = UserPrefs.get().getAccount();
-                Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(PublishWeiboActivity.this,
-                        account.getUsername(), account.getPwd());
-                startActivityForResult(intent, Key.AUTH);
-            }
-        });
+        WeicoAuthUtil.toAuthWeico(this, false);
     }
 
     @Override

@@ -14,7 +14,7 @@ import com.caij.emore.AppSettings;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.bean.UnreadMessage;
+import com.caij.emore.bean.UnreadMessageCount;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.utils.LogUtil;
@@ -153,7 +153,7 @@ public class UnReadMessageManager extends IManager {
             mServerMessageSource.getUnReadMessage(accessToken.getAccess_token(), Long.parseLong(accessToken.getUid()))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<UnreadMessage>() {
+                    .subscribe(new Subscriber<UnreadMessageCount>() {
                         @Override
                         public void onCompleted() {
 
@@ -165,14 +165,14 @@ public class UnReadMessageManager extends IManager {
                         }
 
                         @Override
-                        public void onNext(UnreadMessage unreadMessage) {
+                        public void onNext(UnreadMessageCount unreadMessage) {
                             notifyMessage(unreadMessage);
                         }
                     });
         }
     }
 
-    private void notifyMessage(UnreadMessage unreadMessage) {
+    private void notifyMessage(UnreadMessageCount unreadMessage) {
         if (AppSettings.isNotifyEnable(ctx)) {
             notifyMention(unreadMessage);
 
@@ -196,7 +196,7 @@ public class UnReadMessageManager extends IManager {
         }
     }
 
-    private void notifyMention(UnreadMessage unreadMessage) {
+    private void notifyMention(UnreadMessageCount unreadMessage) {
         if ((AppSettings.isNotifyWeiboMentionEnable(ctx) || AppSettings.isNotifyCommentMentionEnable(ctx))
                 && (unreadMessage.getMention_status() > 0 || unreadMessage.getMention_cmt() > 0)) {
             StringBuilder stringBuilder = new StringBuilder();

@@ -24,6 +24,7 @@
     <!--适配Materail Design后添加的颜色-->
     <color name="text_100">#ff000000</color>
     <color name="text_80">#cc000000</color>
+    <color name="text_70">#262626</color>
     <color name="text_54">#636363</color>
     <color name="text_100_inverse">#ffffffff</color>
     <color name="text_87_inverse">#ddffffff</color>
@@ -44,8 +45,11 @@
 
     <color name="divider_timeline_item">#ebeef4</color>
 
+    <color name="divider_chat">#dcdcdc</color>
+
     <color name="image_item_shaw">#44000000</color>
 
     <color name="image_picker_folder_panel_normal">#da000000</color>
     <color name="image_picker_folder_panel_pressed">#e0000000</color>
+    <color name="chat_bottom_bg">#f7f7f7</color>
 </resources>

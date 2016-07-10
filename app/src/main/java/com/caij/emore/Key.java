@@ -17,6 +17,7 @@ public interface Key {
     String WEICO_APP_ID = "211160679";
     String WEICO_APP_SECRET = "63b64d531b98c2dbff2443816f274dd3";
     String WEICO_CALLBACK_URL =  "http://oauth.weico.cc";
+    String UID_ENCODE_KEY  = "Aet3YvcwIWKQAV0Tz1ap6yeTE/Pk+Vel5YtqqrPBebGWZhouTNpE19LfQ4AHOmaBpTCBOFnKl5+G\ncXPNhh4st3FYeW3SQhFVptAM0Yrhbyv5nLDenbfzEA9htaVdYteBXr49yMPZIkRPslYJmZXOvxjT\nZqVTwD9HFm9uBDseUl8";
 
     String BUGLY_KEY = "900037371";
 

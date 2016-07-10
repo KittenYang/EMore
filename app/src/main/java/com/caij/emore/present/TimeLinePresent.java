@@ -12,4 +12,8 @@ public interface TimeLinePresent extends RefreshListPresent {
     void collectWeibo(Weibo weibo);
 
     void uncollectWeibo(Weibo weibo);
+
+    void attitudesWeibo(Weibo weibo);
+
+    void destoryAttitudesWeibo(Weibo weibo);
 }

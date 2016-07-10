@@ -27,8 +27,8 @@
         <meta-data android:name="com.caij.emore.utils.glide.MyGlideModule"
             android:value="GlideModule"/>
 
-        <service android:name="com.caij.emore.service.WeiyoService"/>
-        <service android:name="com.caij.emore.service.WeiyoService$GrayInnerService"/>
+        <service android:name=".service.EMoreService"/>
+        <service android:name=".service.EMoreService$GrayInnerService"/>
 
         <activity android:name="com.caij.emore.ui.activity.SplashActivity"
             android:theme="@style/SplashActivity">
@@ -55,7 +55,7 @@
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <action android:name="android.intent.action.VIEW"/>
-                <data android:scheme="com.caij.weiyo.userinfo"/>
+                <data android:scheme="@string/user_info_scheme"/>
             </intent-filter>
         </activity>
 
@@ -64,7 +64,7 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="weibohttp"/>
+                <data android:scheme="@string/emore_http_scheme"/>
             </intent-filter>
         </activity>
 

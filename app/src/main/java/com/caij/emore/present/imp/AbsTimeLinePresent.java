@@ -4,6 +4,7 @@ import com.caij.emore.R;
 import com.caij.emore.bean.PicUrl;
 import com.caij.emore.bean.Weibo;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.LocakImage;
 import com.caij.emore.present.TimeLinePresent;
 import com.caij.emore.present.view.TimeLineWeiboView;
@@ -12,12 +13,16 @@ import com.caij.emore.source.WeiboSource;
 import com.caij.emore.source.local.LocalImageSource;
 import com.caij.emore.source.server.ServerImageSource;
 import com.caij.emore.utils.LogUtil;
+import com.caij.emore.utils.weibo.ApiUtil;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -31,14 +36,16 @@ public abstract class AbsTimeLinePresent<V extends TimeLineWeiboView> implements
     protected ImageSouce mLocalImageSouce;
     protected WeiboSource mServerWeiboSource;
     protected String mToken;
+    protected WeiboSource mLocalWeiboSource;
     protected CompositeSubscription mLoginCompositeSubscription;
 
-    public AbsTimeLinePresent(String token, V view,  WeiboSource serverWeiboSource) {
+    public AbsTimeLinePresent(String token, V view,  WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
         mView = view;
         mToken = token;
         mLocalImageSouce = new LocalImageSource();
         mServerImageSouce = new ServerImageSource();
         mServerWeiboSource = serverWeiboSource;
+        mLocalWeiboSource = localWeiboSource;
         mLoginCompositeSubscription = new CompositeSubscription();
     }
 
@@ -136,11 +143,76 @@ public abstract class AbsTimeLinePresent<V extends TimeLineWeiboView> implements
                 }
                 picUrl.setWidth(image.getWidth());
                 picUrl.setHeight(image.getHeight());
-                LogUtil.d(this, picUrl.getThumbnail_pic() + "  width:" + image.getWidth()
-                        + "  height:" + image.getHeight());
             } catch (IOException e) {
                 LogUtil.d(this, "%s 图片尺寸获取失败", picUrl.getThumbnail_pic());
             }
         }
     }
+
+    @Override
+    public void attitudesWeibo(final Weibo weibo) {
+        mView.showDialogLoading(true, R.string.requesting);
+        Map<String, Object> params = new HashMap<>();
+        ApiUtil.appendAuthSina(params);
+        Subscription subscription = mServerWeiboSource.attitudesWeibo(params, "smile", weibo.getId())
+                .doOnNext(new Action1<Response>() {
+                    @Override
+                    public void call(Response s) {
+                        mLocalWeiboSource.attitudesWeibo(null, null, weibo.getId());
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Response>() {
+                    @Override
+                    public void onCompleted() {
+                        mView.showDialogLoading(false, R.string.requesting);
+                        mView.onAttitudesSuccess(weibo);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.showDialogLoading(false, R.string.requesting);
+                    }
+
+                    @Override
+                    public void onNext(Response s) {
+                    }
+                });
+        mLoginCompositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void destoryAttitudesWeibo(final Weibo weibo) {
+        mView.showDialogLoading(true, R.string.requesting);
+        Map<String, Object> params = new HashMap<>();
+        ApiUtil.appendAuthSina(params);
+        Subscription subscription = mServerWeiboSource.destoryAttitudesWeibo(params, "smile", weibo.getId())
+                .doOnNext(new Action1<Response>() {
+                    @Override
+                    public void call(Response s) {
+                        mLocalWeiboSource.destoryAttitudesWeibo(null, null, weibo.getId());
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Response>() {
+                    @Override
+                    public void onCompleted() {
+                        mView.showDialogLoading(false, R.string.requesting);
+                        mView.onAttitudesSuccess(weibo);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.showDialogLoading(false, R.string.requesting);
+                    }
+
+                    @Override
+                    public void onNext(Response s) {
+                    }
+                });
+        mLoginCompositeSubscription.add(subscription);
+    }
+
 }

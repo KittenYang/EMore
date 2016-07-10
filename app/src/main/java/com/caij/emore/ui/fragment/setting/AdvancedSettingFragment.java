@@ -9,9 +9,8 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 
 import com.caij.emore.R;
-import com.caij.emore.service.WeiyoService;
+import com.caij.emore.service.EMoreService;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
-import com.caij.emore.ui.activity.login.AbsLoginActivity;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.CacheUtils;
@@ -76,7 +75,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 			DialogUtil.showHintDialog(getActivity(), "提示", "是否退出", "确定", new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					WeiyoService.stop(getActivity());
+					EMoreService.stop(getActivity());
 					ActivityStack.getInstance().finishAllActivity();
 				}
 			}, "取消", null);

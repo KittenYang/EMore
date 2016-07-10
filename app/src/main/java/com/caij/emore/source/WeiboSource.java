@@ -6,9 +6,11 @@ import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
 
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -75,4 +77,12 @@ public interface WeiboSource {
 
     Observable<QueryWeiboCommentResponse> getAcceptComments(String accessToken, long since_id, long max_id,
                                                             int count,  int page);
+
+    public Observable<Response> attitudesWeibo(Map<String, Object> paramMap,
+                                               String attitude, long weiboId);
+
+    public Observable<Response> destoryAttitudesWeibo(Map<String, Object> paramMap,
+                                      String attitude, long weiboId);
+
+    boolean getAttitudes(long id);
 }

@@ -10,6 +10,7 @@ import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.view.WeiCoLoginView;
 import com.caij.emore.source.LoginSource;
 import com.sina.weibo.security.WeiboSecurityUtils;
+import com.sina.weibo.security.WeicoSecurityUtils;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -34,7 +35,7 @@ public class WeiCoLoginPresentImp implements LoginPresent {
     }
 
     @Override
-    public void getAccessToken(String clientId, String clientSecret, String grantType, String redirectUrL) {
+    public void getAccessToken(String clientId, String clientSecret, String grantType, final String redirectUrL) {
         mLoginView.showDialogLoading(true, R.string.logining);
         Subscription loginSubscription = mLoginSource.getAccessToken(clientId, clientSecret, grantType, redirectUrL)
                 .flatMap(new Func1<AccessToken, Observable<WeiCoLoginResponse>>() {
@@ -62,6 +63,12 @@ public class WeiCoLoginPresentImp implements LoginPresent {
                     @Override
                     public void onNext(WeiCoLoginResponse response) {
                         mLoginView.onLoginSuccess(response);
+                        try {
+                            response.setsValue(WeiboSecurityUtils.calculateSInJava(EMoreApplication.getInstance(),
+                                    String.valueOf(response.getUid()), WeicoSecurityUtils.decode(Key.UID_ENCODE_KEY)));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         UserPrefs.get().setWeiCoLoginInfo(response);
                     }
                 });

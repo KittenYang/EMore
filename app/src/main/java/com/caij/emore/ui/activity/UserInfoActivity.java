@@ -39,6 +39,7 @@ import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.SystemUtil;
+import com.caij.emore.utils.weibo.WeicoAuthUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,24 +114,7 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         setTitle("");
 
-
-        AccessToken weicoToken = UserPrefs.get().getWeiCoToken();
-        if (weicoToken == null || weicoToken.isExpired()) {
-            DialogUtil.showHintDialog(this, getString(R.string.hint), getString(R.string.aouth_high_hint), getString(R.string.ok), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Account account = UserPrefs.get().getAccount();
-                    Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(UserInfoActivity.this,
-                            account.getUsername(), account.getPwd());
-                    startActivityForResult(intent, Key.AUTH);
-                }
-            }, getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-        } else {
+        if (WeicoAuthUtil.checkWeicoLogin(this, true)) {
             doNext();
         }
     }
@@ -267,9 +251,11 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == Key.AUTH) {
+        if (requestCode == Key.AUTH) {
+            if (resultCode == RESULT_OK) {
                 doNext();
+            }else {
+                finish();
             }
         }
     }

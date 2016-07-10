@@ -15,7 +15,7 @@ import com.caij.emore.service.manager.UnReadMessageManager;
  * Created by Caij on 2016/7/2.
  * 用于读取未读消息和发布微博
  */
-public class WeiyoService extends Service {
+public class EMoreService extends Service {
 
     private static final int SERVICE_ID = 5587;
 
@@ -23,12 +23,12 @@ public class WeiyoService extends Service {
     private UnReadMessageManager mUnReadMessageManager;
 
     public static void start(Context context) {
-        Intent intent = new Intent(context, WeiyoService.class);
+        Intent intent = new Intent(context, EMoreService.class);
         context.startService(intent);
     }
 
     public static void stop(Context context) {
-        Intent intent = new Intent(context, WeiyoService.class);
+        Intent intent = new Intent(context, EMoreService.class);
         context.stopService(intent);
     }
 

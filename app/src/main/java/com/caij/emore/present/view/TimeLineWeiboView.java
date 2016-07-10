@@ -16,4 +16,6 @@ public interface TimeLineWeiboView extends RefreshListView<Weibo> {
     void onCollectSuccess(Weibo weibo);
 
     void onUncollectSuccess(Weibo weibo);
+
+    void onAttitudesSuccess(Weibo weibo);
 }
