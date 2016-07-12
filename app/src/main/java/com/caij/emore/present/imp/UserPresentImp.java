@@ -8,6 +8,7 @@ import com.caij.emore.source.UserSource;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -63,6 +64,12 @@ public class UserPresentImp implements SimpleUserPresent {
                     }
                 });
         Subscription serverSubscription = mServerUserSource.getWeiboUserInfoByUid(mToken, mUid)
+                .doOnNext(new Action1<User>() {
+                    @Override
+                    public void call(User user) {
+                        mLocalUserSource.saveWeiboUser(user);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<User>() {

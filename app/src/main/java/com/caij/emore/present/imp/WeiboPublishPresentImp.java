@@ -8,7 +8,7 @@ import com.caij.emore.bean.Weibo;
 import com.caij.emore.present.WeiboPublishPresent;
 import com.caij.emore.present.view.WeiboPublishView;
 import com.caij.emore.source.WeiboSource;
-import com.caij.emore.utils.ServerEventUtil;
+import com.caij.emore.utils.EventUtil;
 
 import java.util.ArrayList;
 
@@ -61,7 +61,7 @@ public class WeiboPublishPresentImp implements WeiboPublishPresent {
             PublishBean publishBean = new PublishBean();
             publishBean.setText(content);
             publishBean.setPics(imagePaths);
-            ServerEventUtil.publishWeibo(publishBean);
+            EventUtil.publishWeibo(publishBean);
             mWeiboPublishView.finish();
             return;
         }

@@ -1,30 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingRight="@dimen/spacing_medium"
-    android:paddingLeft="32dp"
+    android:layout_marginBottom="@dimen/spacing_medium"
     android:layout_marginTop="@dimen/spacing_medium"
-    android:layout_marginBottom="@dimen/spacing_medium">
+    android:orientation="vertical"
+    android:paddingLeft="32dp"
+    android:paddingRight="@dimen/spacing_medium">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/iv_avatar"
+        android:gravity="bottom">
+
+        <RelativeLayout
+            android:id="@+id/rl_status"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/spacing_micro"
+            android:layout_toLeftOf="@+id/tv_message">
+
+            <ImageView
+                android:id="@+id/iv_fail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/ic_fail" />
+
+            <ProgressBar
+                android:id="@+id/pb_loading"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_micro"
+            android:layout_weight="1"
+            android:background="@drawable/self_sender_message_bg"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/spacing_medium"
+            android:text="敬家法律建省立刻就放开手"
+            android:textColor="@color/text_87_inverse"
+            android:textSize="@dimen/text_size_medium" />
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/iv_avatar"
         android:layout_width="42dp"
         android:layout_height="42dp"
-        android:src="@mipmap/messagescenter_at"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:src="@mipmap/messagescenter_at" />
 
-    <TextView
-        android:id="@+id/tv_message"
-        android:layout_toLeftOf="@id/iv_avatar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_medium"
-        android:textColor="@color/text_100_inverse"
-        android:background="@drawable/self_sender_message_bg"
-        android:layout_marginRight="@dimen/spacing_micro"
-        android:text="附近的刷卡缴费卡手机付款了敬爱是房价快速的减肥开始大家法律框架爱死了福建省立刻就放开手"
-        android:paddingLeft="@dimen/spacing_medium"
-        android:gravity="center_vertical"/>
 
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 
@@ -76,7 +77,8 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
 
     @Override
     protected void onEmotionDeleteClick() {
-
+        KeyEvent event = new KeyEvent(0, 0, 0, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0, KeyEvent.KEYCODE_ENDCALL);
+        etContent.dispatchKeyEvent(event);
     }
 
     @Override

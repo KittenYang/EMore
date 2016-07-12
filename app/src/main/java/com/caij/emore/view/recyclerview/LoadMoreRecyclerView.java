@@ -109,7 +109,6 @@ public class LoadMoreRecyclerView extends RecyclerView {
             super.onScrolled(recyclerView, dx, dy);
 
             LayoutManager layoutManager = getLayoutManager();
-            final int visibleItemCount = getChildCount();
             final int totalItemCount = layoutManager.getItemCount();
             int lastVisibleItemPosition = 0;
 

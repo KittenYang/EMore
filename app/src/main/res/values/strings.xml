@@ -137,8 +137,10 @@
     <string name="key_setting_browser">pInnerBrowser</string>
     <string name="weibo_mention_count_hint">条@我的微博</string>
     <string name="comment_mention_count_hint">条@我的评论</string>
-    <string name="emore_http_scheme">emorehttp://</string>
+    <string name="emore_http_scheme">emorehttp</string>
     <string name="user_info_scheme">com.caij.weiyo.userinfo://</string>
+    <string name="message">消息</string>
+    <string name="image_message_default_text">图片</string>
 
     <string-array name="txtUnread">
         <item>1分钟</item>

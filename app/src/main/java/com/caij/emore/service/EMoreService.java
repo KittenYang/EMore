@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.caij.emore.service.manager.ChatManager;
 import com.caij.emore.service.manager.PublishWeiboManager;
 import com.caij.emore.service.manager.UnReadMessageManager;
 
@@ -21,6 +22,7 @@ public class EMoreService extends Service {
 
     private PublishWeiboManager mPublishWeiboManager;
     private UnReadMessageManager mUnReadMessageManager;
+    private ChatManager mChatManager;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, EMoreService.class);
@@ -52,9 +54,11 @@ public class EMoreService extends Service {
 
         mPublishWeiboManager = PublishWeiboManager.getInstance();
         mUnReadMessageManager = UnReadMessageManager.getInstance();
+        mChatManager = ChatManager.getInstance();
 
         mPublishWeiboManager.onCreateManager(this);
         mUnReadMessageManager.onCreateManager(this);
+        mChatManager.onCreateManager(this);
     }
 
     @Override
@@ -67,6 +71,7 @@ public class EMoreService extends Service {
         super.onDestroy();
         mPublishWeiboManager.reset();
         mUnReadMessageManager.reset();
+        mChatManager.reset();
     }
 
     /**

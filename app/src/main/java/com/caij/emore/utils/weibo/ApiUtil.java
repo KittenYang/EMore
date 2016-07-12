@@ -17,7 +17,13 @@ public class ApiUtil {
         paramMap.put("c", "weicoandroid");
         paramMap.put("s", localAccount.getWeiCoLoginResponse().getsValue());
         paramMap.put("gsid", localAccount.getWeiCoLoginResponse().getGsid());
-        paramMap.put("from", "1055095010");
+        paramMap.put("from", Key.WEICO_APP_FROM);
+        paramMap.put("source", Key.WEICO_APP_ID);
+    }
+
+    public static void appendAuth(Map<String, Object> paramMap)
+    {
+        paramMap.put("from", Key.WEICO_APP_FROM);
         paramMap.put("source", Key.WEICO_APP_ID);
     }
 }

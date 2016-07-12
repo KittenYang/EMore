@@ -10,7 +10,7 @@ import com.caij.emore.bean.Account;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.bean.Weibo;
 import com.caij.emore.source.server.ServerWeiboSource;
-import com.caij.emore.utils.ServerEventUtil;
+import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ToastUtil;
 
 import rx.Observable;
@@ -48,7 +48,7 @@ public class PublishWeiboManager extends IManager {
         mPublishWeiboSource = new ServerWeiboSource();
         mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         mCompositeSubscription = new CompositeSubscription();
-        mPublishWeiboObservable = ServerEventUtil.registPublishEvent();
+        mPublishWeiboObservable = EventUtil.registPublishEvent();
         mPublishWeiboObservable.subscribe(new Action1<PublishBean>() {
             @Override
             public void call(PublishBean publishBean) {
@@ -59,7 +59,7 @@ public class PublishWeiboManager extends IManager {
 
     @Override
     public void reset() {
-        ServerEventUtil.unregistPublishEvent(mPublishWeiboObservable);
+        EventUtil.unregistPublishEvent(mPublishWeiboObservable);
         mCompositeSubscription.clear();
     }
 

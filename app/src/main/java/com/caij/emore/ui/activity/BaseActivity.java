@@ -30,6 +30,9 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
     protected void onDestroy() {
         super.onDestroy();
         ActivityStack.getInstance().remove(this);
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
     }
 
     protected void showToast(String msg) {

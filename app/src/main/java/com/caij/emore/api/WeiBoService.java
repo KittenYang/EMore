@@ -3,6 +3,7 @@ package com.caij.emore.api;
 import com.caij.emore.Key;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Comment;
+import com.caij.emore.bean.DirectMessage;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.UnreadMessageCount;
 import com.caij.emore.bean.Weibo;
@@ -13,10 +14,13 @@ import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.User;
 import com.caij.emore.bean.response.UploadImageResponse;
+import com.caij.emore.bean.response.UploadMessageImageResponse;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
 import com.caij.emore.utils.GsonUtils;
+
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -31,6 +35,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import rx.Observable;
 
@@ -238,4 +243,20 @@ public interface WeiBoService {
                                                    @Query("max_id") long max_id,
                                                    @Query("count") int count,
                                                    @Query("page") int page);
+
+    @FormUrlEncoded
+    @POST("/2/direct_messages/new.json")
+    Observable<DirectMessage> createMessage(@Field("access_token") String accessToken,
+                                            @Field("text") String text,
+                                            @Field("uid") long uid,
+                                            @Field("screen_name") String screen_name,
+                                            @Field("fids") String fids);
+
+    @Multipart
+    @POST
+    public Observable<UploadMessageImageResponse> uploadMessageImage(@Url String url,
+                                                                     @QueryMap Map<String, Object> paramMap,
+                                                                     @Query("access_token") String accessToken,
+                                                                     @Query("tuid") long uid,
+                                                                     @Part MultipartBody.Part file);
 }

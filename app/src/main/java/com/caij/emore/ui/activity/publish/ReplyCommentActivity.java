@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 
@@ -56,7 +57,8 @@ public class ReplyCommentActivity extends PublishActivity implements CommentWeib
 
     @Override
     protected void onEmotionDeleteClick() {
-
+        KeyEvent event = new KeyEvent(0, 0, 0, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0, KeyEvent.KEYCODE_ENDCALL);
+        etContent.dispatchKeyEvent(event);
     }
 
     @Override

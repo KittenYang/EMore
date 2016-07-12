@@ -72,12 +72,12 @@
         <RadioButton
             android:id="@+id/rb_weibo"
             style="@style/NavRadioButton"
-            android:text="微博" />
+            android:text="@string/weibo" />
 
         <RadioButton
             android:id="@+id/rb_message"
             style="@style/NavRadioButton"
-            android:text="私信"/>
+            android:text="@string/message"/>
 
     </RadioGroup>
 

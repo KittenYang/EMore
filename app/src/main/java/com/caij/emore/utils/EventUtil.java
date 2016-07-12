@@ -1,6 +1,7 @@
 package com.caij.emore.utils;
 
 import com.caij.emore.Key;
+import com.caij.emore.bean.DirectMessage;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.utils.rxbus.RxBus;
 
@@ -9,7 +10,7 @@ import rx.Observable;
 /**
  * Created by Caij on 2016/7/2.
  */
-public class ServerEventUtil {
+public class EventUtil {
 
     //  发布微博事件
     public static void publishWeibo(PublishBean publishBean) {
@@ -53,5 +54,19 @@ public class ServerEventUtil {
 
     public static void unregistLoginEvent(Observable observable) {
         RxBus.get().unregister(Key.LOGIN_STATUE_EVENT, observable);
+    }
+
+    /**
+     */
+    public static void sendMessage(DirectMessage bean) {
+        RxBus.get().post(Key.SEND_MESSAGE_EVENT, bean);
+    }
+
+    public static Observable<DirectMessage> registSendMessageEvent() {
+        return RxBus.get().register(Key.SEND_MESSAGE_EVENT);
+    }
+
+    public static void unregistSendMessageEvent(Observable observable) {
+        RxBus.get().unregister(Key.SEND_MESSAGE_EVENT, observable);
     }
 }

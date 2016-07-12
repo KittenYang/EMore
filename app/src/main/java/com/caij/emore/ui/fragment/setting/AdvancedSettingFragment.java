@@ -15,7 +15,7 @@ import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.utils.ServerEventUtil;
+import com.caij.emore.utils.EventUtil;
 
 
 /**
@@ -68,7 +68,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 					Intent intent = new Intent(getActivity(), EMoreLoginActivity.class);
 					startActivity(intent);
 					getActivity().finish();
-					ServerEventUtil.postLoginEvent(false);
+					EventUtil.postLoginEvent(false);
 				}
 			}, "取消", null);
 		}else if ("key_exit".equals(preference.getKey())) {

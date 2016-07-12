@@ -18,7 +18,7 @@ import com.caij.emore.bean.UnreadMessageCount;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.utils.LogUtil;
-import com.caij.emore.utils.ServerEventUtil;
+import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.SystemUtil;
 
 import rx.Observable;
@@ -58,8 +58,8 @@ public class UnReadMessageManager extends IManager {
         mAlarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         mCompositeSubscription = new CompositeSubscription();
-        mIntervalMillisUpdateObservable = ServerEventUtil.registIntervalMillisUpdateEvent();
-        mLoginStatusObservable = ServerEventUtil.registLoginEvent();
+        mIntervalMillisUpdateObservable = EventUtil.registIntervalMillisUpdateEvent();
+        mLoginStatusObservable = EventUtil.registLoginEvent();
         mServerMessageSource = new ServerMessageSource();
         mIntervalMillisUpdateObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
@@ -91,8 +91,8 @@ public class UnReadMessageManager extends IManager {
     public void reset() {
         ctx.unregisterReceiver(scheduleReceiver);
         cancelHeartbeatTimer();
-        ServerEventUtil.unregistIntervalMillisUpdateEvent(mIntervalMillisUpdateObservable);
-        ServerEventUtil.unregistLoginEvent(mLoginStatusObservable);
+        EventUtil.unregistIntervalMillisUpdateEvent(mIntervalMillisUpdateObservable);
+        EventUtil.unregistLoginEvent(mLoginStatusObservable);
         mCompositeSubscription.clear();
     }
 

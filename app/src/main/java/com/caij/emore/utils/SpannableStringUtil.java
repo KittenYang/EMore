@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 public class SpannableStringUtil {
 
     public static final String USER_INFO_SCHEME = "com.caij.weiyo.userinfo://";
-    public static final String HTTP_SCHEME = "weibohttp://";
+    public static final String HTTP_SCHEME = "emorehttp://";
     public static final String TOPIC_SCHEME = "com.caij.weiyo.topics://";
 
     public static void praseName(Spannable spannableString) {

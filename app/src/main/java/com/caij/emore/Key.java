@@ -7,7 +7,7 @@ public interface Key {
 
     String DB_NAME  = "WeiBo";
     long DB_VERSION  = 1;
-
+    String UPLOAD_MESSAGE_IMAGE_URL  = "http://upload.api.weibo.com/2/mss/upload.json";
     String WEIBO_BASE_URL = "https://api.weibo.com/";
     String WEIBO_APP_ID  = "1873593701";
     String WEIBO_APP_SECRET = "f6d2a29b04af69c1fe9cd10302320eeb";
@@ -15,6 +15,7 @@ public interface Key {
 
     String WEICO_BASE_URL = "https://api.weibo.cn/";
     String WEICO_APP_ID = "211160679";
+    String WEICO_APP_FROM = "1055095010";
     String WEICO_APP_SECRET = "63b64d531b98c2dbff2443816f274dd3";
     String WEICO_CALLBACK_URL =  "http://oauth.weico.cc";
     String UID_ENCODE_KEY  = "Aet3YvcwIWKQAV0Tz1ap6yeTE/Pk+Vel5YtqqrPBebGWZhouTNpE19LfQ4AHOmaBpTCBOFnKl5+G\ncXPNhh4st3FYeW3SQhFVptAM0Yrhbyv5nLDenbfzEA9htaVdYteBXr49yMPZIkRPslYJmZXOvxjT\nZqVTwD9HFm9uBDseUl8";
@@ -39,7 +40,11 @@ public interface Key {
     String PUBLISH_WEIBO = "publish_weibo";
     String INTERVAL_MILLIS_UPDATE = "interval_millis_update";
     String LOGIN_STATUE_EVENT = "login_statue_event";
+    String SEND_MESSAGE_EVENT = "send_message_event";
+    String SEND_MESSAGE_RESULT_EVENT = "send_message_result_event";
     String CID = "cid";
     String COMMENT = "comment";
     String DATE = "date";
+
+    int REQUEST_CODE_SELECT_IMAGE = 1000;
 }

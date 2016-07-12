@@ -1,12 +1,16 @@
 package com.caij.emore.bean;
 
-import com.google.gson.annotations.SerializedName;
+import java.util.List;
 
 /**
  * Created by Caij on 2016/7/10.
  */
 public class DirectMessage {
 
+    public static final int STATUS_SUCCESS = 1;
+    public static final int STATUS_FAIL = 2;
+    public static final int STATUS_SEND = 3;
+    public static final int STATUS_SERVER = 4;
 
     private long id;
     private String idstr;
@@ -40,6 +44,11 @@ public class DirectMessage {
     private boolean topublic;
     private boolean pushToMPS;
     private long oriImageId;
+
+    private List<Long> att_ids;
+
+    private int status = STATUS_SERVER;
+    private String imagePath;
 
     public long getId() {
         return id;
@@ -249,6 +258,11 @@ public class DirectMessage {
         this.oriImageId = oriImageId;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        DirectMessage directMessage = (DirectMessage) o;
+        return directMessage.id == id;
+    }
 
     public static class ExtTextBean {
         private boolean autoReply;
@@ -260,6 +274,30 @@ public class DirectMessage {
         public void setAutoReply(boolean autoReply) {
             this.autoReply = autoReply;
         }
+    }
+
+    public List<Long> getAtt_ids() {
+        return att_ids;
+    }
+
+    public void setAtt_ids(List<Long> att_ids) {
+        this.att_ids = att_ids;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
 }

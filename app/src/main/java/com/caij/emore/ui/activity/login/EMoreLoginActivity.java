@@ -13,7 +13,7 @@ import com.caij.emore.present.imp.LoginPresentImp;
 import com.caij.emore.present.view.LoginView;
 import com.caij.emore.source.server.LoginSourceImp;
 import com.caij.emore.ui.activity.MainActivity;
-import com.caij.emore.utils.ServerEventUtil;
+import com.caij.emore.utils.EventUtil;
 
 /**
  * Created by Caij on 2016/7/8.
@@ -69,7 +69,7 @@ public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
         UserPrefs.get().setPwd(mPassword);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        ServerEventUtil.postLoginEvent(true);
+        EventUtil.postLoginEvent(true);
         initDB(UserPrefs.get().getEMoreToken().getUid());
         finish();
     }
