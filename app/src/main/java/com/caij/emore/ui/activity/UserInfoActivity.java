@@ -89,9 +89,9 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
     private User mUser;
     private MenuItem menuItem;
 
-    public static Intent newIntent(Context context, User user) {
+    public static Intent newIntent(Context context, String name) {
         Intent intent = new Intent(context, UserInfoActivity.class);
-        intent.putExtra(Key.OBJ, user);
+        intent.putExtra(Key.USERNAME, name);
         return intent;
     }
 
@@ -130,14 +130,13 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
             }
             mUserInfoDetailPresent = new UserInfoDetailPresentImp(token.getAccess_token(), userName, this,
                     new ServerUserSource(), new LocalUserSource());
-            mUserInfoDetailPresent.getWeiboUserInfoByName();
         } else {
-            User user = (User) intent.getSerializableExtra(Key.OBJ);
-            mUserInfoDetailPresent = new UserInfoDetailPresentImp(token.getAccess_token(), user.getScreen_name(), this,
+            String userName = intent.getStringExtra(Key.USERNAME);
+            mUserInfoDetailPresent = new UserInfoDetailPresentImp(token.getAccess_token(), userName, this,
                     new ServerUserSource(), new LocalUserSource());
-            mUser = user;
-            fillDate(user);
         }
+
+        mUserInfoDetailPresent.getWeiboUserInfoByName();
     }
 
     private void initContent(User user) {

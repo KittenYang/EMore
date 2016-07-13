@@ -8,10 +8,12 @@ import com.caij.emore.source.DefaultResponseSubscriber;
 import com.caij.emore.source.UserSource;
 
 import retrofit2.adapter.rxjava.HttpException;
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -42,6 +44,12 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
     public void follow() {
         mUserView.showDialogLoading(true);
         Subscription subscription = mServerUserSource.followUser(mToken, mName)
+                .doOnNext(new Action1<User>() {
+                    @Override
+                    public void call(User user) {
+                        mLocalUserSource.saveWeiboUser(user);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<User>() {
@@ -68,6 +76,12 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
     public void unFollow() {
         mUserView.showDialogLoading(true);
         Subscription subscription = mServerUserSource.unfollowUser(mToken, mName)
+                .doOnNext(new Action1<User>() {
+                    @Override
+                    public void call(User user) {
+                        mLocalUserSource.saveWeiboUser(user);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
@@ -93,30 +107,13 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
     @Override
     public void getWeiboUserInfoByName() {
         mUserView.showDialogLoading(true);
-        Subscription localSubscription = mLocalUserSource.getWeiboUserInfoByName(mToken, mName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<User>() {
+        Observable<User> localObservable =   mLocalUserSource.getWeiboUserInfoByName(mToken, mName);
+        Observable<User> serverObservable =   mServerUserSource.getWeiboUserInfoByName(mToken, mName);
+        Subscription subscription = Observable.concat(localObservable, serverObservable)
+                .first(new Func1<User, Boolean>() {
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(User user) {
-                        mUserView.setUser(user);
-                    }
-                });
-        Subscription serverSubscription = mServerUserSource.getWeiboUserInfoByName(mToken, mName)
-                .doOnNext(new Action1<User>() {
-                    @Override
-                    public void call(User user) {
-                        mLocalUserSource.saveWeiboUser(user);
+                    public Boolean call(User user) {
+                        return user != null;
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -146,8 +143,7 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                         mUserView.setUser(user);
                     }
                 });
-        mLoginCompositeSubscription.add(localSubscription);
-        mLoginCompositeSubscription.add(serverSubscription);
+        mLoginCompositeSubscription.add(subscription);
     }
 
     @Override

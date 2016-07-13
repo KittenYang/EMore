@@ -95,14 +95,14 @@ public abstract class WeiboItemView extends FrameLayout {
     @OnClick(R.id.tv_name)
     public void onNameClick(View view) {
         User user = (User) view.getTag();
-        Intent intent = UserInfoActivity.newIntent(getContext(), user);
+        Intent intent = UserInfoActivity.newIntent(getContext(), user.getScreen_name());
         getContext().startActivity(intent);
     }
 
     @OnClick(R.id.sdv_avatar)
     public void onAvatarClick(View view) {
         User user = (User) view.getTag();
-        Intent intent = UserInfoActivity.newIntent(getContext(), user);
+        Intent intent = UserInfoActivity.newIntent(getContext(), user.getScreen_name());
         getContext().startActivity(intent);
     }
 

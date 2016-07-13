@@ -49,7 +49,7 @@ public abstract class FriendshipFragment<P extends ListPresent> extends Recycler
     @Override
     public void onItemClick(View view, int position) {
         User user = mRecyclerViewAdapter.getItem(position);
-        Intent intent = UserInfoActivity.newIntent(getActivity(), user);
+        Intent intent = UserInfoActivity.newIntent(getActivity(), user.getScreen_name());
         startActivity(intent);
     }
 }
