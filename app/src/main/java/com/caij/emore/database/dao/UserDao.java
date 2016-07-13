@@ -58,6 +58,7 @@ public class UserDao extends AbstractDao<User, Long> {
         public final static Property Lang = new Property(32, String.class, "lang", false, "LANG");
         public final static Property Fiset_weibo_id = new Property(33, Long.class, "fiset_weibo_id", false, "FISET_WEIBO_ID");
         public final static Property Cover_image_phone = new Property(34, String.class, "cover_image_phone", false, "COVER_IMAGE_PHONE");
+        public final static Property Update_time = new Property(35, Long.class, "update_time", false, "UPDATE_TIME");
     };
 
 
@@ -107,7 +108,8 @@ public class UserDao extends AbstractDao<User, Long> {
                 "\"BI_FOLLOWERS_COUNT\" INTEGER," + // 31: bi_followers_count
                 "\"LANG\" TEXT," + // 32: lang
                 "\"FISET_WEIBO_ID\" INTEGER," + // 33: fiset_weibo_id
-                "\"COVER_IMAGE_PHONE\" TEXT);"); // 34: cover_image_phone
+                "\"COVER_IMAGE_PHONE\" TEXT," + // 34: cover_image_phone
+                "\"UPDATE_TIME\" INTEGER);"); // 35: update_time
     }
 
     /** Drops the underlying database table. */
@@ -295,6 +297,11 @@ public class UserDao extends AbstractDao<User, Long> {
         if (cover_image_phone != null) {
             stmt.bindString(35, cover_image_phone);
         }
+ 
+        Long update_time = entity.getUpdate_time();
+        if (update_time != null) {
+            stmt.bindLong(36, update_time);
+        }
     }
 
     /** @inheritdoc */
@@ -341,7 +348,8 @@ public class UserDao extends AbstractDao<User, Long> {
             cursor.isNull(offset + 31) ? null : cursor.getInt(offset + 31), // bi_followers_count
             cursor.isNull(offset + 32) ? null : cursor.getString(offset + 32), // lang
             cursor.isNull(offset + 33) ? null : cursor.getLong(offset + 33), // fiset_weibo_id
-            cursor.isNull(offset + 34) ? null : cursor.getString(offset + 34) // cover_image_phone
+            cursor.isNull(offset + 34) ? null : cursor.getString(offset + 34), // cover_image_phone
+            cursor.isNull(offset + 35) ? null : cursor.getLong(offset + 35) // update_time
         );
         return entity;
     }
@@ -384,6 +392,7 @@ public class UserDao extends AbstractDao<User, Long> {
         entity.setLang(cursor.isNull(offset + 32) ? null : cursor.getString(offset + 32));
         entity.setFiset_weibo_id(cursor.isNull(offset + 33) ? null : cursor.getLong(offset + 33));
         entity.setCover_image_phone(cursor.isNull(offset + 34) ? null : cursor.getString(offset + 34));
+        entity.setUpdate_time(cursor.isNull(offset + 35) ? null : cursor.getLong(offset + 35));
      }
     
     /** @inheritdoc */

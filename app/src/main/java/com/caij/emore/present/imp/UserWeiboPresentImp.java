@@ -36,34 +36,6 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeibo
         mWeibos = new ArrayList<>();
     }
 
-
-    @Override
-    public void deleteWeibo(final Weibo weibo, final int position) {
-        mView.showDialogLoading(true, R.string.deleting);
-        mServerWeiboSource.deleteWeibo(mToken, weibo.getId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Weibo>() {
-                    @Override
-                    public void onCompleted() {
-                        mView.onDeleteWeiboSuccess(weibo, position);
-                        mView.showDialogLoading(false, R.string.deleting);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
-                        mView.showDialogLoading(false, R.string.deleting);
-                    }
-
-                    @Override
-                    public void onNext(Weibo weibo) {
-
-                    }
-                });
-    }
-
-
     @Override
     public void onCreate() {
 

@@ -195,8 +195,19 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<Weibo> deleteWeibo(String accessToken, long id) {
-        return null;
+    public Observable<Weibo> deleteWeibo(String accessToken, final long id) {
+        return Observable.create(new Observable.OnSubscribe<Weibo>() {
+            @Override
+            public void call(Subscriber<? super Weibo> subscriber) {
+                try {
+                    weiboDao.deleteByKey(id);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
     }
 
     @Override

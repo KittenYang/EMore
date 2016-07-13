@@ -56,7 +56,9 @@ public abstract class AbsTimeLinePresent<V extends TimeLineWeiboView> implements
     @Override
     public void deleteWeibo(final Weibo weibo, final int position) {
         mView.showDialogLoading(true, R.string.deleting);
-        Subscription subscription = mServerWeiboSource.deleteWeibo(mToken, weibo.getId())
+        Observable<Weibo> serverObservable = mServerWeiboSource.deleteWeibo(mToken, weibo.getId());
+        Observable<Weibo> localObservable = mLocalWeiboSource.deleteWeibo(mToken, weibo.getId());
+        Subscription subscription = Observable.concat(serverObservable, localObservable)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Weibo>() {

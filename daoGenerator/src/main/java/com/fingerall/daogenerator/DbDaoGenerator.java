@@ -59,6 +59,7 @@ public class DbDaoGenerator {
         entityUser.addStringProperty("lang");
         entityUser.addLongProperty("fiset_weibo_id");
         entityUser.addStringProperty("cover_image_phone");
+        entityUser.addLongProperty("update_time");
     }
 
     private static void createWeibo(Schema sch) {

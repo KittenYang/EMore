@@ -1,14 +1,18 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.R;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.SimpleUserPresent;
 import com.caij.emore.present.view.SimpleUserView;
 import com.caij.emore.source.UserSource;
 
+import retrofit2.adapter.rxjava.HttpException;
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -44,30 +48,13 @@ public class UserPresentImp implements SimpleUserPresent {
 
     @Override
     public void getWeiboUserInfoByUid() {
-        Subscription localSubscription = mLocalUserSource.getWeiboUserInfoByUid(mToken, mUid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<User>() {
+        Observable<User> localObservable =   mLocalUserSource.getWeiboUserInfoByUid(mToken, mUid);
+        Observable<User> serverObservable =   mServerUserSource.getWeiboUserInfoByUid(mToken, mUid);
+        Subscription subscription = Observable.concat(localObservable, serverObservable)
+                .first(new Func1<User, Boolean>() {
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mUserView.onDefaultLoadError();
-                    }
-
-                    @Override
-                    public void onNext(User user) {
-                        mUserView.setUser(user);
-                    }
-                });
-        Subscription serverSubscription = mServerUserSource.getWeiboUserInfoByUid(mToken, mUid)
-                .doOnNext(new Action1<User>() {
-                    @Override
-                    public void call(User user) {
-                        mLocalUserSource.saveWeiboUser(user);
+                    public Boolean call(User user) {
+                        return user != null && System.currentTimeMillis() - user.getUpdate_time() < 60 * 60 * 1000;
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -86,7 +73,6 @@ public class UserPresentImp implements SimpleUserPresent {
                         mUserView.setUser(user);
                     }
                 });
-        mLoginCompositeSubscription.add(localSubscription);
-        mLoginCompositeSubscription.add(serverSubscription);
+        mLoginCompositeSubscription.add(subscription);
     }
 }

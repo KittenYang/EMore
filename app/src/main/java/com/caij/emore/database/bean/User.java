@@ -47,6 +47,7 @@ public class User implements Serializable {
     private String lang;
     private Long fiset_weibo_id;
     private String cover_image_phone;
+    private Long update_time = System.currentTimeMillis();
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -58,7 +59,7 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(Long id, String idstr, String screen_name, String name, Integer province, Integer city, String location, String description, String url, String profile_image_url, String profile_url, String domain, String weihao, String gender, Integer followers_count, Integer friends_count, Integer statuses_count, Integer favourites_count, String created_at, Boolean following, Boolean allow_all_act_msg, Boolean geo_enabled, Boolean verified, Integer verified_type, String remark, Boolean allow_all_comment, String avatar_large, String avatar_hd, String verified_reason, Boolean follow_me, Integer online_status, Integer bi_followers_count, String lang, Long fiset_weibo_id, String cover_image_phone) {
+    public User(Long id, String idstr, String screen_name, String name, Integer province, Integer city, String location, String description, String url, String profile_image_url, String profile_url, String domain, String weihao, String gender, Integer followers_count, Integer friends_count, Integer statuses_count, Integer favourites_count, String created_at, Boolean following, Boolean allow_all_act_msg, Boolean geo_enabled, Boolean verified, Integer verified_type, String remark, Boolean allow_all_comment, String avatar_large, String avatar_hd, String verified_reason, Boolean follow_me, Integer online_status, Integer bi_followers_count, String lang, Long fiset_weibo_id, String cover_image_phone, Long update_time) {
         this.id = id;
         this.idstr = idstr;
         this.screen_name = screen_name;
@@ -94,6 +95,7 @@ public class User implements Serializable {
         this.lang = lang;
         this.fiset_weibo_id = fiset_weibo_id;
         this.cover_image_phone = cover_image_phone;
+        this.update_time = update_time;
     }
 
     public Long getId() {
@@ -374,6 +376,14 @@ public class User implements Serializable {
 
     public void setCover_image_phone(String cover_image_phone) {
         this.cover_image_phone = cover_image_phone;
+    }
+
+    public Long getUpdate_time() {
+        return update_time;
+    }
+
+    public void setUpdate_time(Long update_time) {
+        this.update_time = update_time;
     }
 
     // KEEP METHODS - put your custom methods here

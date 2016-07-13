@@ -119,6 +119,8 @@ public class WeiboDetialActivity extends BaseToolBarActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_star:
+
+
                 break;
             case R.id.action_repost: {
                 Intent intent = RepostWeiboActivity.newIntent(this, mWeibo);
