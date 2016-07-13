@@ -1,6 +1,7 @@
 package com.caij.emore.present.view;
 
-import com.caij.emore.bean.User;
+
+import com.caij.emore.database.bean.User;
 
 /**
  * Created by Caij on 2016/6/3.
@@ -8,7 +9,6 @@ import com.caij.emore.bean.User;
 public interface DetailUserView extends BaseView{
 
     public void setUser(User user);
-
 
     void onFollowSuccess();
 

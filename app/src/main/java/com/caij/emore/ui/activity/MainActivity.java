@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.bean.User;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.present.SimpleUserPresent;
 import com.caij.emore.present.imp.UserPresentImp;
 import com.caij.emore.present.view.SimpleUserView;

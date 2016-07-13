@@ -1,6 +1,6 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.bean.Weibo;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.RepostWeiboPresent;
 import com.caij.emore.present.view.RepostWeiboView;
 import com.caij.emore.source.WeiboSource;

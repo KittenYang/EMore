@@ -1,13 +1,13 @@
 package com.caij.emore.source;
 
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.Weibo;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.database.bean.Weibo;
 
 import java.util.List;
 import java.util.Map;

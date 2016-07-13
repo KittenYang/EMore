@@ -12,16 +12,18 @@ public class DbDaoGenerator {
         sch.setDefaultJavaPackageDao("com.caij.emore.database.dao");
         sch.enableKeepSectionsByDefault();
         createUser(sch);
-        createFriendWeibo(sch);
-        createUserWeibo(sch);
         createImage(sch);
         createFile(sch);
         createLikeBean(sch);
+        createGeo(sch);
+        createWeibo(sch);
+        createPic(sch);
+        createVisible(sch);
         new de.greenrobot.daogenerator.DaoGenerator().generateAll(sch, "./app/src/main/java");
     }
 
     static void createUser(Schema sch) {
-        Entity entityUser = sch.addEntity("LocalUser");
+        Entity entityUser = sch.addEntity("User");
         entityUser.addLongProperty("id").primaryKey();
         entityUser.addStringProperty("idstr");
         entityUser.addStringProperty("screen_name");
@@ -47,7 +49,6 @@ public class DbDaoGenerator {
         entityUser.addBooleanProperty("verified");
         entityUser.addIntProperty("verified_type");
         entityUser.addStringProperty("remark");
-        entityUser.addStringProperty("weibo_json");
         entityUser.addBooleanProperty("allow_all_comment");
         entityUser.addStringProperty("avatar_large");
         entityUser.addStringProperty("avatar_hd");
@@ -56,22 +57,12 @@ public class DbDaoGenerator {
         entityUser.addIntProperty("online_status");
         entityUser.addIntProperty("bi_followers_count");
         entityUser.addStringProperty("lang");
-
+        entityUser.addLongProperty("fiset_weibo_id");
+        entityUser.addStringProperty("cover_image_phone");
     }
 
-    private static void createFriendWeibo(Schema sch) {
-        Entity entityUser = sch.addEntity("FriendWeibo");
-        entityUser.addLongProperty("user_id");
-        createWeibo(entityUser);
-    }
-
-    private static void createUserWeibo(Schema sch) {
-        Entity entityUser = sch.addEntity("UserWeibo");
-        entityUser.addLongProperty("user_id");
-        createWeibo(entityUser);
-    }
-
-    private static void createWeibo(Entity entity) {
+    private static void createWeibo(Schema sch) {
+        Entity entity = sch.addEntity("Weibo");
         entity.addStringProperty("created_at");
         entity.addLongProperty("id").primaryKey();
         entity.addLongProperty("mid");
@@ -86,16 +77,44 @@ public class DbDaoGenerator {
         entity.addStringProperty("thumbnail_pic");
         entity.addStringProperty("bmiddle_pic");
         entity.addStringProperty("original_pic");
-        entity.addStringProperty("geo_json");
-        entity.addStringProperty("user_json");
-        entity.addStringProperty("retweeted_status_json");
         entity.addIntProperty("reposts_count");
         entity.addIntProperty("comments_count");
         entity.addIntProperty("attitudes_count");
         entity.addIntProperty("mlevel");
-        entity.addStringProperty("visible_json");
-        entity.addStringProperty("pic_ids_json");
-        entity.addLongProperty("create_time");
+
+        entity.addStringProperty("geo_id");
+        entity.addLongProperty("user_id");
+        entity.addStringProperty("visible_id");
+        entity.addLongProperty("retweeted_status_id");
+    }
+
+    static void createPic(Schema sch) {
+        Entity image = sch.addEntity("PicUrl");
+        image.addStringProperty("id").primaryKey();
+        image.addStringProperty("thumbnail_pic");
+        image.addLongProperty("weibo_id");
+    }
+
+    static void createVisible(Schema sch) {
+        Entity image = sch.addEntity("Visible");
+        image.addStringProperty("id").primaryKey();
+        image.addStringProperty("type");
+        image.addStringProperty("list_id");
+    }
+
+    static void createGeo(Schema sch) {
+        Entity image = sch.addEntity("Geo");
+        image.addStringProperty("id").primaryKey();
+        image.addStringProperty("longitude");
+        image.addStringProperty("latitude");
+        image.addStringProperty("city");
+        image.addStringProperty("province");
+        image.addStringProperty("city_name");
+        image.addStringProperty("province_name");
+        image.addStringProperty("address");
+        image.addStringProperty("pinyin");
+        image.addStringProperty("more");
+        image.addStringProperty("type");
     }
 
     static void createImage(Schema sch) {

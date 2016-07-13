@@ -5,11 +5,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.database.dao.DBManager;
 import com.caij.emore.service.EMoreService;
 import com.caij.emore.utils.ChannelUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.SPUtil;
+import com.caij.emore.utils.db.DBManager;
 import com.tencent.bugly.crashreport.CrashReport;
 
 /**

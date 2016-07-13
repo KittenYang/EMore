@@ -4,10 +4,13 @@ package com.caij.emore.database.bean;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
+
+import java.io.Serializable;
+
 /**
- * Entity mapped to table "LOCAL_USER".
+ * Entity mapped to table "USER".
  */
-public class LocalUser {
+public class User implements Serializable {
 
     private Long id;
     private String idstr;
@@ -34,7 +37,6 @@ public class LocalUser {
     private Boolean verified;
     private Integer verified_type;
     private String remark;
-    private String weibo_json;
     private Boolean allow_all_comment;
     private String avatar_large;
     private String avatar_hd;
@@ -43,18 +45,19 @@ public class LocalUser {
     private Integer online_status;
     private Integer bi_followers_count;
     private String lang;
+    private Long fiset_weibo_id;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
 
-    public LocalUser() {
+    public User() {
     }
 
-    public LocalUser(Long id) {
+    public User(Long id) {
         this.id = id;
     }
 
-    public LocalUser(Long id, String idstr, String screen_name, String name, Integer province, Integer city, String location, String description, String url, String profile_image_url, String profile_url, String domain, String weihao, String gender, Integer followers_count, Integer friends_count, Integer statuses_count, Integer favourites_count, String created_at, Boolean following, Boolean allow_all_act_msg, Boolean geo_enabled, Boolean verified, Integer verified_type, String remark, String weibo_json, Boolean allow_all_comment, String avatar_large, String avatar_hd, String verified_reason, Boolean follow_me, Integer online_status, Integer bi_followers_count, String lang) {
+    public User(Long id, String idstr, String screen_name, String name, Integer province, Integer city, String location, String description, String url, String profile_image_url, String profile_url, String domain, String weihao, String gender, Integer followers_count, Integer friends_count, Integer statuses_count, Integer favourites_count, String created_at, Boolean following, Boolean allow_all_act_msg, Boolean geo_enabled, Boolean verified, Integer verified_type, String remark, Boolean allow_all_comment, String avatar_large, String avatar_hd, String verified_reason, Boolean follow_me, Integer online_status, Integer bi_followers_count, String lang, Long fiset_weibo_id) {
         this.id = id;
         this.idstr = idstr;
         this.screen_name = screen_name;
@@ -80,7 +83,6 @@ public class LocalUser {
         this.verified = verified;
         this.verified_type = verified_type;
         this.remark = remark;
-        this.weibo_json = weibo_json;
         this.allow_all_comment = allow_all_comment;
         this.avatar_large = avatar_large;
         this.avatar_hd = avatar_hd;
@@ -89,6 +91,7 @@ public class LocalUser {
         this.online_status = online_status;
         this.bi_followers_count = bi_followers_count;
         this.lang = lang;
+        this.fiset_weibo_id = fiset_weibo_id;
     }
 
     public Long getId() {
@@ -291,14 +294,6 @@ public class LocalUser {
         this.remark = remark;
     }
 
-    public String getWeibo_json() {
-        return weibo_json;
-    }
-
-    public void setWeibo_json(String weibo_json) {
-        this.weibo_json = weibo_json;
-    }
-
     public Boolean getAllow_all_comment() {
         return allow_all_comment;
     }
@@ -363,7 +358,23 @@ public class LocalUser {
         this.lang = lang;
     }
 
+    public Long getFiset_weibo_id() {
+        return fiset_weibo_id;
+    }
+
+    public void setFiset_weibo_id(Long fiset_weibo_id) {
+        this.fiset_weibo_id = fiset_weibo_id;
+    }
+
     // KEEP METHODS - put your custom methods here
     // KEEP METHODS END
+    private Weibo status;
 
+    public Weibo getStatus() {
+        return status;
+    }
+
+    public void setStatus(Weibo status) {
+        this.status = status;
+    }
 }

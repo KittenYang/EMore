@@ -1,7 +1,7 @@
 package com.caij.emore.present.view;
 
 
-import com.caij.emore.bean.PicUrl;
+import com.caij.emore.database.bean.PicUrl;
 
 /**
  * Created by Caij on 2016/5/31.

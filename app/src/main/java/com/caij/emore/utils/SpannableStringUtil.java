@@ -13,8 +13,8 @@ import android.text.util.Linkify;
 import com.caij.emore.R;
 import com.caij.emore.AppApplication;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.User;
-import com.caij.emore.bean.Weibo;
+import com.caij.emore.database.bean.User;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.view.CenteredImageSpan;
 import com.caij.emore.view.MyURLSpan;
 

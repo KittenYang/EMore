@@ -1,6 +1,6 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.bean.User;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.present.SimpleUserPresent;
 import com.caij.emore.present.view.SimpleUserView;
 import com.caij.emore.source.UserSource;

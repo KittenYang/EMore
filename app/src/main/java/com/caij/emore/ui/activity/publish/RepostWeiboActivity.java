@@ -15,7 +15,7 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.Emotion;
-import com.caij.emore.bean.Weibo;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.RepostWeiboPresent;
 import com.caij.emore.present.imp.RepostWeiboPresentImp;
 import com.caij.emore.present.view.RepostWeiboView;

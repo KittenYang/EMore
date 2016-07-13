@@ -1,7 +1,7 @@
 package com.caij.emore.source;
 
-import com.caij.emore.bean.User;
 import com.caij.emore.bean.response.FriendshipResponse;
+import com.caij.emore.database.bean.User;
 
 import rx.Observable;
 

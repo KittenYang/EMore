@@ -1,7 +1,7 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.User;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
 import com.caij.emore.present.view.DetailUserView;
 import com.caij.emore.source.DefaultResponseSubscriber;

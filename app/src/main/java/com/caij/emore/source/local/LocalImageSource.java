@@ -1,8 +1,8 @@
 package com.caij.emore.source.local;
 
 import com.caij.emore.database.bean.LocakImage;
-import com.caij.emore.database.dao.DBManager;
 import com.caij.emore.source.ImageSouce;
+import com.caij.emore.utils.db.DBManager;
 
 /**
  * Created by Caij on 2016/6/7.

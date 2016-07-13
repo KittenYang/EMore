@@ -2,8 +2,8 @@ package com.caij.emore.present.imp;
 
 import android.text.SpannableString;
 
-import com.caij.emore.bean.Weibo;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.present.view.WeiboRepostsView;
 import com.caij.emore.source.DefaultResponseSubscriber;

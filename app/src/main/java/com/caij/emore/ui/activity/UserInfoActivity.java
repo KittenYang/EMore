@@ -21,14 +21,12 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.bean.Account;
-import com.caij.emore.bean.User;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
 import com.caij.emore.present.imp.UserInfoDetailPresentImp;
 import com.caij.emore.present.view.DetailUserView;
 import com.caij.emore.source.local.LocalUserSource;
 import com.caij.emore.source.server.ServerUserSource;
-import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
 import com.caij.emore.ui.fragment.UserImageFragment;
@@ -219,7 +217,7 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
 
     private void updateMenu(User user, MenuItem menuItem) {
         if (user != null && menuItem != null) {
-            menuItem.setTitle(user.isFollowing() ? getString(R.string.unfollow) : getString(R.string.follow));
+            menuItem.setTitle(user.getFollowing() ? getString(R.string.unfollow) : getString(R.string.follow));
         }
     }
 

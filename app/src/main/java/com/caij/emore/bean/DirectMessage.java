@@ -1,5 +1,8 @@
 package com.caij.emore.bean;
 
+import com.caij.emore.database.bean.Geo;
+import com.caij.emore.database.bean.User;
+
 import java.util.List;
 
 /**

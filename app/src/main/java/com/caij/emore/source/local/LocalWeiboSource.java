@@ -1,24 +1,34 @@
 package com.caij.emore.source.local;
 
+import android.text.TextUtils;
+
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.Weibo;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
-import com.caij.emore.database.bean.FriendWeibo;
+import com.caij.emore.database.bean.Geo;
 import com.caij.emore.database.bean.LikeBean;
-import com.caij.emore.database.dao.DBManager;
-import com.caij.emore.database.dao.FriendWeiboDao;
+import com.caij.emore.database.bean.PicUrl;
+import com.caij.emore.database.bean.User;
+import com.caij.emore.database.bean.Visible;
+import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.dao.GeoDao;
 import com.caij.emore.database.dao.LikeBeanDao;
+import com.caij.emore.database.dao.PicUrlDao;
+import com.caij.emore.database.dao.UserDao;
+import com.caij.emore.database.dao.VisibleDao;
+import com.caij.emore.database.dao.WeiboDao;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.db.DBManager;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.greenrobot.dao.query.QueryBuilder;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -26,6 +36,20 @@ import rx.Subscriber;
  * Created by Caij on 2016/6/2.
  */
 public class LocalWeiboSource implements WeiboSource {
+
+    private final GeoDao geoDao;
+    private final VisibleDao visibleDao;
+    private final UserDao userDao;
+    private final PicUrlDao picUrlDao;
+    private final WeiboDao weiboDao;
+
+    public LocalWeiboSource() {
+        geoDao = DBManager.getDaoSession().getGeoDao();
+        visibleDao = DBManager.getDaoSession().getVisibleDao();
+        userDao = DBManager.getDaoSession().getUserDao();
+        picUrlDao = DBManager.getDaoSession().getPicUrlDao();
+        weiboDao = DBManager.getDaoSession().getWeiboDao();
+    }
 
     @Override
     public Observable<List<Weibo>> getFriendWeibo(String accessToken, long since_id, final long max_id,
@@ -35,22 +59,23 @@ public class LocalWeiboSource implements WeiboSource {
             @Override
             public void call(Subscriber<? super List<Weibo>> subscriber) {
                 try {
-                    FriendWeiboDao dao = DBManager.getDaoSession().getFriendWeiboDao();
-                    FriendWeibo maxFriendWeibo = dao.load(max_id);
-                    long maxCreateTime = Long.MAX_VALUE;
+                    Weibo maxFriendWeibo = weiboDao.load(max_id);
+                    String maxCreateTime = "";
                     if (maxFriendWeibo != null) {
-                        maxCreateTime = maxFriendWeibo.getCreate_time();
+                        maxCreateTime = maxFriendWeibo.getCreated_at();
                     }
-                    List<FriendWeibo> friendWeibos = dao.queryBuilder()
-                            .where(FriendWeiboDao.Properties.Create_time.lt(maxCreateTime))
-                            .limit(count).offset(page - 1)
-                            .orderDesc(FriendWeiboDao.Properties.Create_time).list();
-                    List<Weibo> weibos = new ArrayList<Weibo>(friendWeibos.size());
-                    for (FriendWeibo friendWeibo : friendWeibos) {
-                        Weibo weibo = Weibo.friendWeibo2Weibo(friendWeibo);
-                        weibos.add(weibo);
+                    QueryBuilder<Weibo> queryBuilder = weiboDao.queryBuilder();
+                    if (!TextUtils.isEmpty(maxCreateTime)) {
+                        queryBuilder.where(WeiboDao.Properties.Created_at.lt(maxCreateTime));
                     }
-                    subscriber.onNext(weibos);
+                    List<Weibo> friendWeibos = queryBuilder.limit(count).offset(page - 1)
+                            .orderDesc(WeiboDao.Properties.Created_at).list();
+
+                    for (Weibo weibo : friendWeibos) {
+                        selectWeibo(weibo);
+                    }
+
+                    subscriber.onNext(friendWeibos);
                 }catch (Exception e) {
                     subscriber.onError(e);
                 }
@@ -61,13 +86,68 @@ public class LocalWeiboSource implements WeiboSource {
 
     @Override
     public void saveFriendWeibo(String accessToken, final List<Weibo> weibos) {
-        FriendWeiboDao dao = DBManager.getDaoSession().getFriendWeiboDao();
-        List<FriendWeibo> friendWeibos = new ArrayList<>(weibos.size());
+
+        weiboDao.getDatabase().beginTransaction();
         for (Weibo weibo : weibos) {
-            FriendWeibo friendWeibo = Weibo.weibo2FriendWeibo(weibo);
-            friendWeibos.add(friendWeibo);
+            insertWeibo(weibo);
         }
-        dao.insertOrReplaceInTx(friendWeibos);
+        weiboDao.getDatabase().setTransactionSuccessful();
+        weiboDao.getDatabase().endTransaction();
+    }
+
+    private void insertWeibo(Weibo weibo) {
+        String weiboId  = String.valueOf(weibo.getId());
+        Geo geo = weibo.getGeo();
+        if (geo != null) {
+            weibo.setGeo_id(weiboId);
+            geo.setId(weiboId);
+            geoDao.insertOrReplace(geo);
+        }
+
+        Visible visible = weibo.getVisible();
+        if (visible != null) {
+            weibo.setVisible_id(weiboId);
+            visible.setId(weiboId);
+            visibleDao.insertOrReplace(visible);
+        }
+
+        User user = weibo.getUser();
+        weibo.setUser_id(user.getId());
+        userDao.insertOrReplace(user);
+
+        List<PicUrl> picUrls = weibo.getPic_urls();
+        for (PicUrl picUrl : picUrls) {
+            picUrl.setWeibo_id(weibo.getId());
+            picUrl.setId(weiboId + picUrl.getThumbnail_pic());
+            picUrlDao.insertOrReplace(picUrl);
+        }
+
+        if (weibo.getRetweeted_status() != null) {
+            weibo.setRetweeted_status_id(weibo.getRetweeted_status().getId());
+            insertWeibo(weibo.getRetweeted_status());
+        }
+        weiboDao.insert(weibo);
+    }
+
+    private void selectWeibo(Weibo weibo) {
+        if (!TextUtils.isEmpty(weibo.getGeo_id())) {
+            weibo.setGeo(geoDao.load(weibo.getGeo_id()));
+        }
+
+        if (!TextUtils.isEmpty(weibo.getVisible_id())) {
+            weibo.setVisible(visibleDao.load(weibo.getVisible_id()));
+        }
+
+        weibo.setUser(userDao.load(weibo.getUser_id()));
+
+        List<PicUrl> picUrls = picUrlDao.queryBuilder().where(PicUrlDao.Properties.Weibo_id.eq(weibo.getId())).list();
+        weibo.setPic_urls(picUrls);
+
+        if (weibo.getRetweeted_status_id() != null && weibo.getRetweeted_status_id() != 0) {
+            Weibo repostWeibo = weiboDao.load(weibo.getRetweeted_status_id());
+            selectWeibo(repostWeibo);
+            weibo.setRetweeted_status(repostWeibo);
+        }
     }
 
     @Override

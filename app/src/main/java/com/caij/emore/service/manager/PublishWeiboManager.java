@@ -8,7 +8,7 @@ import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.PublishBean;
-import com.caij.emore.bean.Weibo;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ToastUtil;

@@ -2,6 +2,9 @@ package com.caij.emore.bean;
 
 import android.text.SpannableString;
 
+import com.caij.emore.database.bean.User;
+import com.caij.emore.database.bean.Weibo;
+
 import java.io.Serializable;
 
 /**

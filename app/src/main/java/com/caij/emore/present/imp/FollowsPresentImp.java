@@ -1,7 +1,7 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.bean.User;
 import com.caij.emore.bean.response.FriendshipResponse;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.present.FriendshipPresent;
 import com.caij.emore.present.view.FriendshipView;
 import com.caij.emore.source.UserSource;

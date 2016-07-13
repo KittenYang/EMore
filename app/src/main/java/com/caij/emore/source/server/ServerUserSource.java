@@ -1,8 +1,8 @@
 package com.caij.emore.source.server;
 
 import com.caij.emore.api.WeiBoService;
-import com.caij.emore.bean.User;
 import com.caij.emore.bean.response.FriendshipResponse;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.source.UserSource;
 
 

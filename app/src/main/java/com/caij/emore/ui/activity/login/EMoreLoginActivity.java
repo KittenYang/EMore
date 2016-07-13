@@ -7,13 +7,13 @@ import android.os.Bundle;
 import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.database.dao.DBManager;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.imp.LoginPresentImp;
 import com.caij.emore.present.view.LoginView;
 import com.caij.emore.source.server.LoginSourceImp;
 import com.caij.emore.ui.activity.MainActivity;
 import com.caij.emore.utils.EventUtil;
+import com.caij.emore.utils.db.DBManager;
 
 /**
  * Created by Caij on 2016/7/8.

@@ -4,12 +4,17 @@ package com.caij.emore.database.bean;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
-/**
- * Entity mapped to table "USER_WEIBO".
- */
-public class UserWeibo {
 
-    private Long user_id;
+import android.text.SpannableString;
+
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * Entity mapped to table "WEIBO".
+ */
+public class Weibo implements Serializable {
+
     private String created_at;
     private Long id;
     private Long mid;
@@ -24,29 +29,26 @@ public class UserWeibo {
     private String thumbnail_pic;
     private String bmiddle_pic;
     private String original_pic;
-    private String geo_json;
-    private String user_json;
-    private String retweeted_status_json;
     private Integer reposts_count;
     private Integer comments_count;
     private Integer attitudes_count;
     private Integer mlevel;
-    private String visible_json;
-    private String pic_ids_json;
-    private Long create_time;
+    private String geo_id;
+    private Long user_id;
+    private String visible_id;
+    private Long retweeted_status_id;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
 
-    public UserWeibo() {
+    public Weibo() {
     }
 
-    public UserWeibo(Long id) {
+    public Weibo(Long id) {
         this.id = id;
     }
 
-    public UserWeibo(Long user_id, String created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, String geo_json, String user_json, String retweeted_status_json, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, String visible_json, String pic_ids_json, Long create_time) {
-        this.user_id = user_id;
+    public Weibo(String created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, String geo_id, Long user_id, String visible_id, Long retweeted_status_id) {
         this.created_at = created_at;
         this.id = id;
         this.mid = mid;
@@ -61,24 +63,14 @@ public class UserWeibo {
         this.thumbnail_pic = thumbnail_pic;
         this.bmiddle_pic = bmiddle_pic;
         this.original_pic = original_pic;
-        this.geo_json = geo_json;
-        this.user_json = user_json;
-        this.retweeted_status_json = retweeted_status_json;
         this.reposts_count = reposts_count;
         this.comments_count = comments_count;
         this.attitudes_count = attitudes_count;
         this.mlevel = mlevel;
-        this.visible_json = visible_json;
-        this.pic_ids_json = pic_ids_json;
-        this.create_time = create_time;
-    }
-
-    public Long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(Long user_id) {
+        this.geo_id = geo_id;
         this.user_id = user_id;
+        this.visible_id = visible_id;
+        this.retweeted_status_id = retweeted_status_id;
     }
 
     public String getCreated_at() {
@@ -193,30 +185,6 @@ public class UserWeibo {
         this.original_pic = original_pic;
     }
 
-    public String getGeo_json() {
-        return geo_json;
-    }
-
-    public void setGeo_json(String geo_json) {
-        this.geo_json = geo_json;
-    }
-
-    public String getUser_json() {
-        return user_json;
-    }
-
-    public void setUser_json(String user_json) {
-        this.user_json = user_json;
-    }
-
-    public String getRetweeted_status_json() {
-        return retweeted_status_json;
-    }
-
-    public void setRetweeted_status_json(String retweeted_status_json) {
-        this.retweeted_status_json = retweeted_status_json;
-    }
-
     public Integer getReposts_count() {
         return reposts_count;
     }
@@ -249,31 +217,102 @@ public class UserWeibo {
         this.mlevel = mlevel;
     }
 
-    public String getVisible_json() {
-        return visible_json;
+    public String getGeo_id() {
+        return geo_id;
     }
 
-    public void setVisible_json(String visible_json) {
-        this.visible_json = visible_json;
+    public void setGeo_id(String geo_id) {
+        this.geo_id = geo_id;
     }
 
-    public String getPic_ids_json() {
-        return pic_ids_json;
+    public Long getUser_id() {
+        return user_id;
     }
 
-    public void setPic_ids_json(String pic_ids_json) {
-        this.pic_ids_json = pic_ids_json;
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 
-    public Long getCreate_time() {
-        return create_time;
+    public String getVisible_id() {
+        return visible_id;
     }
 
-    public void setCreate_time(Long create_time) {
-        this.create_time = create_time;
+    public void setVisible_id(String visible_id) {
+        this.visible_id = visible_id;
+    }
+
+    public Long getRetweeted_status_id() {
+        return retweeted_status_id;
+    }
+
+    public void setRetweeted_status_id(Long retweeted_status_id) {
+        this.retweeted_status_id = retweeted_status_id;
     }
 
     // KEEP METHODS - put your custom methods here
     // KEEP METHODS END
 
+        private Visible visible;
+    private List<PicUrl> pic_urls;
+    private boolean isAttitudes;
+        private Geo geo;
+    private User user;
+    private Weibo retweeted_status;
+    private transient SpannableString contentSpannableString;
+
+    public Visible getVisible() {
+        return visible;
+    }
+
+    public void setVisible(Visible visible) {
+        this.visible = visible;
+    }
+
+    public List<PicUrl> getPic_urls() {
+        return pic_urls;
+    }
+
+    public void setPic_urls(List<PicUrl> pic_urls) {
+        this.pic_urls = pic_urls;
+    }
+
+    public boolean isAttitudes() {
+        return isAttitudes;
+    }
+
+    public void setAttitudes(boolean attitudes) {
+        isAttitudes = attitudes;
+    }
+
+    public Geo getGeo() {
+        return geo;
+    }
+
+    public void setGeo(Geo geo) {
+        this.geo = geo;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Weibo getRetweeted_status() {
+        return retweeted_status;
+    }
+
+    public void setRetweeted_status(Weibo retweeted_status) {
+        this.retweeted_status = retweeted_status;
+    }
+
+    public SpannableString getContentSpannableString() {
+        return contentSpannableString;
+    }
+
+    public void setContentSpannableString(SpannableString contentSpannableString) {
+        this.contentSpannableString = contentSpannableString;
+    }
 }

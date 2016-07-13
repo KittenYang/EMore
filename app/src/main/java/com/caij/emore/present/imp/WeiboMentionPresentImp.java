@@ -1,7 +1,7 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.bean.Weibo;
 import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboMentionPresent;
 import com.caij.emore.present.view.TimeLineWeiboView;
 import com.caij.emore.source.WeiboSource;

@@ -1,6 +1,7 @@
 package com.caij.emore.bean.response;
 
-import com.caij.emore.bean.User;
+
+import com.caij.emore.database.bean.User;
 
 import java.util.List;
 

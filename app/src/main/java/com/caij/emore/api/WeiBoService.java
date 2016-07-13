@@ -6,17 +6,17 @@ import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.DirectMessage;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.UnreadMessageCount;
-import com.caij.emore.bean.Weibo;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
-import com.caij.emore.bean.User;
 import com.caij.emore.bean.response.UploadImageResponse;
 import com.caij.emore.bean.response.UploadMessageImageResponse;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.database.bean.User;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
 import com.caij.emore.utils.GsonUtils;
 
@@ -119,7 +119,7 @@ public interface WeiBoService {
     @FormUrlEncoded
     @POST("2/statuses/upload_url_text.json")
     Observable<Weibo> publishWeiboOfMultiImage(@Field("access_token") String accessToken,
-                                             @Field("status") String status, @Field("pic_id") String picIds);
+                                               @Field("status") String status, @Field("pic_id") String picIds);
 
     @FormUrlEncoded
     @POST("2/statuses/update.json")
