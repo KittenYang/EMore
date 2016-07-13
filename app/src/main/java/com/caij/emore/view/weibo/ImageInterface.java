@@ -1,6 +1,7 @@
 package com.caij.emore.view.weibo;
 
-import com.caij.emore.bean.PicUrl;
+
+import com.caij.emore.database.bean.PicUrl;
 
 import java.util.List;
 

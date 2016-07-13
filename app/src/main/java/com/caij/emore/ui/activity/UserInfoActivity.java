@@ -198,7 +198,7 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
 
             case R.id.follow:
                 if (mUser != null) {
-                    if (mUser.isFollowing()) {
+                    if (mUser.getFollowing()) {
                         mUserInfoDetailPresent.unFollow();
                     } else {
                         mUserInfoDetailPresent.follow();

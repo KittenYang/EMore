@@ -9,7 +9,7 @@ import android.view.View;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.Weibo;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.TimeLinePresent;
 import com.caij.emore.present.view.TimeLineWeiboView;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
@@ -58,7 +58,7 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends R
 
     private void onMenuClick(final Weibo weibo, final int position) {
         List<String> items = new ArrayList<>();
-        if (weibo.isFavorited()) {
+        if (weibo.getFavorited()) {
             items.add("取消收藏");
         }else {
             items.add("收藏");
@@ -73,7 +73,7 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends R
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
-                        if (weibo.isFavorited()) {
+                        if (weibo.getFavorited()) {
                             uncollectWeibo(weibo);
                         }else {
                             collectWeibo(weibo);

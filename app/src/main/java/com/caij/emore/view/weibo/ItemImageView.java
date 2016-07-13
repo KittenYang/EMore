@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.PicUrl;
+import com.caij.emore.database.bean.PicUrl;
 
 /**
  * Created by Caij on 2016/6/7.

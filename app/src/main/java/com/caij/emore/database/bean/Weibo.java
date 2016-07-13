@@ -315,4 +315,10 @@ public class Weibo implements Serializable {
     public void setContentSpannableString(SpannableString contentSpannableString) {
         this.contentSpannableString = contentSpannableString;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        Weibo  weibo = (Weibo) o;
+        return weibo.id.equals(id);
+    }
 }

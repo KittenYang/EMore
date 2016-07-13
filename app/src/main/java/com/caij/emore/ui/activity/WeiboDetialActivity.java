@@ -14,7 +14,7 @@ import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Account;
-import com.caij.emore.bean.Weibo;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.activity.publish.CommentWeiboActivity;
 import com.caij.emore.ui.activity.publish.RepostWeiboActivity;

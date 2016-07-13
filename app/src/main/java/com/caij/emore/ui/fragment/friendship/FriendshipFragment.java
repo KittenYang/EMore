@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.User;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.present.ListPresent;
 import com.caij.emore.present.view.FriendshipView;
 import com.caij.emore.ui.activity.UserInfoActivity;

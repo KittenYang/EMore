@@ -9,7 +9,7 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.bean.Weibo;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.present.imp.WeiboRepostsPresentImp;
 import com.caij.emore.present.view.WeiboRepostsView;

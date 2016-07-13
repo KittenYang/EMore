@@ -2,8 +2,12 @@ package com.caij.emore.source.local;
 
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.database.bean.User;
+import com.caij.emore.database.dao.UserDao;
 import com.caij.emore.source.UserSource;
+import com.caij.emore.utils.db.DBManager;
 
+
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -20,14 +24,14 @@ public class LocalUserSource implements UserSource{
             @Override
             public void call(Subscriber<? super User> subscriber) {
                 try {
-//                    LocalUserDao dao = DBManager.getDaoSession().getLocalUserDao();
-//                    List<LocalUser> localUsers = dao.queryBuilder().where(LocalUserDao.Properties.Name.eq(name)).list();
-//                    if (localUsers.size() > 0 ) {
-//                        LocalUser localUser = localUsers.get(0);
-//                        subscriber.onNext(User.localUser2User(localUser));
-//                    }else {
-//                        subscriber.onNext(null);
-//                    }
+                    UserDao dao = DBManager.getDaoSession().getUserDao();
+                    List<User> localUsers = dao.queryBuilder().where(UserDao.Properties.Name.eq(name)).list();
+                    if (localUsers.size() > 0 ) {
+                        User localUser = localUsers.get(0);
+                        subscriber.onNext(localUser);
+                    }else {
+                        subscriber.onNext(null);
+                    }
                 }catch (Exception e) {
                     subscriber.onError(e);
                 }
@@ -43,9 +47,9 @@ public class LocalUserSource implements UserSource{
             @Override
             public void call(Subscriber<? super User> subscriber) {
                 try {
-//                    LocalUserDao dao = DBManager.getDaoSession().getLocalUserDao();
-//                    LocalUser localUser = dao.load(uid);
-//                    subscriber.onNext(User.localUser2User(localUser));
+                    UserDao dao = DBManager.getDaoSession().getUserDao();
+                    User localUser = dao.load(uid);
+                    subscriber.onNext(localUser);
                 }catch (Exception e) {
                     subscriber.onError(e);
                 }
@@ -56,8 +60,8 @@ public class LocalUserSource implements UserSource{
 
     @Override
     public void saveWeiboUser(final User user) {
-//        LocalUserDao dao = DBManager.getDaoSession().getLocalUserDao();
-//        dao.insertOrReplace(User.user2LocalUser(user));
+        UserDao dao = DBManager.getDaoSession().getUserDao();
+        dao.insertOrReplace(user);
     }
 
     @Override

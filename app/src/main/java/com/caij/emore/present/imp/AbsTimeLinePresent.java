@@ -13,16 +13,20 @@ import com.caij.emore.source.WeiboSource;
 import com.caij.emore.source.local.LocalImageSource;
 import com.caij.emore.source.server.ServerImageSource;
 import com.caij.emore.utils.LogUtil;
+import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.weibo.ApiUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -213,6 +217,24 @@ public abstract class AbsTimeLinePresent<V extends TimeLineWeiboView> implements
                     }
                 });
         mLoginCompositeSubscription.add(subscription);
+    }
+
+    public class WeiboTransformer implements Observable.Transformer<Weibo, Weibo> {
+
+        @Override
+        public Observable<Weibo> call(Observable<Weibo> weiboObservable) {
+            return weiboObservable
+                    .map(new Func1<Weibo, Weibo>() {
+
+                        @Override
+                        public Weibo call(Weibo weibo) {
+                            toGetImageSize(weibo);
+                            weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
+                            SpannableStringUtil.paraeSpannable(weibo);
+                            return weibo;
+                        }
+                    });
+        }
     }
 
 }

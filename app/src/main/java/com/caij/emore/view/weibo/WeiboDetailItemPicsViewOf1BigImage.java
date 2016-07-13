@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.PicUrl;
+import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.LogUtil;

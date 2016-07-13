@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.Weibo;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.utils.SpannableStringUtil;
 

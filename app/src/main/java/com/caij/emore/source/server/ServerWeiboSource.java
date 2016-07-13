@@ -53,7 +53,7 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public void saveFriendWeibo(String accessToken, List<Weibo> weibos) {
+    public void saveWeibos(String accessToken, List<Weibo> weibos) {
 
     }
 

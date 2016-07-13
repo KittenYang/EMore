@@ -5,7 +5,7 @@ import android.text.Html;
 import android.view.ViewGroup;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.Weibo;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.view.recyclerview.BaseAdapter;

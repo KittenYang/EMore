@@ -3,8 +3,8 @@ package com.caij.emore.utils;
 import android.os.AsyncTask;
 
 import com.caij.emore.database.bean.LocalFile;
-import com.caij.emore.database.dao.DBManager;
 import com.caij.emore.database.dao.LocalFileDao;
+import com.caij.emore.utils.db.DBManager;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
 
 import java.io.File;

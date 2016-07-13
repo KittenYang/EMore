@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.Weibo;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;

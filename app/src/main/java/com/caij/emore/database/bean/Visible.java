@@ -4,10 +4,13 @@ package com.caij.emore.database.bean;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
+
+import java.io.Serializable;
+
 /**
  * Entity mapped to table "VISIBLE".
  */
-public class Visible {
+public class Visible implements Serializable {
 
     private String id;
     private String type;

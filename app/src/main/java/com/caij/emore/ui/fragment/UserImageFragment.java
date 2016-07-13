@@ -12,7 +12,7 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.bean.PicUrl;
+import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.present.imp.UserImagePresentImp;
 import com.caij.emore.present.view.TimeLineWeiboImageView;

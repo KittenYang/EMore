@@ -1,7 +1,9 @@
 package com.caij.emore.source.local;
 
+import android.database.Cursor;
 import android.text.TextUtils;
 
+import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
@@ -59,6 +61,25 @@ public class LocalWeiboSource implements WeiboSource {
             @Override
             public void call(Subscriber<? super List<Weibo>> subscriber) {
                 try {
+                    Cursor cursor = userDao.queryBuilder().where(UserDao.Properties.Following.eq(true))
+                            .buildCursor().query();
+                    List<Long> followerUserIds = new ArrayList<Long>();
+                    try {
+                        int idColumn = cursor.getColumnIndex(UserDao.Properties.Id.columnName);
+                        while (cursor.moveToNext()) {
+                            long uid = cursor.getLong(idColumn);
+                            followerUserIds.add(uid);
+                        }
+                    }finally {
+                        if (cursor != null && !cursor.isClosed()) {
+                            cursor.close();
+                        }
+                    }
+
+                    // TODO: 2016/7/13  bad
+                    long selfUid  = Long.parseLong(UserPrefs.get().getEMoreToken().getUid());
+                    followerUserIds.add(selfUid);
+
                     Weibo maxFriendWeibo = weiboDao.load(max_id);
                     String maxCreateTime = "";
                     if (maxFriendWeibo != null) {
@@ -68,9 +89,11 @@ public class LocalWeiboSource implements WeiboSource {
                     if (!TextUtils.isEmpty(maxCreateTime)) {
                         queryBuilder.where(WeiboDao.Properties.Created_at.lt(maxCreateTime));
                     }
+                    if (followerUserIds.size() > 0) {
+                        queryBuilder.where(WeiboDao.Properties.User_id.in(followerUserIds));
+                    }
                     List<Weibo> friendWeibos = queryBuilder.limit(count).offset(page - 1)
                             .orderDesc(WeiboDao.Properties.Created_at).list();
-
                     for (Weibo weibo : friendWeibos) {
                         selectWeibo(weibo);
                     }
@@ -85,8 +108,7 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public void saveFriendWeibo(String accessToken, final List<Weibo> weibos) {
-
+    public void saveWeibos(String accessToken, final List<Weibo> weibos) {
         weiboDao.getDatabase().beginTransaction();
         for (Weibo weibo : weibos) {
             insertWeibo(weibo);
@@ -126,7 +148,7 @@ public class LocalWeiboSource implements WeiboSource {
             weibo.setRetweeted_status_id(weibo.getRetweeted_status().getId());
             insertWeibo(weibo.getRetweeted_status());
         }
-        weiboDao.insert(weibo);
+        weiboDao.insertOrReplace(weibo);
     }
 
     private void selectWeibo(Weibo weibo) {

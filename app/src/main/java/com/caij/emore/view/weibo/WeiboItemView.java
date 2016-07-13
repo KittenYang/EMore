@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.User;
-import com.caij.emore.bean.Weibo;
+import com.caij.emore.database.bean.User;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;

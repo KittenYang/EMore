@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadFactory;
  */
 public class ExecutorServiceUtil {
 
-    private static final ExecutorService LOCAL_EXECUTOR_SERVICE = Executors.newFixedThreadPool(4, new ThreadFactory() {
+    public static final ExecutorService LOCAL_EXECUTOR_SERVICE = Executors.newFixedThreadPool(4, new ThreadFactory() {
         @Override
         public Thread newThread(Runnable r) {
             Thread thread = new Thread(r);
@@ -20,15 +20,6 @@ public class ExecutorServiceUtil {
             return thread;
         }
     }) ;
-
-//    private static final ExecutorService SERVICE_EXECUTOR_SERVICE = Executors.newFixedThreadPool(4, new ThreadFactory() {
-//        @Override
-//        public Thread newThread(Runnable r) {
-//            Thread thread = new Thread(r);
-//            thread.setPriority( Process.THREAD_PRIORITY_BACKGROUND);
-//            return thread;
-//        }
-//    }) ;
 
     public static final ExecutorService SEND_MESSAGE_SERVICE = Executors.newSingleThreadExecutor(new ThreadFactory() {
         @Override

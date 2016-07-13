@@ -6,6 +6,7 @@ import com.caij.emore.present.view.FriendWeiboView;
 import com.caij.emore.source.DefaultResponseSubscriber;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.SpannableStringUtil;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,15 +43,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                         return Observable.from(weibos);
                     }
                 })
-                .map(new Func1<Weibo, Weibo>() {
-                    @Override
-                    public Weibo call(Weibo weibo) {
-                        toGetImageSize(weibo);
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        SpannableStringUtil.paraeSpannable(weibo);
-                        return weibo;
-                    }
-                })
+                .compose(new WeiboTransformer())
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -62,7 +55,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
                     @Override
                     public void onError(Throwable e) {
-
+                        mView.toRefresh();
                     }
 
                     @Override
@@ -84,21 +77,12 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                         return Observable.from(weibos);
                     }
                 })
-                .map(new Func1<Weibo, Weibo>() {
-
-                    @Override
-                    public Weibo call(Weibo weibo) {
-                        toGetImageSize(weibo);
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        SpannableStringUtil.paraeSpannable(weibo);
-                        return weibo;
-                    }
-                })
+                .compose(new WeiboTransformer())
                 .toList()
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
-                        mLocalWeiboSource.saveFriendWeibo(mToken, weibos);
+                    mLocalWeiboSource.saveWeibos(mToken, weibos);
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -123,7 +107,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                         if (weibos.size() == 0) {
                             mView.onEmpty();
                         }else {
-                            mView.onLoadComplete(weibos.size() >= PAGE_COUNT);
+                            mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1);
                         }
                     }
                 });
@@ -154,17 +138,14 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                         return !mWeibos.contains(weibo);
                     }
                 })
-                .map(new Func1<Weibo, Weibo>() {
-
+                .compose(new WeiboTransformer())
+                .toList()
+                .doOnNext(new Action1<List<Weibo>>() {
                     @Override
-                    public Weibo call(Weibo weibo) {
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        toGetImageSize(weibo);
-                        SpannableStringUtil.paraeSpannable(weibo);
-                        return weibo;
+                    public void call(List<Weibo> weibos) {
+                        mLocalWeiboSource.saveWeibos(mToken, weibos);
                     }
                 })
-                .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
@@ -183,7 +164,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
                         mView.setEntities(mWeibos);
-                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
+                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 2); //这里有一条重复的 所以需要-1
                     }
                 });
         mLoginCompositeSubscription.add(subscription);
@@ -193,4 +174,5 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
     }
+
 }

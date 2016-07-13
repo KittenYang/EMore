@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.caij.emore.bean.PicUrl;
+import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.utils.ImageLoader;
 
 /**

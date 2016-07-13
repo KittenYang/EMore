@@ -31,7 +31,7 @@ public interface WeiboSource {
     public Observable<List<Weibo>> getFriendWeibo(String accessToken, long since_id, long max_id,
                                                   int count, int page);
 
-    public void saveFriendWeibo(String accessToken, List<Weibo> weibos);
+    public void saveWeibos(String accessToken, List<Weibo> weibos);
 
     public Observable<UserWeiboResponse> getUseWeibo(String accessToken,  String name, int feature, long since_id, long max_id,
                                                      int count, int page);

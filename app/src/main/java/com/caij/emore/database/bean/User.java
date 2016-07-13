@@ -46,6 +46,7 @@ public class User implements Serializable {
     private Integer bi_followers_count;
     private String lang;
     private Long fiset_weibo_id;
+    private String cover_image_phone;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -57,7 +58,7 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(Long id, String idstr, String screen_name, String name, Integer province, Integer city, String location, String description, String url, String profile_image_url, String profile_url, String domain, String weihao, String gender, Integer followers_count, Integer friends_count, Integer statuses_count, Integer favourites_count, String created_at, Boolean following, Boolean allow_all_act_msg, Boolean geo_enabled, Boolean verified, Integer verified_type, String remark, Boolean allow_all_comment, String avatar_large, String avatar_hd, String verified_reason, Boolean follow_me, Integer online_status, Integer bi_followers_count, String lang, Long fiset_weibo_id) {
+    public User(Long id, String idstr, String screen_name, String name, Integer province, Integer city, String location, String description, String url, String profile_image_url, String profile_url, String domain, String weihao, String gender, Integer followers_count, Integer friends_count, Integer statuses_count, Integer favourites_count, String created_at, Boolean following, Boolean allow_all_act_msg, Boolean geo_enabled, Boolean verified, Integer verified_type, String remark, Boolean allow_all_comment, String avatar_large, String avatar_hd, String verified_reason, Boolean follow_me, Integer online_status, Integer bi_followers_count, String lang, Long fiset_weibo_id, String cover_image_phone) {
         this.id = id;
         this.idstr = idstr;
         this.screen_name = screen_name;
@@ -92,6 +93,7 @@ public class User implements Serializable {
         this.bi_followers_count = bi_followers_count;
         this.lang = lang;
         this.fiset_weibo_id = fiset_weibo_id;
+        this.cover_image_phone = cover_image_phone;
     }
 
     public Long getId() {
@@ -366,8 +368,17 @@ public class User implements Serializable {
         this.fiset_weibo_id = fiset_weibo_id;
     }
 
+    public String getCover_image_phone() {
+        return cover_image_phone;
+    }
+
+    public void setCover_image_phone(String cover_image_phone) {
+        this.cover_image_phone = cover_image_phone;
+    }
+
     // KEEP METHODS - put your custom methods here
     // KEEP METHODS END
+
     private Weibo status;
 
     public Weibo getStatus() {
@@ -376,5 +387,11 @@ public class User implements Serializable {
 
     public void setStatus(Weibo status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        User user = (User) o;
+        return user.id.equals(id);
     }
 }

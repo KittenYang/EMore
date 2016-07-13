@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.PicUrl;
+import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.view.RatioImageView;
 import com.caij.emore.view.recyclerview.BaseAdapter;

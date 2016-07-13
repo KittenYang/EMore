@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.Weibo;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
 import com.caij.emore.utils.DateUtil;
