@@ -42,7 +42,7 @@ public class MessageCommentAdapter extends BaseAdapter<Comment, MessageCommentAd
         return new CommentMentionViewHolder(view, mOnItemClickListener, new RecyclerViewOnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = WeiboDetialActivity.newIntent(mContext, getItem(position).getStatus());
+                Intent intent = WeiboDetialActivity.newIntent(mContext, getItem(position).getStatus().getId());
                 mContext.startActivity(intent);
             }
         }, new RecyclerViewOnItemClickListener() {

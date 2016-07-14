@@ -51,7 +51,6 @@ public class WeiboDetailItemView extends WeiboItemView {
 
     @Override
     public void setWeibo(Weibo weibo) {
-        SpannableStringUtil.paraeSpannable(weibo);
         super.setWeibo(weibo);
         Weibo reWeibo = weibo.getRetweeted_status();
         if (reWeibo == null) {
@@ -93,7 +92,7 @@ public class WeiboDetailItemView extends WeiboItemView {
     @OnClick(R.id.ll_re)
     public void onRePostLineaLayoutClick(View view) {
         Weibo weibo = (Weibo) view.getTag();
-        Intent intent = WeiboDetialActivity.newIntent(getContext(), weibo);
+        Intent intent = WeiboDetialActivity.newIntent(getContext(), weibo.getId());
         getContext().startActivity(intent);
     }
 

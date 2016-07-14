@@ -85,4 +85,6 @@ public interface WeiboSource {
                                       String attitude, long weiboId);
 
     boolean getAttitudes(long id);
+
+    Observable<Weibo> getWeiboById(String accessToken, long id);
 }

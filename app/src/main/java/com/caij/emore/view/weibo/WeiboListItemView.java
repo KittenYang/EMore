@@ -105,7 +105,7 @@ public class WeiboListItemView extends WeiboItemView {
     @OnClick(R.id.ll_re)
     public void onReLineaLayoutClick(View view) {
         Weibo weibo = (Weibo) view.getTag();
-        Intent intent = WeiboDetialActivity.newIntent(getContext(), weibo);
+        Intent intent = WeiboDetialActivity.newIntent(getContext(), weibo.getId());
         getContext().startActivity(intent);
     }
 

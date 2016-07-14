@@ -33,6 +33,7 @@ public class Weibo implements Serializable {
     private Integer comments_count;
     private Integer attitudes_count;
     private Integer mlevel;
+    private Long update_time = System.currentTimeMillis();
     private String geo_id;
     private Long user_id;
     private String visible_id;
@@ -48,7 +49,7 @@ public class Weibo implements Serializable {
         this.id = id;
     }
 
-    public Weibo(String created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, String geo_id, Long user_id, String visible_id, Long retweeted_status_id) {
+    public Weibo(String created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, String geo_id, Long user_id, String visible_id, Long retweeted_status_id) {
         this.created_at = created_at;
         this.id = id;
         this.mid = mid;
@@ -67,6 +68,7 @@ public class Weibo implements Serializable {
         this.comments_count = comments_count;
         this.attitudes_count = attitudes_count;
         this.mlevel = mlevel;
+        this.update_time = update_time;
         this.geo_id = geo_id;
         this.user_id = user_id;
         this.visible_id = visible_id;
@@ -217,6 +219,14 @@ public class Weibo implements Serializable {
         this.mlevel = mlevel;
     }
 
+    public Long getUpdate_time() {
+        return update_time;
+    }
+
+    public void setUpdate_time(Long update_time) {
+        this.update_time = update_time;
+    }
+
     public String getGeo_id() {
         return geo_id;
     }
@@ -252,10 +262,10 @@ public class Weibo implements Serializable {
     // KEEP METHODS - put your custom methods here
     // KEEP METHODS END
 
-        private Visible visible;
+    private Visible visible;
     private List<PicUrl> pic_urls;
     private boolean isAttitudes;
-        private Geo geo;
+    private Geo geo;
     private User user;
     private Weibo retweeted_status;
     private transient SpannableString contentSpannableString;
@@ -321,4 +331,5 @@ public class Weibo implements Serializable {
         Weibo  weibo = (Weibo) o;
         return weibo.id.equals(id);
     }
+
 }

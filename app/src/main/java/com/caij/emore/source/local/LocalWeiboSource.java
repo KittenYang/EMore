@@ -211,13 +211,29 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<FavoritesCreateResponse> collectWeibo(String accessToken, long id) {
-        return null;
+    public Observable<FavoritesCreateResponse> collectWeibo(String accessToken, final long id) {
+        return Observable.create(new Observable.OnSubscribe<FavoritesCreateResponse>() {
+            @Override
+            public void call(Subscriber<? super FavoritesCreateResponse> subscriber) {
+                Weibo weibo = weiboDao.load(id);
+                selectWeibo(weibo);
+                weibo.setFavorited(true);
+                insertWeibo(weibo);
+            }
+        });
     }
 
     @Override
-    public Observable<FavoritesCreateResponse> uncollectWeibo(String accessToken, long id) {
-        return null;
+    public Observable<FavoritesCreateResponse> uncollectWeibo(String accessToken, final long id) {
+        return Observable.create(new Observable.OnSubscribe<FavoritesCreateResponse>() {
+            @Override
+            public void call(Subscriber<? super FavoritesCreateResponse> subscriber) {
+                Weibo weibo = weiboDao.load(id);
+                selectWeibo(weibo);
+                weibo.setFavorited(false);
+                insertWeibo(weibo);
+            }
+        });
     }
 
     @Override
@@ -271,19 +287,39 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<Response> attitudesWeibo(Map<String, Object> paramMap, String attitude, long weiboId) {
-        LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
-        LikeBean likeBean = new LikeBean(weiboId, true);
-        dao.insertOrReplace(likeBean);
-        return null;
+    public Observable<Response> attitudesWeibo(Map<String, Object> paramMap, String attitude, final long weiboId) {
+        return Observable.create(new Observable.OnSubscribe<Response>() {
+            @Override
+            public void call(Subscriber<? super Response> subscriber) {
+                try {
+                    LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
+                    LikeBean likeBean = new LikeBean(weiboId, true);
+                    dao.insertOrReplace(likeBean);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                }catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
     }
 
     @Override
-    public Observable<Response> destoryAttitudesWeibo(Map<String, Object> paramMap, String attitude, long weiboId) {
-        LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
-        LikeBean likeBean = new LikeBean(weiboId, false);
-        dao.insertOrReplace(likeBean);
-        return null;
+    public Observable<Response> destoryAttitudesWeibo(Map<String, Object> paramMap, String attitude, final long weiboId) {
+        return Observable.create(new Observable.OnSubscribe<Response>() {
+            @Override
+            public void call(Subscriber<? super Response> subscriber) {
+                try {
+                    LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
+                    LikeBean likeBean = new LikeBean(weiboId, false);
+                    dao.insertOrReplace(likeBean);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                }catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
     }
 
     @Override
@@ -291,5 +327,22 @@ public class LocalWeiboSource implements WeiboSource {
         LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
         LikeBean likeBean = dao.load(id);
         return likeBean != null && likeBean.getIsLike();
+    }
+
+    @Override
+    public Observable<Weibo> getWeiboById(String accessToken, final long id) {
+       return Observable.create(new Observable.OnSubscribe<Weibo>() {
+            @Override
+            public void call(Subscriber<? super Weibo> subscriber) {
+                try {
+                    Weibo weibo = weiboDao.load(id);
+                    selectWeibo(weibo);
+                    subscriber.onNext(weibo);
+                    subscriber.onCompleted();
+                }catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
     }
 }

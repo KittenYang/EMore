@@ -21,7 +21,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class UserWeiboPresentImp extends AbsTimeLinePresent implements UserWeiboPresent {
+public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> implements UserWeiboPresent {
 
     private final static int PAGE_COUNT = 20;
 

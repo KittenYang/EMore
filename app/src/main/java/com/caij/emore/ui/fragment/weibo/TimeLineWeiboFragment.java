@@ -38,7 +38,7 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends R
 
     @Override
     public void onItemClick(View view, int position) {
-        Intent intent = WeiboDetialActivity.newIntent(getActivity(), mRecyclerViewAdapter.getItem(position));
+        Intent intent = WeiboDetialActivity.newIntent(getActivity(), mRecyclerViewAdapter.getItem(position).getId());
         startActivity(intent);
     }
 

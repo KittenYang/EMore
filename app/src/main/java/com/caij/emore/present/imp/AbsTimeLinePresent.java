@@ -1,13 +1,17 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.R;
+import com.caij.emore.UserPrefs;
+import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.LocakImage;
 import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.TimeLinePresent;
+import com.caij.emore.present.WeiboActionPresent;
 import com.caij.emore.present.view.TimeLineWeiboView;
+import com.caij.emore.present.view.WeiboActionView;
 import com.caij.emore.source.ImageSouce;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.source.local.LocalImageSource;
@@ -33,7 +37,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/2.
  */
-public abstract class AbsTimeLinePresent<V extends TimeLineWeiboView> implements TimeLinePresent {
+public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements WeiboActionPresent {
 
     protected V mView;
     protected ImageSouce mServerImageSouce;
@@ -76,7 +80,6 @@ public abstract class AbsTimeLinePresent<V extends TimeLineWeiboView> implements
 
                     @Override
                     public void onNext(Weibo weibo) {
-
                     }
                 });
         mLoginCompositeSubscription.add(subscription);
@@ -85,7 +88,9 @@ public abstract class AbsTimeLinePresent<V extends TimeLineWeiboView> implements
     @Override
     public void collectWeibo(final Weibo weibo) {
         mView.showDialogLoading(true, R.string.collecting);
-        Subscription subscription = mServerWeiboSource.collectWeibo(mToken, weibo.getId())
+        Observable<FavoritesCreateResponse> serverObservable = mServerWeiboSource.collectWeibo(mToken, weibo.getId());
+        Observable<FavoritesCreateResponse> localObservable = mLocalWeiboSource.collectWeibo(mToken, weibo.getId());
+        Subscription subscription = Observable.concat(serverObservable, localObservable)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<FavoritesCreateResponse>() {
@@ -112,7 +117,9 @@ public abstract class AbsTimeLinePresent<V extends TimeLineWeiboView> implements
     @Override
     public void uncollectWeibo(final Weibo weibo) {
         mView.showDialogLoading(true, R.string.uncollecting);
-        Subscription subscription = mServerWeiboSource.uncollectWeibo(mToken, weibo.getId())
+        Observable<FavoritesCreateResponse> serverObservable = mServerWeiboSource.uncollectWeibo(mToken, weibo.getId());
+        Observable<FavoritesCreateResponse> localObservable = mLocalWeiboSource.uncollectWeibo(mToken, weibo.getId());
+        Subscription subscription = Observable.concat(serverObservable, localObservable)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<FavoritesCreateResponse>() {
@@ -157,16 +164,19 @@ public abstract class AbsTimeLinePresent<V extends TimeLineWeiboView> implements
 
     @Override
     public void attitudesWeibo(final Weibo weibo) {
+        AccessToken accessToken = UserPrefs.get().getEMoreToken();
+        long uid = Long.parseLong(accessToken.getUid());
+        if (uid == weibo.getUser().getId()) {
+            mView.showHint(R.string.self_weibo_unable_attitude);
+            return;
+        }
+
         mView.showDialogLoading(true, R.string.requesting);
         Map<String, Object> params = new HashMap<>();
         ApiUtil.appendAuthSina(params);
-        Subscription subscription = mServerWeiboSource.attitudesWeibo(params, "smile", weibo.getId())
-                .doOnNext(new Action1<Response>() {
-                    @Override
-                    public void call(Response s) {
-                        mLocalWeiboSource.attitudesWeibo(null, null, weibo.getId());
-                    }
-                })
+        Observable<Response> serverObservable = mServerWeiboSource.attitudesWeibo(params, "smile", weibo.getId());
+        Observable<Response> localObservable =  mLocalWeiboSource.attitudesWeibo(null, null, weibo.getId());
+        Subscription subscription = Observable.concat(serverObservable, localObservable)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Response>() {
@@ -193,13 +203,10 @@ public abstract class AbsTimeLinePresent<V extends TimeLineWeiboView> implements
         mView.showDialogLoading(true, R.string.requesting);
         Map<String, Object> params = new HashMap<>();
         ApiUtil.appendAuthSina(params);
-        Subscription subscription = mServerWeiboSource.destoryAttitudesWeibo(params, "smile", weibo.getId())
-                .doOnNext(new Action1<Response>() {
-                    @Override
-                    public void call(Response s) {
-                        mLocalWeiboSource.destoryAttitudesWeibo(null, null, weibo.getId());
-                    }
-                })
+        Observable<Response> serverObservable = mServerWeiboSource.destoryAttitudesWeibo(params, "smile", weibo.getId());
+        Observable<Response> localObservable =  mLocalWeiboSource.destoryAttitudesWeibo(null, null, weibo.getId());
+
+        Subscription subscription = Observable.concat(serverObservable, localObservable)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Response>() {

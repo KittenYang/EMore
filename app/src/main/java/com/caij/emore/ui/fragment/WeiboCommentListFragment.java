@@ -37,11 +37,10 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
 
     private static final int REPLY_COMMENT_REQUEST_CODE = 100;
     private ClipboardManager mClipboardManager;
-    private Weibo mWeibo;
 
-    public static WeiboCommentListFragment newInstance(Weibo weibo) {
+    public static WeiboCommentListFragment newInstance(long weiboId) {
         Bundle args = new Bundle();
-        args.putSerializable(Key.OBJ, weibo);
+        args.putSerializable(Key.ID, weiboId);
         WeiboCommentListFragment fragment = new WeiboCommentListFragment();
         fragment.setArguments(args);
         return fragment;
@@ -65,8 +64,8 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
     @Override
     protected WeiboCommentsPresent createPresent() {
         AccessToken token = UserPrefs.get().getEMoreToken();
-        mWeibo = (Weibo) getArguments().getSerializable(Key.OBJ);
-        return new WeiboCommentsPresentImp(token.getAccess_token(), mWeibo.getId(),
+        long weibiId  = getArguments().getLong(Key.ID);
+        return new WeiboCommentsPresentImp(token.getAccess_token(), weibiId,
                 new ServerWeiboSource(), this);
     }
 
@@ -116,10 +115,10 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (which == 0) {
-                        Intent intent = ReplyCommentActivity.newIntent(getActivity(), mWeibo.getId(), comment.getId());
+                        Intent intent = ReplyCommentActivity.newIntent(getActivity(), comment.getStatus().getId(), comment.getId());
                         startActivityForResult(intent, REPLY_COMMENT_REQUEST_CODE);
                     }else if (which == 1) {
-                        Intent intent = RepostWeiboActivity.newIntent(getActivity(), mWeibo, comment);
+                        Intent intent = RepostWeiboActivity.newIntent(getActivity(), comment.getStatus(), comment);
                         startActivityForResult(intent, REPLY_COMMENT_REQUEST_CODE);
                     }else if (which == 2) {
                         // 将文本内容放到系统剪贴板里。

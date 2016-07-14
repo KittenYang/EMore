@@ -51,7 +51,7 @@ public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment<Co
                     mPresent.deleteComment(mRecyclerViewAdapter.getItem(position), position);
                 }else if (which == 1) {
                     Intent intent = WeiboDetialActivity.newIntent(getActivity(),
-                            mRecyclerViewAdapter.getItem(position).getStatus());
+                            mRecyclerViewAdapter.getItem(position).getStatus().getId());
                     startActivity(intent);
                 }
             }

@@ -70,6 +70,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                     @Override
                     public void onError(Throwable e) {
                         mWeiboCommentsView.onDefaultLoadError();
+                        mWeiboCommentsView.onLoadComplete(false);
                     }
 
                     @Override

@@ -141,6 +141,7 @@
     <string name="user_info_scheme">com.caij.weiyo.userinfo://</string>
     <string name="message">消息</string>
     <string name="image_message_default_text">图片</string>
+    <string name="self_weibo_unable_attitude">自己的微博不能点赞哦</string>
 
     <string-array name="txtUnread">
         <item>1分钟</item>

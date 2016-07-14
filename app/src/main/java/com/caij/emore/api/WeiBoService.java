@@ -259,4 +259,8 @@ public interface WeiBoService {
                                                                      @Query("access_token") String accessToken,
                                                                      @Query("tuid") long uid,
                                                                      @Part MultipartBody.Part file);
+
+    @GET("2/statuses/show.json")
+    Observable<Weibo> getWeiboById(@Query("access_token") String accessToken,
+                                                            @Query("id") long id);
 }

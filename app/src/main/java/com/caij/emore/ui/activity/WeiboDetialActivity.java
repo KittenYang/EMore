@@ -15,6 +15,11 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Account;
 import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.present.WeiboDetailPresent;
+import com.caij.emore.present.imp.WeiboDetailPresentImp;
+import com.caij.emore.present.view.WeiboDetailView;
+import com.caij.emore.source.local.LocalWeiboSource;
+import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.activity.publish.CommentWeiboActivity;
 import com.caij.emore.ui.activity.publish.RepostWeiboActivity;
@@ -39,7 +44,7 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/12.
  */
-public class WeiboDetialActivity extends BaseToolBarActivity {
+public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDetailView {
 
     @BindView(R.id.weibo_item_view)
     WeiboDetailItemView weiboItemView;
@@ -58,11 +63,14 @@ public class WeiboDetialActivity extends BaseToolBarActivity {
     @BindView(R.id.fl_lay)
     FrameLayout flLay;
 
+    private long mWeiboId;
     private Weibo mWeibo;
+    private WeiboDetailPresent mWeiboDetailPresent;
+    private List<String> mTabTitles;
 
-    public static Intent newIntent(Context context, Weibo weibo) {
+    public static Intent newIntent(Context context, long weiboId) {
         Intent intent = new Intent(context, WeiboDetialActivity.class);
-        intent.putExtra(Key.OBJ, weibo);
+        intent.putExtra(Key.ID, weiboId);
         return intent;
     }
 
@@ -70,9 +78,8 @@ public class WeiboDetialActivity extends BaseToolBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getString(R.string.weibo_detail_title));
-        mWeibo = (Weibo) getIntent().getSerializableExtra(Key.OBJ);
+        mWeiboId = getIntent().getLongExtra(Key.ID, -1);
         ButterKnife.bind(this);
-        weiboItemView.setWeibo(mWeibo);
 
         actionMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.
                 OnFloatingActionsMenuUpdateListener() {
@@ -94,20 +101,23 @@ public class WeiboDetialActivity extends BaseToolBarActivity {
 
     private void doNext() {
         List<BaseFragment> fragments = new ArrayList<>(3);
-        fragments.add(WeiboRepostListFragment.newInstance(mWeibo.getId()));
-        fragments.add(WeiboCommentListFragment.newInstance(mWeibo));
-        fragments.add(WeiboLikerListFragment.newInstance(mWeibo.getId()));
-        List<String> titles = new ArrayList<>(3);
-        titles.add("转发 " + mWeibo.getReposts_count());
-        titles.add("评论 " + mWeibo.getComments_count());
-        titles.add("赞 " + mWeibo.getAttitudes_count());
+        fragments.add(WeiboRepostListFragment.newInstance(mWeiboId));
+        fragments.add(WeiboCommentListFragment.newInstance(mWeiboId));
+        fragments.add(WeiboLikerListFragment.newInstance(mWeiboId));
+        mTabTitles = new ArrayList<>(3);
         WeiboFragmentPagerAdapter adapter = new WeiboFragmentPagerAdapter(getSupportFragmentManager(),
-                fragments, titles);
+                fragments, null);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(fragments.size());
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabTextColors(getResources().getColor(R.color.text_54),
                 getResources().getColor(R.color.text_80));
+
+        AccessToken token = UserPrefs.get().getWeiCoToken();
+        mWeiboDetailPresent = new WeiboDetailPresentImp(token.getAccess_token(), mWeiboId,
+                this, new ServerWeiboSource(), new LocalWeiboSource());
+        mWeiboDetailPresent.onCreate();
+        mWeiboDetailPresent.loadWeiboDetail();
     }
 
     @Override
@@ -119,16 +129,17 @@ public class WeiboDetialActivity extends BaseToolBarActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_star:
-
-
+                mWeiboDetailPresent.attitudesWeibo(mWeibo);
                 break;
             case R.id.action_repost: {
-                Intent intent = RepostWeiboActivity.newIntent(this, mWeibo);
-                startActivity(intent);
+                if (mWeibo != null) {
+                    Intent intent = RepostWeiboActivity.newIntent(this, mWeibo);
+                    startActivity(intent);
+                }
                 break;
             }
             case R.id.action_comment: {
-                Intent intent = CommentWeiboActivity.newIntent(this, mWeibo.getId());
+                Intent intent = CommentWeiboActivity.newIntent(this, mWeiboId);
                 startActivity(intent);
                 break;
             }
@@ -158,5 +169,53 @@ public class WeiboDetialActivity extends BaseToolBarActivity {
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    public void setWeibo(Weibo weibo) {
+        weiboItemView.setWeibo(weibo);
+        mWeibo = weibo;
+        mTabTitles.clear();
+
+        mTabTitles.add("转发 " + mWeibo.getReposts_count());
+        mTabTitles.add("评论 " + mWeibo.getComments_count());
+        mTabTitles.add("赞 " + mWeibo.getAttitudes_count());
+        for (int i = 0; i < mTabTitles.size(); i ++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            if (tab != null) {
+                tab.setText(mTabTitles.get(i));
+            }
+        }
+    }
+
+    @Override
+    public Context getContent() {
+        return null;
+    }
+
+    @Override
+    public void onDeleteWeiboSuccess(Weibo weibo, int position) {
+
+    }
+
+    @Override
+    public void onCollectSuccess(Weibo weibo) {
+
+    }
+
+    @Override
+    public void onUncollectSuccess(Weibo weibo) {
+
+    }
+
+    @Override
+    public void onAttitudesSuccess(Weibo weibo) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mWeiboDetailPresent.onDestroy();
     }
 }

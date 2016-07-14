@@ -41,10 +41,11 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
         public final static Property Comments_count = new Property(15, Integer.class, "comments_count", false, "COMMENTS_COUNT");
         public final static Property Attitudes_count = new Property(16, Integer.class, "attitudes_count", false, "ATTITUDES_COUNT");
         public final static Property Mlevel = new Property(17, Integer.class, "mlevel", false, "MLEVEL");
-        public final static Property Geo_id = new Property(18, String.class, "geo_id", false, "GEO_ID");
-        public final static Property User_id = new Property(19, Long.class, "user_id", false, "USER_ID");
-        public final static Property Visible_id = new Property(20, String.class, "visible_id", false, "VISIBLE_ID");
-        public final static Property Retweeted_status_id = new Property(21, Long.class, "retweeted_status_id", false, "RETWEETED_STATUS_ID");
+        public final static Property Update_time = new Property(18, Long.class, "update_time", false, "UPDATE_TIME");
+        public final static Property Geo_id = new Property(19, String.class, "geo_id", false, "GEO_ID");
+        public final static Property User_id = new Property(20, Long.class, "user_id", false, "USER_ID");
+        public final static Property Visible_id = new Property(21, String.class, "visible_id", false, "VISIBLE_ID");
+        public final static Property Retweeted_status_id = new Property(22, Long.class, "retweeted_status_id", false, "RETWEETED_STATUS_ID");
     };
 
 
@@ -78,10 +79,11 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
                 "\"COMMENTS_COUNT\" INTEGER," + // 15: comments_count
                 "\"ATTITUDES_COUNT\" INTEGER," + // 16: attitudes_count
                 "\"MLEVEL\" INTEGER," + // 17: mlevel
-                "\"GEO_ID\" TEXT," + // 18: geo_id
-                "\"USER_ID\" INTEGER," + // 19: user_id
-                "\"VISIBLE_ID\" TEXT," + // 20: visible_id
-                "\"RETWEETED_STATUS_ID\" INTEGER);"); // 21: retweeted_status_id
+                "\"UPDATE_TIME\" INTEGER," + // 18: update_time
+                "\"GEO_ID\" TEXT," + // 19: geo_id
+                "\"USER_ID\" INTEGER," + // 20: user_id
+                "\"VISIBLE_ID\" TEXT," + // 21: visible_id
+                "\"RETWEETED_STATUS_ID\" INTEGER);"); // 22: retweeted_status_id
     }
 
     /** Drops the underlying database table. */
@@ -185,24 +187,29 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
             stmt.bindLong(18, mlevel);
         }
  
+        Long update_time = entity.getUpdate_time();
+        if (update_time != null) {
+            stmt.bindLong(19, update_time);
+        }
+ 
         String geo_id = entity.getGeo_id();
         if (geo_id != null) {
-            stmt.bindString(19, geo_id);
+            stmt.bindString(20, geo_id);
         }
  
         Long user_id = entity.getUser_id();
         if (user_id != null) {
-            stmt.bindLong(20, user_id);
+            stmt.bindLong(21, user_id);
         }
  
         String visible_id = entity.getVisible_id();
         if (visible_id != null) {
-            stmt.bindString(21, visible_id);
+            stmt.bindString(22, visible_id);
         }
  
         Long retweeted_status_id = entity.getRetweeted_status_id();
         if (retweeted_status_id != null) {
-            stmt.bindLong(22, retweeted_status_id);
+            stmt.bindLong(23, retweeted_status_id);
         }
     }
 
@@ -234,10 +241,11 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
             cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15), // comments_count
             cursor.isNull(offset + 16) ? null : cursor.getInt(offset + 16), // attitudes_count
             cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17), // mlevel
-            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // geo_id
-            cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19), // user_id
-            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20), // visible_id
-            cursor.isNull(offset + 21) ? null : cursor.getLong(offset + 21) // retweeted_status_id
+            cursor.isNull(offset + 18) ? null : cursor.getLong(offset + 18), // update_time
+            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // geo_id
+            cursor.isNull(offset + 20) ? null : cursor.getLong(offset + 20), // user_id
+            cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21), // visible_id
+            cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22) // retweeted_status_id
         );
         return entity;
     }
@@ -263,10 +271,11 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
         entity.setComments_count(cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15));
         entity.setAttitudes_count(cursor.isNull(offset + 16) ? null : cursor.getInt(offset + 16));
         entity.setMlevel(cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17));
-        entity.setGeo_id(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
-        entity.setUser_id(cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19));
-        entity.setVisible_id(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
-        entity.setRetweeted_status_id(cursor.isNull(offset + 21) ? null : cursor.getLong(offset + 21));
+        entity.setUpdate_time(cursor.isNull(offset + 18) ? null : cursor.getLong(offset + 18));
+        entity.setGeo_id(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
+        entity.setUser_id(cursor.isNull(offset + 20) ? null : cursor.getLong(offset + 20));
+        entity.setVisible_id(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
+        entity.setRetweeted_status_id(cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22));
      }
     
     /** @inheritdoc */
