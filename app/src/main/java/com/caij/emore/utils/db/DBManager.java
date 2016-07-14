@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import com.caij.emore.database.dao.DaoMaster;
 import com.caij.emore.database.dao.DaoSession;
 
+import de.greenrobot.dao.query.QueryBuilder;
+
 /**
  * Created by Caij on 2016/7/13.
  */
@@ -16,6 +18,8 @@ public class DBManager {
     public static void initDB(Context content, String dbName) {
         DBHelp dbHelp = new DBHelp(content, dbName, null);
         DaoMaster daoMaster = new DaoMaster(dbHelp.getWritableDatabase());
+        QueryBuilder.LOG_SQL = true;
+//        QueryBuilder.LOG_VALUES = true;
         sDaoSession = daoMaster.newSession();
     }
 

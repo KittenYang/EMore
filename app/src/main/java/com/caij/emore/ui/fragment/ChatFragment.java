@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -25,13 +24,14 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.bean.DirectMessage;
 import com.caij.emore.bean.Emotion;
+import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.ChatPresent;
 import com.caij.emore.present.imp.ChatPresentImp;
 import com.caij.emore.present.view.DirectMessageView;
 import com.caij.emore.source.UserSource;
+import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.local.LocalUserSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
@@ -212,7 +212,7 @@ public class ChatFragment extends BaseFragment implements
     protected ChatPresent createPresent() {
         AccessToken accessToken = UserPrefs.get().getWeiCoToken();
         return new ChatPresentImp(accessToken.getAccess_token(), mRecipientId, new ServerMessageSource(),
-                null, this);
+                new LocalMessageSource(), this);
     }
 
 
@@ -297,14 +297,14 @@ public class ChatFragment extends BaseFragment implements
         directMessage.setSender(mSelfUser);
         directMessage.setSender_id(mSelfUser.getId());
         directMessage.setRecipient_id(mRecipientId);
-        directMessage.setStatus(DirectMessage.STATUS_SEND);
+        directMessage.setLocal_status(DirectMessage.STATUS_SEND);
         directMessage.setRecipient_screen_name(mRecipientName);
         return directMessage;
     }
 
     private DirectMessage buildImageMessage(String imagePath) {
         DirectMessage directMessage = buildMessage();
-        directMessage.setImagePath(imagePath);
+//        directMessage.setImagePath(imagePath);
         directMessage.setText(getString(R.string.image_message_default_text));
         return directMessage;
     }
@@ -320,16 +320,17 @@ public class ChatFragment extends BaseFragment implements
     }
 
     @Override
-    public void toScrollBottom() {
-        mRecyclerView.scrollToPosition(mMessageAdapter.getItemCount());
-    }
-
-    @Override
     public void onSendEnd(DirectMessage message) {
         mMessageAdapter.notifyDataSetChanged();
     }
 
-    private void attemptSmoothScrollToBottom() {
+    @Override
+    public void toScrollToPosition(int position) {
+        mRecyclerView.scrollToPosition(position);
+    }
+
+    @Override
+    public void attemptSmoothScrollToBottom() {
         int last = mMessageAdapter.getItemCount();
         if (mLinearLayoutManager.findLastVisibleItemPosition() + 2 >= last) {
             mSmoothScroller.setTargetPosition(mMessageAdapter.getEntities().size());

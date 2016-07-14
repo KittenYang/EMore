@@ -19,6 +19,8 @@ public class DbDaoGenerator {
         createWeibo(sch);
         createPic(sch);
         createVisible(sch);
+        createDirectMessage(sch);
+        createDirectMessageImage(sch);
         new de.greenrobot.daogenerator.DaoGenerator().generateAll(sch, "./app/src/main/java");
     }
 
@@ -137,6 +139,51 @@ public class DbDaoGenerator {
         Entity image = sch.addEntity("LikeBean");
         image.addLongProperty("id").primaryKey();
         image.addBooleanProperty("isLike");
+    }
+
+    static void createDirectMessage(Schema sch) {
+        Entity entity = sch.addEntity("DirectMessage");
+        entity.addLongProperty("id").primaryKey();
+        entity.addStringProperty("idstr");
+        entity.addStringProperty("created_at");
+        entity.addStringProperty("text");
+        entity.addIntProperty("sys_type");
+        entity.addIntProperty("msg_status");
+        entity.addLongProperty("sender_id");
+        entity.addLongProperty("recipient_id");
+        entity.addStringProperty("sender_screen_name");
+        entity.addStringProperty("recipient_screen_name");
+        entity.addStringProperty("mid");
+        entity.addBooleanProperty("isLargeDm");
+        entity.addStringProperty("source");
+        entity.addLongProperty("status_id");
+        entity.addIntProperty("dm_type");
+        entity.addIntProperty("media_type");
+        entity.addLongProperty("ip");
+        entity.addLongProperty("burn_time");
+        entity.addBooleanProperty("matchKeyword");
+        entity.addBooleanProperty("topublic");
+        entity.addBooleanProperty("pushToMPS");
+        entity.addLongProperty("oriImageId");
+        entity.addLongProperty("geo_id");
+        entity.addIntProperty("local_status");
+
+        entity.addLongProperty("created_at_long");
+
+        entity.addStringProperty("att_ids_json");
+    }
+
+    static void createDirectMessageImage(Schema sch) {
+        Entity entity = sch.addEntity("MessageImage");
+        entity.addLongProperty("fid").primaryKey();
+        entity.addLongProperty("vfid");
+        entity.addLongProperty("tovfid");
+        entity.addStringProperty("thumbnail_60");
+        entity.addStringProperty("thumbnail_100");
+        entity.addStringProperty("thumbnail_120");
+        entity.addStringProperty("thumbnail_240");
+        entity.addStringProperty("thumbnail_600");
+        entity.addIntProperty("http_code");
     }
 
 

@@ -7,7 +7,9 @@ public interface Key {
 
     String DB_NAME  = "WeiBo";
     long DB_VERSION  = 1;
-    String UPLOAD_MESSAGE_IMAGE_URL  = "http://upload.api.weibo.com/2/mss/upload.json";
+    String UPLOAD_FILE_BASE_URL = "http://upload.api.weibo.com";
+    String UPLOAD_MESSAGE_IMAGE_URL  = UPLOAD_FILE_BASE_URL + "/2/mss/upload.json";
+    String QUERY_MESSAGE_IMAGE_URL  = UPLOAD_FILE_BASE_URL + "/2/mss/meta_query.json";
     String WEIBO_BASE_URL = "https://api.weibo.com/";
     String WEIBO_APP_ID  = "1873593701";
     String WEIBO_APP_SECRET = "f6d2a29b04af69c1fe9cd10302320eeb";

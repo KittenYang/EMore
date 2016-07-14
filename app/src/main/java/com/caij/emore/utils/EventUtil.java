@@ -1,8 +1,8 @@
 package com.caij.emore.utils;
 
 import com.caij.emore.Key;
-import com.caij.emore.bean.DirectMessage;
 import com.caij.emore.bean.PublishBean;
+import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.utils.rxbus.RxBus;
 
 import rx.Observable;

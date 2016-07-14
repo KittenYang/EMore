@@ -45,7 +45,9 @@ public class BaseFragment extends Fragment implements BaseView{
         if (isShow) {
             mLoadingDialog = DialogUtil.showProgressDialog(getActivity(), null, getString(hintStringId));
         }else {
-            mLoadingDialog.dismiss();
+            if (mLoadingDialog != null) {
+                mLoadingDialog.dismiss();
+            }
         }
     }
 

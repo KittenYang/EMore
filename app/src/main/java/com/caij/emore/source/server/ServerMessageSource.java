@@ -2,11 +2,11 @@ package com.caij.emore.source.server;
 
 import com.caij.emore.Key;
 import com.caij.emore.api.WeiBoService;
-import com.caij.emore.bean.DirectMessage;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.UnreadMessageCount;
-import com.caij.emore.bean.response.UploadMessageImageResponse;
 import com.caij.emore.bean.response.UserMessageResponse;
+import com.caij.emore.database.bean.DirectMessage;
+import com.caij.emore.database.bean.MessageImage;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
@@ -69,9 +69,9 @@ public class ServerMessageSource implements MessageSource {
                 }
             }
         })
-        .flatMap(new Func1<String, Observable<UploadMessageImageResponse>>() {
+        .flatMap(new Func1<String, Observable<MessageImage>>() {
             @Override
-            public Observable<UploadMessageImageResponse> call(String type) {
+            public Observable<MessageImage> call(String type) {
                 RequestBody requestFile =
                         RequestBody.create(MediaType.parse("image/" + type), file);
                 MultipartBody.Part body =
@@ -79,15 +79,30 @@ public class ServerMessageSource implements MessageSource {
                 return  mWeiBoService.uploadMessageImage(Key.UPLOAD_MESSAGE_IMAGE_URL, paramMap, accessToken, uid, body);
             }
         })
-        .flatMap(new Func1<UploadMessageImageResponse, Observable<DirectMessage>>() {
+        .flatMap(new Func1<MessageImage, Observable<DirectMessage>>() {
             @Override
-            public Observable<DirectMessage> call(UploadMessageImageResponse uploadMessageImageResponse) {
+            public Observable<DirectMessage> call(MessageImage uploadMessageImageResponse) {
                 long vifid = uploadMessageImageResponse.getVfid();
                 long tofid = uploadMessageImageResponse.getTovfid();
                 StringBuilder fids = new StringBuilder().append(vifid).append(",").append(tofid);
                 return mWeiBoService.createMessage(accessToken, text, uid, screenName, fids.toString());
             }
         });
+    }
+
+    @Override
+    public void saveMessage(DirectMessage message) {
+
+    }
+
+    @Override
+    public Observable<MessageImage> getMessageImageInfo(String accessToken, long fid) {
+        return mWeiBoService.getMessageImageInfo(Key.QUERY_MESSAGE_IMAGE_URL, accessToken, fid);
+    }
+
+    @Override
+    public void saveMessageImage(MessageImage messageImage) {
+
     }
 
 }

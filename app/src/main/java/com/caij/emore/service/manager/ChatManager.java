@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.bean.DirectMessage;
+import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.utils.EventUtil;
@@ -53,46 +53,46 @@ public class ChatManager extends IManager {
     }
 
     private void sendMessage(final DirectMessage bean) {
-        AccessToken token = UserPrefs.get().getWeiCoToken();
-        Observable<DirectMessage> sendMessageObservable;
-        if (TextUtils.isEmpty(bean.getImagePath())) { //文本
-            sendMessageObservable = mServerMessageSource.createTextMessage(token.getAccess_token(), bean.getText(), bean.getRecipient_id());
-        }else {
-            Map<String, Object> params = new HashMap<>();
-            ApiUtil.appendAuth(params);
-            sendMessageObservable = mServerMessageSource.createImageMessage(token.getAccess_token(), params,
-                    bean.getText(), bean.getImagePath(),bean.getRecipient_id(), bean.getRecipient_screen_name());
-        }
-        Subscription subscription = sendMessageObservable
-                .subscribeOn(Schedulers.from(ExecutorServiceUtil.SEND_MESSAGE_SERVICE)) //这里单线程发送消息， 防止消息位置错乱
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<DirectMessage>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        bean.setStatus(DirectMessage.STATUS_FAIL);
-                        RxBus.get().post(Key.SEND_MESSAGE_RESULT_EVENT, bean);
-                        LogUtil.d(ChatManager.this, "message send error " + e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(DirectMessage directMessage) {
-                        bean.setId(directMessage.getId());
-                        bean.setCreated_at(directMessage.getCreated_at());
-                        bean.setSender_id(directMessage.getSender_id());
-                        bean.setRecipient_id(directMessage.getRecipient_id());
-                        bean.setRecipient(directMessage.getRecipient());
-                        bean.setMedia_type(directMessage.getMedia_type());
-                        bean.setStatus(DirectMessage.STATUS_SUCCESS);
-                        RxBus.get().post(Key.SEND_MESSAGE_RESULT_EVENT, directMessage);
-                        LogUtil.d(ChatManager.this, "message send success");
-                    }
-                });
-        mCompositeSubscription.add(subscription);
+//        AccessToken token = UserPrefs.get().getWeiCoToken();
+//        Observable<DirectMessage> sendMessageObservable;
+//        if (TextUtils.isEmpty(bean.getImagePath())) { //文本
+//            sendMessageObservable = mServerMessageSource.createTextMessage(token.getAccess_token(), bean.getText(), bean.getRecipient_id());
+//        }else {
+//            Map<String, Object> params = new HashMap<>();
+//            ApiUtil.appendAuth(params);
+//            sendMessageObservable = mServerMessageSource.createImageMessage(token.getAccess_token(), params,
+//                    bean.getText(), bean.getImagePath(),bean.getRecipient_id(), bean.getRecipient_screen_name());
+//        }
+//        Subscription subscription = sendMessageObservable
+//                .subscribeOn(Schedulers.from(ExecutorServiceUtil.SEND_MESSAGE_SERVICE)) //这里单线程发送消息， 防止消息位置错乱
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<DirectMessage>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        bean.setStatus(DirectMessage.STATUS_FAIL);
+//                        RxBus.get().post(Key.SEND_MESSAGE_RESULT_EVENT, bean);
+//                        LogUtil.d(ChatManager.this, "message send error " + e.getMessage());
+//                    }
+//
+//                    @Override
+//                    public void onNext(DirectMessage directMessage) {
+//                        bean.setId(directMessage.getId());
+//                        bean.setCreated_at(directMessage.getCreated_at());
+//                        bean.setSender_id(directMessage.getSender_id());
+//                        bean.setRecipient_id(directMessage.getRecipient_id());
+//                        bean.setRecipient(directMessage.getRecipient());
+//                        bean.setMedia_type(directMessage.getMedia_type());
+//                        bean.setLocal_status(DirectMessage.STATUS_SUCCESS);
+//                        RxBus.get().post(Key.SEND_MESSAGE_RESULT_EVENT, directMessage);
+//                        LogUtil.d(ChatManager.this, "message send success");
+//                    }
+//                });
+//        mCompositeSubscription.add(subscription);
     }
 
     @Override

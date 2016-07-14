@@ -54,7 +54,7 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<List<Weibo>> getFriendWeibo(String accessToken, long since_id, final long max_id,
+    public Observable<List<Weibo>> getFriendWeibo(String accessToken, final long since_id, final long max_id,
                                                   final int count, final int page) {
         return Observable.create(new Observable.OnSubscribe<List<Weibo>>() {
 
@@ -80,14 +80,26 @@ public class LocalWeiboSource implements WeiboSource {
                     long selfUid  = Long.parseLong(UserPrefs.get().getEMoreToken().getUid());
                     followerUserIds.add(selfUid);
 
+                    Weibo sinceWeibo = weiboDao.load(since_id);
+                    String sinceCreateTime = "";
+                    if (sinceWeibo != null) {
+                        sinceCreateTime = sinceWeibo.getCreated_at();
+                    }
+
                     Weibo maxFriendWeibo = weiboDao.load(max_id);
                     String maxCreateTime = "";
                     if (maxFriendWeibo != null) {
                         maxCreateTime = maxFriendWeibo.getCreated_at();
                     }
+
                     QueryBuilder<Weibo> queryBuilder = weiboDao.queryBuilder();
-                    if (!TextUtils.isEmpty(maxCreateTime)) {
+                    if(!TextUtils.isEmpty(sinceCreateTime) && !TextUtils.isEmpty(maxCreateTime)) {
+                        queryBuilder.and(WeiboDao.Properties.Created_at.lt(maxCreateTime),
+                                WeiboDao.Properties.Created_at.ge(sinceCreateTime));
+                    }else if (!TextUtils.isEmpty(maxCreateTime)) {
                         queryBuilder.where(WeiboDao.Properties.Created_at.lt(maxCreateTime));
+                    }else if (!TextUtils.isEmpty(sinceCreateTime)) {
+                        queryBuilder.where(WeiboDao.Properties.Created_at.ge(sinceCreateTime));
                     }
                     if (followerUserIds.size() > 0) {
                         queryBuilder.where(WeiboDao.Properties.User_id.in(followerUserIds));

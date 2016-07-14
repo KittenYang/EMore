@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.DirectMessage;
+import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
@@ -23,26 +23,39 @@ import butterknife.ButterKnife;
  */
 public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
 
-    public static final int TYPE_SELT = 1;
-    public static final int TYPE_OTHER = 2;
+    public static final int TYPE_SELT_TEXT = 1;
+    public static final int TYPE_OTHER_TEXT = 2;
+    public static final int TYPE_SELT_IMAGE = 3;
+    public static final int TYPE_OTHER_IMAGE = 4;
+
+    private final ImageLoader.ImageConfig mAvatarImageConfig;
     private final ImageLoader.ImageConfig mImageConfig;
 
     public MessageAdapter(Context context) {
         super(context);
-        mImageConfig = new ImageLoader.ImageConfigBuild().
+        mAvatarImageConfig = new ImageLoader.ImageConfigBuild().
                 setScaleType(ImageLoader.ScaleType.CENTER_CROP)
                 .setCircle(true)
+                .build();
+        mImageConfig = new ImageLoader.ImageConfigBuild().
+                setScaleType(ImageLoader.ScaleType.CENTER_CROP)
                 .build();
     }
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == TYPE_OTHER) {
-            View view = mInflater.inflate(R.layout.item_chat_other_send_message, parent, false);
+        if (viewType == TYPE_OTHER_TEXT) {
+            View view = mInflater.inflate(R.layout.item_chat_other_send_message_text, parent, false);
             return new OtherMessageViewHolder(view, mOnItemClickListener);
-        } else if (viewType == TYPE_SELT) {
+        } else if (viewType == TYPE_SELT_TEXT) {
             View view = mInflater.inflate(R.layout.item_chat_self_send_message, parent, false);
             return new SelfMessageViewHolder(view, mOnItemClickListener);
+        }else if (viewType == TYPE_SELT_IMAGE) {
+            View view = mInflater.inflate(R.layout.item_chat_self_send_message_image, parent, false);
+            return new SelfMessageViewImageHolder(view, mOnItemClickListener);
+        }else if (viewType == TYPE_OTHER_IMAGE) {
+            View view = mInflater.inflate(R.layout.item_chat_other_send_message_image, parent, false);
+            return new OtherMessageViewImageHolder(view, mOnItemClickListener);
         }
 
         return null;
@@ -55,34 +68,58 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
             OtherMessageViewHolder viewHolder = (OtherMessageViewHolder) holder;
             viewHolder.tvMessage.setText(message.getText());
             ImageLoader.load(mContext, viewHolder.ivAvatar, message.getSender().getAvatar_large(),
-                    R.drawable.circle_image_placeholder, mImageConfig);
+                    R.drawable.circle_image_placeholder, mAvatarImageConfig);
 
         }else if (holder instanceof SelfMessageViewHolder) {
             SelfMessageViewHolder viewHolder = (SelfMessageViewHolder) holder;
             viewHolder.tvMessage.setText(message.getText());
             ImageLoader.load(mContext, ((SelfMessageViewHolder) holder).ivAvatar, message.getSender().getAvatar_large(),
-                    R.drawable.circle_image_placeholder, mImageConfig);
-            if (message.getStatus() == DirectMessage.STATUS_SEND) {
+                    R.drawable.circle_image_placeholder, mAvatarImageConfig);
+            if (message.getLocal_status() == DirectMessage.STATUS_SEND) {
                 viewHolder.pbLoading.setVisibility(View.VISIBLE);
                 viewHolder.ivFail.setVisibility(View.INVISIBLE);
-            }else if (message.getStatus() == DirectMessage.STATUS_SUCCESS
-                    || message.getStatus() == DirectMessage.STATUS_SERVER) {
+            }else if (message.getLocal_status() == DirectMessage.STATUS_SUCCESS
+                    || message.getLocal_status() == DirectMessage.STATUS_SERVER) {
                 viewHolder.pbLoading.setVisibility(View.INVISIBLE);
                 viewHolder.ivFail.setVisibility(View.INVISIBLE);
-            }else if (message.getStatus() == DirectMessage.STATUS_FAIL) {
+            }else if (message.getLocal_status() == DirectMessage.STATUS_FAIL) {
                 viewHolder.ivFail.setVisibility(View.VISIBLE);
                 viewHolder.pbLoading.setVisibility(View.INVISIBLE);
             }
+        }else if (holder instanceof SelfMessageViewImageHolder) {
+            SelfMessageViewImageHolder viewHolder = (SelfMessageViewImageHolder) holder;
+            ImageLoader.load(mContext, viewHolder.ivAvatar, message.getSender().getAvatar_large(),
+                    R.drawable.circle_image_placeholder, mAvatarImageConfig);
+            ImageLoader.load(mContext, viewHolder.ivImage, appImageUrl(message.getLocakImage().getUrl()),
+                    R.drawable.circle_image_placeholder, mImageConfig);
+        }else if (holder instanceof OtherMessageViewImageHolder) {
+            OtherMessageViewImageHolder viewHolder = (OtherMessageViewImageHolder) holder;
+            ImageLoader.load(mContext, viewHolder.ivAvatar, message.getSender().getAvatar_large(),
+                    R.drawable.weibo_image_placeholder, mAvatarImageConfig);
+            ImageLoader.load(mContext, viewHolder.ivImage, appImageUrl(message.getLocakImage().getUrl()),
+                    R.drawable.weibo_image_placeholder, mImageConfig);
         }
+    }
+
+    private String appImageUrl(String url) {
+        return url + "&access_token=" + UserPrefs.get().getWeiCoToken().getAccess_token();
     }
 
     @Override
     public int getItemViewType(int position) {
         DirectMessage directMessage = getItem(position);
         if (directMessage.getSender_id() == Long.parseLong(UserPrefs.get().getEMoreToken().getUid())) {
-            return TYPE_SELT;
+            if (directMessage.getAtt_ids() != null && directMessage.getAtt_ids().size() > 0 && directMessage.getLocakImage() != null) {
+                return TYPE_SELT_IMAGE;
+            }else {
+                return TYPE_SELT_TEXT;
+            }
         } else {
-            return TYPE_OTHER;
+            if (directMessage.getAtt_ids() != null && directMessage.getAtt_ids().size() > 0 && directMessage.getLocakImage() != null) {
+                return TYPE_OTHER_IMAGE;
+            }else {
+                return TYPE_OTHER_TEXT;
+            }
         }
     }
 
@@ -111,6 +148,32 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         ImageView ivFail;
 
         public SelfMessageViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
+            super(itemView, onItemClickListener);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public static class OtherMessageViewImageHolder extends BaseViewHolder {
+
+        @BindView(R.id.iv_avatar)
+        ImageView ivAvatar;
+        @BindView(R.id.iv_image)
+        ImageView ivImage;
+
+        public OtherMessageViewImageHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
+            super(itemView, onItemClickListener);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public static class SelfMessageViewImageHolder extends BaseViewHolder {
+
+        @BindView(R.id.iv_avatar)
+        ImageView ivAvatar;
+        @BindView(R.id.iv_image)
+        ImageView ivImage;
+
+        public SelfMessageViewImageHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);
             ButterKnife.bind(this, itemView);
         }

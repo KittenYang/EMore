@@ -3,7 +3,6 @@ package com.caij.emore.api;
 import com.caij.emore.Key;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.DirectMessage;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.UnreadMessageCount;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
@@ -12,9 +11,10 @@ import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.UploadImageResponse;
-import com.caij.emore.bean.response.UploadMessageImageResponse;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.database.bean.DirectMessage;
+import com.caij.emore.database.bean.MessageImage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
@@ -254,11 +254,16 @@ public interface WeiBoService {
 
     @Multipart
     @POST
-    public Observable<UploadMessageImageResponse> uploadMessageImage(@Url String url,
-                                                                     @QueryMap Map<String, Object> paramMap,
-                                                                     @Query("access_token") String accessToken,
-                                                                     @Query("tuid") long uid,
-                                                                     @Part MultipartBody.Part file);
+    public Observable<MessageImage> uploadMessageImage(@Url String url,
+                                                       @QueryMap Map<String, Object> paramMap,
+                                                       @Query("access_token") String accessToken,
+                                                       @Query("tuid") long uid,
+                                                       @Part MultipartBody.Part file);
+
+    @GET
+    public Observable<MessageImage> getMessageImageInfo(@Url String url,
+                                                       @Query("access_token") String accessToken,
+                                                       @Query("fid") long fid);
 
     @GET("2/statuses/show.json")
     Observable<Weibo> getWeiboById(@Query("access_token") String accessToken,

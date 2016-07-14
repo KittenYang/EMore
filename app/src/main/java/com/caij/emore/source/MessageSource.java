@@ -1,10 +1,10 @@
 package com.caij.emore.source;
 
-import com.caij.emore.bean.DirectMessage;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.UnreadMessageCount;
-import com.caij.emore.bean.response.UploadMessageImageResponse;
 import com.caij.emore.bean.response.UserMessageResponse;
+import com.caij.emore.database.bean.DirectMessage;
+import com.caij.emore.database.bean.MessageImage;
 
 import java.util.Map;
 
@@ -23,8 +23,14 @@ public interface MessageSource {
     Observable<UserMessageResponse> getUserMessage(String accessToken, long uid, long since_id, long max_id,
                                                    int count, int page);
 
-    Observable<DirectMessage> createTextMessage(String accessToken,String text,long uid);
+    Observable<DirectMessage> createTextMessage(String accessToken, String text, long uid);
 
-    Observable<DirectMessage> createImageMessage(String accessToken,Map<String, Object> paramMap, final String text,String imagePath, long uid, final String screenName);
+    Observable<DirectMessage> createImageMessage(String accessToken,Map<String, Object> paramMap,
+                                                 final String text,String imagePath, long uid, final String screenName);
 
+    void saveMessage(DirectMessage message);
+
+    public Observable<MessageImage> getMessageImageInfo(String accessToken, long fid);
+
+    void saveMessageImage(MessageImage messageImage);
 }

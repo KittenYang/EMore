@@ -1,6 +1,7 @@
 package com.caij.emore.bean.response;
 
-import com.caij.emore.bean.DirectMessage;
+
+import com.caij.emore.database.bean.DirectMessage;
 
 import java.util.List;
 

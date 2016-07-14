@@ -67,7 +67,9 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
         if (isShow) {
             mLoadingDialog = DialogUtil.showProgressDialog(this, null, getString(hintStringId));
         }else {
-            mLoadingDialog.dismiss();
+            if (mLoadingDialog != null) {
+                mLoadingDialog.dismiss();
+            }
         }
     }
 
