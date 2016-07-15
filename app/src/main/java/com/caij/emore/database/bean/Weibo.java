@@ -34,6 +34,7 @@ public class Weibo implements Serializable {
     private Integer attitudes_count;
     private Integer mlevel;
     private Long update_time = System.currentTimeMillis();
+    private Long create_at_long;
     private String geo_id;
     private Long user_id;
     private String visible_id;
@@ -49,7 +50,7 @@ public class Weibo implements Serializable {
         this.id = id;
     }
 
-    public Weibo(String created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, String geo_id, Long user_id, String visible_id, Long retweeted_status_id) {
+    public Weibo(String created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, Long create_at_long, String geo_id, Long user_id, String visible_id, Long retweeted_status_id) {
         this.created_at = created_at;
         this.id = id;
         this.mid = mid;
@@ -69,6 +70,7 @@ public class Weibo implements Serializable {
         this.attitudes_count = attitudes_count;
         this.mlevel = mlevel;
         this.update_time = update_time;
+        this.create_at_long = create_at_long;
         this.geo_id = geo_id;
         this.user_id = user_id;
         this.visible_id = visible_id;
@@ -225,6 +227,14 @@ public class Weibo implements Serializable {
 
     public void setUpdate_time(Long update_time) {
         this.update_time = update_time;
+    }
+
+    public Long getCreate_at_long() {
+        return create_at_long;
+    }
+
+    public void setCreate_at_long(Long create_at_long) {
+        this.create_at_long = create_at_long;
     }
 
     public String getGeo_id() {

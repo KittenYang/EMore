@@ -1,5 +1,6 @@
 package com.caij.emore.ui.activity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -88,6 +89,14 @@ public class MentionActivity extends BaseToolBarActivity {
 
         public FriendshipPageAdapter(FragmentManager fm, List<BaseFragment> fragments, List<String> titles) {
             super(fm, fragments, titles);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Key.AUTH && resultCode == Activity.RESULT_OK) {
+            doNext();
         }
     }
 }

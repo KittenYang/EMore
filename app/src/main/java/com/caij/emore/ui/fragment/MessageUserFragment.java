@@ -1,5 +1,6 @@
 package com.caij.emore.ui.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.MentionActivity;
 import com.caij.emore.ui.adapter.MessageUserAdapter;
 import com.caij.emore.utils.DensityUtil;
+import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -74,8 +76,10 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
             }
         });
 
-        mSwipeRefreshLayout.setRefreshing(true);
-        mPresent.refresh();
+        if (mPresent != null) {
+            mSwipeRefreshLayout.setRefreshing(true);
+            mPresent.refresh();
+        }
     }
 
     @Override
@@ -85,9 +89,12 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
 
     @Override
     protected MessageUserPresent createPresent() {
-        AccessToken accessToken = UserPrefs.get().getWeiCoToken();
-        return new MessageUserPresentImp(accessToken.getAccess_token(), new ServerMessageSource(),
-                null, this);
+        if (WeicoAuthUtil.checkWeicoLogin(this, false)) {
+            AccessToken accessToken = UserPrefs.get().getWeiCoToken();
+            return new MessageUserPresentImp(accessToken.getAccess_token(), new ServerMessageSource(),
+                    null, this);
+        }
+        return null;
     }
 
     private void setValue(View view, String title, int drawable) {
@@ -110,5 +117,15 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
     @Override
     public void onEmpty() {
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Key.AUTH && resultCode == Activity.RESULT_OK) {
+            mPresent = createPresent();
+            mSwipeRefreshLayout.setRefreshing(true);
+            mPresent.refresh();
+        }
     }
 }

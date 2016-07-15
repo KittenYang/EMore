@@ -47,6 +47,8 @@ public abstract class SwipeRefreshRecyclerViewFragment<E, P extends RefreshListP
     public void onRefresh() {
         if (mPresent != null) {
             mPresent.refresh();
+        }else {
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 

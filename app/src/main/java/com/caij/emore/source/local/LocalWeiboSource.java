@@ -81,31 +81,34 @@ public class LocalWeiboSource implements WeiboSource {
                     followerUserIds.add(selfUid);
 
                     Weibo sinceWeibo = weiboDao.load(since_id);
-                    String sinceCreateTime = "";
+                    long sinceCreateTime = 0;
                     if (sinceWeibo != null) {
-                        sinceCreateTime = sinceWeibo.getCreated_at();
+                        sinceCreateTime = sinceWeibo.getCreate_at_long();
                     }
 
                     Weibo maxFriendWeibo = weiboDao.load(max_id);
-                    String maxCreateTime = "";
+                    long maxCreateTime = 0;
                     if (maxFriendWeibo != null) {
-                        maxCreateTime = maxFriendWeibo.getCreated_at();
+                        maxCreateTime = maxFriendWeibo.getCreate_at_long();
                     }
 
                     QueryBuilder<Weibo> queryBuilder = weiboDao.queryBuilder();
-                    if(!TextUtils.isEmpty(sinceCreateTime) && !TextUtils.isEmpty(maxCreateTime)) {
-                        queryBuilder.and(WeiboDao.Properties.Created_at.lt(maxCreateTime),
-                                WeiboDao.Properties.Created_at.ge(sinceCreateTime));
-                    }else if (!TextUtils.isEmpty(maxCreateTime)) {
-                        queryBuilder.where(WeiboDao.Properties.Created_at.lt(maxCreateTime));
-                    }else if (!TextUtils.isEmpty(sinceCreateTime)) {
-                        queryBuilder.where(WeiboDao.Properties.Created_at.ge(sinceCreateTime));
+                    if(sinceCreateTime != 0 && maxCreateTime != 0) {
+                        queryBuilder.where(queryBuilder.and(WeiboDao.Properties.Create_at_long.lt(maxCreateTime),
+                                WeiboDao.Properties.Create_at_long.gt(sinceCreateTime)));
+                    }else if (maxCreateTime != 0) {
+                        queryBuilder.where(WeiboDao.Properties.Create_at_long.lt(maxCreateTime));
+                    }else if (sinceCreateTime != 0) {
+                        queryBuilder.where(WeiboDao.Properties.Create_at_long.ge(sinceCreateTime));
                     }
-                    if (followerUserIds.size() > 0) {
-                        queryBuilder.where(WeiboDao.Properties.User_id.in(followerUserIds));
+
+                    if (followerUserIds.size() == 0) {
+                        followerUserIds.add(0L);
                     }
+
+                    queryBuilder.where(WeiboDao.Properties.User_id.in(followerUserIds));
                     List<Weibo> friendWeibos = queryBuilder.limit(count).offset(page - 1)
-                            .orderDesc(WeiboDao.Properties.Created_at).list();
+                            .orderDesc(WeiboDao.Properties.Create_at_long).list();
                     for (Weibo weibo : friendWeibos) {
                         selectWeibo(weibo);
                     }

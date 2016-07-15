@@ -85,6 +85,7 @@ public class DbDaoGenerator {
         entity.addIntProperty("attitudes_count");
         entity.addIntProperty("mlevel");
         entity.addLongProperty("update_time");
+        entity.addLongProperty("create_at_long");
 
         entity.addStringProperty("geo_id");
         entity.addLongProperty("user_id");
