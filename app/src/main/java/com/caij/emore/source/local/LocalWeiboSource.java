@@ -357,4 +357,9 @@ public class LocalWeiboSource implements WeiboSource {
             }
         });
     }
+
+    @Override
+    public void saveWeibo(String mToken, Weibo weibo) {
+        insertWeibo(weibo);
+    }
 }

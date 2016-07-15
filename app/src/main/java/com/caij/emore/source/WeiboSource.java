@@ -87,4 +87,6 @@ public interface WeiboSource {
     boolean getAttitudes(long id);
 
     Observable<Weibo> getWeiboById(String accessToken, long id);
+
+    void saveWeibo(String mToken, Weibo weibo);
 }

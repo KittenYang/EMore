@@ -31,7 +31,13 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
     @Override
     public void loadWeiboDetail() {
         Observable<Weibo> localObservable = mLocalWeiboSource.getWeiboById(mToken, mWeiboId);
-        Observable<Weibo> serverObservable = mServerWeiboSource.getWeiboById(mToken, mWeiboId);
+        Observable<Weibo> serverObservable = mServerWeiboSource.getWeiboById(mToken, mWeiboId)
+                .doOnNext(new Action1<Weibo>() {
+                    @Override
+                    public void call(Weibo weibo) {
+                        mLocalWeiboSource.saveWeibo(mToken, weibo);
+                    }
+                });
         Subscription subscription = Observable.concat(localObservable, serverObservable)
                 .first(new Func1<Weibo, Boolean>() {
                     @Override
