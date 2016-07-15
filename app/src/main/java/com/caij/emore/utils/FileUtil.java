@@ -1,8 +1,10 @@
 package com.caij.emore.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,5 +30,42 @@ public class FileUtil {
         }
 
         return sb.toString();
+    }
+
+    public static long getDirSize(File file) {
+        //判断文件是否存在
+        if (file.exists()) {
+            //如果是目录则递归计算其内容的总大小
+            if (file.isDirectory()) {
+                File[] children = file.listFiles();
+                long size = 0;
+                for (File f : children)
+                    size += getDirSize(f);
+                return size;
+            } else {
+                long size = file.length();
+                return size;
+            }
+        } else {
+            return 0;
+        }
+    }
+
+    public static void deleteFolderFile(String filePath) {
+        if (!TextUtils.isEmpty(filePath)) {
+            try {
+                File file = new File(filePath);
+                if (file.isDirectory()) {// 如果下面还有文件
+                    File files[] = file.listFiles();
+                    for (int i = 0; i < files.length; i++) {
+                        deleteFolderFile(files[i].getAbsolutePath());
+                    }
+                }else {
+                    file.delete();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

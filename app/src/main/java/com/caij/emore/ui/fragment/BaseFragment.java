@@ -21,13 +21,15 @@ public class BaseFragment extends Fragment implements BaseView{
 
     @Override
     public void onAuthenticationError() {
+        UserPrefs userPrefs = UserPrefs.get();
         showToast("身份信息失效, 需要重新认证");
         ActivityStack.getInstance().remove(getActivity());
         ActivityStack.getInstance().finishAllActivity();
-        Intent intent = new Intent(getActivity(), EMoreLoginActivity.class);
-        UserPrefs.get().clear();
+        Intent intent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(), userPrefs.getAccount().getPwd(),
+                userPrefs.getAccount().getPwd());
         startActivity(intent);
         getActivity().finish();
+        UserPrefs.get().clear();
     }
 
     @Override

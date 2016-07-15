@@ -1,6 +1,7 @@
 package com.caij.emore.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.io.File;
 
@@ -14,7 +15,11 @@ public class CacheUtils {
     }
 
     public static long getCacheFileSizeLong(Context context) {
-        return getDirSize(getCacheDir(context));
+        return FileUtil.getDirSize(getCacheDir(context));
+    }
+
+    public static void clearCache(Context context) {
+        FileUtil.deleteFolderFile(getCacheDir(context).getAbsolutePath());
     }
 
     public static String getCacheFileSizeString(Context context) {
@@ -31,25 +36,6 @@ public class CacheUtils {
         }else {
             return kb + "KB";
         }
-
     }
 
-    public static long getDirSize(File file) {
-        //判断文件是否存在
-        if (file.exists()) {
-            //如果是目录则递归计算其内容的总大小
-            if (file.isDirectory()) {
-                File[] children = file.listFiles();
-                long size = 0;
-                for (File f : children)
-                    size += getDirSize(f);
-                return size;
-            } else {
-                long size = file.length();
-                return size;
-            }
-        } else {
-            return 0;
-        }
-    }
 }

@@ -29,7 +29,7 @@ public class RepostAdapter extends BaseAdapter<Weibo, CommentAdapter.CommentView
         Weibo weibo = getItem(position);
         holder.txtContent.setText(weibo.getContentSpannableString());
 
-        String createAt = DateUtil.convDate(holder.txtContent.getContext(), weibo.getCreated_at());
+        String createAt = DateUtil.convWeiboDate(holder.txtContent.getContext(), weibo.getCreated_at());
         String from = String.format("%s", Html.fromHtml(weibo.getSource()));
         String desc = String.format("%s %s", createAt, from);
         holder.txtDesc.setText(desc);

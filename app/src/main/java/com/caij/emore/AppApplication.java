@@ -3,6 +3,7 @@ package com.caij.emore;
 import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.service.EMoreService;
@@ -30,9 +31,13 @@ public class AppApplication extends Application{
 
     private void initDB() {
         AccessToken accessToken = UserPrefs.get().getEMoreToken();
+        String dbName = "";
         if (accessToken != null) {
-            DBManager.initDB(this, Key.DB_NAME + accessToken.getUid());
+            dbName = Key.DB_NAME + accessToken.getUid();
+        }else {
+            dbName = "default";
         }
+        DBManager.initDB(this, dbName, BuildConfig.DEBUG);
     }
 
     private void initCrashReport(){

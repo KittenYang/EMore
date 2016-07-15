@@ -33,4 +33,6 @@ public interface MessageSource {
     public Observable<MessageImage> getMessageImageInfo(String accessToken, long fid);
 
     void saveMessageImage(MessageImage messageImage);
+
+    void removeMessage(DirectMessage bean);
 }

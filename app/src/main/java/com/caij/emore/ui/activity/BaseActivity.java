@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.caij.emore.R;
+import com.caij.emore.UserPrefs;
 import com.caij.emore.present.view.BaseView;
 import com.caij.emore.ui.activity.login.AbsLoginActivity;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
@@ -45,11 +46,15 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
 
     @Override
     public void onAuthenticationError() {
+        UserPrefs userPrefs = UserPrefs.get();
+        showToast("身份信息失效, 需要重新认证");
         ActivityStack.getInstance().remove(this);
         ActivityStack.getInstance().finishAllActivity();
-        Intent intent = new Intent(this, EMoreLoginActivity.class);
+        Intent intent = EMoreLoginActivity.newEMoreLoginIntent(this, userPrefs.getAccount().getPwd(),
+                userPrefs.getAccount().getPwd());
         startActivity(intent);
         finish();
+        UserPrefs.get().clear();
     }
 
     @Override

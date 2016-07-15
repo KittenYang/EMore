@@ -52,4 +52,6 @@
     <color name="image_picker_folder_panel_normal">#da000000</color>
     <color name="image_picker_folder_panel_pressed">#e0000000</color>
     <color name="chat_bottom_bg">#f7f7f7</color>
+
+    <color name="red_message_bg">#ff5250</color>
 </resources>

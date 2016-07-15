@@ -53,9 +53,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 import static android.support.v7.widget.RecyclerView.*;
 
@@ -86,7 +84,6 @@ public class ChatFragment extends BaseFragment implements
     private BaseSmoothScroller mSmoothScroller;
     private LinearLayoutManager mLinearLayoutManager;
 
-    private User mSelfUser;
     private long mRecipientId;
     private String mRecipientName;
 
@@ -132,18 +129,6 @@ public class ChatFragment extends BaseFragment implements
                 onEmotionDeleteClick();
             }
         });
-
-        UserSource localUserSource = new LocalUserSource();
-        AccessToken accessToken = UserPrefs.get().getEMoreToken();
-        localUserSource.getWeiboUserInfoByUid(accessToken.getAccess_token(), Long.parseLong(accessToken.getUid()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<User>() {
-                    @Override
-                    public void call(User user) {
-                        mSelfUser = user;
-                    }
-                });
 
         mChatPresent = createPresent();
         mChatPresent.onCreate();
@@ -211,8 +196,8 @@ public class ChatFragment extends BaseFragment implements
 
     protected ChatPresent createPresent() {
         AccessToken accessToken = UserPrefs.get().getWeiCoToken();
-        return new ChatPresentImp(accessToken.getAccess_token(), mRecipientId, new ServerMessageSource(),
-                new LocalMessageSource(), this);
+        return new ChatPresentImp(accessToken, mRecipientId, new ServerMessageSource(),
+                new LocalMessageSource(), new LocalUserSource(), this);
     }
 
 
@@ -276,37 +261,9 @@ public class ChatFragment extends BaseFragment implements
                 startActivityForResult(intent, Key.REQUEST_CODE_SELECT_IMAGE);
                 break;
             case R.id.tv_send:
-                DirectMessage directMessage = buildTextMessage();
-                mMessageAdapter.addEntity(directMessage);
-                int position = mMessageAdapter.getItemCount() + 1;
-                mMessageAdapter.notifyItemInserted(position);
-                attemptSmoothScrollToBottom();
-                mChatPresent.sendMessage(directMessage);
+                mChatPresent.sendTextMessage(etContent.getText().toString());
                 break;
         }
-    }
-
-    private DirectMessage buildTextMessage() {
-        DirectMessage directMessage = buildMessage();
-        directMessage.setText(etContent.getText().toString());
-        return directMessage;
-    }
-
-    private DirectMessage buildMessage() {
-        DirectMessage directMessage = new DirectMessage();
-        directMessage.setSender(mSelfUser);
-        directMessage.setSender_id(mSelfUser.getId());
-        directMessage.setRecipient_id(mRecipientId);
-        directMessage.setLocal_status(DirectMessage.STATUS_SEND);
-        directMessage.setRecipient_screen_name(mRecipientName);
-        return directMessage;
-    }
-
-    private DirectMessage buildImageMessage(String imagePath) {
-        DirectMessage directMessage = buildMessage();
-//        directMessage.setImagePath(imagePath);
-        directMessage.setText(getString(R.string.image_message_default_text));
-        return directMessage;
     }
 
     @Override
@@ -332,7 +289,7 @@ public class ChatFragment extends BaseFragment implements
     @Override
     public void attemptSmoothScrollToBottom() {
         int last = mMessageAdapter.getItemCount();
-        if (mLinearLayoutManager.findLastVisibleItemPosition() + 2 >= last) {
+        if (mLinearLayoutManager.findLastVisibleItemPosition() + 3 >= last) {
             mSmoothScroller.setTargetPosition(mMessageAdapter.getEntities().size());
             mRecyclerView.getLayoutManager().startSmoothScroll(mSmoothScroller);
         }
@@ -369,9 +326,6 @@ public class ChatFragment extends BaseFragment implements
     }
 
     private void onSelectSuccess(ArrayList<String> paths) {
-        for (String path : paths) {
-            DirectMessage imageMessage = buildImageMessage(path);
-            mChatPresent.sendMessage(imageMessage);
-        }
+        mChatPresent.sendImageMessage(paths);
     }
 }

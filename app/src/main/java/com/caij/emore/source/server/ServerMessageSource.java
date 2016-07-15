@@ -105,4 +105,9 @@ public class ServerMessageSource implements MessageSource {
 
     }
 
+    @Override
+    public void removeMessage(DirectMessage bean) {
+
+    }
+
 }

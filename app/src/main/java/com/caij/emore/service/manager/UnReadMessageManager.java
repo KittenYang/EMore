@@ -44,7 +44,6 @@ public class UnReadMessageManager extends IManager {
     private AlarmManager mAlarmManager;
     private PendingIntent pendingIntent;
     private Observable<Object> mIntervalMillisUpdateObservable;
-    private Observable<Boolean> mLoginStatusObservable;
     private MessageSource mServerMessageSource;
     private NotificationManager mNotificationManager;
     private CompositeSubscription mCompositeSubscription;
@@ -59,7 +58,6 @@ public class UnReadMessageManager extends IManager {
         mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         mCompositeSubscription = new CompositeSubscription();
         mIntervalMillisUpdateObservable = EventUtil.registIntervalMillisUpdateEvent();
-        mLoginStatusObservable = EventUtil.registLoginEvent();
         mServerMessageSource = new ServerMessageSource();
         mIntervalMillisUpdateObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
@@ -68,22 +66,11 @@ public class UnReadMessageManager extends IManager {
                         onIntervalMillisUpdate();
                     }
                 });
-        mLoginStatusObservable.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        if (aBoolean) {
-                            onLoginSuccess();
-                        }else {
-                            onLogout();
-                        }
-                    }
-                });
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_SENDING_HEARTBEAT);
         ctx.registerReceiver(scheduleReceiver, intentFilter);
         if (UserPrefs.get().getEMoreToken() != null) { //只有当前用户不为空的时候才定时拉取数据
-            onLoginSuccess();
+            scheduleHeartbeat(AppSettings.getMessageIntervalValue(ctx));
         }
     }
 
@@ -92,16 +79,7 @@ public class UnReadMessageManager extends IManager {
         ctx.unregisterReceiver(scheduleReceiver);
         cancelHeartbeatTimer();
         EventUtil.unregistIntervalMillisUpdateEvent(mIntervalMillisUpdateObservable);
-        EventUtil.unregistLoginEvent(mLoginStatusObservable);
         mCompositeSubscription.clear();
-    }
-
-    public void onLoginSuccess() {
-        scheduleHeartbeat(AppSettings.getMessageIntervalValue(ctx));
-    }
-
-    public void onLogout() {
-       cancelHeartbeatTimer();
     }
 
     public void onIntervalMillisUpdate() {

@@ -10,7 +10,6 @@ import com.caij.emore.R;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.utils.LogUtil;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
@@ -46,7 +45,15 @@ public class MessageUserAdapter extends BaseAdapter<MessageUser.UserListBean, Me
                 R.drawable.circle_image_placeholder, mImageConfig);
         holder.tvName.setText(userBean.getUser().getScreen_name());
         holder.tvMessage.setText(userBean.getDirect_message().getText());
-        holder.tvTime.setText(DateUtil.convDate(mContext, userBean.getDirect_message().getCreated_at()));
+        holder.tvTime.setText(DateUtil.convWeiboDate(mContext, userBean.getDirect_message().getCreated_at()));
+
+        if (userBean.getUnread_count() > 0) {
+            holder.tvUnreadCount.setVisibility(View.VISIBLE);
+            holder.tvUnreadCount.setText(String.valueOf(userBean.getUnread_count() > 99 ?
+                    99 : userBean.getUnread_count()));
+        }else {
+            holder.tvUnreadCount.setVisibility(View.GONE);
+        }
     }
 
     public static class ViewHolder extends BaseViewHolder {
@@ -59,6 +66,8 @@ public class MessageUserAdapter extends BaseAdapter<MessageUser.UserListBean, Me
         TextView tvMessage;
         @BindView(R.id.tv_time)
         TextView tvTime;
+        @BindView(R.id.tv_unread_count)
+        TextView tvUnreadCount;
 
         public ViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);

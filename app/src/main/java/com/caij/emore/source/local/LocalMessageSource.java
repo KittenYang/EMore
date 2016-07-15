@@ -16,10 +16,12 @@ import com.caij.emore.database.dao.MessageImageDao;
 import com.caij.emore.database.dao.UserDao;
 import com.caij.emore.database.dao.WeiboDao;
 import com.caij.emore.source.MessageSource;
+import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.db.DBManager;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -96,16 +98,16 @@ public class LocalMessageSource implements MessageSource {
                             List<Long> att_ids  = GsonUtils.fromJson(message.getAtt_ids_json(),
                                     new TypeToken<List<Long>>(){}.getType());
                             message.setAtt_ids(att_ids);
-
-                            User sender = mUserDao.load(message.getSender_id());
-                            User recipien = mUserDao.load(message.getRecipient_id());
-
-                            message.setSender(sender);
-                            message.setRecipient(recipien);
-
-                            Geo geo = mGeoDao.load(String.valueOf(message.getId()));
-                            message.setGeo(geo);
                         }
+
+                        User sender = mUserDao.load(message.getSender_id());
+                        User recipien = mUserDao.load(message.getRecipient_id());
+
+                        message.setSender(sender);
+                        message.setRecipient(recipien);
+
+                        Geo geo = mGeoDao.load(String.valueOf(message.getId()));
+                        message.setGeo(geo);
                     }
 
                     UserMessageResponse response = new UserMessageResponse();
@@ -132,10 +134,16 @@ public class LocalMessageSource implements MessageSource {
     @Override
     public void saveMessage(DirectMessage message) {
         mDirectMessageDao.getDatabase().beginTransaction();
-        message.setAtt_ids_json(GsonUtils.toJson(message.getAtt_ids()));
-        message.setCreated_at_long(Date.parse(message.getCreated_at()));
-        mUserDao.insertOrReplace(message.getRecipient());
-        mUserDao.insertOrReplace(message.getSender());
+        if (message.getAtt_ids() != null) {
+            message.setAtt_ids_json(GsonUtils.toJson(message.getAtt_ids()));
+        }
+        message.setCreated_at_long(DateUtil.parseCreateTime(message.getCreated_at()));
+        if (message.getRecipient() != null) {
+            mUserDao.insertOrReplace(message.getRecipient());
+        }
+        if (message.getSender() != null) {
+            mUserDao.insertOrReplace(message.getSender());
+        }
         Geo geo = message.getGeo();
         if (geo != null) {
             geo.setId(String.valueOf(message.getId()));
@@ -166,5 +174,10 @@ public class LocalMessageSource implements MessageSource {
     @Override
     public void saveMessageImage(MessageImage messageImage) {
         DBManager.getDaoSession().getMessageImageDao().insertOrReplace(messageImage);
+    }
+
+    @Override
+    public void removeMessage(DirectMessage bean) {
+        mDirectMessageDao.deleteByKey(bean.getId());
     }
 }

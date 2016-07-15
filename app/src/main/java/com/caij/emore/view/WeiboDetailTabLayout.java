@@ -51,25 +51,20 @@ public class WeiboDetailTabLayout extends TabLayout{
                             parentWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
                         }
                         int viewWidth  =  view.getWidth();
-                        LogUtil.d("onPreDraw", "parent width %s", parentWidth);
-                        LogUtil.d("onPreDraw", "view width %s", viewWidth);
 
                         if (parentWidth > 0 && viewWidth > 0) {
                             int leftMargin = parentWidth - viewWidth * 3;
                             if (params.leftMargin != leftMargin) {
-                                LogUtil.d("onPreDraw", "leftMargin width %s", leftMargin);
                                 params.leftMargin = leftMargin;
                                 view.setLayoutParams(params);
                             }
                         }
 
                         if (!vto.isAlive()) {
-                            LogUtil.d("onPreDraw", "vto.isAlive() %s", vto.isAlive());
                             return true;
                         }
 
                         vto.removeOnPreDrawListener(this);
-                        LogUtil.d("onPreDraw", "removeOnPreDrawListener");
                         return false;
                     }
 

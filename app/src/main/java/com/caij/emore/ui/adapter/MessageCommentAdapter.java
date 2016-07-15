@@ -72,7 +72,7 @@ public class MessageCommentAdapter extends BaseAdapter<Comment, MessageCommentAd
 
         String createAt = "";
         if (!TextUtils.isEmpty(weibo.getCreated_at()))
-            createAt = DateUtil.convDate(mContext, weibo.getCreated_at());
+            createAt = DateUtil.convWeiboDate(mContext, weibo.getCreated_at());
         String from = "";
         if (!TextUtils.isEmpty(weibo.getSource()))
             from = String.format("%s", Html.fromHtml(weibo.getSource()));

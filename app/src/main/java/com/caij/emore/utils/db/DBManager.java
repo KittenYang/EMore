@@ -15,11 +15,11 @@ public class DBManager {
 
     private static DaoSession sDaoSession;
 
-    public static void initDB(Context content, String dbName) {
+    public static void initDB(Context content, String dbName, boolean isDebug) {
         DBHelp dbHelp = new DBHelp(content, dbName, null);
         DaoMaster daoMaster = new DaoMaster(dbHelp.getWritableDatabase());
-        QueryBuilder.LOG_SQL = true;
-//        QueryBuilder.LOG_VALUES = true;
+        QueryBuilder.LOG_SQL = isDebug;
+        QueryBuilder.LOG_VALUES = isDebug;
         sDaoSession = daoMaster.newSession();
     }
 

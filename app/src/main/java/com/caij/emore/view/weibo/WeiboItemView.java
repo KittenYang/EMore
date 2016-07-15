@@ -79,7 +79,7 @@ public abstract class WeiboItemView extends FrameLayout {
 
         String createAt = "";
         if (!TextUtils.isEmpty(weibo.getCreated_at()))
-            createAt = DateUtil.convDate(getContext(), weibo.getCreated_at());
+            createAt = DateUtil.convWeiboDate(getContext(), weibo.getCreated_at());
         String from = "";
         if (!TextUtils.isEmpty(weibo.getSource()))
             from = String.format("%s", Html.fromHtml(weibo.getSource()));

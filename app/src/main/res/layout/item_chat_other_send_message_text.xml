@@ -4,10 +4,17 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/spacing_medium"
-    android:paddingRight="45dp"
     android:layout_marginTop="@dimen/spacing_medium"
     android:layout_marginBottom="@dimen/spacing_medium">
+
+    <include layout="@layout/chat_list_item_common_time" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_send_time"
+        android:paddingLeft="@dimen/spacing_medium"
+        android:paddingRight="45dp">
 
     <ImageView
         android:id="@+id/iv_avatar"
@@ -27,5 +34,7 @@
         android:text="附近的刷卡缴费卡手机付款了敬爱是房价快速的减肥开始大家法律框架爱死了福建省立刻就放开手"
         android:paddingLeft="@dimen/spacing_large"
         android:gravity="center_vertical"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

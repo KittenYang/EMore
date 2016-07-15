@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.caij.emore.BuildConfig;
 import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
@@ -12,6 +13,7 @@ import com.caij.emore.present.imp.LoginPresentImp;
 import com.caij.emore.present.view.LoginView;
 import com.caij.emore.source.server.LoginSourceImp;
 import com.caij.emore.ui.activity.MainActivity;
+import com.caij.emore.utils.ConfigUtil;
 import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.db.DBManager;
 
@@ -69,13 +71,12 @@ public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
         UserPrefs.get().setPwd(mPassword);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        EventUtil.postLoginEvent(true);
-        initDB(UserPrefs.get().getEMoreToken().getUid());
+        init(UserPrefs.get().getEMoreToken().getUid());
         finish();
     }
 
-    private void initDB(String uid) {
-        DBManager.initDB(this, Key.DB_NAME + uid);
+    private void init(String uid) {
+        ConfigUtil.resetConfig(this, Long.parseLong(uid));
     }
 
     @Override

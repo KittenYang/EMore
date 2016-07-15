@@ -100,9 +100,11 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
     @Override
     public void onItemClick(View view, int position) {
         MessageUser.UserListBean bean = mRecyclerViewAdapter.getItem(position - 3);
+        bean.setUnread_count(0);
         Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), ChatFragment.class,
                 ChatFragment.newInstance(bean.getUser().getScreen_name(), bean.getUser().getId()).getArguments());
         startActivity(intent);
+        mLoadMoreLoadMoreRecyclerView.getAdapter().notifyItemChanged(position);
     }
 
     @Override

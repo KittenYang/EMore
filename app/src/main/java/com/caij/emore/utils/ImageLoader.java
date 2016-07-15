@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.BitmapTypeRequest;
 import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.caij.emore.utils.glide.CropCircleTransformation;
 import com.caij.emore.utils.glide.TopTransformation;
@@ -46,6 +47,7 @@ public class ImageLoader {
         private int diskCacheStrategy;
         private boolean isCacheMemory;
         private boolean isSupportGif;
+        private Transformation transformation;
 
         private ImageConfig(ImageConfigBuild build) {
             scaleType = build.scaleType;
@@ -56,6 +58,7 @@ public class ImageLoader {
             diskCacheStrategy = build.diskCacheStrategy;
             isCacheMemory = build.isCacheMemory;
             isSupportGif = build.isSupportGif;
+            transformation = build.transformation;
         }
     }
 
@@ -68,6 +71,7 @@ public class ImageLoader {
         private int diskCacheStrategy = CacheConfig.RESULT;
         private boolean isCacheMemory = true;
         private boolean isSupportGif = false;
+        private Transformation transformation;
 
         public ImageConfigBuild(){
 
@@ -110,6 +114,11 @@ public class ImageLoader {
             return this;
         }
 
+        public ImageConfigBuild setTransformation(Transformation transformation) {
+            this.transformation = transformation;
+            return this;
+        }
+
         public ImageConfig build() {
             return new ImageConfig(this);
         }
@@ -133,18 +142,22 @@ public class ImageLoader {
     private static void loadImage(Context context, ImageView view, DrawableTypeRequest request, int resourceId, ImageConfig imageConfig) {
         if (!imageConfig.isSupportGif) {
             BitmapTypeRequest bitmapTypeRequest = request.asBitmap();
-            switch (imageConfig.scaleType) {
-                case ScaleType.CENTER_CROP:
-                    bitmapTypeRequest.centerCrop();
-                    break;
+            if (imageConfig.transformation == null) {
+                switch (imageConfig.scaleType) {
+                    case ScaleType.CENTER_CROP:
+                        bitmapTypeRequest.centerCrop();
+                        break;
 
-                case ScaleType.FIT_CENTER:
-                    bitmapTypeRequest.fitCenter();
-                    break;
+                    case ScaleType.FIT_CENTER:
+                        bitmapTypeRequest.fitCenter();
+                        break;
 
-                case ScaleType.TOP:
-                    bitmapTypeRequest.transform(new TopTransformation(context));
-                    break;
+                    case ScaleType.TOP:
+                        bitmapTypeRequest.transform(new TopTransformation(context));
+                        break;
+                }
+            }else {
+                bitmapTypeRequest.transform(imageConfig.transformation);
             }
 
             if (imageConfig.isCircle) {
@@ -185,22 +198,28 @@ public class ImageLoader {
 
             bitmapTypeRequest.skipMemoryCache(!imageConfig.isCacheMemory);
 
-            bitmapTypeRequest.placeholder(resourceId);
+            if (resourceId > 0) {
+                bitmapTypeRequest.placeholder(resourceId);
+            }
 
             bitmapTypeRequest.into(view);
         }else {
-            switch (imageConfig.scaleType) {
-                case ScaleType.CENTER_CROP:
-                    request.centerCrop();
-                    break;
+            if (imageConfig.transformation == null) {
+                switch (imageConfig.scaleType) {
+                    case ScaleType.CENTER_CROP:
+                        request.centerCrop();
+                        break;
 
-                case ScaleType.FIT_CENTER:
-                    request.fitCenter();
-                break;
+                    case ScaleType.FIT_CENTER:
+                        request.fitCenter();
+                        break;
 
-                case ScaleType.TOP:
-                    request.bitmapTransform(new TopTransformation(context));
-                break;
+                    case ScaleType.TOP:
+                        request.bitmapTransform(new TopTransformation(context));
+                        break;
+                }
+            }else {
+                request.transform(imageConfig.transformation);
             }
 
             if (imageConfig.isCircle) {
@@ -241,7 +260,9 @@ public class ImageLoader {
 
             request.skipMemoryCache(!imageConfig.isCacheMemory);
 
-            request.placeholder(resourceId);
+            if (resourceId > 0) {
+                request.placeholder(resourceId);
+            }
 
             request.into(view);
         }

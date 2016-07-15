@@ -6,14 +6,18 @@
     android:layout_marginBottom="@dimen/spacing_medium"
     android:layout_marginTop="@dimen/spacing_medium"
     android:orientation="vertical"
-    android:paddingLeft="32dp"
-    android:paddingRight="@dimen/spacing_medium">
+  >
+
+    <include layout="@layout/chat_list_item_common_time" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/iv_avatar"
-        android:gravity="bottom">
+        android:gravity="bottom"
+        android:layout_below="@id/tv_send_time"
+        android:paddingLeft="32dp"
+        android:paddingRight="@dimen/spacing_medium">
 
         <RelativeLayout
             android:id="@+id/rl_status"

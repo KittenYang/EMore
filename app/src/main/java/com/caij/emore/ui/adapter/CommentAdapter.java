@@ -38,7 +38,7 @@ public class CommentAdapter extends BaseAdapter<Comment, CommentAdapter.CommentV
         Comment comment = getItem(position);
         holder.txtContent.setText(comment.getTextSpannableString());
 
-        String createAt = DateUtil.convDate(holder.txtContent.getContext(), comment.getCreated_at());
+        String createAt = DateUtil.convWeiboDate(holder.txtContent.getContext(), comment.getCreated_at());
         String from = String.format("%s", Html.fromHtml(comment.getSource()));
         String desc = String.format("%s %s", createAt, from);
         holder.txtDesc.setText(desc);

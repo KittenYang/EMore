@@ -44,17 +44,17 @@ public class EventUtil {
      * @param isLogin true 登录成功  false 注销成功
      */
     //登录状态变化
-    public static void postLoginEvent(boolean isLogin) {
-        RxBus.get().post(Key.LOGIN_STATUE_EVENT, isLogin);
-    }
-
-    public static Observable<Boolean> registLoginEvent() {
-        return RxBus.get().register(Key.LOGIN_STATUE_EVENT);
-    }
-
-    public static void unregistLoginEvent(Observable observable) {
-        RxBus.get().unregister(Key.LOGIN_STATUE_EVENT, observable);
-    }
+//    public static void postLoginEvent(boolean isLogin) {
+//        RxBus.get().post(Key.LOGIN_STATUE_EVENT, isLogin);
+//    }
+//
+//    public static Observable<Boolean> registLoginEvent() {
+//        return RxBus.get().register(Key.LOGIN_STATUE_EVENT);
+//    }
+//
+//    public static void unregistLoginEvent(Observable observable) {
+//        RxBus.get().unregister(Key.LOGIN_STATUE_EVENT, observable);
+//    }
 
     /**
      */
