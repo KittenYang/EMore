@@ -10,6 +10,8 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.view.weibo.RepostWeiboListItemView;
+import com.caij.emore.view.weibo.WeiboItemView;
 import com.caij.emore.view.weibo.WeiboListItemView;
 
 import java.util.List;
@@ -20,7 +22,10 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2016/6/6.
  */
-public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHoller> {
+public class WeiboAdapter extends BaseAdapter<Weibo, BaseViewHolder> {
+
+    private static final int TYPE_NORMAL = 1;
+    private static final int TYPE_REPOST = 2;
 
     private OnItemActionClickListener mOnItemActionClickListener;
 
@@ -39,14 +44,33 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHolle
     }
 
     @Override
-    public WeiboViewHoller onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new WeiboViewHoller(mInflater.inflate(R.layout.item_weibo, parent, false),
-                mOnItemClickListener, mOnItemActionClickListener);
+    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == TYPE_NORMAL) {
+            return new WeiboViewHoller(mInflater.inflate(R.layout.item_weibo, parent, false),
+                    mOnItemClickListener, mOnItemActionClickListener);
+        }else {
+            return new RepostWeiboViewHoller(mInflater.inflate(R.layout.item_repost_weibo, parent, false),
+                    mOnItemClickListener, mOnItemActionClickListener);
+        }
     }
 
     @Override
-    public void onBindViewHolder(WeiboViewHoller holder, int position) {
-        holder.weiboItemView.setWeibo(getItem(position));
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
+        if (holder instanceof  WeiboViewHoller) {
+            ((WeiboViewHoller)holder).weiboItemView.setWeibo(getItem(position));
+        }else if (holder instanceof RepostWeiboViewHoller) {
+            ((RepostWeiboViewHoller)holder).weiboItemView.setWeibo(getItem(position));
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Weibo weibo = getItem(position);
+        if (weibo.getRetweeted_status() == null) {
+            return TYPE_NORMAL;
+        }else {
+            return TYPE_REPOST;
+        }
     }
 
     static class WeiboViewHoller extends BaseViewHolder {
@@ -57,6 +81,36 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboViewHolle
         CardView cardView;
 
         public WeiboViewHoller(View itemView, final RecyclerViewOnItemClickListener onItemClickListener,
+                               final OnItemActionClickListener onItemActionClickListener) {
+            super(itemView, onItemClickListener);
+            ButterKnife.bind(this, itemView);
+            weiboItemView.setOnMenuClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onItemActionClickListener != null) {
+                        onItemActionClickListener.onMenuClick(v, getLayoutPosition());
+                    }
+                }
+            });
+            weiboItemView.setLikeClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onItemActionClickListener != null) {
+                        onItemActionClickListener.onLikeClick(v, getLayoutPosition());
+                    }
+                }
+            });
+        }
+    }
+
+    static class RepostWeiboViewHoller extends BaseViewHolder {
+
+        @BindView(R.id.weibo_item_view)
+        RepostWeiboListItemView weiboItemView;
+        @BindView(R.id.cardView)
+        CardView cardView;
+
+        public RepostWeiboViewHoller(View itemView, final RecyclerViewOnItemClickListener onItemClickListener,
                                final OnItemActionClickListener onItemActionClickListener) {
             super(itemView, onItemClickListener);
             ButterKnife.bind(this, itemView);

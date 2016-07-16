@@ -85,6 +85,8 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
     RelativeLayout layName;
     @BindView(R.id.viewPager)
     ViewPager viewPager;
+    @BindView(R.id.cl_root)
+    View viewRoot;
 
     private User mUser;
     private MenuItem menuItem;
@@ -108,10 +110,7 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
             params.bottomMargin = SystemUtil.getStatusBarHeight(this) + params.bottomMargin;
             layDetail.setLayoutParams(params);
         }
-
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        setTitle("");
-
+        viewRoot.setVisibility(View.GONE);
         if (WeicoAuthUtil.checkWeicoLogin(this, true)) {
             doNext();
         }
@@ -162,6 +161,7 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
     }
 
     private void fillDate(User user) {
+        viewRoot.setVisibility(View.VISIBLE);
         ImageLoader.load(this, imgCover, user.getCover_image_phone(), R.mipmap.default_user_info_bg);
         txtName.setText(user.getName());
         txtDesc.setText(user.getDescription());

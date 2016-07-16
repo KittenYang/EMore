@@ -36,6 +36,7 @@ public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
         super.onCreate(savedInstanceState);
         mEMoreLoginPresent = new LoginPresentImp(new LoginSourceImp(), this);
         mEMoreLoginPresent.onCreate();
+        setTitle("登录");
     }
 
     @Override
@@ -69,7 +70,7 @@ public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
     public void onLoginSuccess(AccessToken accessToken) {
         UserPrefs.get().setUsername(mAccount);
         UserPrefs.get().setPwd(mPassword);
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(this, mAccount, mPassword);
         startActivity(intent);
         init(UserPrefs.get().getEMoreToken().getUid());
         finish();

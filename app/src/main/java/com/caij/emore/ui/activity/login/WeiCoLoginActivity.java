@@ -10,6 +10,8 @@ import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.imp.WeiCoLoginPresentImp;
 import com.caij.emore.present.view.WeiCoLoginView;
 import com.caij.emore.source.server.LoginSourceImp;
+import com.caij.emore.ui.activity.MainActivity;
+import com.caij.emore.utils.ActivityStack;
 
 /**
  * Created by Caij on 2016/7/8.
@@ -30,6 +32,7 @@ public class WeiCoLoginActivity extends AbsLoginActivity implements WeiCoLoginVi
         super.onCreate(savedInstanceState);
         mLoginPresent = new WeiCoLoginPresentImp(new LoginSourceImp(), this);
         mLoginPresent.onCreate();
+        setTitle("高级认证");
     }
 
     @Override
@@ -60,7 +63,10 @@ public class WeiCoLoginActivity extends AbsLoginActivity implements WeiCoLoginVi
 
     @Override
     public void onLoginSuccess(WeiCoLoginResponse response) {
-        setResult(RESULT_OK);
+        ActivityStack.getInstance().remove(this);
+        ActivityStack.getInstance().finishAllActivity();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
         finish();
     }
 

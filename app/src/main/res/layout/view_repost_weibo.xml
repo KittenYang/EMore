@@ -21,26 +21,45 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_micro"
-            android:paddingBottom="2dp"
+            android:paddingBottom="@dimen/spacing_micro"
             android:paddingTop="2dp"
             android:lineSpacingExtra="2dip"
             android:text="哈哈，我今天发了条微博"
             android:paddingLeft="@dimen/spacing_weibo_item"
             android:paddingRight="@dimen/spacing_weibo_item"/>
 
-        <com.caij.emore.view.weibo.WeiboItemPicsView
-            android:id="@+id/pics_view"
+        <LinearLayout
+            android:id="@+id/ll_re"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_micro"
-            android:layout_marginBottom="@dimen/spacing_micro"
-            android:layout_marginRight="@dimen/spacing_weibo_item"
-            android:layout_marginLeft="@dimen/spacing_weibo_item">
+            android:orientation="vertical"
+            android:background="@drawable/repost_content_bg_selector"
+            android:paddingTop="@dimen/spacing_medium"
+            android:paddingBottom="@dimen/spacing_medium"
+            android:paddingLeft="@dimen/spacing_weibo_item"
+            android:paddingRight="@dimen/spacing_weibo_item">
 
-        </com.caij.emore.view.weibo.WeiboItemPicsView>
+        <com.caij.emore.view.FixClickableSpanBugTextView
+            android:id="@+id/tv_re_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="2dip"
+            android:text="哈哈，我发了条微博被baby转发了，教主吃屎！"
+            android:textColor="@color/text_54"
+            android:textSize="@dimen/text_size_medium"/>
+
+            <com.caij.emore.view.weibo.WeiboItemPicsView
+                android:id="@+id/re_pics_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:layout_marginBottom="@dimen/spacing_medium">
+
+            </com.caij.emore.view.weibo.WeiboItemPicsView>
+
+        </LinearLayout>
 
         <include layout="@layout/include_weibo_bottom"/>
-
     </LinearLayout>
 
     <ImageView

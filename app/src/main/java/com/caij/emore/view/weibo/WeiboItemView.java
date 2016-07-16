@@ -38,9 +38,6 @@ public abstract class WeiboItemView extends FrameLayout {
     TextView tvDesc;
     @BindView(R.id.tv_content)
     TextView tvContent;
-    @BindView(R.id.tv_re_content)
-    TextView tvReContent;
-
 
     public WeiboItemView(Context context) {
         super(context);

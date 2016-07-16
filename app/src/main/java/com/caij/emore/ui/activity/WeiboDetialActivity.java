@@ -80,7 +80,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
         setTitle(getString(R.string.weibo_detail_title));
         mWeiboId = getIntent().getLongExtra(Key.ID, -1);
         ButterKnife.bind(this);
-
+        mAttachContainer.setVisibility(View.GONE);
         actionMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.
                 OnFloatingActionsMenuUpdateListener() {
             @Override
@@ -173,6 +173,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
 
     @Override
     public void setWeibo(Weibo weibo) {
+        mAttachContainer.setVisibility(View.VISIBLE);
         weiboItemView.setWeibo(weibo);
         mWeibo = weibo;
         mTabTitles.clear();
@@ -216,6 +217,8 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mWeiboDetailPresent.onDestroy();
+        if (mWeiboDetailPresent != null) {
+            mWeiboDetailPresent.onDestroy();
+        }
     }
 }

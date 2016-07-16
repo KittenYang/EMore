@@ -21,7 +21,7 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/16.
  */
-public class WeiboListItemView extends WeiboItemView {
+public class RepostWeiboListItemView extends WeiboItemView {
 
     @BindView(R.id.tv_like)
     TextView tvLike;
@@ -32,30 +32,34 @@ public class WeiboListItemView extends WeiboItemView {
     @BindView(R.id.btn_menus)
     ImageView btnMenus;
 
-    @BindView(R.id.pics_view)
-    WeiboItemPicsView picsView;
+    @BindView(R.id.re_pics_view)
+    WeiboItemPicsView rePicsView;
+    @BindView(R.id.ll_re)
+    LinearLayout llRe;
+    @BindView(R.id.tv_re_content)
+    TextView tvReContent;
 
     private OnClickListener onMenuClickListener;
     private OnClickListener onLikeClickListener;
 
-    public WeiboListItemView(Context context) {
+    public RepostWeiboListItemView(Context context) {
         super(context);
     }
 
-    public WeiboListItemView(Context context, AttributeSet attrs) {
+    public RepostWeiboListItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WeiboListItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RepostWeiboListItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public WeiboListItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RepostWeiboListItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     protected int getLayoutId() {
-        return R.layout.view_weibo;
+        return R.layout.view_repost_weibo;
     }
 
     @Override
@@ -76,13 +80,26 @@ public class WeiboListItemView extends WeiboItemView {
         tvLike.setText(String.valueOf(weibo.getAttitudes_count()));
         tvLike.setSelected(weibo.isAttitudes());
 
-        picsView.setPics(weibo.getPic_urls());
+        // reContent
+        Weibo reWeibo = weibo.getRetweeted_status();
+        llRe.setTag(reWeibo);
+
+        rePicsView.setPics(reWeibo.getPic_urls());
+        tvReContent.setText(reWeibo.getContentSpannableString());
 
         tvLike.setTag(weibo);
         tvCommentCount.setTag(weibo);
         tvRepostCount.setTag(weibo);
         btnMenus.setTag(weibo);
     }
+
+    @OnClick(R.id.ll_re)
+    public void onReLineaLayoutClick(View view) {
+        Weibo weibo = (Weibo) view.getTag();
+        Intent intent = WeiboDetialActivity.newIntent(getContext(), weibo.getId());
+        getContext().startActivity(intent);
+    }
+
 
     @OnClick({R.id.tv_like, R.id.tv_comment_count, R.id.tv_repost_count, R.id.btn_menus})
     public void onClick(View view) {
@@ -98,7 +115,12 @@ public class WeiboListItemView extends WeiboItemView {
                 getContext().startActivity(intent);
                 break;
             }
-
+            case R.id.tv_repost_count: {
+                Weibo weibo = (Weibo) view.getTag();
+                Intent intent = RepostWeiboActivity.newIntent(getContext(), weibo);
+                getContext().startActivity(intent);
+                break;
+            }
             case R.id.btn_menus:
                 if (onMenuClickListener != null) {
                     onMenuClickListener.onClick(view);

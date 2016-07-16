@@ -31,6 +31,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
     @Override
     public void loadWeiboDetail() {
         Observable<Weibo> localObservable = mLocalWeiboSource.getWeiboById(mToken, mWeiboId);
+        mView.showDialogLoading(true);
         Observable<Weibo> serverObservable = mServerWeiboSource.getWeiboById(mToken, mWeiboId)
                 .doOnNext(new Action1<Weibo>() {
                     @Override
@@ -66,11 +67,13 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     @Override
                     public void onError(Throwable e) {
                         mView.onDefaultLoadError();
+                        mView.showDialogLoading(false);
                     }
 
                     @Override
                     public void onNext(Weibo weibo) {
                         mView.setWeibo(weibo);
+                        mView.showDialogLoading(false);
                     }
                 });
         mLoginCompositeSubscription.add(subscription);

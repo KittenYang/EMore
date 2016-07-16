@@ -351,7 +351,9 @@ public class LocalWeiboSource implements WeiboSource {
             public void call(Subscriber<? super Weibo> subscriber) {
                 try {
                     Weibo weibo = weiboDao.load(id);
-                    selectWeibo(weibo);
+                    if (weibo != null) {
+                        selectWeibo(weibo);
+                    }
                     subscriber.onNext(weibo);
                     subscriber.onCompleted();
                 }catch (Exception e) {

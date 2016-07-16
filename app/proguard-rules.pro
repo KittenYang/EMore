@@ -54,6 +54,7 @@
     public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
+-keep class com.caij.weiyo.database.** { *; }
 
 ###
 -keep class org.jsoup.** { *; }

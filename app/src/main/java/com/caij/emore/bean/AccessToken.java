@@ -60,7 +60,7 @@ public class AccessToken  {
 		String days = String.valueOf(TimeUnit.SECONDS.toDays(time));
         LogUtil.d(this, "%s还有%s天失效", uid, days);
 
-        return System.currentTimeMillis() - create_at >= expires_in * 1000;
+        return time <= 0;
     }
 
 

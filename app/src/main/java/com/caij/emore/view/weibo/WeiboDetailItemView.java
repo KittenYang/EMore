@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.database.bean.Weibo;
@@ -27,6 +28,8 @@ public class WeiboDetailItemView extends WeiboItemView {
     FrameLayout flRePicsView;
     @BindView(R.id.ll_re)
     LinearLayout llRe;
+    @BindView(R.id.tv_re_content)
+    TextView tvReContent;
 
     public WeiboDetailItemView(Context context) {
         super(context);
