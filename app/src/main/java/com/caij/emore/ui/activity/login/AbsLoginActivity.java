@@ -1,6 +1,7 @@
 package com.caij.emore.ui.activity.login;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -122,6 +123,19 @@ public abstract class AbsLoginActivity extends WebActivity {
                 super.onPostExecute(s);
                 if (!TextUtils.isEmpty(s)) {
                     mWebView.loadDataWithBaseURL("https://api.weibo.com", s, "text/html", "UTF-8", "");
+                }else {
+                    DialogUtil.showHintDialog(AbsLoginActivity.this, getString(R.string.hint), "网页加载失败加载",
+                            "重新加载", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    loadLoginHtml();
+                                }
+                            }, "退出", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
                 }
             }
         };

@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 
 import com.caij.emore.utils.LogUtil;
+import com.caij.emore.view.span.MyURLSpan;
 
 /**
  * fix TextView onClick failure on set ClickableSpan

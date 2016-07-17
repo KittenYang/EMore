@@ -46,15 +46,16 @@ public class WebActivity extends BaseToolBarActivity {
     }
 
     protected void handlerIntent(Intent intent) {
-        String url;
+        String url = getIntent().getStringExtra(Key.URL);
         String action = intent.getAction();
         if (Intent.ACTION_VIEW.equalsIgnoreCase(action) && getIntent().getData() != null) {
             url = getIntent().getData().toString();
-            if (url.startsWith(SpannableStringUtil.HTTP_SCHEME))
-            url = url.replace(SpannableStringUtil.HTTP_SCHEME, "");
-            mWebView.loadUrl(url);
+            String scheme  = getString(R.string.emore_http_scheme);
+            if (url.startsWith(scheme)) {
+                url = url.replace(scheme, "http");
+            }
         }
-
+        mWebView.loadUrl(url);
     }
 
     protected void initView() {

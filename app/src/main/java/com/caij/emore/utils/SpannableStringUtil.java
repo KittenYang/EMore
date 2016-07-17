@@ -3,20 +3,25 @@ package com.caij.emore.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.URLSpan;
-import android.text.util.Linkify;
+import android.util.Log;
 
 import com.caij.emore.R;
 import com.caij.emore.AppApplication;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
-import com.caij.emore.view.CenteredImageSpan;
-import com.caij.emore.view.MyURLSpan;
+import com.caij.emore.view.span.CenteredImageSpan;
+import com.caij.emore.view.span.FullTextSpan;
+import com.caij.emore.view.span.MyURLSpan;
+import com.caij.emore.view.span.TopicSpan;
+import com.caij.emore.view.span.UserSpan;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,31 +31,92 @@ import java.util.regex.Pattern;
  */
 public class SpannableStringUtil {
 
-    public static final String USER_INFO_SCHEME = "com.caij.weiyo.userinfo://";
-    public static final String HTTP_SCHEME = "emorehttp://";
-    public static final String TOPIC_SCHEME = "com.caij.weiyo.topics://";
+    public static int color = AppApplication.getInstance().getResources().getColor(R.color.link_text_color);
+    public static int pressColor = AppApplication.getInstance().getResources().getColor(R.color.link_text_press_color);
 
     public static void praseName(Spannable spannableString) {
         // 用户名称
 //			Pattern pattern = Pattern.compile("@([a-zA-Z0-9_\\-\\u4e00-\\u9fa5]+)");
         Pattern pattern = Pattern.compile("@[\\w\\p{InCJKUnifiedIdeographs}-]{1,26}");
-        String scheme = USER_INFO_SCHEME;
-        Linkify.addLinks(spannableString, pattern, scheme);
+        MyURLSpan weiboSpan = null;
+        Matcher matcher = pattern.matcher(spannableString);
+        while (matcher.find()) {
+            String name  = matcher.group();
+            int start = matcher.start();
+            int end = matcher.end();
+            weiboSpan = new UserSpan(name);
+            weiboSpan.setTextColor(color);
+            weiboSpan.setPressColor(pressColor);
+            spannableString.setSpan(weiboSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 
-    public static void praseHttpUrl(Spannable spannableString) {
-        // 网页链接
-        String scheme = HTTP_SCHEME;
-        Linkify.addLinks(spannableString, Pattern.compile("http://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]"),
-                scheme);
+    public static SpannableStringBuilder praseHttpUrlText(String text) {
+        text = parseFullText(text);
+        text  = praseHttpUrl(text);
+        SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(text);
+        URLSpan[] urlSpans = spanned.getSpans(0, spanned.length(), URLSpan.class);
+        MyURLSpan weiboSpan = null;
+        for (URLSpan urlSpan : urlSpans) {
+            int start = spanned.getSpanStart(urlSpan);
+            int end = spanned.getSpanEnd(urlSpan);
+            if (urlSpan.getURL().startsWith("http")) {
+                weiboSpan = new MyURLSpan(urlSpan.getURL());
+            }else {
+                weiboSpan = new FullTextSpan(urlSpan.getURL());
+            }
+            weiboSpan.setTextColor(color);
+            weiboSpan.setPressColor(pressColor);
+            spanned.removeSpan(urlSpan);
+            spanned.setSpan(weiboSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return spanned;
+    }
+
+    public static String praseHttpUrl(String spannableString) {
+        String str = spannableString;
+        Matcher matcher = Pattern.compile("(http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]").matcher(spannableString);
+        while (matcher.find()) {
+            String url  = matcher.group();
+            str = str.replace(url, createHtmlString(url));
+        }
+        return str;
+    }
+
+    private static String createHtmlString(String url) {
+        return " <a href=\"" + url + "\">[网页]网页链接</a>";
     }
 
     public static void praseTopic(Spannable spannableString) {
         // 话题
-        Pattern dd = Pattern.compile("#[\\p{Print}\\p{InCJKUnifiedIdeographs}&&[^#]]+#");
+        Matcher matcher = Pattern.compile("#[\\p{Print}\\p{InCJKUnifiedIdeographs}&&[^#]]+#").matcher(spannableString);
         //Pattern dd = Pattern.compile("#([a-zA-Z0-9_\\-\\u4e00-\\u9fa5]+)#");
-        String scheme = TOPIC_SCHEME;
-        Linkify.addLinks(spannableString, dd, scheme);
+        MyURLSpan weiboSpan = null;
+        while (matcher.find()) {
+            String topic  = matcher.group();
+            int start = matcher.start();
+            int end = matcher.end();
+            weiboSpan = new TopicSpan(topic);
+            weiboSpan.setTextColor(color);
+            weiboSpan.setPressColor(pressColor);
+            spannableString.setSpan(weiboSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
+    public static String  parseFullText(String text) {
+//        "...全文： http://m.weibo.cn/1815070622/3998176861989899"
+        Matcher matcher = Pattern.compile("全文： (http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]").matcher(text);
+        String str = text;
+        while (matcher.find()) {
+            String url  = matcher.group();
+            str = str.replace(url, createFullTextString(url));
+        }
+        return str;
+    }
+
+    private static CharSequence createFullTextString(String url) {
+        String[] strs  = url.split("/");
+        return " <a href=\"" + strs[strs.length - 1] +"\">全文</a>";
     }
 
     public static void praseDefaultEmotions(Context context, Spannable spannableString) {
@@ -100,35 +166,16 @@ public class SpannableStringUtil {
         }
     }
 
-    public static void urlSpan2ClickSpan(Spannable spannableString, int color, int pressColor) {
-        URLSpan[] urlSpans = spannableString.getSpans(0, spannableString.length(), URLSpan.class);
-        MyURLSpan weiboSpan = null;
-        for (URLSpan urlSpan : urlSpans) {
-            weiboSpan = new MyURLSpan(urlSpan.getURL());
-            weiboSpan.setTextColor(color);
-            weiboSpan.setPressColor(pressColor);
-            int start = spannableString.getSpanStart(urlSpan);
-            int end = spannableString.getSpanEnd(urlSpan);
-            try {
-                spannableString.removeSpan(urlSpan);
-            } catch (Exception e) {
-            }
-            spannableString.setSpan(weiboSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-    }
-
     public static void paraeSpannable(Weibo weibo) {
         Context applicationContent = AppApplication.getInstance();
-        int color = applicationContent.getResources().getColor(R.color.link_text_color);
-        int pressColor = applicationContent.getResources().getColor(R.color.link_text_press_color);
-        SpannableString contentSpannableString = SpannableString.valueOf(weibo.getText());
+        SpannableStringBuilder contentSpannableString = praseHttpUrlText(weibo.getText());
         SpannableStringUtil.praseName(contentSpannableString);
-        SpannableStringUtil.praseHttpUrl(contentSpannableString);
         SpannableStringUtil.praseTopic(contentSpannableString);
         SpannableStringUtil.praseDefaultEmotions(applicationContent, contentSpannableString);
         SpannableStringUtil.praseSoftEmotions(contentSpannableString);
-        SpannableStringUtil.urlSpan2ClickSpan(contentSpannableString, color, pressColor);
         weibo.setContentSpannableString(contentSpannableString);
+
+
 
         if (weibo.getRetweeted_status() != null) {
             Weibo reWeibo = weibo.getRetweeted_status();
@@ -136,13 +183,12 @@ public class SpannableStringUtil {
             User reUser = reWeibo.getUser();
             if (reUser != null && !TextUtils.isEmpty(reUser.getScreen_name()))
                 reUserName = String.format("@%s :", reUser.getScreen_name());
-            SpannableString reContentSpannableString = SpannableString.valueOf(reUserName + reWeibo.getText());
+//            SpannableString reContentSpannableString = SpannableString.valueOf(reUserName + reWeibo.getText());
+            SpannableStringBuilder reContentSpannableString = praseHttpUrlText(reUserName + reWeibo.getText());
             SpannableStringUtil.praseName(reContentSpannableString);
-            SpannableStringUtil.praseHttpUrl(reContentSpannableString);
             SpannableStringUtil.praseTopic(reContentSpannableString);
             SpannableStringUtil.praseDefaultEmotions(applicationContent, reContentSpannableString);
             SpannableStringUtil.praseSoftEmotions(contentSpannableString);
-            SpannableStringUtil.urlSpan2ClickSpan(reContentSpannableString, color, pressColor);
             reWeibo.setContentSpannableString(reContentSpannableString);
         }
     }
@@ -152,24 +198,20 @@ public class SpannableStringUtil {
         int pressColor = applicationContent.getResources().getColor(R.color.link_text_press_color);
         SpannableString contentSpannableString = SpannableString.valueOf(comment.getText());
         SpannableStringUtil.praseName(contentSpannableString);
-        SpannableStringUtil.praseHttpUrl(contentSpannableString);
         SpannableStringUtil.praseTopic(contentSpannableString);
         SpannableStringUtil.praseDefaultEmotions(applicationContent, contentSpannableString);
         SpannableStringUtil.praseSoftEmotions(contentSpannableString);
-        SpannableStringUtil.urlSpan2ClickSpan(contentSpannableString, color, pressColor);
 
         comment.setTextSpannableString(contentSpannableString);
     }
 
     public static void paraeSpannable(Spannable text, Context applicationContent) {
-        int color = applicationContent.getResources().getColor(R.color.link_text_color);
-        int pressColor = applicationContent.getResources().getColor(R.color.link_text_press_color);
-        SpannableStringUtil.praseName(text);
-        SpannableStringUtil.praseHttpUrl(text);
-        SpannableStringUtil.praseTopic(text);
-        SpannableStringUtil.praseDefaultEmotions(applicationContent, text);
-        SpannableStringUtil.praseSoftEmotions(text);
-        SpannableStringUtil.urlSpan2ClickSpan(text, color, pressColor);
+        SpannableStringBuilder contentSpannableString = praseHttpUrlText(text.toString());
+        SpannableStringUtil.praseName(contentSpannableString);
+        SpannableStringUtil.praseTopic(contentSpannableString);
+        SpannableStringUtil.praseDefaultEmotions(applicationContent, contentSpannableString);
+        SpannableStringUtil.praseSoftEmotions(contentSpannableString);
+        text = contentSpannableString;
     }
 
 }

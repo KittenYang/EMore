@@ -153,10 +153,12 @@ public class LocalWeiboSource implements WeiboSource {
         userDao.insertOrReplace(user);
 
         List<PicUrl> picUrls = weibo.getPic_urls();
-        for (PicUrl picUrl : picUrls) {
-            picUrl.setWeibo_id(weibo.getId());
-            picUrl.setId(weiboId + picUrl.getThumbnail_pic());
-            picUrlDao.insertOrReplace(picUrl);
+        if (picUrls != null) {
+            for (PicUrl picUrl : picUrls) {
+                picUrl.setWeibo_id(weibo.getId());
+                picUrl.setId(weiboId + picUrl.getThumbnail_pic());
+                picUrlDao.insertOrReplace(picUrl);
+            }
         }
 
         if (weibo.getRetweeted_status() != null) {
@@ -345,8 +347,8 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<Weibo> getWeiboById(String accessToken, final long id) {
-       return Observable.create(new Observable.OnSubscribe<Weibo>() {
+    public Observable<Weibo> getWeiboById(Map<String, Object> params, final long id) {
+        return Observable.create(new Observable.OnSubscribe<Weibo>() {
             @Override
             public void call(Subscriber<? super Weibo> subscriber) {
                 try {

@@ -1,4 +1,4 @@
-package com.caij.emore.view;
+package com.caij.emore.view.span;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 
 import com.caij.emore.AppSettings;
+import com.caij.emore.R;
 import com.caij.emore.utils.SpannableStringUtil;
 
 /**
@@ -48,11 +49,12 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
     }
 
     public void onClick(View widget) {
-        Uri uri = Uri.parse(this.getURL());
         Context context = widget.getContext();
-        if (SpannableStringUtil.HTTP_SCHEME.contains(uri.getScheme()) && !AppSettings.isInnerBrower(widget.getContext())) {
-            uri = Uri.parse(getURL().replace(SpannableStringUtil.HTTP_SCHEME, ""));
+        String url = getURL();
+        if (AppSettings.isInnerBrower(widget.getContext())) {
+            url = url.replace("http", context.getString(R.string.emore_http_scheme));
         }
+        Uri uri = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
         context.startActivity(intent);

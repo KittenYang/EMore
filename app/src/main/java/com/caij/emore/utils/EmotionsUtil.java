@@ -32,6 +32,8 @@ public class EmotionsUtil {
     };
 
     static {
+        imageEmotionMap.put("[网页]", R.mipmap.timeline_card_small_web);
+
         imageEmotionMap.put("[微笑]", R.mipmap.d_hehe);
         imageEmotionList.add(new Emotion("[微笑]", R.mipmap.d_hehe));
 

@@ -5,6 +5,10 @@ import com.caij.emore.present.WeiboDetailPresent;
 import com.caij.emore.present.view.WeiboDetailView;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.SpannableStringUtil;
+import com.caij.emore.utils.weibo.ApiUtil;
+import com.caij.emore.utils.weibo.WeicoAuthUtil;
+
+import java.util.HashMap;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -30,9 +34,12 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
 
     @Override
     public void loadWeiboDetail() {
-        Observable<Weibo> localObservable = mLocalWeiboSource.getWeiboById(mToken, mWeiboId);
+        HashMap<String, Object> params = new HashMap<>();
+        ApiUtil.appendAuthSina(params);
+        params.put("isGetLongText", 1);
+        Observable<Weibo> localObservable = mLocalWeiboSource.getWeiboById(params, mWeiboId);
         mView.showDialogLoading(true);
-        Observable<Weibo> serverObservable = mServerWeiboSource.getWeiboById(mToken, mWeiboId)
+        Observable<Weibo> serverObservable = mServerWeiboSource.getWeiboById(params, mWeiboId)
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
@@ -45,7 +52,8 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     public Boolean call(Weibo weibo) {
                         return weibo != null
                                 && weibo.getUpdate_time() != null
-                                && System.currentTimeMillis() - weibo.getUpdate_time() < 5 * 60 * 1000;
+                                && System.currentTimeMillis() - weibo.getUpdate_time() < 5 * 60 * 1000
+                                && !weibo.getText().contains("全文： http");
                     }
                 })
                 .doOnNext(new Action1<Weibo>() {

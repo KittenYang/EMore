@@ -238,12 +238,6 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
     }
 
     protected void processImageConfigBuild(ImageLoader.ImageConfigBuild build) {
-        build.setSupportGif(false);
-
-        //只有一张图片的时候缓存原图的sd卡 因为详情页尺寸不一样 需要加载 避免去加载网络
-        if (mPicUrls != null && mPicUrls.size() == 1) {
-            build.setDiskCacheStrategy(ImageLoader.CacheConfig.All);
-        }
     }
 
     private ItemImageView createImageView(int imageWidth) {

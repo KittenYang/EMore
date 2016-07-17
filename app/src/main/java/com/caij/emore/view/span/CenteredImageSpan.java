@@ -1,4 +1,4 @@
-package com.caij.emore.view;
+package com.caij.emore.view.span;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -6,6 +6,7 @@ package com.caij.emore.database.bean;
 // KEEP INCLUDES END
 
 import android.text.SpannableString;
+import android.text.Spanned;
 
 import java.io.Serializable;
 import java.util.List;
@@ -278,7 +279,7 @@ public class Weibo implements Serializable {
     private Geo geo;
     private User user;
     private Weibo retweeted_status;
-    private transient SpannableString contentSpannableString;
+    private transient Spanned contentSpannableString;
 
     public Visible getVisible() {
         return visible;
@@ -328,11 +329,11 @@ public class Weibo implements Serializable {
         this.retweeted_status = retweeted_status;
     }
 
-    public SpannableString getContentSpannableString() {
+    public Spanned getContentSpannableString() {
         return contentSpannableString;
     }
 
-    public void setContentSpannableString(SpannableString contentSpannableString) {
+    public void setContentSpannableString(Spanned contentSpannableString) {
         this.contentSpannableString = contentSpannableString;
     }
 

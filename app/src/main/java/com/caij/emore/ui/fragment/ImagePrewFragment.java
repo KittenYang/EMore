@@ -48,8 +48,18 @@ public class ImagePrewFragment extends BaseFragment {
         if (path != null && path.startsWith("/")) {
             path = "file://" + path;
         }
+        int cacheConfig;
+        if (path.contains("gif")) {
+            cacheConfig  = ImageLoader.CacheConfig.SOURCE;
+        }else {
+            cacheConfig = ImageLoader.CacheConfig.All;
+        }
         ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild()
-                .setScaleType(ImageLoader.ScaleType.FIT_CENTER).build();
+                .setScaleType(ImageLoader.ScaleType.FIT_CENTER)
+                .setSupportGif(true)
+                .setCacheMemory(false)
+                .setDiskCacheStrategy(cacheConfig)
+                .build();
         ImageLoader.load(getActivity(), mIvImage, path, android.R.color.black, config);
     }
 

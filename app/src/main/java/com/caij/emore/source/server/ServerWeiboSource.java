@@ -213,15 +213,14 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<Weibo> getWeiboById(String accessToken, long id) {
-        return mWeiBoService.getWeiboById(accessToken, id);
+    public Observable<Weibo> getWeiboById(Map<String, Object> params, long id) {
+        return mWeiCoService.getWeiboById(params, id);
     }
 
     @Override
     public void saveWeibo(String mToken, Weibo weibo) {
 
     }
-
 
     @Override
     public Observable<QueryRepostWeiboResponse> getRepostWeibos(String accessToken, long id, long since_id, long max_id, int count, int page) {

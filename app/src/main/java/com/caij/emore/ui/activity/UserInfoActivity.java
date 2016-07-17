@@ -119,21 +119,10 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
     private void doNext() {
         Intent intent = getIntent();
         AccessToken token = UserPrefs.get().getWeiCoToken();
-        if (Intent.ACTION_VIEW.equalsIgnoreCase(intent.getAction()) && getIntent().getData() != null) {
-            String userName = getIntent().getData().toString();
-            if (userName.startsWith(SpannableStringUtil.USER_INFO_SCHEME)) {
-                userName = userName.replace(SpannableStringUtil.USER_INFO_SCHEME, "");
-            }
-            if (userName.startsWith("@")) {
-                userName = userName.replace("@", "");
-            }
-            mUserInfoDetailPresent = new UserInfoDetailPresentImp(token.getAccess_token(), userName, this,
-                    new ServerUserSource(), new LocalUserSource());
-        } else {
-            String userName = intent.getStringExtra(Key.USERNAME);
-            mUserInfoDetailPresent = new UserInfoDetailPresentImp(token.getAccess_token(), userName, this,
-                    new ServerUserSource(), new LocalUserSource());
-        }
+
+        String userName = intent.getStringExtra(Key.USERNAME);
+        mUserInfoDetailPresent = new UserInfoDetailPresentImp(token.getAccess_token(), userName, this,
+                new ServerUserSource(), new LocalUserSource());
 
         mUserInfoDetailPresent.getWeiboUserInfoByName();
     }

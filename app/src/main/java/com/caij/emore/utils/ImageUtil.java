@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.ResponseBody;
 
 /**
@@ -33,9 +34,9 @@ public class ImageUtil {
         OkHttpClient okHttpClient = OkHttpClientProvider.getDefaultOkHttpClient();
         okHttpClient = okHttpClient.newBuilder().readTimeout(3000, TimeUnit.MILLISECONDS)
                 .writeTimeout(3000, TimeUnit.MILLISECONDS).build();
-        okhttp3.Request.Builder okHttpRequestBuilder = new okhttp3.Request.Builder();
+        Request.Builder okHttpRequestBuilder = new Request.Builder();
         okHttpRequestBuilder.url(url);
-        okhttp3.Request okHttpRequest = okHttpRequestBuilder.build();
+        Request okHttpRequest = okHttpRequestBuilder.build();
         Call okHttpCall = okHttpClient.newCall(okHttpRequest);
         ResponseBody responseBody = okHttpCall.execute().body();
         InputStream inputStream = responseBody.byteStream();

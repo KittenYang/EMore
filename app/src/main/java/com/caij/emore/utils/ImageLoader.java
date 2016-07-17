@@ -68,7 +68,7 @@ public class ImageLoader {
         private int width = -1;
         private boolean isCircle = false;
         private int priority = Priority.NORMAL;
-        private int diskCacheStrategy = CacheConfig.RESULT;
+        private int diskCacheStrategy = CacheConfig.SOURCE;
         private boolean isCacheMemory = true;
         private boolean isSupportGif = false;
         private Transformation transformation;
@@ -110,7 +110,7 @@ public class ImageLoader {
         }
 
         public ImageConfigBuild setSupportGif(boolean isSupportGif) {
-//            this.isSupportGif = isSupportGif; //暂时不支持gif  Glide加载gif太慢
+            this.isSupportGif = isSupportGif;
             return this;
         }
 

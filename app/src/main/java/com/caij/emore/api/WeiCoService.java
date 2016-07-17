@@ -3,6 +3,7 @@ package com.caij.emore.api;
 import com.caij.emore.Key;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
 
@@ -14,7 +15,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -55,5 +59,8 @@ public interface WeiCoService {
     @POST("/2/like/cancel_like")
     public Observable<Response> destoryAttitudesWeibo(@FieldMap Map<String, Object> paramMap,
                                                @Field("attitude") String attitude, @Field("id") long weiboId);
+
+    @GET("/2/statuses/show")
+    public Observable<Weibo> getWeiboById(@QueryMap Map<String, Object> paramMap, @Query("id") long weiboId);
 
 }
