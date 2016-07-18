@@ -292,6 +292,7 @@ public class Weibo implements Serializable {
     private transient Spanned contentSpannableString;
     private List<String> pic_ids;
     private Object pic_infos;
+    private LongText longText;
 
     public Visible getVisible() {
         return visible;
@@ -353,6 +354,14 @@ public class Weibo implements Serializable {
         return pic_infos;
     }
 
+    public LongText getLongText() {
+        return longText;
+    }
+
+    public void setLongText(LongText longText) {
+        this.longText = longText;
+    }
+
     public void transformPicUrlsByPicIds() {
         if (!TextUtils.isEmpty(thumbnail_pic) && pic_ids != null && pic_ids.size() > 0) {
             pic_urls = new ArrayList<PicUrl>(pic_ids.size());
@@ -372,6 +381,15 @@ public class Weibo implements Serializable {
                 }
             }
         }
+        if (retweeted_status != null) {
+            retweeted_status.transformPicUrlsByPicIds();
+        }
+    }
+
+    public void transformText() {
+        if (longText != null) {
+            text = longText.content;
+        }
     }
 
     public void setPic_infos(Object pic_infos) {
@@ -390,6 +408,18 @@ public class Weibo implements Serializable {
     public boolean equals(Object o) {
         Weibo  weibo = (Weibo) o;
         return weibo.id.equals(id);
+    }
+
+    public static class LongText {
+        private String content;
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
     }
 
 }

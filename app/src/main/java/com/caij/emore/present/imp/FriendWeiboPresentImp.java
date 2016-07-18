@@ -1,26 +1,23 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.api.WeiBoService;
-import com.caij.emore.bean.ShortLongLink;
 import com.caij.emore.bean.response.QueryUrlResponse;
+import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.view.FriendWeiboView;
 import com.caij.emore.source.DefaultResponseSubscriber;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.GsonUtils;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
-import java.io.IOException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Call;
-import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -59,11 +56,16 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
                         weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-//                        SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;
                     }
                 })
                 .toList()
+                .doOnNext(new Action1<List<Weibo>>() {
+                    @Override
+                    public void call(List<Weibo> weibos) {
+                        doSpanNext(weibos);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Weibo>>() {
@@ -89,57 +91,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
     @Override
     public void refresh() {
-        Subscription subscription = mServerWeiboSource.getFriendWeibo(mToken, 0, 0, PAGE_COUNT, 1)
-                .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
-                    @Override
-                    public Observable<Weibo> call(List<Weibo> weibos) {
-                        return Observable.from(weibos);
-                    }
-                })
-                .map(new Func1<Weibo, Weibo>() {
-
-                        @Override
-                        public Weibo call(Weibo weibo) {
-                            toGetImageSize(weibo);
-                            weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                            return weibo;
-                        }
-                    })
-                .toList()
-                .doOnNext(new Action1<List<Weibo>>() {
-                    @Override
-                    public void call(List<Weibo> weibos) {
-                        mLocalWeiboSource.saveWeibos(mToken, weibos);
-                        List<String> shortUrls  = SpannableStringUtil.praseHttpUrl(weibos);
-                        Map<String, ShortLongLink> shortLongLinkMap = new HashMap<String, ShortLongLink>();
-                        if (shortUrls.size() > 0) {
-                            int size = shortUrls.size() / 20 + 1;
-                            List<String> params = new ArrayList<String>(20);
-                            for (int i = 0; i < size; i ++) {
-                                params.clear();
-                                for (int j = i * 20; j < Math.min(shortUrls.size(), (i + 1) * 20); j ++) {
-                                    params.add(shortUrls.get(j));
-                                }
-                                Call<QueryUrlResponse> call = WeiBoService.Factory.create().getShortUrlInfo(mToken, params);
-                                try {
-                                    Response<QueryUrlResponse> responseResponse = call.execute();
-                                    if (responseResponse.code() == 200) {
-                                        QueryUrlResponse queryUrlResponse = responseResponse.body();
-                                        for (Object obj : queryUrlResponse.getUrls()) {
-                                            ShortLongLink shortLongLink = new ShortLongLink(GsonUtils.toJson(obj));
-                                            shortLongLinkMap.put(shortLongLink.shortUrl, shortLongLink);
-                                        }
-                                    }
-                                } catch (Exception e) {
-
-                                }
-                            }
-                        }
-                        SpannableStringUtil.paraeSpannable(weibos, shortLongLinkMap);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        Subscription subscription = createObservable(0, true)
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
                     @Override
                     public void onCompleted() {
@@ -167,6 +119,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
         mLoginCompositeSubscription.add(subscription);
     }
 
+
     @Override
     public void userFirstVisible() {
 
@@ -178,7 +131,31 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
         if (mWeibos.size() > 0) {
             maxId = mWeibos.get(mWeibos.size() - 1).getId();
         }
-        Subscription subscription = mServerWeiboSource.getFriendWeibo(mToken, 0, maxId, PAGE_COUNT, 1)
+        Subscription subscription = createObservable(maxId, false)
+            .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        protected void onFail(Throwable e) {
+                            mView.onDefaultLoadError();
+                            mView.onLoadComplete(true);
+                        }
+
+                        @Override
+                        public void onNext(List<Weibo> weibos) {
+                            mWeibos.addAll(weibos);
+                            mView.setEntities(mWeibos);
+                            mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 2); //这里有一条重复的 所以需要-1
+                        }
+                    });
+        mLoginCompositeSubscription.add(subscription);
+    }
+
+    private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
+        return mServerWeiboSource.getFriendWeibo(mToken, 0, maxId, PAGE_COUNT, 1)
                 .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(List<Weibo> weibos) {
@@ -188,7 +165,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                 .filter(new Func1<Weibo, Boolean>() {
                     @Override
                     public Boolean call(Weibo weibo) {
-                        return !mWeibos.contains(weibo);
+                        return isRefresh || !mWeibos.contains(weibo);
                     }
                 })
                 .map(new Func1<Weibo, Weibo>() {
@@ -197,7 +174,6 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                     public Weibo call(Weibo weibo) {
                         toGetImageSize(weibo);
                         weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-//                        SpannableStringUtil.paraeSpannable(weibo);
                         return weibo;
                     }
                 })
@@ -206,57 +182,11 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                     @Override
                     public void call(List<Weibo> weibos) {
                         mLocalWeiboSource.saveWeibos(mToken, weibos);
-
-                        List<String> shortUrls  = SpannableStringUtil.praseHttpUrl(weibos);
-                        Map<String, ShortLongLink> shortLongLinkMap = new HashMap<String, ShortLongLink>();
-                        if (shortUrls.size() > 0) {
-                            int size = shortUrls.size() / 20 + 1;
-                            List<String> params = new ArrayList<String>(20);
-                            for (int i = 0; i < size; i ++) {
-                                params.clear();
-                                for (int j = i * 20; j < Math.min(shortUrls.size(), (i + 1) * 20); j ++) {
-                                    params.add(shortUrls.get(j));
-                                }
-                                Call<QueryUrlResponse> call = WeiBoService.Factory.create().getShortUrlInfo(mToken, params);
-                                try {
-                                    Response<QueryUrlResponse> responseResponse = call.execute();
-                                    if (responseResponse.code() == 200) {
-                                        QueryUrlResponse queryUrlResponse = responseResponse.body();
-                                        for (Object obj : queryUrlResponse.getUrls()) {
-                                            ShortLongLink shortLongLink = new ShortLongLink(GsonUtils.toJson(obj));
-                                            shortLongLinkMap.put(shortLongLink.shortUrl, shortLongLink);
-                                        }
-                                    }
-                                } catch (Exception e) {
-
-                                }
-                            }
-                        }
-                        SpannableStringUtil.paraeSpannable(weibos, shortLongLinkMap);
+                        doSpanNext(weibos);
                     }
                 })
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    protected void onFail(Throwable e) {
-                        mView.onDefaultLoadError();
-                        mView.onLoadComplete(true);
-                    }
-
-                    @Override
-                    public void onNext(List<Weibo> weibos) {
-                        mWeibos.addAll(weibos);
-                        mView.setEntities(mWeibos);
-                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 2); //这里有一条重复的 所以需要-1
-                    }
-                });
-        mLoginCompositeSubscription.add(subscription);
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

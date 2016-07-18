@@ -14,11 +14,10 @@ import android.text.style.URLSpan;
 import com.caij.emore.R;
 import com.caij.emore.AppApplication;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.ShortLongLink;
+import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.view.span.CenteredImageSpan;
-import com.caij.emore.view.span.FullTextSpan;
 import com.caij.emore.view.span.MyURLSpan;
 import com.caij.emore.view.span.TopicSpan;
 import com.caij.emore.view.span.UserSpan;
@@ -53,7 +52,7 @@ public class SpannableStringUtil {
         }
     }
 
-    public static SpannableStringBuilder praseHttpUrlText(String text, Map<String,ShortLongLink> shortLongLinkMap) {
+    public static SpannableStringBuilder praseHttpUrlText(String text, Map<String, UrlInfo> shortLongLinkMap) {
         text = parseFullText(text);
         text  = praseHttpUrl(text, shortLongLinkMap);
         SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(text);
@@ -62,11 +61,7 @@ public class SpannableStringUtil {
         for (URLSpan urlSpan : urlSpans) {
             int start = spanned.getSpanStart(urlSpan);
             int end = spanned.getSpanEnd(urlSpan);
-            if (urlSpan.getURL().startsWith("http")) {
-                weiboSpan = new MyURLSpan(urlSpan.getURL());
-            }else {
-                weiboSpan = new FullTextSpan(urlSpan.getURL());
-            }
+            weiboSpan= new MyURLSpan(urlSpan.getURL());
             weiboSpan.setTextColor(color);
             weiboSpan.setPressColor(pressColor);
             spanned.removeSpan(urlSpan);
@@ -75,44 +70,52 @@ public class SpannableStringUtil {
         return spanned;
     }
 
-    public static String praseHttpUrl(String spannableString, Map<String,ShortLongLink> shortLongLinkMap) {
+    public static String praseHttpUrl(String spannableString, Map<String, UrlInfo> shortLongLinkMap) {
         String str = spannableString;
         Matcher matcher = Pattern.compile("(http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]").matcher(spannableString);
         while (matcher.find()) {
             String url  = matcher.group();
-            ShortLongLink shortLongLink = null;
+            UrlInfo shortLongLink = null;
             if (shortLongLinkMap != null) {
                 shortLongLink = shortLongLinkMap.get(url);
             }
-            String display_name = EmotionsUtil.WEB_CARD_IMAGE_KEY;
-            String type  = EmotionsUtil.WEB_CARD_IMAGE_KEY;
+            String display_name = "网页链接";
+            String imageKey  = EmotionsUtil.WEB_CARD_IMAGE_KEY;
+            int type = UrlInfo.TYPE_WEB;
+            String tagetUrl = url;
             if (shortLongLink != null) {
-                if (!TextUtils.isEmpty(shortLongLink.display_name)) {
-                    display_name = shortLongLink.display_name;
+                if (!TextUtils.isEmpty(shortLongLink.getDisplay_name())) {
+                    display_name = shortLongLink.getDisplay_name();
                 }
 
                 switch (shortLongLink.getUrlType()) {
-                    case ShortLongLink.TYPE_WEB:
-                        type = EmotionsUtil.WEB_CARD_IMAGE_KEY;
+                    case UrlInfo.TYPE_WEB:
+                    case UrlInfo.TYPE_WEB_PAGE:
+                        imageKey = EmotionsUtil.WEB_CARD_IMAGE_KEY;
+                        type = UrlInfo.TYPE_WEB;
                         break;
 
-                    case ShortLongLink.TYPE_VIDEO:
-                        type = EmotionsUtil.VIDEO_CARD_IMAGE_KEY;
+                    case UrlInfo.TYPE_VIDEO:
+                        imageKey = EmotionsUtil.VIDEO_CARD_IMAGE_KEY;
+                        type = UrlInfo.TYPE_VIDEO;
                         break;
 
-                    case ShortLongLink.TYPE_IMAGE:
-                        type = EmotionsUtil.IMAGE_CARD_IMAGE_KEY;
+                    case UrlInfo.TYPE_IMAGE:
+                        imageKey = EmotionsUtil.IMAGE_CARD_IMAGE_KEY;
+                        type = UrlInfo.TYPE_IMAGE;
+                        tagetUrl = shortLongLink.getLongUrl();
                         break;
 
-                    case ShortLongLink.TYPE_MUSIC:
+                    case UrlInfo.TYPE_MUSIC:
+                        type = UrlInfo.TYPE_MUSIC;
                         break;
 
                     default:
-
+                        type = UrlInfo.TYPE_WEB;
                         break;
                 }
             }
-            str = str.replace(url, createHtmlString(url, type, display_name));
+            str = str.replace(url, createHtmlString(tagetUrl, type, imageKey, display_name));
         }
         return str;
     }
@@ -123,6 +126,13 @@ public class SpannableStringUtil {
         for (Weibo weibo : weibos) {
             praseHttpUrl(weibo, pattern, shortUrls);
         }
+        return shortUrls;
+    }
+
+    public static List<String> praseHttpUrl(Weibo weibo) {
+        List<String> shortUrls = new ArrayList<>();
+        Pattern pattern = Pattern.compile("(http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]");
+        praseHttpUrl(weibo, pattern, shortUrls);
         return shortUrls;
     }
 
@@ -137,8 +147,8 @@ public class SpannableStringUtil {
         }
     }
 
-    private static String createHtmlString(String url, String type, String desc) {
-        return "<a href=\"" + url + "\">" + type + desc + "</a>";
+    private static String createHtmlString(String url, int type, String imageKey, String desc) {
+        return "<a href=\"" + type + MyURLSpan.SCHEME_SPIT + url + "\">" + imageKey + desc + "</a>";
     }
 
     public static void praseTopic(Spannable spannableString) {
@@ -170,7 +180,7 @@ public class SpannableStringUtil {
 
     private static CharSequence createFullTextString(String url) {
         String[] strs  = url.split("/");
-        return " <a href=\"" + strs[strs.length - 1] +"\">全文</a>";
+        return " <a href=\"" + UrlInfo.TYPE_FULL_TEXT + MyURLSpan.SCHEME_SPIT + strs[strs.length - 1] +"\">全文</a>";
     }
 
     public static void praseDefaultEmotions(Context context, Spannable spannableString) {
@@ -220,17 +230,7 @@ public class SpannableStringUtil {
         }
     }
 
-    public static void paraeSpannable(List<Weibo> weibos,  Map<String, ShortLongLink> shortLongLinkMap) {
-        for (Weibo weibo : weibos) {
-            paraeSpannable(weibo, shortLongLinkMap);
-        }
-    }
-
-    public static void paraeSpannable(Weibo weibo) {
-        paraeSpannable(weibo, null);
-    }
-
-    public static void paraeSpannable(Weibo weibo, Map<String,ShortLongLink> shortLongLinkMap) {
+    public static void paraeSpannable(Weibo weibo, Map<String, UrlInfo> shortLongLinkMap) {
         Context applicationContent = AppApplication.getInstance();
         SpannableStringBuilder contentSpannableString = praseHttpUrlText(weibo.getText() + " ", shortLongLinkMap);
         SpannableStringUtil.praseName(contentSpannableString);

@@ -12,12 +12,21 @@ import android.view.View;
 
 import com.caij.emore.AppSettings;
 import com.caij.emore.R;
+import com.caij.emore.database.bean.UrlInfo;
+import com.caij.emore.ui.activity.ImagePrewActivity;
+import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.utils.SpannableStringUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Caij on 2016/6/8.
  */
 public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
+
+    public static final String SCHEME_SPIT = "__";
 
     private final String mURL;
     private int color;
@@ -50,14 +59,40 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
 
     public void onClick(View widget) {
         Context context = widget.getContext();
-        String url = getURL();
-        if (AppSettings.isInnerBrower(widget.getContext())) {
-            url = url.replace("http", context.getString(R.string.emore_http_scheme));
+        String[] values = getURL().split(MyURLSpan.SCHEME_SPIT);
+        if (values.length == 1 || values.length == 0) {
+            toWebActivity(context, getURL());
+        }else {
+            int type = Integer.parseInt(values[0]);
+            String url =values[1];
+            switch (type) {
+                case UrlInfo.TYPE_WEB:
+                case UrlInfo.TYPE_WEB_PAGE:
+                    toWebActivity(context, url);
+                    break;
+
+                case UrlInfo.TYPE_VIDEO:
+                    toWebActivity(context, url);
+                    break;
+
+                case UrlInfo.TYPE_IMAGE: {
+                    toWebActivity(context, url);
+                    break;
+                }
+
+                case UrlInfo.TYPE_MUSIC:
+                    toWebActivity(context, url);
+                    break;
+                case UrlInfo.TYPE_FULL_TEXT:
+                    Intent intent = WeiboDetialActivity.newIntent(context, Long.parseLong(url));
+                    context.startActivity(intent);
+                    break;
+
+                default:
+                    toWebActivity(context, url);
+                    break;
+            }
         }
-        Uri uri = Uri.parse(url);
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
-        context.startActivity(intent);
     }
 
     public void setTextColor(int color) {
@@ -77,5 +112,15 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
 
     public void setPressed(boolean pressed) {
         this.pressed = pressed;
+    }
+
+    private void toWebActivity(Context context, String url) {
+        if (AppSettings.isInnerBrower(context)) {
+            url = url.replace("http", context.getString(R.string.emore_http_scheme));
+        }
+        Uri uri = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
+        context.startActivity(intent);
     }
 }

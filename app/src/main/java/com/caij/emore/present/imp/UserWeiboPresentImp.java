@@ -15,6 +15,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -58,26 +59,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
 
     @Override
     public void refresh() {
-        Subscription subscription = mServerWeiboSource.getUseWeibo(mToken, mUsername, mFeature, 0, 0, PAGE_COUNT, 1)
-                .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
-                    @Override
-                    public Observable<Weibo> call(UserWeiboResponse response) {
-                        return Observable.from(response.getStatuses());
-                    }
-                })
-                .map(new Func1<Weibo, Weibo>() {
-
-                    @Override
-                    public Weibo call(Weibo weibo) {
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        toGetImageSize(weibo);
-                        SpannableStringUtil.paraeSpannable(weibo);
-                        return weibo;
-                    }
-                })
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        Subscription subscription = createObservable(0, true)
                 .subscribe(new Subscriber<List<Weibo>>() {
                     @Override
                     public void onCompleted() {
@@ -116,32 +98,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
         if (mWeibos.size() > 0) {
             maxId = mWeibos.get(mWeibos.size() - 1).getId();
         }
-        Subscription subscription = mServerWeiboSource.getUseWeibo(mToken, mUsername, mFeature, 0, maxId, PAGE_COUNT, 1)
-                .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
-                    @Override
-                    public Observable<Weibo> call(UserWeiboResponse response) {
-                        return Observable.from(response.getStatuses());
-                    }
-                })
-                .filter(new Func1<Weibo, Boolean>() {
-                    @Override
-                    public Boolean call(Weibo weibo) {
-                        return !mWeibos.contains(weibo);
-                    }
-                })
-                .map(new Func1<Weibo, Weibo>() {
-
-                    @Override
-                    public Weibo call(Weibo weibo) {
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        toGetImageSize(weibo);
-                        SpannableStringUtil.paraeSpannable(weibo);
-                        return weibo;
-                    }
-                })
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        Subscription subscription = createObservable(maxId, false)
                 .subscribe(new Subscriber<List<Weibo>>() {
                     @Override
                     public void onCompleted() {
@@ -162,5 +119,39 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
                     }
                 });
         mLoginCompositeSubscription.add(subscription);
+    }
+
+    private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
+        return mServerWeiboSource.getUseWeibo(mToken, mUsername, mFeature, 0, maxId, PAGE_COUNT, 1)
+                .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
+                    @Override
+                    public Observable<Weibo> call(UserWeiboResponse response) {
+                        return Observable.from(response.getStatuses());
+                    }
+                })
+                .filter(new Func1<Weibo, Boolean>() {
+                    @Override
+                    public Boolean call(Weibo weibo) {
+                        return isRefresh || !mWeibos.contains(weibo);
+                    }
+                })
+                .map(new Func1<Weibo, Weibo>() {
+
+                    @Override
+                    public Weibo call(Weibo weibo) {
+                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
+                        toGetImageSize(weibo);
+                        return weibo;
+                    }
+                })
+                .toList()
+                .doOnNext(new Action1<List<Weibo>>() {
+                    @Override
+                    public void call(List<Weibo> weibos) {
+                        doSpanNext(weibos);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

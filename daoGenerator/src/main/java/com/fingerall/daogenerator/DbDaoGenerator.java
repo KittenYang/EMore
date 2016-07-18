@@ -21,6 +21,7 @@ public class DbDaoGenerator {
         createVisible(sch);
         createDirectMessage(sch);
         createDirectMessageImage(sch);
+        createUrlInfo(sch);
         new de.greenrobot.daogenerator.DaoGenerator().generateAll(sch, "./app/src/main/java");
     }
 
@@ -185,6 +186,19 @@ public class DbDaoGenerator {
         entity.addStringProperty("thumbnail_240");
         entity.addStringProperty("thumbnail_600");
         entity.addIntProperty("http_code");
+    }
+
+    static void createUrlInfo(Schema sch) {
+        Entity entity = sch.addEntity("UrlInfo");
+        entity.addStringProperty("shortUrl").primaryKey();
+        entity.addStringProperty("longUrl");
+        entity.addStringProperty("description");
+        entity.addStringProperty("object_type");
+        entity.addStringProperty("title");
+        entity.addStringProperty("display_name");
+        entity.addIntProperty("transcode");
+        entity.addIntProperty("type");
+        entity.addBooleanProperty("shortUrlAvailable");
     }
 
 

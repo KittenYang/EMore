@@ -4,23 +4,32 @@ import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
+import com.caij.emore.bean.response.QueryUrlResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.LocakImage;
 import com.caij.emore.database.bean.PicUrl;
+import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.TimeLinePresent;
 import com.caij.emore.present.WeiboActionPresent;
 import com.caij.emore.present.view.TimeLineWeiboView;
 import com.caij.emore.present.view.WeiboActionView;
 import com.caij.emore.source.ImageSouce;
+import com.caij.emore.source.UrlSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.source.local.LocalImageSource;
+import com.caij.emore.source.local.LocalUrlSource;
 import com.caij.emore.source.server.ServerImageSource;
+import com.caij.emore.source.server.ServerUrlSource;
+import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.weibo.ApiUtil;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,12 +55,16 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
     protected String mToken;
     protected WeiboSource mLocalWeiboSource;
     protected CompositeSubscription mLoginCompositeSubscription;
+    protected UrlSource mLocalUrlSource;
+    protected UrlSource mServerUrlSource;
 
     public AbsTimeLinePresent(String token, V view,  WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
         mView = view;
         mToken = token;
         mLocalImageSouce = new LocalImageSource();
         mServerImageSouce = new ServerImageSource();
+        mLocalUrlSource = new LocalUrlSource();
+        mServerUrlSource = new ServerUrlSource();
         mServerWeiboSource = serverWeiboSource;
         mLocalWeiboSource = localWeiboSource;
         mLoginCompositeSubscription = new CompositeSubscription();
@@ -227,23 +240,56 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                 });
         mLoginCompositeSubscription.add(subscription);
     }
-//
-//    public class WeiboTransformer implements Observable.Transformer<Weibo, Weibo> {
-//
-//        @Override
-//        public Observable<Weibo> call(Observable<Weibo> weiboObservable) {
-//            return weiboObservable
-//                    .map(new Func1<Weibo, Weibo>() {
-//
-//                        @Override
-//                        public Weibo call(Weibo weibo) {
-//                            toGetImageSize(weibo);
-//                            weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-//                            SpannableStringUtil.paraeSpannable(weibo);
-//                            return weibo;
-//                        }
-//                    });
-//        }
-//    }
+
+    protected void doSpanNext(List<Weibo> weibos) {
+        List<String> shortUrls  = SpannableStringUtil.praseHttpUrl(weibos);
+        Map<String, UrlInfo> shortLongLinkMap = a(shortUrls);
+        for (Weibo weibo : weibos) {
+            SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
+        }
+    }
+
+    protected void doSpanNext(Weibo weibo) {
+        List<String> shortUrls  = SpannableStringUtil.praseHttpUrl(weibo);
+        Map<String, UrlInfo> shortLongLinkMap = a(shortUrls);
+        SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
+    }
+
+    private Map<String, UrlInfo> a(List<String> shortUrls){
+        Map<String, UrlInfo> shortLongLinkMap = new HashMap<String, UrlInfo>();
+        if (shortUrls.size() > 0) {
+            int size = shortUrls.size() / 20 + 1;
+            List<String> params = new ArrayList<String>(20);
+            for (int i = 0; i < size; i ++) {
+                params.clear();
+                for (int j = i * 20; j < Math.min(shortUrls.size(), (i + 1) * 20); j ++) {
+                    String shortUrl  = shortUrls.get(j);
+                    if (UrlInfo.isShortUrl(shortUrl)) {
+                        UrlInfo urlInfo = mLocalUrlSource.getShortUrlInfo(mToken, shortUrl);
+                        if (urlInfo != null) {
+                            shortLongLinkMap.put(urlInfo.getShortUrl(), urlInfo);
+                        } else {
+                            params.add(shortUrl);
+                        }
+                    }
+                }
+                if (params.size() > 0) {
+                    try {
+                        QueryUrlResponse queryUrlResponse = mServerUrlSource.getShortUrlInfo(mToken, params);
+                        if (queryUrlResponse != null) {
+                            for (Object obj : queryUrlResponse.getUrls()) {
+                                UrlInfo shortLongLink = new UrlInfo(new JSONObject(GsonUtils.toJson(obj)));
+                                mLocalUrlSource.saveUrlInfo(shortLongLink);
+                                shortLongLinkMap.put(shortLongLink.getShortUrl(), shortLongLink);
+                            }
+                        }
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+        }
+        return shortLongLinkMap;
+    }
 
 }

@@ -44,6 +44,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     @Override
                     public void call(Weibo weibo) {
                         weibo.transformPicUrlsByPicIds();
+                        weibo.transformText();
                         mLocalWeiboSource.saveWeibo(mToken, weibo);
                     }
                 });
@@ -62,7 +63,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     public void call(Weibo weibo) {
                         toGetImageSize(weibo);
                         weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        SpannableStringUtil.paraeSpannable(weibo);
+                        doSpanNext(weibo);
                     }
                 })
                 .subscribeOn(Schedulers.io())
