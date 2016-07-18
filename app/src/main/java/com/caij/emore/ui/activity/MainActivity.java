@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -135,12 +136,23 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
         }
     }
 
+    private void changeToolBarFlag(boolean isScroll) {
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
+        if (isScroll) {
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        }else {
+            params.setScrollFlags(0);
+        }
+        mToolbar.setLayoutParams(params);
+    }
+
     @Override
     public void setUser(User user) {
         if (user != null) {
             mTvNavigationUsername.setText(user.getName());
             ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild().setCircle(true).build();
             ImageLoader.load(this, mImgNavigationAvatar, user.getAvatar_large(), R.drawable.circle_image_placeholder, config);
+            mImgNavigationAvatar.setTag(user);
         }
     }
 
@@ -151,6 +163,7 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
             switchContent(mVisibleFragment, mFriendWeiboFragment, R.id.attach_container, FRIEND_WEIBO_FRAGMENT_TAG);
             mVisibleFragment = mFriendWeiboFragment;
             mDrawerLayout.closeDrawer(Gravity.LEFT);
+            changeToolBarFlag(true);
         }
     }
 
@@ -160,18 +173,26 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
             switchContent(mVisibleFragment, mMessageFragment, R.id.attach_container, MESSAGE_FRAGMENT_TAG);
             mVisibleFragment = mMessageFragment;
             mDrawerLayout.closeDrawer(Gravity.LEFT);
+            changeToolBarFlag(false);
         }
     }
 
     @OnClick({R.id.img_navigation_avatar, R.id.tv_setting})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_setting:
+            case R.id.tv_setting: {
                 Intent intent = new Intent(this, SettingActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.img_navigation_avatar:
+            }
+            case R.id.img_navigation_avatar: {
+                User user = (User) view.getTag();
+                if (user != null) {
+                    Intent intent = UserInfoActivity.newIntent(this, user.getScreen_name());
+                    startActivity(intent);
+                }
                 break;
+            }
         }
     }
 

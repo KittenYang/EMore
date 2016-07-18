@@ -43,6 +43,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
+                        weibo.transformPicUrlsByPicIds();
                         mLocalWeiboSource.saveWeibo(mToken, weibo);
                     }
                 });
@@ -52,7 +53,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     public Boolean call(Weibo weibo) {
                         return weibo != null
                                 && weibo.getUpdate_time() != null
-                                && System.currentTimeMillis() - weibo.getUpdate_time() < 5 * 60 * 1000
+                                && System.currentTimeMillis() - weibo.getUpdate_time() < 10 * 60 * 1000
                                 && !weibo.getText().contains("全文： http");
                     }
                 })

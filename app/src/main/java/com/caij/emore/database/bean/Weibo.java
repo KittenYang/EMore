@@ -5,10 +5,20 @@ package com.caij.emore.database.bean;
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
 
+import android.net.Uri;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
+
+import com.caij.emore.utils.GsonUtils;
+import com.caij.emore.utils.LogUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -280,6 +290,8 @@ public class Weibo implements Serializable {
     private User user;
     private Weibo retweeted_status;
     private transient Spanned contentSpannableString;
+    private List<String> pic_ids;
+    private Object pic_infos;
 
     public Visible getVisible() {
         return visible;
@@ -327,6 +339,43 @@ public class Weibo implements Serializable {
 
     public void setRetweeted_status(Weibo retweeted_status) {
         this.retweeted_status = retweeted_status;
+    }
+
+    public List<String> getPic_ids() {
+        return pic_ids;
+    }
+
+    public void setPic_ids(List<String> pic_ids) {
+        this.pic_ids = pic_ids;
+    }
+
+    public Object getPic_infos() {
+        return pic_infos;
+    }
+
+    public void transformPicUrlsByPicIds() {
+        if (!TextUtils.isEmpty(thumbnail_pic) && pic_ids != null && pic_ids.size() > 0) {
+            pic_urls = new ArrayList<PicUrl>(pic_ids.size());
+            for (String picid : pic_ids) {
+                try {
+                    JSONObject jsonObject = new JSONObject(GsonUtils.toJson(pic_infos));
+                    JSONObject picInfoJSONObject = jsonObject.getJSONObject(picid);
+                    JSONObject thumbnailpicInfoJSONObject = picInfoJSONObject.getJSONObject("thumbnail");
+                    String url  = thumbnailpicInfoJSONObject.getString("url");
+                    Uri uri = Uri.parse(url);
+                    String thumbnailpic_url  = uri.getScheme() + "://" + uri.getHost() + "/thumbnail/" + uri.getLastPathSegment();
+                    PicUrl picUrl = new PicUrl();
+                    picUrl.setThumbnail_pic(thumbnailpic_url);
+                    pic_urls.add(picUrl);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void setPic_infos(Object pic_infos) {
+        this.pic_infos = pic_infos;
     }
 
     public Spanned getContentSpannableString() {

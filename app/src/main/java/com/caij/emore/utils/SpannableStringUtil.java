@@ -10,7 +10,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.URLSpan;
-import android.util.Log;
 
 import com.caij.emore.R;
 import com.caij.emore.AppApplication;
@@ -36,7 +35,6 @@ public class SpannableStringUtil {
 
     public static void praseName(Spannable spannableString) {
         // 用户名称
-//			Pattern pattern = Pattern.compile("@([a-zA-Z0-9_\\-\\u4e00-\\u9fa5]+)");
         Pattern pattern = Pattern.compile("@[\\w\\p{InCJKUnifiedIdeographs}-]{1,26}");
         MyURLSpan weiboSpan = null;
         Matcher matcher = pattern.matcher(spannableString);
@@ -168,13 +166,12 @@ public class SpannableStringUtil {
 
     public static void paraeSpannable(Weibo weibo) {
         Context applicationContent = AppApplication.getInstance();
-        SpannableStringBuilder contentSpannableString = praseHttpUrlText(weibo.getText());
+        SpannableStringBuilder contentSpannableString = praseHttpUrlText(weibo.getText() + " ");
         SpannableStringUtil.praseName(contentSpannableString);
         SpannableStringUtil.praseTopic(contentSpannableString);
         SpannableStringUtil.praseDefaultEmotions(applicationContent, contentSpannableString);
         SpannableStringUtil.praseSoftEmotions(contentSpannableString);
         weibo.setContentSpannableString(contentSpannableString);
-
 
 
         if (weibo.getRetweeted_status() != null) {
@@ -183,8 +180,7 @@ public class SpannableStringUtil {
             User reUser = reWeibo.getUser();
             if (reUser != null && !TextUtils.isEmpty(reUser.getScreen_name()))
                 reUserName = String.format("@%s :", reUser.getScreen_name());
-//            SpannableString reContentSpannableString = SpannableString.valueOf(reUserName + reWeibo.getText());
-            SpannableStringBuilder reContentSpannableString = praseHttpUrlText(reUserName + reWeibo.getText());
+            SpannableStringBuilder reContentSpannableString = praseHttpUrlText(reUserName + reWeibo.getText() + " ");
             SpannableStringUtil.praseName(reContentSpannableString);
             SpannableStringUtil.praseTopic(reContentSpannableString);
             SpannableStringUtil.praseDefaultEmotions(applicationContent, reContentSpannableString);
@@ -194,9 +190,7 @@ public class SpannableStringUtil {
     }
 
     public static void paraeSpannable(Comment comment, Context applicationContent) {
-        int color = applicationContent.getResources().getColor(R.color.link_text_color);
-        int pressColor = applicationContent.getResources().getColor(R.color.link_text_press_color);
-        SpannableString contentSpannableString = SpannableString.valueOf(comment.getText());
+        SpannableString contentSpannableString = SpannableString.valueOf(comment.getText() + " ");
         SpannableStringUtil.praseName(contentSpannableString);
         SpannableStringUtil.praseTopic(contentSpannableString);
         SpannableStringUtil.praseDefaultEmotions(applicationContent, contentSpannableString);
@@ -206,7 +200,7 @@ public class SpannableStringUtil {
     }
 
     public static void paraeSpannable(Spannable text, Context applicationContent) {
-        SpannableStringBuilder contentSpannableString = praseHttpUrlText(text.toString());
+        SpannableStringBuilder contentSpannableString = praseHttpUrlText(text.toString() + " ");
         SpannableStringUtil.praseName(contentSpannableString);
         SpannableStringUtil.praseTopic(contentSpannableString);
         SpannableStringUtil.praseDefaultEmotions(applicationContent, contentSpannableString);

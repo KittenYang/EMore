@@ -1,6 +1,7 @@
 package com.caij.emore.present.imp;
 
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 
 import com.caij.emore.Key;
 import com.caij.emore.bean.AccessToken;
@@ -357,8 +358,7 @@ public class ChatPresentImp implements ChatPresent {
         LocakImage locakImage =  new LocakImage();
         locakImage.setUrl(messageImage.getThumbnail_600());
         if (messageImage.getThumbnail_600().startsWith("http")) {
-            Map<String, String> params =  UrlUtil.getUrlParams(messageImage.getThumbnail_600());
-            String size  = params.get("size");
+            String size  = Uri.parse(messageImage.getThumbnail_600()).getQueryParameter("size");
             String[] strings = size.split(",");
             locakImage.setWidth(Integer.parseInt(strings[0]));
             locakImage.setHeight(Integer.parseInt(strings[1]));

@@ -3,6 +3,7 @@ package com.caij.emore.ui.activity.login;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -197,9 +198,8 @@ public abstract class AbsLoginActivity extends WebActivity {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             LogUtil.d(this, url);
             if (url != null && url.startsWith(getRedirectUrL())) { // 授权成功
-                Map<String, String> params  = UrlUtil.getUrlParams(url);
-                if (params != null) {
-                    String codeValue = params.get("code");
+                String codeValue  = Uri.parse(url).getQueryParameter("code");
+                if (codeValue != null) {
                     getAccessToken(codeValue);
                 }
                 return true;
