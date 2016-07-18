@@ -1,16 +1,26 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.api.WeiBoService;
+import com.caij.emore.bean.ShortLongLink;
+import com.caij.emore.bean.response.QueryUrlResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.view.FriendWeiboView;
 import com.caij.emore.source.DefaultResponseSubscriber;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -43,7 +53,16 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                         return Observable.from(weibos);
                     }
                 })
-                .compose(new WeiboTransformer())
+                .map(new Func1<Weibo, Weibo>() {
+
+                    @Override
+                    public Weibo call(Weibo weibo) {
+                        toGetImageSize(weibo);
+                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
+//                        SpannableStringUtil.paraeSpannable(weibo);
+                        return weibo;
+                    }
+                })
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -77,12 +96,46 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                         return Observable.from(weibos);
                     }
                 })
-                .compose(new WeiboTransformer())
+                .map(new Func1<Weibo, Weibo>() {
+
+                        @Override
+                        public Weibo call(Weibo weibo) {
+                            toGetImageSize(weibo);
+                            weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
+                            return weibo;
+                        }
+                    })
                 .toList()
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
-                    mLocalWeiboSource.saveWeibos(mToken, weibos);
+                        mLocalWeiboSource.saveWeibos(mToken, weibos);
+                        List<String> shortUrls  = SpannableStringUtil.praseHttpUrl(weibos);
+                        Map<String, ShortLongLink> shortLongLinkMap = new HashMap<String, ShortLongLink>();
+                        if (shortUrls.size() > 0) {
+                            int size = shortUrls.size() / 20 + 1;
+                            List<String> params = new ArrayList<String>(20);
+                            for (int i = 0; i < size; i ++) {
+                                params.clear();
+                                for (int j = i * 20; j < Math.min(shortUrls.size(), (i + 1) * 20); j ++) {
+                                    params.add(shortUrls.get(j));
+                                }
+                                Call<QueryUrlResponse> call = WeiBoService.Factory.create().getShortUrlInfo(mToken, params);
+                                try {
+                                    Response<QueryUrlResponse> responseResponse = call.execute();
+                                    if (responseResponse.code() == 200) {
+                                        QueryUrlResponse queryUrlResponse = responseResponse.body();
+                                        for (Object obj : queryUrlResponse.getUrls()) {
+                                            ShortLongLink shortLongLink = new ShortLongLink(GsonUtils.toJson(obj));
+                                            shortLongLinkMap.put(shortLongLink.shortUrl, shortLongLink);
+                                        }
+                                    }
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
+                        SpannableStringUtil.paraeSpannable(weibos, shortLongLinkMap);
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -138,12 +191,48 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                         return !mWeibos.contains(weibo);
                     }
                 })
-                .compose(new WeiboTransformer())
+                .map(new Func1<Weibo, Weibo>() {
+
+                    @Override
+                    public Weibo call(Weibo weibo) {
+                        toGetImageSize(weibo);
+                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
+//                        SpannableStringUtil.paraeSpannable(weibo);
+                        return weibo;
+                    }
+                })
                 .toList()
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
                         mLocalWeiboSource.saveWeibos(mToken, weibos);
+
+                        List<String> shortUrls  = SpannableStringUtil.praseHttpUrl(weibos);
+                        Map<String, ShortLongLink> shortLongLinkMap = new HashMap<String, ShortLongLink>();
+                        if (shortUrls.size() > 0) {
+                            int size = shortUrls.size() / 20 + 1;
+                            List<String> params = new ArrayList<String>(20);
+                            for (int i = 0; i < size; i ++) {
+                                params.clear();
+                                for (int j = i * 20; j < Math.min(shortUrls.size(), (i + 1) * 20); j ++) {
+                                    params.add(shortUrls.get(j));
+                                }
+                                Call<QueryUrlResponse> call = WeiBoService.Factory.create().getShortUrlInfo(mToken, params);
+                                try {
+                                    Response<QueryUrlResponse> responseResponse = call.execute();
+                                    if (responseResponse.code() == 200) {
+                                        QueryUrlResponse queryUrlResponse = responseResponse.body();
+                                        for (Object obj : queryUrlResponse.getUrls()) {
+                                            ShortLongLink shortLongLink = new ShortLongLink(GsonUtils.toJson(obj));
+                                            shortLongLinkMap.put(shortLongLink.shortUrl, shortLongLink);
+                                        }
+                                    }
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
+                        SpannableStringUtil.paraeSpannable(weibos, shortLongLinkMap);
                     }
                 })
                 .subscribeOn(Schedulers.io())

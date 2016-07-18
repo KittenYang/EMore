@@ -227,23 +227,23 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                 });
         mLoginCompositeSubscription.add(subscription);
     }
-
-    public class WeiboTransformer implements Observable.Transformer<Weibo, Weibo> {
-
-        @Override
-        public Observable<Weibo> call(Observable<Weibo> weiboObservable) {
-            return weiboObservable
-                    .map(new Func1<Weibo, Weibo>() {
-
-                        @Override
-                        public Weibo call(Weibo weibo) {
-                            toGetImageSize(weibo);
-                            weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                            SpannableStringUtil.paraeSpannable(weibo);
-                            return weibo;
-                        }
-                    });
-        }
-    }
+//
+//    public class WeiboTransformer implements Observable.Transformer<Weibo, Weibo> {
+//
+//        @Override
+//        public Observable<Weibo> call(Observable<Weibo> weiboObservable) {
+//            return weiboObservable
+//                    .map(new Func1<Weibo, Weibo>() {
+//
+//                        @Override
+//                        public Weibo call(Weibo weibo) {
+//                            toGetImageSize(weibo);
+//                            weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
+//                            SpannableStringUtil.paraeSpannable(weibo);
+//                            return weibo;
+//                        }
+//                    });
+//        }
+//    }
 
 }

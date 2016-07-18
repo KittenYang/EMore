@@ -8,6 +8,7 @@ import com.caij.emore.bean.UnreadMessageCount;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
+import com.caij.emore.bean.response.QueryUrlResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.UploadImageResponse;
@@ -20,10 +21,12 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
 import com.caij.emore.utils.GsonUtils;
 
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -265,7 +268,12 @@ public interface WeiBoService {
                                                        @Query("access_token") String accessToken,
                                                        @Query("fid") long fid);
 
-    @GET("2/statuses/show.json")
+    @GET("/2/statuses/show.json")
     Observable<Weibo> getWeiboById(@Query("access_token") String accessToken,
-                                                            @Query("id") long id);
+                                   @Query("id") long id);
+
+
+    @GET("/2/short_url/info.json")
+    Call<QueryUrlResponse> getShortUrlInfo(@Query("access_token") String accessToken,
+                                           @Query("url_short") List<String> url_shorts);
 }

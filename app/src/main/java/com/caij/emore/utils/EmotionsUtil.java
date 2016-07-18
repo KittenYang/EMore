@@ -16,6 +16,10 @@ import java.util.Map;
  */
 public class EmotionsUtil {
 
+    public static String WEB_CARD_IMAGE_KEY  = "[网页]";
+    public static String IMAGE_CARD_IMAGE_KEY  = "[查看图片]";
+    public static String VIDEO_CARD_IMAGE_KEY  = "[查看视频]";
+
     private static ArrayList<Emotion> imageEmotionList = new ArrayList<>();
     private static Map<String, Integer> imageEmotionMap = new HashMap<>();
 
@@ -32,7 +36,9 @@ public class EmotionsUtil {
     };
 
     static {
-        imageEmotionMap.put("[网页]", R.mipmap.timeline_card_small_web);
+        imageEmotionMap.put(WEB_CARD_IMAGE_KEY, R.mipmap.timeline_card_small_web);
+        imageEmotionMap.put(IMAGE_CARD_IMAGE_KEY, R.mipmap.timeline_icon_photo);
+        imageEmotionMap.put(VIDEO_CARD_IMAGE_KEY, R.mipmap.timeline_card_small_video);
 
         imageEmotionMap.put("[微笑]", R.mipmap.d_hehe);
         imageEmotionList.add(new Emotion("[微笑]", R.mipmap.d_hehe));
