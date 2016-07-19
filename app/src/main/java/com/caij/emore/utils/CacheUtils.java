@@ -1,7 +1,6 @@
 package com.caij.emore.utils;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import java.io.File;
 
@@ -15,7 +14,7 @@ public class CacheUtils {
     }
 
     public static long getCacheFileSizeLong(Context context) {
-        return FileUtil.getDirSize(getCacheDir(context));
+        return FileUtil.getFileSize(getCacheDir(context));
     }
 
     public static void clearCache(Context context) {
@@ -23,19 +22,11 @@ public class CacheUtils {
     }
 
     public static String getCacheFileSizeString(Context context) {
-        long size = getCacheFileSizeLong(context);
-        long kb = (long) (size / 1024f);
-        if (kb >= 1000) {
-            long mb = (long) (kb / 1000f);
-            if (mb >= 1000) {
-                long gb = (long) (mb / 1024f);
-                return gb + "G";
-            }else {
-                return mb + "M";
-            }
-        }else {
-            return kb + "KB";
-        }
+        return FileUtil.getFileSizeString(getCacheDir(context));
+    }
+
+    public static File getCompressImageDir(Context context) {
+        return new File(getCacheDir(context), "CompressImage");
     }
 
 }

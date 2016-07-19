@@ -10,9 +10,7 @@ import com.caij.emore.database.bean.LocakImage;
 import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
-import com.caij.emore.present.TimeLinePresent;
 import com.caij.emore.present.WeiboActionPresent;
-import com.caij.emore.present.view.TimeLineWeiboView;
 import com.caij.emore.present.view.WeiboActionView;
 import com.caij.emore.source.ImageSouce;
 import com.caij.emore.source.UrlSource;
@@ -38,8 +36,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -242,20 +238,20 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
     }
 
     protected void doSpanNext(List<Weibo> weibos) {
-        List<String> shortUrls  = SpannableStringUtil.praseHttpUrl(weibos);
-        Map<String, UrlInfo> shortLongLinkMap = a(shortUrls);
+        List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibos);
+        Map<String, UrlInfo> shortLongLinkMap = getShortUrlInfos(shortUrls);
         for (Weibo weibo : weibos) {
             SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
         }
     }
 
     protected void doSpanNext(Weibo weibo) {
-        List<String> shortUrls  = SpannableStringUtil.praseHttpUrl(weibo);
-        Map<String, UrlInfo> shortLongLinkMap = a(shortUrls);
+        List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, null);
+        Map<String, UrlInfo> shortLongLinkMap = getShortUrlInfos(shortUrls);
         SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
     }
 
-    private Map<String, UrlInfo> a(List<String> shortUrls){
+    private Map<String, UrlInfo> getShortUrlInfos(List<String> shortUrls){
         Map<String, UrlInfo> shortLongLinkMap = new HashMap<String, UrlInfo>();
         if (shortUrls.size() > 0) {
             int size = shortUrls.size() / 20 + 1;

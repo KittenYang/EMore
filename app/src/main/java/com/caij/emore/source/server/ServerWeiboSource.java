@@ -97,38 +97,38 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<Weibo> publishWeiboOfMultiImage(final String weiyoToken, final String weicoToken,
-                                                      final String content, List<String> imagePaths) {
-        return Observable.from(imagePaths)
-                .flatMap(new Func1<String, Observable<UploadImageResponse>>() {
-                    @Override
-                    public Observable<UploadImageResponse> call(String s) {
-                        File file = new File(s);
-                        try {
-                            String type = ImageUtil.getImageType(file);
-                            RequestBody fileBody =
-                                    RequestBody.create(MediaType.parse("image/" + type), file);
-                            MultipartBody.Part filePart =
-                                    MultipartBody.Part.createFormData("pic", file.getName(), fileBody);
-                            RequestBody tokenBody =
-                                    RequestBody.create(null, weicoToken);
-                            return mWeiBoService.uploadWeiboOfOneImage(tokenBody, filePart);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                })
-                .toList()
-                .flatMap(new Func1<List<UploadImageResponse>, Observable<Weibo>>() {
-                    @Override
-                    public Observable<Weibo> call(List<UploadImageResponse> uploadImageResponses) {
-                        StringBuilder sb = new StringBuilder();
-                        for (UploadImageResponse uploadImageResponse : uploadImageResponses) {
-                            sb.append(uploadImageResponse.getPic_id()).append(",");
-                        }
-                        return mWeiBoService.publishWeiboOfMultiImage(weiyoToken, content, sb.toString());
-                    }
-                });
+    public Observable<UploadImageResponse> uploadWeiboOfOneImage(final String access_token, String imagePath) throws IOException {
+        final File file = new File(imagePath);
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try {
+                    String type  = ImageUtil.getImageType(file);
+                    subscriber.onNext(type);
+                    subscriber.onCompleted();
+                } catch (IOException e) {
+                    LogUtil.d(ServerWeiboSource.this, e.getMessage());
+                    subscriber.onError(e);
+                }
+            }
+        })
+        .flatMap(new Func1<String, Observable<UploadImageResponse>>() {
+            @Override
+            public Observable<UploadImageResponse> call(String type) {
+                RequestBody fileBody =
+                        RequestBody.create(MediaType.parse("image/" + type), file);
+                MultipartBody.Part filePart =
+                        MultipartBody.Part.createFormData("pic", file.getName(), fileBody);
+                RequestBody tokenBody =
+                        RequestBody.create(null, access_token);
+                return mWeiBoService.uploadWeiboOfOneImage(tokenBody, filePart);
+            }
+        });
+    }
+
+    @Override
+    public Observable<Weibo> publishWeiboOfMultiImage(String accessToken, String status, String picIds) {
+        return mWeiBoService.publishWeiboOfMultiImage(accessToken, status, picIds);
     }
 
     @Override

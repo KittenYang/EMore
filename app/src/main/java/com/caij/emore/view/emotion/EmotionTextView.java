@@ -35,9 +35,7 @@ public class EmotionTextView extends FixClickableSpanBugTextView {
             ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Spannable>() {
                 @Override
                 protected Spannable doInBackground(Object[] params) {
-                    SpannableString contentSpannableString = SpannableString.valueOf(text);
-                    SpannableStringUtil.paraeSpannable(contentSpannableString, context);
-                    return contentSpannableString;
+                    return SpannableStringUtil.paraeSpannable(text.toString());
                 }
 
                 @Override

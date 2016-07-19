@@ -9,31 +9,39 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.present.PublishWeiboManagerPresent;
+import com.caij.emore.present.imp.PublishWeiboManagerPresentImp;
+import com.caij.emore.present.view.PublishServiceView;
 import com.caij.emore.source.server.ServerWeiboSource;
+import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.EventUtil;
+import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.ToastUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/7.
  */
-public class PublishWeiboManager extends IManager {
+public class PublishWeiboManager extends IManager implements PublishServiceView {
 
     private static final int PUBLISH_WEIBO_NOTIFICATION_ID = 1000;
 
     private static PublishWeiboManager inst = new PublishWeiboManager();
 
-    private ServerWeiboSource mPublishWeiboSource;
-    private CompositeSubscription mCompositeSubscription;
+
     NotificationManager mNotificationManager;
-    Observable<PublishBean> mPublishWeiboObservable;
+    PublishWeiboManagerPresent mPublishWeiboManagerPresent;
 
     public static PublishWeiboManager getInstance() {
         return inst;
@@ -45,82 +53,14 @@ public class PublishWeiboManager extends IManager {
 
     @Override
     protected void doOnCreate() {
-        mPublishWeiboSource = new ServerWeiboSource();
+        mPublishWeiboManagerPresent = new PublishWeiboManagerPresentImp(new ServerWeiboSource(), this);
+        mPublishWeiboManagerPresent.onCreate();
         mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        mCompositeSubscription = new CompositeSubscription();
-        mPublishWeiboObservable = EventUtil.registPublishEvent();
-        mPublishWeiboObservable.subscribe(new Action1<PublishBean>() {
-            @Override
-            public void call(PublishBean publishBean) {
-                publishWeibo(publishBean);
-            }
-        });
     }
 
     @Override
     public void reset() {
-        EventUtil.unregistPublishEvent(mPublishWeiboObservable);
-        mCompositeSubscription.clear();
-    }
-
-    private void publishWeibo(final PublishBean publishBean) {
-        if (publishBean.getPics().size() == 1) {
-            publishWeiboOngeImage(publishBean);
-        }else {
-            publishWeiboMuImage(publishBean);
-        }
-    }
-    private void publishWeiboOngeImage(final PublishBean publishBean) {
-        notifyPublishNotification(publishBean);
-        Account account = UserPrefs.get().getAccount();
-        Subscription subscription = mPublishWeiboSource.publishWeiboOfOneImage(account.getWeiyoToken().getAccess_token(),
-                publishBean.getText(), publishBean.getPics().get(0))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Weibo>() {
-                    @Override
-                    public void onCompleted() {
-                        notifyPublishSuccessNotification();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        notifyPublishFailNotification();
-                    }
-
-                    @Override
-                    public void onNext(Weibo weibo) {
-
-                    }
-                });
-        mCompositeSubscription.add(subscription);
-    }
-
-    private void publishWeiboMuImage(final PublishBean publishBean) {
-        notifyPublishNotification(publishBean);
-        Account account = UserPrefs.get().getAccount();
-        Subscription subscription = mPublishWeiboSource.publishWeiboOfMultiImage(account.getWeiyoToken().getAccess_token()
-                , account.getWeicoToken().getAccess_token(),
-                publishBean.getText(), publishBean.getPics())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Weibo>() {
-                    @Override
-                    public void onCompleted() {
-                        notifyPublishSuccessNotification();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        notifyPublishFailNotification();
-                    }
-
-                    @Override
-                    public void onNext(Weibo weibo) {
-
-                    }
-                });
-        mCompositeSubscription.add(subscription);
+        mPublishWeiboManagerPresent.onDestroy();
     }
 
     private void notifyPublishNotification(PublishBean publishBean) {
@@ -149,5 +89,25 @@ public class PublishWeiboManager extends IManager {
         notificationBuilder.setSmallIcon(R.mipmap.statusbar_ic_send_fail);
         Notification notification = notificationBuilder.getNotification();
         mNotificationManager.notify(PUBLISH_WEIBO_NOTIFICATION_ID, notification);
+    }
+
+    @Override
+    public void onPublishStart(PublishBean publishBean) {
+        notifyPublishNotification(publishBean);
+    }
+
+    @Override
+    public void onPublishFail() {
+        notifyPublishFailNotification();
+    }
+
+    @Override
+    public void onPublishSuccess(Weibo weibo) {
+        notifyPublishSuccessNotification();
+    }
+
+    @Override
+    public Context getContent() {
+        return ctx;
     }
 }

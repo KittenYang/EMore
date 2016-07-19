@@ -150,7 +150,7 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
                 if (image.getType() == 1) {
                     Intent intent = new Intent();
                     intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                    camareOutputPath = ImageUtil.createCamareImage(SelectImageActivity.this);
+                    camareOutputPath = ImageUtil.createCameraImagePath(SelectImageActivity.this);
                     Uri uri = Uri.fromFile(new File(camareOutputPath));
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                     startActivityForResult(intent, REQUEST_CODE_CAPTURE);

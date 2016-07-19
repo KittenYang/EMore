@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import android.text.Spannable;
 import android.text.SpannableString;
 
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
@@ -16,6 +17,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -45,25 +47,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
 
     @Override
     public void userFirstVisible() {
-        Subscription subscription = mServerRepostSource.getRepostWeibos(mToken, mWeiboId, 0, 0, PAGE_COUNET, 1)
-                .flatMap(new Func1<QueryRepostWeiboResponse, Observable<Weibo>>() {
-                    @Override
-                    public Observable<Weibo> call(QueryRepostWeiboResponse queryRepostWeiboResponse) {
-                        return Observable.from(queryRepostWeiboResponse.getReposts());
-                    }
-                })
-                .map(new Func1<Weibo, Weibo>() {
-                    @Override
-                    public Weibo call(Weibo weibo) {
-                        SpannableString content  = SpannableString.valueOf(weibo.getText());
-                        SpannableStringUtil.paraeSpannable(content, mWeiboRepostsView.getContent());
-                        weibo.setContentSpannableString(content);
-                        return weibo;
-                    }
-                })
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        Subscription subscription = createObservable(0, true)
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mWeiboRepostsView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -96,31 +80,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
         if (mWeobos.size() > 0) {
             maxId = mWeobos.get(mWeobos.size() - 1).getId();
         }
-        Subscription subscription = mServerRepostSource.getRepostWeibos(mToken, mWeiboId, 0, maxId, PAGE_COUNET, 1)
-                .flatMap(new Func1<QueryRepostWeiboResponse, Observable<Weibo>>() {
-                    @Override
-                    public Observable<Weibo> call(QueryRepostWeiboResponse queryRepostWeiboResponse) {
-                        return Observable.from(queryRepostWeiboResponse.getReposts());
-                    }
-                })
-                .filter(new Func1<Weibo, Boolean>() {
-                    @Override
-                    public Boolean call(Weibo weibo) {
-                        return !mWeobos.contains(weibo);
-                    }
-                })
-                .map(new Func1<Weibo, Weibo>() {
-                    @Override
-                    public Weibo call(Weibo weibo) {
-                        SpannableString content  = SpannableString.valueOf(weibo.getText());
-                        SpannableStringUtil.paraeSpannable(content, mWeiboRepostsView.getContent());
-                        weibo.setContentSpannableString(content);
-                        return weibo;
-                    }
-                })
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        Subscription subscription = createObservable(maxId, false)
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mWeiboRepostsView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -141,6 +101,33 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                 });
 
         mLoginCompositeSubscription.add(subscription);
+    }
+
+    private  Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
+        return mServerRepostSource.getRepostWeibos(mToken, mWeiboId, 0, maxId, PAGE_COUNET, 1)
+                .flatMap(new Func1<QueryRepostWeiboResponse, Observable<Weibo>>() {
+                    @Override
+                    public Observable<Weibo> call(QueryRepostWeiboResponse queryRepostWeiboResponse) {
+                        return Observable.from(queryRepostWeiboResponse.getReposts());
+                    }
+                })
+                .filter(new Func1<Weibo, Boolean>() {
+                    @Override
+                    public Boolean call(Weibo weibo) {
+                        return isRefresh || !mWeobos.contains(weibo);
+                    }
+                })
+                .doOnNext(new Action1<Weibo>() {
+                    @Override
+                    public void call(Weibo weibo) {
+                        Spannable content = SpannableStringUtil.paraeSpannable(weibo.getText());
+                        weibo.setContentSpannableString(content);
+                        weibo.setContentSpannableString(content);
+                    }
+                })
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

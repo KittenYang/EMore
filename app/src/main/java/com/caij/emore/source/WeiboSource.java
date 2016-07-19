@@ -6,9 +6,11 @@ import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
+import com.caij.emore.bean.response.UploadImageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Weibo;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +42,11 @@ public interface WeiboSource {
 
     public Observable<Weibo> publishWeiboOfOneImage(String token, String content, String imagePath);
 
-    public Observable<Weibo> publishWeiboOfMultiImage(String weiyoToken, String weicoToken, String content, List<String> imagePaths);
+//    public Observable<Weibo> publishWeiboOfMultiImage(String weiyoToken, String weicoToken, String content, List<String> imagePaths);
+
+    Observable<UploadImageResponse> uploadWeiboOfOneImage(String access_token, String imagePath) throws IOException;
+
+    Observable<Weibo> publishWeiboOfMultiImage( String accessToken,String status, String picIds);
 
     Observable<Weibo> deleteWeibo(String accessToken, long id);
 

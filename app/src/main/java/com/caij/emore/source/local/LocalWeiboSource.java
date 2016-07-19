@@ -10,6 +10,7 @@ import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
+import com.caij.emore.bean.response.UploadImageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Geo;
 import com.caij.emore.database.bean.LikeBean;
@@ -26,6 +27,7 @@ import com.caij.emore.database.dao.WeiboDao;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.db.DBManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -206,8 +208,12 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<Weibo> publishWeiboOfMultiImage(String weiyoToken, String weicoToken,
-                                                      String content, List<String> imagePaths) {
+    public Observable<UploadImageResponse> uploadWeiboOfOneImage(String access_token, String imagePath) throws IOException {
+        return null;
+    }
+
+    @Override
+    public Observable<Weibo> publishWeiboOfMultiImage(String accessToken, String status, String picIds) {
         return null;
     }
 

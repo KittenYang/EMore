@@ -1,5 +1,6 @@
 package com.caij.emore.bean;
 
+import android.text.Spannable;
 import android.text.SpannableString;
 
 import com.caij.emore.database.bean.User;
@@ -20,7 +21,7 @@ public class Comment implements Serializable {
     private Comment reply_comment;
     private Weibo status;
 
-    private transient SpannableString textSpannableString;
+    private transient Spannable textSpannableString;
 
     public String getCreated_at() {
         return created_at;
@@ -70,11 +71,11 @@ public class Comment implements Serializable {
         this.reply_comment = reply_comment;
     }
 
-    public SpannableString getTextSpannableString() {
+    public Spannable getTextSpannableString() {
         return textSpannableString;
     }
 
-    public void setTextSpannableString(SpannableString textSpannableString) {
+    public void setTextSpannableString(Spannable textSpannableString) {
         this.textSpannableString = textSpannableString;
     }
 

@@ -32,7 +32,7 @@ public class FileUtil {
         return sb.toString();
     }
 
-    public static long getDirSize(File file) {
+    public static long getFileSize(File file) {
         //判断文件是否存在
         if (file.exists()) {
             //如果是目录则递归计算其内容的总大小
@@ -40,7 +40,7 @@ public class FileUtil {
                 File[] children = file.listFiles();
                 long size = 0;
                 for (File f : children)
-                    size += getDirSize(f);
+                    size += getFileSize(f);
                 return size;
             } else {
                 long size = file.length();
@@ -66,6 +66,22 @@ public class FileUtil {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static String getFileSizeString(File file) {
+        long size = getFileSize(file);
+        long kb = (long) (size / 1024f);
+        if (kb >= 1000) {
+            long mb = (long) (kb / 1000f);
+            if (mb >= 1000) {
+                long gb = (long) (mb / 1024f);
+                return gb + "G";
+            }else {
+                return mb + "M";
+            }
+        }else {
+            return kb + "KB";
         }
     }
 }
