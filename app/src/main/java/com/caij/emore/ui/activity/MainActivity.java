@@ -21,6 +21,7 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
@@ -35,13 +36,15 @@ import com.caij.emore.ui.fragment.weibo.FriendWeiboFragment;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.SystemUtil;
+import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.view.DoubleClickToolBar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity implements SimpleUserView {
+public class MainActivity extends BaseActivity implements SimpleUserView, View.OnClickListener {
 
     private static final String FRIEND_WEIBO_FRAGMENT_TAG = "friend_weibo_fragment_tag";
     private static final String MESSAGE_FRAGMENT_TAG = "message_fragment_tag";
@@ -53,7 +56,7 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
     @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    DoubleClickToolBar mToolbar;
     @BindView(R.id.rl_nav_head)
     RelativeLayout mRlNavHead;
     @BindView(R.id.rb_weibo)
@@ -77,6 +80,9 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
+
+        mToolbar.setOnDoubleClickListener(this);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.app_name, R.string.app_name);
         toggle.syncState();
         mDrawerLayout.addDrawerListener(toggle);
@@ -193,6 +199,9 @@ public class MainActivity extends BaseActivity implements SimpleUserView {
                 }
                 break;
             }
+            case R.id.toolbar:
+                RxBus.get().post(Key.EVENT_TOOL_BAR_DOUBLE_CLICK, this);
+                break;
         }
     }
 

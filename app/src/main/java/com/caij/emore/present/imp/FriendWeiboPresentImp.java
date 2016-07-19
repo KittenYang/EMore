@@ -1,22 +1,15 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.bean.response.QueryUrlResponse;
-import com.caij.emore.database.bean.UrlInfo;
+import com.caij.emore.Key;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.view.FriendWeiboView;
 import com.caij.emore.source.DefaultResponseSubscriber;
 import com.caij.emore.source.WeiboSource;
-import com.caij.emore.utils.GsonUtils;
-import com.caij.emore.utils.LogUtil;
-import com.caij.emore.utils.SpannableStringUtil;
-
-import org.json.JSONObject;
+import com.caij.emore.utils.rxbus.RxBus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -34,6 +27,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
     private final static int PAGE_COUNT = 20;
 
     private List<Weibo> mWeibos;
+    Observable<Weibo> mPublishWeiboObservable;
 
     public FriendWeiboPresentImp(String token, FriendWeiboView view, WeiboSource serverWeiboSource,
                                  WeiboSource localWeiboSource) {
@@ -86,7 +80,16 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                         mView.toRefresh();
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
+
+        mPublishWeiboObservable = RxBus.get().register(Key.ON_EMOTION_DELETE_CLICK);
+
+        mPublishWeiboObservable.subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object weibo) {
+                        mView.onWeiboPublishSuccess((Weibo)weibo);
+                    }
+                });
     }
 
     @Override
@@ -116,7 +119,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                         }
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
 
@@ -151,7 +154,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                             mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 2); //这里有一条重复的 所以需要-1
                         }
                     });
-        mLoginCompositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
@@ -191,7 +194,8 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
     @Override
     public void onDestroy() {
-        mLoginCompositeSubscription.clear();
+        mCompositeSubscription.clear();
+        RxBus.get().unregister(Key.EVENT_PUBLISH_WEIBO_SUCCESS, mPublishWeiboObservable);
     }
 
 }

@@ -35,6 +35,8 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
     private MaskTransformation mOtherTransformation;
     private MaskTransformation mSelfTransformation;
 
+    RecyclerViewOnItemClickListener onItemLongClickListener;
+
     public MessageAdapter(Context context) {
         super(context);
         mAvatarImageConfig = new ImageLoader.ImageConfigBuild().
@@ -45,6 +47,10 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         mSelfTransformation = new MaskTransformation(mContext, R.drawable.messages_right_bubble);
     }
 
+    public void setItemLongClickListener(RecyclerViewOnItemClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
+    }
+
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_OTHER_TEXT) {
@@ -52,15 +58,14 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
             return new OtherMessageViewHolder(view, mOnItemClickListener);
         } else if (viewType == TYPE_SELT_TEXT) {
             View view = mInflater.inflate(R.layout.item_chat_self_send_message, parent, false);
-            return new SelfMessageViewHolder(view, mOnItemClickListener);
+            return new SelfMessageViewHolder(view, mOnItemClickListener, onItemLongClickListener);
         }else if (viewType == TYPE_SELT_IMAGE) {
             View view = mInflater.inflate(R.layout.item_chat_self_send_message_image, parent, false);
-            return new SelfMessageViewImageHolder(view, mOnItemClickListener);
+            return new SelfMessageViewImageHolder(view, mOnItemClickListener, onItemLongClickListener);
         }else if (viewType == TYPE_OTHER_IMAGE) {
             View view = mInflater.inflate(R.layout.item_chat_other_send_message_image, parent, false);
             return new OtherMessageViewImageHolder(view, mOnItemClickListener);
         }
-
         return null;
     }
 
@@ -251,9 +256,17 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         @BindView(R.id.tv_send_time)
         TextView tvTime;
 
-        public SelfMessageViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
+        public SelfMessageViewHolder(View itemView, final RecyclerViewOnItemClickListener onItemClickListener,
+                                     final RecyclerViewOnItemClickListener onItemLongClickListener) {
             super(itemView, onItemClickListener);
             ButterKnife.bind(this, itemView);
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    onItemLongClickListener.onItemClick(v, getLayoutPosition());
+                    return true;
+                }
+            });
         }
     }
 
@@ -285,9 +298,17 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         @BindView(R.id.tv_send_time)
         TextView tvTime;
 
-        public SelfMessageViewImageHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
+        public SelfMessageViewImageHolder(View itemView, final RecyclerViewOnItemClickListener onItemClickListener,
+                                          final RecyclerViewOnItemClickListener onItemLongClickListener) {
             super(itemView, onItemClickListener);
             ButterKnife.bind(this, itemView);
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    onItemLongClickListener.onItemClick(v, getLayoutPosition());
+                    return true;
+                }
+            });
         }
     }
 

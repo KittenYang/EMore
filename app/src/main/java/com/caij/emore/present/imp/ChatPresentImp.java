@@ -147,7 +147,7 @@ public class ChatPresentImp implements ChatPresent {
         mSendMessageObservable.subscribe(new Action1<DirectMessage>() {
             @Override
             public void call(DirectMessage message) {
-                mDirectMessageView.onSendEnd(message);
+                mDirectMessageView.notifyDataChange();
                 LogUtil.d(ChatPresentImp.this, "mSendMessageObservable subscribe call");
             }
         });
@@ -380,7 +380,14 @@ public class ChatPresentImp implements ChatPresent {
         cancelLooperLoadMessage();
     }
 
+    @Override
     public void sendMessage(DirectMessage message) {
+        message.setLocal_status(DirectMessage.STATUS_SEND);
+        EventUtil.sendMessage(message);
+        mDirectMessageView.notifyDataChange();
+    }
+
+    private void send(DirectMessage message) {
         EventUtil.sendMessage(message);
         mDirectMessages.add(message);
         mDirectMessageView.setEntities(mDirectMessages);
@@ -411,7 +418,7 @@ public class ChatPresentImp implements ChatPresent {
 
                     @Override
                     public void onNext(DirectMessage message) {
-                        sendMessage(message);
+                        send(message);
                     }
                 });
     }
@@ -440,7 +447,7 @@ public class ChatPresentImp implements ChatPresent {
 
                     @Override
                     public void onNext(DirectMessage message) {
-                        sendMessage(message);
+                        send(message);
                     }
                 });
 

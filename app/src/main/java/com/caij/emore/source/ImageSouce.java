@@ -11,4 +11,5 @@ public interface ImageSouce {
 
     LocakImage get(String url) throws IOException;
     void save(LocakImage locakImage);
+
 }

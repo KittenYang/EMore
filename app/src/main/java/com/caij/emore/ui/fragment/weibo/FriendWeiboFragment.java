@@ -1,9 +1,11 @@
 package com.caij.emore.ui.fragment.weibo;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,20 +13,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.imp.FriendWeiboPresentImp;
 import com.caij.emore.present.view.FriendWeiboView;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.publish.PublishWeiboActivity;
+import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * Created by Caij on 2016/6/4.
@@ -53,6 +60,15 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
                 getResources().getColor(R.color.gplus_color_2),
                 getResources().getColor(R.color.gplus_color_3),
                 getResources().getColor(R.color.gplus_color_4));
+        Observable<Activity> observable = RxBus.get().register(Key.EVENT_TOOL_BAR_DOUBLE_CLICK);
+        observable.subscribe(new Action1<Activity>() {
+            @Override
+            public void call(Activity activity) {
+                if (getActivity() == activity) {
+                    mLoadMoreLoadMoreRecyclerView.smoothScrollToPosition(0);
+                }
+            }
+        });
     }
 
     @Override
@@ -67,6 +83,16 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
     public void toRefresh() {
         mSwipeRefreshLayout.setRefreshing(true);
         mPresent.refresh();
+    }
+
+    @Override
+    public void onWeiboPublishSuccess(Weibo weibo) {
+        mRecyclerViewAdapter.addEntity(0, weibo);
+        mRecyclerViewAdapter.notifyItemInserted(0);
+        LinearLayoutManager manager = (LinearLayoutManager) mLoadMoreLoadMoreRecyclerView.getLayoutManager();
+        if (manager.findFirstVisibleItemPosition() < 2) {
+            mLoadMoreLoadMoreRecyclerView.smoothScrollToPosition(0);
+        }
     }
 
     @Override

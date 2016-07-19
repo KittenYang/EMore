@@ -34,19 +34,24 @@ public interface Key {
     String IMAGE_PATH = "image_path";
     String POSITION = "position";
     String MAX = "max";
-    String ON_EMOTION_CLICK = "on_emotion_click";
-    String ON_EMOTION_DELETE_CLICK = "on_emotion_delete_click";
+
     String USERNAME = "username";
     String PWD = "pwd";
     int AUTH = 1;
-    String PUBLISH_WEIBO = "publish_weibo";
-    String INTERVAL_MILLIS_UPDATE = "interval_millis_update";
-    String LOGIN_STATUE_EVENT = "login_statue_event";
-    String SEND_MESSAGE_EVENT = "send_message_event";
-    String SEND_MESSAGE_RESULT_EVENT = "send_message_result_event";
+
     String CID = "cid";
     String COMMENT = "comment";
     String DATE = "date";
 
     int REQUEST_CODE_SELECT_IMAGE = 1000;
+
+    String EVENT_PUBLISH_WEIBO_SUCCESS = "event_publish_weibo_success";
+    String PUBLISH_WEIBO = "publish_weibo";
+    String INTERVAL_MILLIS_UPDATE = "interval_millis_update";
+    String LOGIN_STATUE_EVENT = "login_statue_event";
+    String SEND_MESSAGE_EVENT = "send_message_event";
+    String SEND_MESSAGE_RESULT_EVENT = "send_message_result_event";
+    String ON_EMOTION_CLICK = "on_emotion_click";
+    String ON_EMOTION_DELETE_CLICK = "on_emotion_delete_click";
+    String EVENT_TOOL_BAR_DOUBLE_CLICK = "event_tool_bar_double_click";
 }

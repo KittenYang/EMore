@@ -10,21 +10,23 @@ import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
-import com.caij.emore.bean.response.UploadImageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Geo;
 import com.caij.emore.database.bean.LikeBean;
 import com.caij.emore.database.bean.PicUrl;
+import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Visible;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.database.dao.GeoDao;
 import com.caij.emore.database.dao.LikeBeanDao;
 import com.caij.emore.database.dao.PicUrlDao;
+import com.caij.emore.database.dao.UploadImageResponseDao;
 import com.caij.emore.database.dao.UserDao;
 import com.caij.emore.database.dao.VisibleDao;
 import com.caij.emore.database.dao.WeiboDao;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.db.DBManager;
 
 import java.io.IOException;
@@ -208,8 +210,26 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<UploadImageResponse> uploadWeiboOfOneImage(String access_token, String imagePath) throws IOException {
-        return null;
+    public Observable<UploadImageResponse> uploadWeiboOfOneImage(String access_token, final String imagePath) throws IOException {
+        return Observable.create(new Observable.OnSubscribe<UploadImageResponse>() {
+            @Override
+            public void call(Subscriber<? super UploadImageResponse> subscriber) {
+                try {
+                    UploadImageResponseDao dao = DBManager.getDaoSession().getUploadImageResponseDao();
+                    List<UploadImageResponse> uploadImageResponses = dao.queryBuilder().
+                            where(UploadImageResponseDao.Properties.ImagePath.eq(imagePath)).list();
+                    UploadImageResponse uploadImageResponse = null;
+                    if (uploadImageResponses != null && uploadImageResponses.size() > 0) {
+                        uploadImageResponse = uploadImageResponses.get(0);
+                    }
+                    subscriber.onNext(uploadImageResponse);
+                    subscriber.onCompleted();
+                }catch (Exception e) {
+                    subscriber.onError(e);
+                    LogUtil.d(LocalWeiboSource.this, "uploadWeiboOfOneImage %s", e.getMessage());
+                }
+            }
+        });
     }
 
     @Override
@@ -374,5 +394,10 @@ public class LocalWeiboSource implements WeiboSource {
     @Override
     public void saveWeibo(String mToken, Weibo weibo) {
         insertWeibo(weibo);
+    }
+
+    @Override
+    public void saveUploadImageResponse(UploadImageResponse uploadImageResponse) {
+        DBManager.getDaoSession().getUploadImageResponseDao().insertOrReplace(uploadImageResponse);
     }
 }

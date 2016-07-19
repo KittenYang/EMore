@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.AppApplication;
 import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
@@ -9,6 +10,7 @@ import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.ApiUtil;
@@ -23,6 +25,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -53,17 +56,33 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
 
     @Override
     public void senMessage(final DirectMessage bean) {
-        AccessToken token = UserPrefs.get().getWeiCoToken();
+        final AccessToken token = UserPrefs.get().getWeiCoToken();
         Observable<DirectMessage> sendMessageObservable;
         if (bean.getAtt_ids() == null || bean.getAtt_ids().size() == 0) { //文本
             sendMessageObservable = mServerMessageSource.createTextMessage(token.getAccess_token(),
                     bean.getText(), bean.getRecipient_id());
         }else {
-            Map<String, Object> params = new HashMap<>();
+            final Map<String, Object> params = new HashMap<>();
             ApiUtil.appendAuth(params);
-            File file = new File(URI.create(bean.getLocakImage().getUrl()));
-            sendMessageObservable = mServerMessageSource.createImageMessage(token.getAccess_token(), params,
-                    "分享图片", file.getPath(), bean.getRecipient_id(), bean.getRecipient_screen_name());
+            final File file = new File(URI.create(bean.getLocakImage().getUrl()));
+            sendMessageObservable = Observable.create(new Observable.OnSubscribe<String>() {
+                @Override
+                public void call(Subscriber<? super String> subscriber) {
+                    try {
+                        subscriber.onNext(ImageUtil.compressImage(file.getAbsolutePath(),
+                                AppApplication.getInstance()));
+                        subscriber.onCompleted();
+                    } catch (Exception e) {
+                        subscriber.onError(e);
+                    }
+                }
+            }).flatMap(new Func1<String, Observable<DirectMessage>>() {
+                @Override
+                public Observable<DirectMessage> call(String path) {
+                    return mServerMessageSource.createImageMessage(token.getAccess_token(), params,
+                            "分享图片", path, bean.getRecipient_id(), bean.getRecipient_screen_name());
+                }
+            });
         }
         Subscription subscription = sendMessageObservable
                 .subscribeOn(Schedulers.from(ExecutorServiceUtil.SEND_MESSAGE_SERVICE)) //这里单线程发送消息， 防止消息位置错乱

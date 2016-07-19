@@ -6,8 +6,8 @@ import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
-import com.caij.emore.bean.response.UploadImageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.database.bean.Weibo;
 
 import java.io.IOException;
@@ -95,4 +95,6 @@ public interface WeiboSource {
     Observable<Weibo> getWeiboById(Map<String, Object> params, long id);
 
     void saveWeibo(String mToken, Weibo weibo);
+
+    void saveUploadImageResponse(UploadImageResponse uploadImageResponse);
 }

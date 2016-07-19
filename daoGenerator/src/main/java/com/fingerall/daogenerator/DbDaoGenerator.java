@@ -22,6 +22,7 @@ public class DbDaoGenerator {
         createDirectMessage(sch);
         createDirectMessageImage(sch);
         createUrlInfo(sch);
+        createUploadImageResponse(sch);
         new de.greenrobot.daogenerator.DaoGenerator().generateAll(sch, "./app/src/main/java");
     }
 
@@ -201,5 +202,11 @@ public class DbDaoGenerator {
         entity.addBooleanProperty("shortUrlAvailable");
     }
 
+    static void createUploadImageResponse(Schema sch) {
+        Entity entity = sch.addEntity("UploadImageResponse");
+        entity.addStringProperty("pic_id").primaryKey();
+        entity.addStringProperty("thumbnail_pic");
+        entity.addStringProperty("imagePath");
+    }
 
 }

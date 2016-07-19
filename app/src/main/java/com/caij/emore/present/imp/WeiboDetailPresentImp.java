@@ -4,9 +4,7 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboDetailPresent;
 import com.caij.emore.present.view.WeiboDetailView;
 import com.caij.emore.source.WeiboSource;
-import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.weibo.ApiUtil;
-import com.caij.emore.utils.weibo.WeicoAuthUtil;
 
 import java.util.HashMap;
 
@@ -86,7 +84,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                         mView.showDialogLoading(false);
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @Override
@@ -96,6 +94,6 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
 
     @Override
     public void onDestroy() {
-        mLoginCompositeSubscription.clear();
+        mCompositeSubscription.clear();
     }
 }

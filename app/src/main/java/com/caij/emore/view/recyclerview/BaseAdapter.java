@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.adapter.IAdapter;
 
 import java.util.ArrayList;
@@ -89,4 +90,7 @@ public abstract class BaseAdapter<E, VH extends BaseViewHolder> extends Recycler
         return mEntities == null ? 0 : mEntities.size();
     }
 
+    public void addEntity(int index, E entity) {
+        mEntities.add(index, entity);
+    }
 }

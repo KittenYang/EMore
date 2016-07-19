@@ -8,9 +8,9 @@ import com.caij.emore.database.bean.DirectMessage;
  */
 public interface DirectMessageView extends BaseListView<DirectMessage> {
 
-    void onSendEnd(DirectMessage message);
-
     void toScrollToPosition(int position);
 
     void attemptSmoothScrollToBottom();
+
+    void notifyDataChange();
 }

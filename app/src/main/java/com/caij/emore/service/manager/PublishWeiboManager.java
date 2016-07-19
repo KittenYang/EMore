@@ -12,6 +12,7 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.PublishWeiboManagerPresent;
 import com.caij.emore.present.imp.PublishWeiboManagerPresentImp;
 import com.caij.emore.present.view.PublishServiceView;
+import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.EventUtil;
@@ -53,7 +54,8 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
 
     @Override
     protected void doOnCreate() {
-        mPublishWeiboManagerPresent = new PublishWeiboManagerPresentImp(new ServerWeiboSource(), this);
+        mPublishWeiboManagerPresent = new PublishWeiboManagerPresentImp(new ServerWeiboSource(),
+                new LocalWeiboSource(), this);
         mPublishWeiboManagerPresent.onCreate();
         mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
     }
@@ -109,5 +111,50 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
     @Override
     public Context getContent() {
         return ctx;
+    }
+
+    @Override
+    public void onDeleteWeiboSuccess(Weibo weibo, int position) {
+
+    }
+
+    @Override
+    public void onCollectSuccess(Weibo weibo) {
+
+    }
+
+    @Override
+    public void onUncollectSuccess(Weibo weibo) {
+
+    }
+
+    @Override
+    public void onAttitudesSuccess(Weibo weibo) {
+
+    }
+
+    @Override
+    public void onAuthenticationError() {
+
+    }
+
+    @Override
+    public void onDefaultLoadError() {
+
+    }
+
+    @Override
+    public void showHint(int stringId) {
+
+    }
+
+    @Override
+    public void showDialogLoading(boolean isShow, int hintStringId) {
+
+    }
+
+    @Override
+    public void showDialogLoading(boolean isShow) {
+
     }
 }

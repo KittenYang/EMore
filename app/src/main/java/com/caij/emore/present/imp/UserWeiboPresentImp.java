@@ -1,12 +1,10 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.R;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.present.view.TimeLineWeiboView;
 import com.caij.emore.source.WeiboSource;
-import com.caij.emore.utils.SpannableStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +42,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
 
     @Override
     public void onDestroy() {
-        mLoginCompositeSubscription.clear();
+        mCompositeSubscription.clear();
     }
 
     @Override
@@ -84,7 +82,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
                         }
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @Override
@@ -118,7 +116,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
                         mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {

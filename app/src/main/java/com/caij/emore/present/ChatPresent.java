@@ -13,4 +13,6 @@ public interface ChatPresent extends ListPresent {
     void sendTextMessage(String message);
 
     void sendImageMessage(ArrayList<String> paths);
+
+    void sendMessage(DirectMessage directMessage);
 }

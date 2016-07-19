@@ -2,6 +2,7 @@ package com.orientationchangedemo.caij.weiyo;
 
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.HtmlUtil;
+import com.caij.emore.utils.MD5Util;
 
 import org.junit.Test;
 
@@ -26,5 +27,14 @@ public class UtilTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testMd5() {
+        String title = MD5Util.string2MD5("caij");
+        System.out.print(title);
+//        467934697c9ac5440028fc281e7428aa
+//        467934697c9ac5440028fc281e7428aa
+//        467934697c9ac5440028fc281e7428aa
     }
 }

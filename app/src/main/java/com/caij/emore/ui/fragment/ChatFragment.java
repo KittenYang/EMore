@@ -2,6 +2,7 @@ package com.caij.emore.ui.fragment;
 
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -35,7 +36,9 @@ import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.local.LocalUserSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
+import com.caij.emore.ui.activity.ImagePrewActivity;
 import com.caij.emore.ui.adapter.MessageAdapter;
+import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.SystemUtil;
@@ -43,6 +46,7 @@ import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.view.recyclerview.HeaderAndFooterRecyclerViewAdapter;
 import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
 import com.caij.emore.view.recyclerview.LoadMoreView;
+import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 import com.caij.emore.view.recyclerview.scroller.BaseSmoothScroller;
 import com.caij.emore.view.recyclerview.scroller.SnapperSmoothScroller;
 
@@ -61,7 +65,7 @@ import static android.support.v7.widget.RecyclerView.*;
  * Created by Caij on 2016/7/10.
  */
 public class ChatFragment extends BaseFragment implements
-        DefaultFragmentActivity.OnBackPressedListener, DirectMessageView, TextWatcher {
+        DefaultFragmentActivity.OnBackPressedListener, DirectMessageView, TextWatcher, RecyclerViewOnItemClickListener {
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -81,11 +85,9 @@ public class ChatFragment extends BaseFragment implements
     private LoadMoreView mLoadMoreView;
     Observable<Emotion> mEmotionObservable;
     Observable<Object> mEmotionDeleteObservable;
-    private BaseSmoothScroller mSmoothScroller;
     private LinearLayoutManager mLinearLayoutManager;
 
     private long mRecipientId;
-    private String mRecipientName;
 
     public static ChatFragment newInstance(String name, long uid) {
         Bundle args = new Bundle();
@@ -108,8 +110,8 @@ public class ChatFragment extends BaseFragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecipientId = getArguments().getLong(Key.ID);
-        mRecipientName = getArguments().getString(Key.USERNAME);
-        getActivity().setTitle(mRecipientName);
+        String recipientName = getArguments().getString(Key.USERNAME);
+        getActivity().setTitle(recipientName);
         initImage();
         getChildFragmentManager().beginTransaction().
                 replace(R.id.fl_emotion, new EmotionFragment()).commit();
@@ -140,15 +142,13 @@ public class ChatFragment extends BaseFragment implements
         mLinearLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mMessageAdapter = new MessageAdapter(getActivity());
+        mMessageAdapter.setOnItemClickListener(this);
         HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter
                 = new HeaderAndFooterRecyclerViewAdapter(mMessageAdapter);
         mLoadMoreView = new LoadMoreView(getActivity());
         mLoadMoreView.setState(LoadMoreRecyclerView.STATE_EMPTY);
         headerAndFooterRecyclerViewAdapter.addHeaderView(mLoadMoreView);
-        mRecyclerView.setAdapter(headerAndFooterRecyclerViewAdapter);
 
-        mSmoothScroller = new SnapperSmoothScroller(getContext())
-                .setMillisecondsPerInchSearchingTarget(100f);
         mRecyclerView.addOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -165,7 +165,23 @@ public class ChatFragment extends BaseFragment implements
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
+        mMessageAdapter.setItemLongClickListener(new RecyclerViewOnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                final DirectMessage directMessage = mMessageAdapter.getItem(position - 1);
+                if (directMessage.getLocal_status() == DirectMessage.STATUS_FAIL) {
+                    DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), "是否重新发送",
+                            getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mChatPresent.sendMessage(directMessage);
+                                }
+                            }, getString(R.string.cancel), null);
+                }
+            }
+        });
         etContent.addTextChangedListener(this);
+        mRecyclerView.setAdapter(headerAndFooterRecyclerViewAdapter);
     }
 
     protected void onEmotionDeleteClick() {
@@ -191,7 +207,6 @@ public class ChatFragment extends BaseFragment implements
                 R.mipmap.navigationbar_subsribe_manage,
                 R.color.icon_normal_color, R.color.colorPrimary);
         ivAdd.setImageDrawable(addDrawable);
-
     }
 
     protected ChatPresent createPresent() {
@@ -277,11 +292,6 @@ public class ChatFragment extends BaseFragment implements
     }
 
     @Override
-    public void onSendEnd(DirectMessage message) {
-        mMessageAdapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void toScrollToPosition(int position) {
         mRecyclerView.scrollToPosition(position);
     }
@@ -290,9 +300,13 @@ public class ChatFragment extends BaseFragment implements
     public void attemptSmoothScrollToBottom() {
         int last = mMessageAdapter.getItemCount();
         if (mLinearLayoutManager.findLastVisibleItemPosition() + 3 >= last) {
-            mSmoothScroller.setTargetPosition(mMessageAdapter.getEntities().size());
-            mRecyclerView.getLayoutManager().startSmoothScroll(mSmoothScroller);
+            mRecyclerView.smoothScrollToPosition(mMessageAdapter.getEntities().size());
         }
+    }
+
+    @Override
+    public void notifyDataChange() {
+        mMessageAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -327,5 +341,24 @@ public class ChatFragment extends BaseFragment implements
 
     private void onSelectSuccess(ArrayList<String> paths) {
         mChatPresent.sendImageMessage(paths);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        DirectMessage directMessage = mMessageAdapter.getItem(position - 1);
+        int type = mMessageAdapter.getItemViewType(position - 1);
+        if (type == MessageAdapter.TYPE_OTHER_IMAGE || type == MessageAdapter.TYPE_SELT_IMAGE) {
+            ArrayList<String> images = new ArrayList<>(1);
+            images.add(appImageUrl(directMessage.getLocakImage().getUrl()));
+            Intent intent = ImagePrewActivity.newIntent(getActivity(), images, 0);
+            startActivity(intent);
+        }
+    }
+
+    private String appImageUrl(String url) {
+        if (url.startsWith("http")) {
+            return url + "&access_token=" + UserPrefs.get().getWeiCoToken().getAccess_token();
+        }
+        return url;
     }
 }
