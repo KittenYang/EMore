@@ -26,6 +26,7 @@ import com.caij.emore.database.dao.UserDao;
 import com.caij.emore.database.dao.VisibleDao;
 import com.caij.emore.database.dao.WeiboDao;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.db.DBManager;
 
@@ -138,6 +139,7 @@ public class LocalWeiboSource implements WeiboSource {
 
     private void insertWeibo(Weibo weibo) {
         String weiboId  = String.valueOf(weibo.getId());
+        weibo.setCreate_at_long(DateUtil.parseCreateTime(weibo.getCreated_at()));
         Geo geo = weibo.getGeo();
         if (geo != null) {
             weibo.setGeo_id(weiboId);

@@ -33,7 +33,7 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
     Observable<PublishBean> mPublishWeiboObservable;
 
     public PublishWeiboManagerPresentImp(WeiboSource serverWeiboSource, WeiboSource localWeiboSource, PublishServiceView view) {
-        super( UserPrefs.get().getAccount().getWeicoToken().getAccess_token(),
+        super(null,
                 view, serverWeiboSource, localWeiboSource);
     }
 

@@ -16,6 +16,9 @@ public class DBManager {
     private static DaoSession sDaoSession;
 
     public static void initDB(Context content, String dbName, boolean isDebug) {
+        if (sDaoSession != null) {
+            sDaoSession.getDatabase().close();
+        }
         DBHelp dbHelp = new DBHelp(content, dbName, null);
         DaoMaster daoMaster = new DaoMaster(dbHelp.getWritableDatabase());
         QueryBuilder.LOG_SQL = isDebug;
