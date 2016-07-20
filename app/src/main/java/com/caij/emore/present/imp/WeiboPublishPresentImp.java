@@ -25,14 +25,11 @@ import rx.subscriptions.CompositeSubscription;
 public class WeiboPublishPresentImp implements WeiboPublishPresent {
 
     private final CompositeSubscription mLoginCompositeSubscription;
-    private WeiboSource mServerPublishWeiboSource;
 
     private WeiboPublishView mWeiboPublishView;
     private Account mAccount;
 
-    public WeiboPublishPresentImp(Account account,
-                                  WeiboSource serverPublishWeiboSource, WeiboPublishView weiboPublishView) {
-        mServerPublishWeiboSource = serverPublishWeiboSource;
+    public WeiboPublishPresentImp(Account account,WeiboPublishView weiboPublishView) {
         mAccount = account;
         mWeiboPublishView = weiboPublishView;
         mLoginCompositeSubscription = new CompositeSubscription();
@@ -57,38 +54,11 @@ public class WeiboPublishPresentImp implements WeiboPublishPresent {
             }
         }
 
-        if (imagePaths != null && imagePaths.size() > 0) {
-            PublishBean publishBean = new PublishBean();
-            publishBean.setText(content);
-            publishBean.setPics(imagePaths);
-            EventUtil.publishWeibo(publishBean);
-            mWeiboPublishView.finish();
-            return;
-        }
-
-        mWeiboPublishView.showDialogLoading(true, R.string.publish_loading);
-        Observable<Weibo> publishWeiboObservable = mServerPublishWeiboSource.
-                    publishWeiboOfText(mAccount.getWeiyoToken().getAccess_token(), content);
-        Subscription subscription = publishWeiboObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Weibo>() {
-                    @Override
-                    public void onCompleted() {
-                        mWeiboPublishView.showDialogLoading(false, R.string.publish_loading);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mWeiboPublishView.onDefaultLoadError();
-                        mWeiboPublishView.showDialogLoading(false, R.string.publish_loading);
-                    }
-
-                    @Override
-                    public void onNext(Weibo weibo) {
-                        mWeiboPublishView.onPublishSuccess(weibo);
-                    }
-                });
-        mLoginCompositeSubscription.add(subscription);
+        PublishBean publishBean = new PublishBean();
+        publishBean.setText(content);
+        publishBean.setPics(imagePaths);
+        EventUtil.publishWeibo(publishBean);
+        mWeiboPublishView.finish();
     }
 
 }

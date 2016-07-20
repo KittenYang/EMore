@@ -71,8 +71,7 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
     }
 
     private void initPresent() {
-        mWeiboPublishPresent = new WeiboPublishPresentImp(UserPrefs.get().getAccount(),
-                new ServerWeiboSource(), this);
+        mWeiboPublishPresent = new WeiboPublishPresentImp(UserPrefs.get().getAccount(), this);
     }
 
     @Override
@@ -120,21 +119,6 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
     public void toAuthWeico() {
         WeicoAuthUtil.toAuthWeico(this, false);
     }
-
-    @Override
-    public Context getContent() {
-        return this;
-    }
-
-    @Override
-    public void onPublishSuccess(Weibo weibo) {
-        Intent intent = new Intent();
-        intent.putExtra(Key.OBJ, weibo);
-        setResult(RESULT_OK, intent);
-        ToastUtil.show(this, getString(R.string.publish_success));
-        finish();
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

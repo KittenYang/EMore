@@ -12,9 +12,6 @@ public interface WeiboPublishView extends BaseView {
 
     void toAuthWeico();
 
-    Context getContent();
-
-    void onPublishSuccess(Weibo weibo);
 
     void finish();
 }

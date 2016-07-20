@@ -39,7 +39,9 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
 
     @Override
     public void publishWeibo(PublishBean publishBean) {
-        if (publishBean.getPics().size() == 1) {
+        if (publishBean.getPics() == null || publishBean.getPics().size() == 0) {
+            publishText(publishBean);
+        }else if (publishBean.getPics().size() == 1) {
             publishWeiboOneImage(publishBean);
         } else {
             publishWeiboMuImage(publishBean);
@@ -176,6 +178,28 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
                     public void onNext(Weibo weibo) {
                         mView.onPublishSuccess(weibo);
                         postPublishWeiboSuccessEvent(weibo);
+                    }
+                });
+        mCompositeSubscription.add(subscription);
+    }
+
+    private void publishText(final PublishBean publishBean) {
+        final Account account = UserPrefs.get().getAccount();
+        Observable<Weibo> publishWeiboObservable = mServerWeiboSource.
+                publishWeiboOfText(account.getWeiyoToken().getAccess_token(), publishBean.getText());
+        Subscription subscription = publishWeiboObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Weibo>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(Weibo weibo) {
                     }
                 });
         mCompositeSubscription.add(subscription);
