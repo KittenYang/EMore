@@ -383,8 +383,13 @@ public class ChatPresentImp implements ChatPresent {
     @Override
     public void sendMessage(DirectMessage message) {
         message.setLocal_status(DirectMessage.STATUS_SEND);
+        message.setCreated_at(DateUtil.formatCreatetime(System.currentTimeMillis()));
         EventUtil.sendMessage(message);
+        mDirectMessages.remove(message);
+        mDirectMessages.add(message);
         mDirectMessageView.notifyDataChange();
+        mDirectMessageView.attemptSmoothScrollToBottom();
+        mLocalMessageSource.saveMessage(message);
     }
 
     private void send(DirectMessage message) {
