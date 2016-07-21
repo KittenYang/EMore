@@ -23,6 +23,7 @@ public class DbDaoGenerator {
         createDirectMessageImage(sch);
         createUrlInfo(sch);
         createUploadImageResponse(sch);
+        createDraft(sch);
         new de.greenrobot.daogenerator.DaoGenerator().generateAll(sch, "./app/src/main/java");
     }
 
@@ -207,6 +208,16 @@ public class DbDaoGenerator {
         entity.addStringProperty("pic_id").primaryKey();
         entity.addStringProperty("thumbnail_pic");
         entity.addStringProperty("imagePath");
+    }
+
+    static void createDraft(Schema sch) {
+        Entity entity = sch.addEntity("Draft");
+        entity.addLongProperty("id").primaryKey();
+        entity.addLongProperty("create_at");
+        entity.addIntProperty("status");
+        entity.addIntProperty("type");
+        entity.addStringProperty("content");
+        entity.addStringProperty("image_paths");//以逗号分隔
     }
 
 }

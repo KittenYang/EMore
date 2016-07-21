@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.caij.emore.Key;
+import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.imp.WeiCoLoginPresentImp;
@@ -63,6 +64,15 @@ public class WeiCoLoginActivity extends AbsLoginActivity implements WeiCoLoginVi
 
     @Override
     public void onLoginSuccess(WeiCoLoginResponse response) {
+        ActivityStack.getInstance().remove(this);
+        ActivityStack.getInstance().finishAllActivity();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onLoginSuccess(AccessToken accessToken) {
         ActivityStack.getInstance().remove(this);
         ActivityStack.getInstance().finishAllActivity();
         Intent intent = new Intent(this, MainActivity.class);

@@ -394,6 +394,25 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
+    public Observable<Weibo> getWeiboById(String token, final long id) {
+        return Observable.create(new Observable.OnSubscribe<Weibo>() {
+            @Override
+            public void call(Subscriber<? super Weibo> subscriber) {
+                try {
+                    Weibo weibo = weiboDao.load(id);
+                    if (weibo != null) {
+                        selectWeibo(weibo);
+                    }
+                    subscriber.onNext(weibo);
+                    subscriber.onCompleted();
+                }catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
+    }
+
+    @Override
     public void saveWeibo(String mToken, Weibo weibo) {
         insertWeibo(weibo);
     }

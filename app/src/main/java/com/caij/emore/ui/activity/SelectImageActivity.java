@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -89,7 +90,7 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
         mSelectImages = new ArrayList<>();
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
 //                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
 //                ActivityCompat.requestPermissions(getActivity(),

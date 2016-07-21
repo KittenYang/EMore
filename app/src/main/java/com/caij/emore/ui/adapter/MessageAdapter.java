@@ -12,7 +12,9 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.LocakImage;
 import com.caij.emore.utils.DateUtil;
+import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.glide.MaskTransformation;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
@@ -125,14 +127,8 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
 
             LocakImage locakImage = message.getLocakImage();
             ViewGroup.LayoutParams layoutParams = viewHolder.ivImage.getLayoutParams();
-            if (locakImage.getWidth() > 600 || locakImage.getHeight() > 600) {
-                float ratio = Math.max(locakImage.getWidth(), locakImage.getHeight()) / 600f;
-                layoutParams.height = (int) (locakImage.getHeight() / ratio);
-                layoutParams.width = (int) (locakImage.getWidth() / ratio);
-            }else {
-                layoutParams.width = locakImage.getWidth();
-                layoutParams.height = locakImage.getHeight();
-            }
+            calculateImageViewWidthAndHeight(locakImage, layoutParams);
+            viewHolder.ivImage.setLayoutParams(layoutParams);
             ImageLoader.ImageConfig imageConfig = new ImageLoader.ImageConfigBuild().
                     setScaleType(ImageLoader.ScaleType.CENTER_CROP)
                     .setWidthAndHeight(layoutParams.width, layoutParams.height)
@@ -172,14 +168,8 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
 
             LocakImage locakImage = message.getLocakImage();
             ViewGroup.LayoutParams layoutParams = viewHolder.ivImage.getLayoutParams();
-            if (locakImage.getWidth() > 600 || locakImage.getHeight() > 600) {
-                float ratio = Math.max(locakImage.getWidth(), locakImage.getHeight()) / 600f;
-                layoutParams.height = (int) (locakImage.getHeight() / ratio);
-                layoutParams.width = (int) (locakImage.getWidth() / ratio);
-            }else {
-                layoutParams.width = locakImage.getWidth();
-                layoutParams.height = locakImage.getHeight();
-            }
+            calculateImageViewWidthAndHeight(locakImage, layoutParams);
+            viewHolder.ivImage.setLayoutParams(layoutParams);
             ImageLoader.ImageConfig imageConfig = new ImageLoader.ImageConfigBuild().
                     setScaleType(ImageLoader.ScaleType.CENTER_CROP)
                     .setWidthAndHeight(layoutParams.width, layoutParams.height)
@@ -199,6 +189,30 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
                 }
             }else {
                 viewHolder.tvTime.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void calculateImageViewWidthAndHeight(LocakImage locakImage, ViewGroup.LayoutParams layoutParams) {
+        int width = locakImage.getWidth();
+        int height = locakImage.getHeight();
+        if (width > height) {
+            int maxWidth = DensityUtil.getScreenWidth(mContext) / 2;
+            if (width > maxWidth) {
+                layoutParams.width = maxWidth;
+                layoutParams.height = (int) (maxWidth * 1f / width * height);
+            } else {
+                layoutParams.width = width;
+                layoutParams.height = height;
+            }
+        }else {
+            int maxWidth = DensityUtil.getScreenWidth(mContext) / 3;
+            if (width > maxWidth) {
+                layoutParams.width = maxWidth;
+                layoutParams.height = (int) (maxWidth * 1f / width * height);
+            } else {
+                layoutParams.width = width;
+                layoutParams.height = height;
             }
         }
     }

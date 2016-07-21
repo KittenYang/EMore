@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -16,10 +17,12 @@ import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.Emotion;
+import com.caij.emore.database.bean.Draft;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboPublishPresent;
 import com.caij.emore.present.imp.WeiboPublishPresentImp;
 import com.caij.emore.present.view.WeiboPublishView;
+import com.caij.emore.source.local.LocalDraftSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.adapter.PublishImageAdapter;
@@ -30,6 +33,8 @@ import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -46,6 +51,14 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
 
     private PublishImageAdapter mPublishImageAdapter;
     private WeiboPublishPresent mWeiboPublishPresent;
+
+    private Draft mDraft;
+
+    public static Intent newIntent(Context context, Draft draft) {
+        Intent intent = new Intent(context, PublishWeiboActivity.class);
+        intent.putExtra(Key.OBJ, draft);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +81,25 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
         mPublishImageAdapter.setOnItemClickListener(this);
 
         mWeiboPublishPresent.onCreate();
+
+        Draft draft = (Draft) getIntent().getSerializableExtra(Key.OBJ);
+        mDraft = draft;
+        if (draft != null) {
+            fillData(draft);
+        }
+    }
+
+    private void fillData(Draft draft) {
+        etContent.setText(draft.getContent());
+        if (draft.getImages() != null && draft.getImages().size() > 0) {
+            List<String> images = new ArrayList<>(draft.getImages().size());
+            images.addAll(draft.getImages());
+            onSelectSuccess((ArrayList<String>) images);
+        }
     }
 
     private void initPresent() {
-        mWeiboPublishPresent = new WeiboPublishPresentImp(UserPrefs.get().getAccount(), this);
+        mWeiboPublishPresent = new WeiboPublishPresentImp(UserPrefs.get().getAccount(), this, new LocalDraftSource());
     }
 
     @Override
@@ -92,7 +120,8 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
 
     @Override
     protected void onSendClick() {
-        mWeiboPublishPresent.publishWeibo(etContent.getText().toString(), (ArrayList<String>) mPublishImageAdapter.getEntities());
+        long id = mDraft != null ? mDraft.getId() : System.currentTimeMillis();
+        mWeiboPublishPresent.publishWeibo(id, etContent.getText().toString(), (ArrayList<String>) mPublishImageAdapter.getEntities());
     }
 
     @Override
@@ -107,6 +136,44 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
         Intent intent = NavigationUtil.newImagePreActivityIntent(this,
                 (ArrayList<String>) mPublishImageAdapter.getEntities(), position);
         startActivity(intent);
+    }
+
+    @Override
+    public void finish() {
+        if (isContentChange()) {
+            DialogUtil.showHintDialog(this, getString(R.string.hint), "是否保存到草稿箱", getString(R.string.ok),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            long id = mDraft != null ? mDraft.getId() : System.currentTimeMillis();
+                            mWeiboPublishPresent.saveToDraft(id, etContent.getText().toString(), (ArrayList<String>) mPublishImageAdapter.getEntities());
+                            PublishWeiboActivity.super.finish();
+                        }
+                    }, getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            PublishWeiboActivity.super.finish();
+                        }
+                    });
+        }else {
+            super.finish();
+        }
+    }
+
+    private boolean isContentChange() {
+        if (mDraft != null) {
+            boolean textChange = !etContent.getText().toString().equals(mDraft.getContent());
+            boolean imageChange;
+            if (mDraft.getImages() != null) {
+                imageChange = !mDraft.getImages().equals(mPublishImageAdapter.getEntities());
+            }else {
+                imageChange = mPublishImageAdapter.getEntities() != null && mPublishImageAdapter.getEntities().size() > 0;
+            }
+            return  textChange || imageChange;
+        }else {
+            return !TextUtils.isEmpty(etContent.getText()) ||
+                    (mPublishImageAdapter.getEntities() != null && mPublishImageAdapter.getEntities().size() > 0);
+        }
     }
 
     @Override

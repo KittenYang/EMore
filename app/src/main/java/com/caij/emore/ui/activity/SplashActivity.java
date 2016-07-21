@@ -1,22 +1,13 @@
 package com.caij.emore.ui.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.caij.emore.AppApplication;
-import com.caij.emore.Key;
-import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.database.bean.User;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
-import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.utils.LogUtil;
-import com.sina.weibo.security.WeiboSecurityUtils;
-import com.sina.weibo.security.WeicoSecurityUtils;
 
 /**
  * Created by Caij on 2016/5/28.
@@ -33,8 +24,7 @@ public class SplashActivity extends BaseActivity{
         if (eMoreAccessToken == null || eMoreAccessToken.isExpired()) {
 //            intent = EMoreLoginActivity.newEMoreLoginIntent(this, "271945881@qq.com", "caij645237189");
             intent = EMoreLoginActivity.newEMoreLoginIntent(this, "1871713922@qq.com", "c520520");
-        }else if (weicoAccessToken == null || weicoAccessToken.isExpired()
-                || UserPrefs.get().getAccount().getWeiCoLoginResponse() == null){
+        }else if (weicoAccessToken == null || weicoAccessToken.isExpired()){
             intent = WeiCoLoginActivity.newWeiCoLoginIntent(this,
                     UserPrefs.get().getAccount().getUsername(),
                     UserPrefs.get().getAccount().getPwd());

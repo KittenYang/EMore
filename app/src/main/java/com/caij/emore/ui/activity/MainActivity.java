@@ -31,6 +31,7 @@ import com.caij.emore.present.imp.UserPresentImp;
 import com.caij.emore.present.view.SimpleUserView;
 import com.caij.emore.source.local.LocalUserSource;
 import com.caij.emore.source.server.ServerUserSource;
+import com.caij.emore.ui.fragment.DraftFragment;
 import com.caij.emore.ui.fragment.MessageUserFragment;
 import com.caij.emore.ui.fragment.weibo.FriendWeiboFragment;
 import com.caij.emore.utils.DrawableUtil;
@@ -183,12 +184,13 @@ public class MainActivity extends BaseActivity implements SimpleUserView, View.O
         }
     }
 
-    @OnClick({R.id.img_navigation_avatar, R.id.tv_setting})
+    @OnClick({R.id.img_navigation_avatar, R.id.tv_setting, R.id.tv_draft})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_setting: {
                 Intent intent = new Intent(this, SettingActivity.class);
                 startActivity(intent);
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
             }
             case R.id.img_navigation_avatar: {
@@ -201,6 +203,12 @@ public class MainActivity extends BaseActivity implements SimpleUserView, View.O
             }
             case R.id.toolbar:
                 RxBus.get().post(Key.EVENT_TOOL_BAR_DOUBLE_CLICK, this);
+                break;
+
+            case R.id.tv_draft:
+                Intent intent = DefaultFragmentActivity.starFragmentV4(this, DraftFragment.class, null);
+                startActivity(intent);
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
         }
     }

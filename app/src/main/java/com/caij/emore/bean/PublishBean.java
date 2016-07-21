@@ -9,17 +9,17 @@ public class PublishBean implements Serializable {
 
 	private static final long serialVersionUID = -9160054733168344496L;
 
-	String id = UUID.randomUUID().toString();
+	long id;
 
 	String text;
 
     List<String> pics;
 
-	public String getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

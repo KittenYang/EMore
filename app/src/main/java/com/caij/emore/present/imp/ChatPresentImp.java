@@ -128,8 +128,10 @@ public class ChatPresentImp implements ChatPresent {
                     public void onNext(final List<DirectMessage> directMessages) {
                         Collections.reverse(directMessages);
                         mDirectMessages.addAll(0, directMessages);
-                        mDirectMessageView.setEntities(mDirectMessages);
-                        mDirectMessageView.toScrollToPosition(directMessages.size());
+
+                        if (directMessages.size() > 0) {
+                            mDirectMessageView.addMore(mDirectMessages, directMessages.size());
+                        }
 
                         if (directMessages.size() >= PAGE_COUNT - 1) {
                             mDirectMessageView.onLoadComplete(true);

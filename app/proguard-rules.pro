@@ -54,13 +54,12 @@
     public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
--keep class com.caij.weiyo.database.** { *; }
+
 
 ###
 -keep class org.jsoup.** { *; }
 
--keep class com.caij.weiyo.bean.** { *; }
-
+### JavascriptInterface
 -keepattributes Annotation
 -keepattributes JavascriptInterface
 -keepclassmembers class * {
@@ -70,3 +69,9 @@
 ### bugly
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
+
+### bean
+-keep class com.caij.weiyo.database.** { *; }
+-keep class com.caij.weiyo.bean.** { *; }
+
+-keep com.sina.weibo.security.**

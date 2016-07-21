@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_micro"
+    android:layout_marginLeft="@dimen/spacing_medium"
+    android:layout_marginRight="@dimen/spacing_medium"
+    android:layout_marginTop="@dimen/spacing_micro"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="#ffffff"
+    app:cardCornerRadius="3dip"
+    app:cardElevation="1.5dip">
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="70dip"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/spacing_weibo_item"
+        android:paddingRight="@dimen/spacing_weibo_item"
+        android:paddingTop="@dimen/spacing_weibo_item">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtType"
+                android:textSize="@dimen/text_size_medium_min"
+                android:textColor="@color/text_54"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="微博"/>
+
+            <TextView
+                android:id="@+id/txtTiming"
+                android:textSize="@dimen/text_size_medium_min"
+                android:textColor="@color/text_54"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1016-22-28"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_image"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginRight="@dimen/spacing_medium"
+                android:background="@color/color_black"/>
+
+            <TextView
+                android:id="@+id/txtContent"
+                android:textColor="@color/text_80"
+                android:textSize="@dimen/text_size_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lineSpacingExtra="4dip"
+                android:maxLines="3"
+                android:text="今天天气真好" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="6dip"
+            android:gravity="end|center_vertical">
+
+            <LinearLayout
+                android:id="@+id/btnDel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/comm_h_gap"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="40dip"
+                    android:layout_height="40dip"
+                    android:padding="8dip"
+                    android:src="@mipmap/ic_delete_dark"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnResend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="40dip"
+                    android:layout_height="40dip"
+                    android:padding="4dip"
+                    android:src="@mipmap/ic_action_send_now_light" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

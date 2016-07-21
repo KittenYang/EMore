@@ -93,4 +93,12 @@ public abstract class BaseAdapter<E, VH extends BaseViewHolder> extends Recycler
     public void addEntity(int index, E entity) {
         mEntities.add(index, entity);
     }
+
+    public void addEntities(int index, List<E> entities) {
+        if (mEntities == null) {
+            mEntities = entities;
+        } else {
+            mEntities.addAll(index, entities);
+        }
+    }
 }

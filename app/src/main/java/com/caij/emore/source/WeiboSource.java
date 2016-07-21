@@ -94,6 +94,8 @@ public interface WeiboSource {
 
     Observable<Weibo> getWeiboById(Map<String, Object> params, long id);
 
+    public Observable<Weibo> getWeiboById(String token, long id);
+
     void saveWeibo(String mToken, Weibo weibo);
 
     void saveUploadImageResponse(UploadImageResponse uploadImageResponse);

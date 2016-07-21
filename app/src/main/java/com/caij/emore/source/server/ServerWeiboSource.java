@@ -218,6 +218,11 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
+    public Observable<Weibo> getWeiboById(String token, long id) {
+        return mWeiBoService.getWeiboById(token, id);
+    }
+
+    @Override
     public void saveWeibo(String mToken, Weibo weibo) {
 
     }

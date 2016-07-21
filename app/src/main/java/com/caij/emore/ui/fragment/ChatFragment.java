@@ -27,11 +27,9 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Emotion;
 import com.caij.emore.database.bean.DirectMessage;
-import com.caij.emore.database.bean.User;
 import com.caij.emore.present.ChatPresent;
 import com.caij.emore.present.imp.ChatPresentImp;
 import com.caij.emore.present.view.DirectMessageView;
-import com.caij.emore.source.UserSource;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.local.LocalUserSource;
 import com.caij.emore.source.server.ServerMessageSource;
@@ -47,8 +45,6 @@ import com.caij.emore.view.recyclerview.HeaderAndFooterRecyclerViewAdapter;
 import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
 import com.caij.emore.view.recyclerview.LoadMoreView;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
-import com.caij.emore.view.recyclerview.scroller.BaseSmoothScroller;
-import com.caij.emore.view.recyclerview.scroller.SnapperSmoothScroller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -307,6 +303,12 @@ public class ChatFragment extends BaseFragment implements
     @Override
     public void notifyDataChange() {
         mMessageAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void addMore(List<DirectMessage> directMessages, int size) {
+        mMessageAdapter.setEntities(directMessages);
+        mMessageAdapter.notifyItemRangeInserted(0, size);
     }
 
     @Override

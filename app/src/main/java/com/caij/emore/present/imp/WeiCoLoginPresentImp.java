@@ -37,18 +37,46 @@ public class WeiCoLoginPresentImp implements LoginPresent {
     @Override
     public void getAccessToken(String clientId, String clientSecret, String grantType, final String redirectUrL) {
         mLoginView.showDialogLoading(true, R.string.logining);
+//        Subscription loginSubscription = mLoginSource.getAccessToken(clientId, clientSecret, grantType, redirectUrL)
+//                .flatMap(new Func1<AccessToken, Observable<WeiCoLoginResponse>>() {
+//                    @Override
+//                    public Observable<WeiCoLoginResponse> call(AccessToken accessToken) {
+//                        UserPrefs.get().setWeiCoToken(accessToken);
+//                        String str = WeiboSecurityUtils.getIValue(AppApplication.getInstance());
+//                        return mLoginSource.weicoLogin(accessToken.getAccess_token(), Key.WEICO_APP_ID, str, "1");
+//                    }
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<WeiCoLoginResponse>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        mLoginView.showDialogLoading(false, R.string.logining);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        mLoginView.showDialogLoading(false, R.string.logining);
+//                        mLoginView.onDefaultLoadError();
+//                    }
+//
+//                    @Override
+//                    public void onNext(WeiCoLoginResponse response) {
+//                        mLoginView.onLoginSuccess(response);
+//                        try {
+//                            response.setsValue(WeiboSecurityUtils.calculateSInJava(AppApplication.getInstance(),
+//                                    String.valueOf(response.getUid()), WeicoSecurityUtils.decode(Key.UID_ENCODE_KEY)));
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                        UserPrefs.get().setWeiCoLoginInfo(response);
+//                    }
+//                });
+
         Subscription loginSubscription = mLoginSource.getAccessToken(clientId, clientSecret, grantType, redirectUrL)
-                .flatMap(new Func1<AccessToken, Observable<WeiCoLoginResponse>>() {
-                    @Override
-                    public Observable<WeiCoLoginResponse> call(AccessToken accessToken) {
-                        UserPrefs.get().setWeiCoToken(accessToken);
-                        String str = WeiboSecurityUtils.getIValue(AppApplication.getInstance());
-                        return mLoginSource.weicoLogin(accessToken.getAccess_token(), Key.WEICO_APP_ID, str, "1");
-                    }
-                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<WeiCoLoginResponse>() {
+                .subscribe(new Subscriber<AccessToken>() {
                     @Override
                     public void onCompleted() {
                         mLoginView.showDialogLoading(false, R.string.logining);
@@ -61,15 +89,9 @@ public class WeiCoLoginPresentImp implements LoginPresent {
                     }
 
                     @Override
-                    public void onNext(WeiCoLoginResponse response) {
-                        mLoginView.onLoginSuccess(response);
-                        try {
-                            response.setsValue(WeiboSecurityUtils.calculateSInJava(AppApplication.getInstance(),
-                                    String.valueOf(response.getUid()), WeicoSecurityUtils.decode(Key.UID_ENCODE_KEY)));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        UserPrefs.get().setWeiCoLoginInfo(response);
+                    public void onNext(AccessToken accessToken) {
+                        UserPrefs.get().setWeiCoToken(accessToken);
+                        mLoginView.onLoginSuccess(accessToken);
                     }
                 });
         mLoginCompositeSubscription.add(loginSubscription);

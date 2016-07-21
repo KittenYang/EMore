@@ -82,8 +82,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                 });
         mCompositeSubscription.add(subscription);
 
-        mPublishWeiboObservable = RxBus.get().register(Key.ON_EMOTION_DELETE_CLICK);
-
+        mPublishWeiboObservable = RxBus.get().register(Key.EVENT_PUBLISH_WEIBO_SUCCESS);
         mPublishWeiboObservable.subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object weibo) {

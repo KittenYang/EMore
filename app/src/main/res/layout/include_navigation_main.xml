@@ -13,92 +13,101 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<com.caij.emore.view.ScrimInsetsScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.caij.emore.view.ScrimInsetsScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:background="@color/white"
     android:fitsSystemWindows="true"
-    app:appInsetForeground="#4000"
-    android:background="@color/white">
+    android:orientation="vertical"
+    app:appInsetForeground="#4000">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/rl_nav_head"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/rl_nav_head_height"
-        android:fitsSystemWindows="true">
-
-        <ImageView
-            android:id="@+id/material_drawer_account_header_background"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/rl_nav_head"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:background="@mipmap/bg_nav_head"
-            android:fitsSystemWindows="true"/>
+            android:layout_height="@dimen/rl_nav_head_height"
+            android:fitsSystemWindows="true">
 
-        <ImageView
-            android:id="@+id/img_navigation_avatar"
-            android:layout_width="@dimen/user_info_avatar_image"
-            android:layout_height="@dimen/user_info_avatar_image"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="32dp"
-            android:layout_alignParentTop="true" />
+            <ImageView
+                android:id="@+id/material_drawer_account_header_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@mipmap/bg_nav_head"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop" />
+
+            <ImageView
+                android:id="@+id/img_navigation_avatar"
+                android:layout_width="@dimen/user_info_avatar_image"
+                android:layout_height="@dimen/user_info_avatar_image"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="32dp" />
+
+            <TextView
+                android:id="@+id/tv_navigation_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="24dp"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:textColor="@color/white" />
+
+        </RelativeLayout>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkedButton="@+id/rb_weibo"
+            android:orientation="vertical"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
+
+            <RadioButton
+                android:id="@+id/rb_weibo"
+                style="@style/NavRadioButton"
+                android:text="@string/weibo" />
+
+            <RadioButton
+                android:id="@+id/rb_message"
+                style="@style/NavRadioButton"
+                android:text="@string/message" />
+
+        </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.6dp"
+            android:background="@color/divider_timeline_item" />
+
 
         <TextView
-            android:id="@+id/tv_navigation_username"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_draft"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:textColor="@color/white"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="24dp"/>
+            android:background="?attr/selectableItemBackground"
+            android:padding="@dimen/spacing_large"
+            android:text="@string/draft_box"
+            android:textColor="@color/nav_item_text_color"
+            android:textSize="@dimen/text_size_medium" />
 
-    </RelativeLayout>
-
-    <RadioGroup
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:orientation="vertical"
-        android:checkedButton="@+id/rb_weibo">
-
-        <RadioButton
-            android:id="@+id/rb_weibo"
-            style="@style/NavRadioButton"
-            android:text="@string/weibo" />
-
-        <RadioButton
-            android:id="@+id/rb_message"
-            style="@style/NavRadioButton"
-            android:text="@string/message"/>
-
-    </RadioGroup>
+        <TextView
+            android:id="@+id/tv_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:padding="@dimen/spacing_large"
+            android:text="@string/setting"
+            android:textColor="@color/nav_item_text_color"
+            android:textSize="@dimen/text_size_medium" />
 
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.6dp"
-        android:background="@color/divider_timeline_item"/>
-
-    <TextView
-        android:id="@+id/tv_setting"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/setting"
-        android:textSize="@dimen/text_size_medium"
-        android:textColor="@color/nav_item_text_color"
-        android:padding="@dimen/spacing_large"
-        android:background="?attr/selectableItemBackground"/>
-
-
-    <!--<LinearLayout-->
+        <!--<LinearLayout-->
         <!--android:id="@+id/ll_about"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"-->
@@ -108,13 +117,13 @@
         <!--android:background="@drawable/nav_item_selector">-->
 
         <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="About"-->
-            <!--android:textSize="@dimen/text_size_medium"-->
-            <!--android:textColor="@color/color_black"/>-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="About"-->
+        <!--android:textSize="@dimen/text_size_medium"-->
+        <!--android:textColor="@color/color_black"/>-->
 
-    <!--</LinearLayout>-->
+        <!--</LinearLayout>-->
 
     </LinearLayout>
 

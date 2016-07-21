@@ -12,6 +12,7 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.PublishWeiboManagerPresent;
 import com.caij.emore.present.imp.PublishWeiboManagerPresentImp;
 import com.caij.emore.present.view.PublishServiceView;
+import com.caij.emore.source.local.LocalDraftSource;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.utils.CacheUtils;
@@ -40,7 +41,6 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
 
     private static PublishWeiboManager inst = new PublishWeiboManager();
 
-
     NotificationManager mNotificationManager;
     PublishWeiboManagerPresent mPublishWeiboManagerPresent;
 
@@ -55,7 +55,7 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
     @Override
     protected void doOnCreate() {
         mPublishWeiboManagerPresent = new PublishWeiboManagerPresentImp(new ServerWeiboSource(),
-                new LocalWeiboSource(), this);
+                new LocalWeiboSource(), new LocalDraftSource(), this);
         mPublishWeiboManagerPresent.onCreate();
         mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
     }
