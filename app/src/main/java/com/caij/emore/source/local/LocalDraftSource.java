@@ -7,6 +7,8 @@ import com.caij.emore.utils.db.DBManager;
 
 import java.util.List;
 
+import de.greenrobot.dao.query.QueryBuilder;
+import de.greenrobot.dao.query.WhereCondition;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -26,7 +28,15 @@ public class LocalDraftSource implements DraftSource {
             public void call(Subscriber<? super List<Draft>> subscriber) {
                 try {
                     DraftDao draftDao = DBManager.getDaoSession().getDraftDao();
-                    List<Draft> drafts = draftDao.queryBuilder().where(DraftDao.Properties.Create_at.lt(maxTime))
+                    DraftDao.Properties.Create_at.lt(maxTime);
+                    QueryBuilder<Draft> queryBuilder = draftDao.queryBuilder();
+
+                    WhereCondition conditionStauts = queryBuilder.or(DraftDao.Properties.Status.eq(Draft.STATUS_SAVE),
+                            DraftDao.Properties.Status.eq(Draft.STATUS_FAIL));
+                    long time = System.currentTimeMillis() - 5 * 60 * 1000L; //这种表示发送时间太长 可能是杀进程导致 把他归为发送失败。5分钟
+                    WhereCondition conditionOther = queryBuilder.and(DraftDao.Properties.Status.eq(Draft.STATUS_SENDING),
+                            DraftDao.Properties.Create_at.lt(time));
+                    List<Draft> drafts = queryBuilder.where(queryBuilder.or(conditionStauts, conditionOther))
                             .limit(pageCount).offset(pageIndex - 1)
                             .orderDesc(DraftDao.Properties.Create_at).list();
                     subscriber.onNext(drafts);

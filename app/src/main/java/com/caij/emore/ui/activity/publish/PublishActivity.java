@@ -135,11 +135,17 @@ public abstract class PublishActivity extends BaseToolBarActivity {
 
     @Override
     public void onBackPressed() {
+      if (!checkflEmotion()) {
+          super.onBackPressed();
+      }
+    }
+
+    protected boolean checkflEmotion() {
         if (flEmotion.getVisibility() == View.VISIBLE) {
             flEmotion.setVisibility(View.GONE);
-            return;
+            return true;
         }
-        super.onBackPressed();
+        return false;
     }
 
     @Override

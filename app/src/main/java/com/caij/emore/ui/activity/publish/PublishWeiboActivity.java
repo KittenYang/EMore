@@ -9,6 +9,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -138,28 +139,6 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
         startActivity(intent);
     }
 
-    @Override
-    public void finish() {
-        if (isContentChange()) {
-            DialogUtil.showHintDialog(this, getString(R.string.hint), "是否保存到草稿箱", getString(R.string.ok),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            long id = mDraft != null ? mDraft.getId() : System.currentTimeMillis();
-                            mWeiboPublishPresent.saveToDraft(id, etContent.getText().toString(), (ArrayList<String>) mPublishImageAdapter.getEntities());
-                            PublishWeiboActivity.super.finish();
-                        }
-                    }, getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            PublishWeiboActivity.super.finish();
-                        }
-                    });
-        }else {
-            super.finish();
-        }
-    }
-
     private boolean isContentChange() {
         if (mDraft != null) {
             boolean textChange = !etContent.getText().toString().equals(mDraft.getContent());
@@ -185,6 +164,65 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
     @Override
     public void toAuthWeico() {
         WeicoAuthUtil.toAuthWeico(this, false);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!super.checkflEmotion()) {
+            if (isContentChange()) {
+                DialogUtil.showHintDialog(this, getString(R.string.hint), "是否保存到草稿箱", getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                long id = mDraft != null ? mDraft.getId() : System.currentTimeMillis();
+                                mWeiboPublishPresent.saveToDraft(id, etContent.getText().toString(),
+                                        (ArrayList<String>) mPublishImageAdapter.getEntities());
+                                PublishWeiboActivity.super.onBackPressed();
+                            }
+                        }, getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                PublishWeiboActivity.super.onBackPressed();
+                            }
+                        });
+            }else {
+                super.onBackPressed();
+            }
+        }
+    }
+
+    @Override
+    protected boolean checkflEmotion() {
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (isContentChange()) {
+                    DialogUtil.showHintDialog(this, getString(R.string.hint), "是否保存到草稿箱", getString(R.string.ok),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    long id = mDraft != null ? mDraft.getId() : System.currentTimeMillis();
+                                    mWeiboPublishPresent.saveToDraft(id, etContent.getText().toString(),
+                                            (ArrayList<String>) mPublishImageAdapter.getEntities());
+                                    finish();
+                                }
+                            }, getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
+                }else {
+                    finish();
+                }
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

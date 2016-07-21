@@ -53,7 +53,8 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
         ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
             @Override
             protected Object doInBackground(Object... params) {
-                mDraftSource.deleteDraftById(publishBean.getId());
+//                mDraftSource.deleteDraftById(publishBean.getId());
+                saveOrUpdate2Draft(publishBean, Draft.STATUS_SENDING);
                 return null;
             }
 
@@ -137,13 +138,14 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        save2Draft(publishBean);
+                        saveOrUpdate2Draft(publishBean, Draft.STATUS_FAIL);
                     }
                 })
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
                         doSpanNext(weibo);
+                        mDraftSource.deleteDraftById(publishBean.getId());
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -177,7 +179,7 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        save2Draft(publishBean);
+                        saveOrUpdate2Draft(publishBean, Draft.STATUS_FAIL);
                     }
                 })
                 .doOnNext(new Action1<Weibo>() {
@@ -185,6 +187,7 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
                     public void call(Weibo weibo) {
                         toGetImageSize(weibo);
                         doSpanNext(weibo);
+                        mDraftSource.deleteDraftById(publishBean.getId());
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -202,13 +205,14 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        save2Draft(publishBean);
+                        saveOrUpdate2Draft(publishBean, Draft.STATUS_FAIL);
                     }
                 })
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
                         doSpanNext(weibo);
+                        mDraftSource.deleteDraftById(publishBean.getId());
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -250,10 +254,10 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
         });
     }
 
-    private void save2Draft(PublishBean publishBean) {
+    private void saveOrUpdate2Draft(PublishBean publishBean, int status) {
         Draft draft = new Draft();
         draft.setCreate_at(System.currentTimeMillis());
-        draft.setStatus(Draft.STATUS_FAIL);
+        draft.setStatus(status);
         draft.setType(Draft.TYPE_WEIBO);
         draft.setId(publishBean.getId());
         draft.setContent(publishBean.getText());
