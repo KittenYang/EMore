@@ -57,4 +57,5 @@ public interface Key {
     String EVENT_COMMENT_WEIBO_SUCCESS = "event_comment_weibo_success";
     String EVENT_REPOST_WEIBO_SUCCESS = "event_repost_weibo_success";
     String EVENT_ATTITUDE_WEIBO_SUCCESS = "event_attitude_weibo_success";
+    String EVENT_DRAFT_UPDATE = "event_draft_update";
 }

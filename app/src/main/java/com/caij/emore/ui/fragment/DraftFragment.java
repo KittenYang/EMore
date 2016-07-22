@@ -9,6 +9,7 @@ import com.caij.emore.R;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.DraftPresent;
 import com.caij.emore.present.imp.DraftPresentImp;
+import com.caij.emore.present.view.DraftListView;
 import com.caij.emore.source.local.LocalDraftSource;
 import com.caij.emore.ui.activity.publish.PublishWeiboActivity;
 import com.caij.emore.ui.adapter.DraftAdapter;
@@ -18,7 +19,7 @@ import com.caij.emore.view.recyclerview.BaseViewHolder;
 /**
  * Created by Caij on 2016/7/20.
  */
-public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> {
+public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> implements DraftListView {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -60,5 +61,10 @@ public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> {
                     break;
             }
         }
+    }
+
+    @Override
+    public void onDraftUpdate(Draft draft) {
+        mRecyclerViewAdapter.notifyDataSetChanged();
     }
 }

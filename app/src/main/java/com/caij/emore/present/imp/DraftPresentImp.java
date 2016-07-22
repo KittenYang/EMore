@@ -2,14 +2,17 @@ package com.caij.emore.present.imp;
 
 import android.os.AsyncTask;
 
+import com.caij.emore.Key;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.DraftPresent;
 import com.caij.emore.present.view.BaseListView;
+import com.caij.emore.present.view.DraftListView;
 import com.caij.emore.source.DraftSource;
 import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
+import com.caij.emore.utils.rxbus.RxBus;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -29,9 +32,10 @@ public class DraftPresentImp implements DraftPresent {
 
     private DraftSource mDraftSource;
     private List<Draft> mDrafts;
-    private BaseListView<Draft> mView;
+    private DraftListView mView;
+    private Observable<Draft> mDraftObservable;
 
-    public DraftPresentImp(DraftSource draftSource, BaseListView<Draft> view) {
+    public DraftPresentImp(DraftSource draftSource, DraftListView view) {
         mDraftSource = draftSource;
         mDrafts = new ArrayList<>();
         mView = view;
@@ -118,6 +122,34 @@ public class DraftPresentImp implements DraftPresent {
                     public void onNext(List<Draft> drafts) {
                         mDrafts.addAll(drafts);
                         mView.setEntities(mDrafts);
+                    }
+                });
+
+        mDraftObservable = RxBus.get().register(Key.EVENT_DRAFT_UPDATE);
+        mDraftObservable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Draft>() {
+                    @Override
+                    public void call(Draft draft) {
+                        if (mDrafts.contains(draft)) {
+                            if (draft.getStatus() == Draft.STATUS_SENDING ||
+                                    draft.getStatus() == Draft.STATUS_SUCCESS) {
+                                mDrafts.remove(draft);
+                            }else {
+                                for (Draft item : mDrafts) {
+                                    item.setCreate_at(draft.getCreate_at());
+                                    item.setImage_paths(draft.getImage_paths());
+                                    item.setContent(draft.getContent());
+                                    item.setStatus(draft.getStatus());
+                                    item.setImages(draft.getImages());
+                                    item.setType(draft.getType());
+                                    break;
+                                }
+                            }
+                        }else {
+                            mDrafts.add(0, draft);
+                        }
+
+                        mView.onDraftUpdate(draft);
                     }
                 });
     }

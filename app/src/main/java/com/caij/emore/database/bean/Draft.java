@@ -106,4 +106,10 @@ public class Draft implements Serializable {
     public void setImages(List<String> images) {
         this.images = images;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        Draft draft = (Draft) o;
+        return draft.getId().longValue() == id.longValue();
+    }
 }

@@ -264,7 +264,9 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
         if (publishBean.getPics() != null && publishBean.getPics().size() > 0) {
             draft.setImage_paths(GsonUtils.toJson(publishBean.getPics()));
         }
+        draft.setImages(publishBean.getPics());
         mDraftSource.saveDraft(draft);
+        RxBus.get().post(Key.EVENT_DRAFT_UPDATE, draft);
     }
 
     @Override
