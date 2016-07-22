@@ -1,18 +1,21 @@
 package com.caij.emore.present.imp;
 
-import android.text.Spannable;
-import android.text.SpannableString;
-
+import com.caij.emore.Key;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
+import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.present.view.WeiboRepostsView;
 import com.caij.emore.source.DefaultResponseSubscriber;
+import com.caij.emore.source.UrlSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.SpannableStringUtil;
+import com.caij.emore.utils.UrlUtil;
+import com.caij.emore.utils.rxbus.RxBus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
@@ -35,10 +38,16 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
     WeiboSource mServerRepostSource;
     WeiboRepostsView mWeiboRepostsView;
     List<Weibo> mWeobos;
+    Observable<Weibo> mWeiboObservable;
+    private UrlSource mServerUrlSource;
+    private UrlSource mLocalUrlSource;
 
-    public WeiboRepostsPresentImp(String token, long weiboId, WeiboSource repostSource, WeiboRepostsView repostsView) {
+    public WeiboRepostsPresentImp(String token, long weiboId, WeiboSource repostSource, UrlSource servreUrlSource,
+                                  UrlSource localUrlSource, WeiboRepostsView repostsView) {
         mToken = token;
         mServerRepostSource = repostSource;
+        mLocalUrlSource = localUrlSource;
+        mServerUrlSource = servreUrlSource;
         mWeiboRepostsView = repostsView;
         mWeiboId = weiboId;
         mLoginCompositeSubscription = new CompositeSubscription();
@@ -117,26 +126,64 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                         return isRefresh || !mWeobos.contains(weibo);
                     }
                 })
-                .doOnNext(new Action1<Weibo>() {
+                .toList()
+                .doOnNext(new Action1<List<Weibo>>() {
                     @Override
-                    public void call(Weibo weibo) {
-                        Spannable content = SpannableStringUtil.paraeSpannable(weibo.getText());
-                        weibo.setContentSpannableString(content);
-                        weibo.setContentSpannableString(content);
+                    public void call(List<Weibo> weibos) {
+                        doSpanNext(weibos);
                     }
                 })
-                .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public void onCreate() {
-
+        mWeiboObservable = RxBus.get().register(Key.EVENT_REPOST_WEIBO_SUCCESS);
+        mWeiboObservable.
+                filter(new Func1<Weibo, Boolean>() {
+                    @Override
+                    public Boolean call(Weibo weibo) {
+                        return weibo.getId() == mWeiboId;
+                    }
+                })
+                .doOnNext(new Action1<Weibo>() {
+                    @Override
+                    public void call(Weibo weibo) {
+                        doSpanNext(weibo);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Weibo>() {
+                    @Override
+                    public void call(Weibo weibo) {
+                        mWeobos.add(0, weibo);
+                        mWeiboRepostsView.onRepostWeiboSuccess(mWeobos);
+                    }
+                });
     }
 
     @Override
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
+        RxBus.get().unregister(Key.EVENT_REPOST_WEIBO_SUCCESS, mWeiboObservable);
+    }
+
+    protected void doSpanNext(List<Weibo> weibos) {
+        List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibos);
+        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
+                mLocalUrlSource, mToken);
+        for (Weibo weibo : weibos) {
+            SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
+        }
+    }
+
+
+    protected void doSpanNext(Weibo weibo) {
+        List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, null);
+        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
+                mLocalUrlSource, mToken);
+        SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
     }
 }

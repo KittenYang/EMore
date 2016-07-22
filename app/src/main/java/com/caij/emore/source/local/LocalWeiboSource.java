@@ -332,39 +332,19 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<Response> attitudesWeibo(String token, String source, String attitude, final long weiboId) {
-        return Observable.create(new Observable.OnSubscribe<Response>() {
-            @Override
-            public void call(Subscriber<? super Response> subscriber) {
-                try {
-                    LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
-                    LikeBean likeBean = new LikeBean(weiboId, true);
-                    dao.insertOrReplace(likeBean);
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                }catch (Exception e) {
-                    subscriber.onError(e);
-                }
-            }
-        });
+    public Observable<Attitude> attitudesWeibo(String token, String source, String attitude, final long weiboId) {
+        LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
+        LikeBean likeBean = new LikeBean(weiboId, true);
+        dao.insertOrReplace(likeBean);
+        return null;
     }
 
     @Override
     public Observable<Response> destoryAttitudesWeibo(String token, String source, String attitude, final long weiboId) {
-        return Observable.create(new Observable.OnSubscribe<Response>() {
-            @Override
-            public void call(Subscriber<? super Response> subscriber) {
-                try {
-                    LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
-                    LikeBean likeBean = new LikeBean(weiboId, false);
-                    dao.insertOrReplace(likeBean);
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                }catch (Exception e) {
-                    subscriber.onError(e);
-                }
-            }
-        });
+        LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
+        LikeBean likeBean = new LikeBean(weiboId, false);
+        dao.insertOrReplace(likeBean);
+        return null;
     }
 
     @Override

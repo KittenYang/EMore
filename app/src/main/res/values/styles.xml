@@ -56,4 +56,14 @@
         <item name="android:background">@drawable/bg_navmenu_item_selector</item>
     </style>
 
+    <style name="FAB_LABEL">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/text_100_inverse</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/fab_label_bg</item>
+        <item name="android:padding">@dimen/spacing_medium</item>
+    </style>
+
 </resources>

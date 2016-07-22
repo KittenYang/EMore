@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -73,6 +71,7 @@
         android:minHeight="30dip"
         app:fab_addButtonColorNormal="?attr/colorPrimary"
         app:fab_addButtonColorPressed="?attr/colorPrimaryDark"
+        app:fab_labelStyle="@style/FAB_LABEL"
         app:layout_anchor="@id/view_pager"
         app:layout_anchorGravity="bottom|right">
 

@@ -3,6 +3,7 @@ package com.caij.emore.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.caij.emore.Key;
@@ -13,12 +14,16 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.present.imp.WeiboRepostsPresentImp;
 import com.caij.emore.present.view.WeiboRepostsView;
+import com.caij.emore.source.local.LocalUrlSource;
+import com.caij.emore.source.server.ServerUrlSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.adapter.RepostAdapter;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
 import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+
+import java.util.List;
 
 /**
  * Created by Caij on 2016/6/14.
@@ -53,7 +58,7 @@ public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRe
         AccessToken token = UserPrefs.get().getWeiCoToken();
         long weiId = getArguments().getLong(Key.ID);
         return  new WeiboRepostsPresentImp(token.getAccess_token(), weiId,
-                new ServerWeiboSource(), this);
+                new ServerWeiboSource(), new ServerUrlSource(),  new LocalUrlSource(),  this);
     }
 
     @Override
@@ -72,5 +77,15 @@ public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRe
     @Override
     public void onItemClick(View view, int position) {
 
+    }
+
+    @Override
+    public void onRepostWeiboSuccess(List<Weibo> weobos) {
+        mRecyclerViewAdapter.setEntities(weobos);
+        mRecyclerViewAdapter.notifyItemInserted(0);
+        LinearLayoutManager manager = (LinearLayoutManager) mLoadMoreLoadMoreRecyclerView.getLayoutManager();
+        if (manager.findFirstVisibleItemPosition() < 2) {
+            mLoadMoreLoadMoreRecyclerView.smoothScrollToPosition(0);
+        }
     }
 }

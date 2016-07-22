@@ -1,6 +1,7 @@
 package com.caij.emore.api;
 
 import com.caij.emore.Key;
+import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
@@ -54,7 +55,7 @@ public interface WeiCoService {
 
     @FormUrlEncoded
     @POST("/2/like/set_like")
-    public Observable<Response> attitudesWeibo(@Field("access_token") String access_token,
+    public Observable<Attitude> attitudesWeibo(@Field("access_token") String access_token,
                                                @Field("source") String source,
                                                @Field("attitude") String attitude, @Field("id") long weiboId);
 

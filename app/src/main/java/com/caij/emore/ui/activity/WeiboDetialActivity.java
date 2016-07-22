@@ -208,7 +208,8 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
 
     @Override
     public void onDeleteWeiboSuccess(Weibo weibo, int position) {
-
+        showToast(R.string.delete_success);
+        finish();
     }
 
     @Override

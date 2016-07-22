@@ -5,6 +5,7 @@ import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Account;
+import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryUrlResponse;
 import com.caij.emore.bean.response.Response;
@@ -24,6 +25,8 @@ import com.caij.emore.source.server.ServerUrlSource;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
+import com.caij.emore.utils.UrlUtil;
+import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.ApiUtil;
 
 import org.json.JSONObject;
@@ -38,6 +41,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -189,15 +193,20 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         }
 
         mView.showDialogLoading(true, R.string.requesting);
-        String token  = mAccount.getWeicoToken().getAccess_token();
-        Observable<Response> serverObservable = mServerWeiboSource.attitudesWeibo(token, Key.WEICO_APP_ID,
+        final String token  = mAccount.getWeicoToken().getAccess_token();
+        Observable<Attitude> serverObservable = mServerWeiboSource.attitudesWeibo(token, Key.WEICO_APP_ID,
                 "smile", weibo.getId());
-        Observable<Response> localObservable =  mLocalWeiboSource.attitudesWeibo(token,  Key.WEICO_APP_ID,
-                "smile", weibo.getId());
-        Subscription subscription = Observable.concat(serverObservable, localObservable)
+        Subscription subscription = serverObservable
+                .doOnNext(new Action1<Attitude>() {
+                    @Override
+                    public void call(Attitude attitude) {
+                        mLocalWeiboSource.attitudesWeibo(token,  Key.WEICO_APP_ID,
+                                "smile", weibo.getId());
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response>() {
+                .subscribe(new Subscriber<Attitude>() {
                     @Override
                     public void onCompleted() {
                         mView.showDialogLoading(false, R.string.requesting);
@@ -210,7 +219,8 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     }
 
                     @Override
-                    public void onNext(Response s) {
+                    public void onNext(Attitude s) {
+                        RxBus.get().post(Key.EVENT_ATTITUDE_WEIBO_SUCCESS, s);
                     }
                 });
         mCompositeSubscription.add(subscription);
@@ -219,13 +229,18 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
     @Override
     public void destoryAttitudesWeibo(final Weibo weibo) {
         mView.showDialogLoading(true, R.string.requesting);
-        String token  = mAccount.getWeicoToken().getAccess_token();
+        final String token  = mAccount.getWeicoToken().getAccess_token();
         Observable<Response> serverObservable = mServerWeiboSource.destoryAttitudesWeibo(token,
                 Key.WEICO_APP_ID, "smile", weibo.getId());
-        Observable<Response> localObservable =  mLocalWeiboSource.destoryAttitudesWeibo(token,
-                Key.WEICO_APP_ID,  "smile", weibo.getId());
 
-        Subscription subscription = Observable.concat(serverObservable, localObservable)
+        Subscription subscription = serverObservable
+                .doOnNext(new Action1<Response>() {
+                    @Override
+                    public void call(Response response) {
+                        mLocalWeiboSource.destoryAttitudesWeibo(token,
+                                Key.WEICO_APP_ID,  "smile", weibo.getId());
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Response>() {
@@ -249,7 +264,8 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
 
     protected void doSpanNext(List<Weibo> weibos) {
         List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibos);
-        Map<String, UrlInfo> shortLongLinkMap = getShortUrlInfos(shortUrls);
+        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
+                mLocalUrlSource, mAccount.getWeiyoToken().getAccess_token());
         for (Weibo weibo : weibos) {
             SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
         }
@@ -257,45 +273,10 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
 
     protected void doSpanNext(Weibo weibo) {
         List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, null);
-        Map<String, UrlInfo> shortLongLinkMap = getShortUrlInfos(shortUrls);
+        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
+                mLocalUrlSource, mAccount.getWeiyoToken().getAccess_token());
         SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
     }
 
-    private Map<String, UrlInfo> getShortUrlInfos(List<String> shortUrls){
-        Map<String, UrlInfo> shortLongLinkMap = new HashMap<String, UrlInfo>();
-        if (shortUrls.size() > 0) {
-            int size = shortUrls.size() / 20 + 1;
-            List<String> params = new ArrayList<String>(20);
-            for (int i = 0; i < size; i ++) {
-                params.clear();
-                for (int j = i * 20; j < Math.min(shortUrls.size(), (i + 1) * 20); j ++) {
-                    String shortUrl  = shortUrls.get(j);
-                    if (UrlInfo.isShortUrl(shortUrl)) {
-                        UrlInfo urlInfo = mLocalUrlSource.getShortUrlInfo(mAccount.getWeiyoToken().getAccess_token(), shortUrl);
-                        if (urlInfo != null) {
-                            shortLongLinkMap.put(urlInfo.getShortUrl(), urlInfo);
-                        } else {
-                            params.add(shortUrl);
-                        }
-                    }
-                }
-                if (params.size() > 0) {
-                    try {
-                        QueryUrlResponse queryUrlResponse = mServerUrlSource.getShortUrlInfo(mAccount.getWeiyoToken().getAccess_token(), params);
-                        if (queryUrlResponse != null) {
-                            for (Object obj : queryUrlResponse.getUrls()) {
-                                UrlInfo shortLongLink = new UrlInfo(new JSONObject(GsonUtils.toJson(obj)));
-                                mLocalUrlSource.saveUrlInfo(shortLongLink);
-                                shortLongLinkMap.put(shortLongLink.getShortUrl(), shortLongLink);
-                            }
-                        }
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
-        }
-        return shortLongLinkMap;
-    }
 
 }

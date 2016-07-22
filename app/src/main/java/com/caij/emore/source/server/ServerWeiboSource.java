@@ -199,7 +199,7 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<Response> attitudesWeibo(String token, String source, String attitude, long weiboId) {
+    public Observable<Attitude> attitudesWeibo(String token, String source, String attitude, long weiboId) {
         return mWeiCoService.attitudesWeibo(token, source, attitude, weiboId);
     }
 

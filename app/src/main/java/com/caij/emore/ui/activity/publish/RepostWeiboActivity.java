@@ -101,9 +101,6 @@ public class RepostWeiboActivity extends PublishActivity implements RepostWeiboV
     @Override
     public void onRepostSuccess(Weibo weibo) {
         ToastUtil.show(this, getString(R.string.repost_success));
-        Intent intent = new Intent();
-        intent.putExtra(Key.OBJ, weibo);
-        setResult(RESULT_OK, intent);
         finish();
     }
 

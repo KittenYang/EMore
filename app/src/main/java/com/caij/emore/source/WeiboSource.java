@@ -76,7 +76,7 @@ public interface WeiboSource {
     Observable<QueryWeiboCommentResponse> getAcceptComments(String accessToken, long since_id, long max_id,
                                                             int count,  int page);
 
-    public Observable<Response> attitudesWeibo(String token, String source,
+    public Observable<Attitude> attitudesWeibo(String token, String source,
                                                String attitude, long weiboId);
 
     public Observable<Response> destoryAttitudesWeibo(String token, String source,

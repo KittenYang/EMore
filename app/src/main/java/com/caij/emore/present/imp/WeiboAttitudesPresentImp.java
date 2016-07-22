@@ -1,11 +1,14 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Key;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.present.view.BaseListView;
+import com.caij.emore.present.view.WeiboAttitudesView;
 import com.caij.emore.source.DefaultResponseSubscriber;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.rxbus.RxBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +16,8 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -27,11 +32,12 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
     private String mToken;
     private long mWeiboId;
     WeiboSource mServerRepostSource;
-    BaseListView<Attitude> mView;
+    WeiboAttitudesView mView;
     List<Attitude> mAttitudes;
     private int mPage;
+    private Observable<Attitude> mAttitudeObservable;
 
-    public WeiboAttitudesPresentImp(String token, long weiboId, WeiboSource repostSource, BaseListView<Attitude> view) {
+    public WeiboAttitudesPresentImp(String token, long weiboId, WeiboSource repostSource, WeiboAttitudesView view) {
         mToken = token;
         mServerRepostSource = repostSource;
         mView = view;
@@ -104,11 +110,24 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
 
     @Override
     public void onCreate() {
-
+        mAttitudeObservable = RxBus.get().register(Key.EVENT_ATTITUDE_WEIBO_SUCCESS);
+        mAttitudeObservable.filter(new Func1<Attitude, Boolean>() {
+            @Override
+            public Boolean call(Attitude attitude) {
+                return attitude.getStatus().getId() == mWeiboId;
+            }
+        }).subscribe(new Action1<Attitude>() {
+            @Override
+            public void call(Attitude attitude) {
+                mAttitudes.add(0, attitude);
+                mView.onAttitudeSuccess(mAttitudes);
+            }
+        });
     }
 
     @Override
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
+        RxBus.get().unregister(Key.EVENT_ATTITUDE_WEIBO_SUCCESS, mAttitudeObservable);
     }
 }

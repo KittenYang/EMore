@@ -12,6 +12,7 @@ import com.caij.emore.source.local.LocalUrlSource;
 import com.caij.emore.source.server.ServerUrlSource;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.SpannableStringUtil;
+import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 
 import org.json.JSONObject;
@@ -139,7 +140,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                     @Override
                     public void call(List<Comment> comments) {
                         List<String> shortUrls  = SpannableStringUtil.getCommentTextHttpUrl(comments);
-                        Map<String, UrlInfo> shortLongLinkMap = getShortUrlInfos(shortUrls);
+                        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource, mLocalUrlSource, mToken);
                         for (Comment comment : comments) {
                             SpannableStringUtil.paraeSpannable(comment, shortLongLinkMap);
                         }
@@ -190,7 +191,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                     @Override
                     public void call(Comment comment) {
                         List<String> shortUrls  = SpannableStringUtil.getCommentTextHttpUrl(comment, null);
-                        Map<String, UrlInfo> shortLongLinkMap = getShortUrlInfos(shortUrls);
+                        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource, mLocalUrlSource, mToken);
                         SpannableStringUtil.paraeSpannable(comment, shortLongLinkMap);
                     }
                 })
@@ -209,43 +210,6 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
         RxBus.get().unregister(Key.EVENT_COMMENT_WEIBO_SUCCESS, mCommentObservable);
-    }
-
-    private Map<String, UrlInfo> getShortUrlInfos(List<String> shortUrls){
-        Map<String, UrlInfo> shortLongLinkMap = new HashMap<String, UrlInfo>();
-        if (shortUrls.size() > 0) {
-            int size = shortUrls.size() / 20 + 1;
-            List<String> params = new ArrayList<String>(20);
-            for (int i = 0; i < size; i ++) {
-                params.clear();
-                for (int j = i * 20; j < Math.min(shortUrls.size(), (i + 1) * 20); j ++) {
-                    String shortUrl  = shortUrls.get(j);
-                    if (UrlInfo.isShortUrl(shortUrl)) {
-                        UrlInfo urlInfo = mLocalUrlSource.getShortUrlInfo(mToken, shortUrl);
-                        if (urlInfo != null) {
-                            shortLongLinkMap.put(urlInfo.getShortUrl(), urlInfo);
-                        } else {
-                            params.add(shortUrl);
-                        }
-                    }
-                }
-                if (params.size() > 0) {
-                    try {
-                        QueryUrlResponse queryUrlResponse = mServerUrlSource.getShortUrlInfo(mToken, params);
-                        if (queryUrlResponse != null) {
-                            for (Object obj : queryUrlResponse.getUrls()) {
-                                UrlInfo shortLongLink = new UrlInfo(new JSONObject(GsonUtils.toJson(obj)));
-                                mLocalUrlSource.saveUrlInfo(shortLongLink);
-                                shortLongLinkMap.put(shortLongLink.getShortUrl(), shortLongLink);
-                            }
-                        }
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
-        }
-        return shortLongLinkMap;
     }
 
 
