@@ -82,9 +82,6 @@ public class CommentWeiboActivity extends PublishActivity implements CommentWeib
     @Override
     public void onCommentSuccess(Comment comment) {
         ToastUtil.show(this, getString(R.string.comment_success));
-        Intent intent = new Intent();
-        intent.putExtra(Key.OBJ, comment);
-        setResult(RESULT_OK, intent);
         finish();
     }
 

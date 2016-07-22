@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.caij.emore.Key;
@@ -14,7 +15,6 @@ import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboCommentsPresent;
 import com.caij.emore.present.imp.WeiboCommentsPresentImp;
 import com.caij.emore.present.view.WeiboCommentsView;
@@ -29,6 +29,8 @@ import com.caij.emore.view.recyclerview.BaseViewHolder;
 import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+
+import java.util.List;
 
 /**
  * Created by Caij on 2016/6/14.
@@ -82,14 +84,19 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
     }
 
     @Override
-    public Context getContent() {
-        return getActivity();
-    }
-
-    @Override
     public void onDeleteSuccess(Comment comment) {
         mRecyclerViewAdapter.removeEntity(comment);
         mRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCommentSuccess(List<Comment> comments) {
+        mRecyclerViewAdapter.setEntities(comments);
+        mRecyclerViewAdapter.notifyItemInserted(0);
+        LinearLayoutManager manager = (LinearLayoutManager) mLoadMoreLoadMoreRecyclerView.getLayoutManager();
+        if (manager.findFirstVisibleItemPosition() < 2) {
+            mLoadMoreLoadMoreRecyclerView.smoothScrollToPosition(0);
+        }
     }
 
     @Override

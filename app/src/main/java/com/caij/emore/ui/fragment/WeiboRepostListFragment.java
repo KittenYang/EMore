@@ -70,11 +70,6 @@ public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRe
     }
 
     @Override
-    public Context getContent() {
-        return getActivity();
-    }
-
-    @Override
     public void onItemClick(View view, int position) {
 
     }

@@ -52,7 +52,7 @@
 
         </RelativeLayout>
 
-        <com.caij.emore.view.emotion.EmotionTextView
+        <TextView
             android:id="@+id/tv_content"
             style="@style/WeiboTextBody"
             android:layout_width="match_parent"
@@ -84,7 +84,7 @@
             android:paddingLeft="@dimen/spacing_weibo_detail_item"
             android:paddingRight="@dimen/spacing_weibo_detail_item">
 
-            <com.caij.emore.view.emotion.EmotionTextView
+            <TextView
                 android:id="@+id/tv_re_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

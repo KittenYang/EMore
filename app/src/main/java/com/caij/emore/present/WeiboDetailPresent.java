@@ -6,4 +6,6 @@ package com.caij.emore.present;
 public interface WeiboDetailPresent extends WeiboActionPresent {
 
     void loadWeiboDetail();
+
+    void refreshWeiboDetail();
 }

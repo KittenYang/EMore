@@ -24,7 +24,9 @@ import android.widget.TextView;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
+import com.caij.emore.api.WeiBoService;
 import com.caij.emore.bean.AccessToken;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.SimpleUserPresent;
 import com.caij.emore.present.imp.UserPresentImp;
@@ -36,6 +38,7 @@ import com.caij.emore.ui.fragment.MessageUserFragment;
 import com.caij.emore.ui.fragment.weibo.FriendWeiboFragment;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.view.DoubleClickToolBar;
@@ -44,6 +47,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements SimpleUserView, View.OnClickListener {
 
@@ -202,7 +208,7 @@ public class MainActivity extends BaseActivity implements SimpleUserView, View.O
                 break;
             }
             case R.id.toolbar:
-                RxBus.get().post(Key.EVENT_TOOL_BAR_DOUBLE_CLICK, this);
+                RxBus.get().post(Key.EVENT_TOOL_BAR_DOUBLE_CLICK, mVisibleFragment);
                 break;
 
             case R.id.tv_draft:

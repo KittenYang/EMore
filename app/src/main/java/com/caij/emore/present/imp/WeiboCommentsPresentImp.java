@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Key;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.QueryUrlResponse;
 import com.caij.emore.database.bean.UrlInfo;
@@ -11,6 +12,7 @@ import com.caij.emore.source.local.LocalUrlSource;
 import com.caij.emore.source.server.ServerUrlSource;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.SpannableStringUtil;
+import com.caij.emore.utils.rxbus.RxBus;
 
 import org.json.JSONObject;
 
@@ -43,6 +45,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
     List<Comment> mComments;
     protected UrlSource mLocalUrlSource;
     protected UrlSource mServerUrlSource;
+    private Observable<Comment> mCommentObservable;
 
     public WeiboCommentsPresentImp(String token, long weiboId,
                                    WeiboSource serverCommentSource,
@@ -175,12 +178,37 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
 
     @Override
     public void onCreate() {
-
+        mCommentObservable = RxBus.get().register(Key.EVENT_COMMENT_WEIBO_SUCCESS);
+        mCommentObservable
+                .filter(new Func1<Comment, Boolean>() {
+                    @Override
+                    public Boolean call(Comment comment) {
+                        return comment.getStatus().getId().longValue() == mWeiboId;
+                    }
+                })
+                .doOnNext(new Action1<Comment>() {
+                    @Override
+                    public void call(Comment comment) {
+                        List<String> shortUrls  = SpannableStringUtil.getCommentTextHttpUrl(comment, null);
+                        Map<String, UrlInfo> shortLongLinkMap = getShortUrlInfos(shortUrls);
+                        SpannableStringUtil.paraeSpannable(comment, shortLongLinkMap);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Comment>() {
+                    @Override
+                    public void call(Comment comment) {
+                        mComments.add(0, comment);
+                        mWeiboCommentsView.onCommentSuccess(mComments);
+                    }
+                });
     }
 
     @Override
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
+        RxBus.get().unregister(Key.EVENT_COMMENT_WEIBO_SUCCESS, mCommentObservable);
     }
 
     private Map<String, UrlInfo> getShortUrlInfos(List<String> shortUrls){

@@ -11,5 +11,4 @@ import com.caij.emore.database.bean.Weibo;
  */
 public interface WeiboRepostsView extends BaseListView<Weibo> {
 
-    Context getContent();
 }

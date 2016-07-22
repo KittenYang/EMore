@@ -1,5 +1,6 @@
 package com.caij.emore.source;
 
+import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
@@ -21,15 +22,6 @@ import rx.Observable;
  */
 public interface WeiboSource {
 
-
-    /**
-     * @param accessToken
-     * @param since_id
-     * @param max_id
-     * @param count
-     * @param page 查询页，最低从1开始
-     * @return
-     */
     public Observable<List<Weibo>> getFriendWeibo(String accessToken, long since_id, long max_id,
                                                   int count, int page);
 
@@ -84,19 +76,24 @@ public interface WeiboSource {
     Observable<QueryWeiboCommentResponse> getAcceptComments(String accessToken, long since_id, long max_id,
                                                             int count,  int page);
 
-    public Observable<Response> attitudesWeibo(Map<String, Object> paramMap,
+    public Observable<Response> attitudesWeibo(String token, String source,
                                                String attitude, long weiboId);
 
-    public Observable<Response> destoryAttitudesWeibo(Map<String, Object> paramMap,
+    public Observable<Response> destoryAttitudesWeibo(String token, String source,
                                       String attitude, long weiboId);
 
     boolean getAttitudes(long id);
 
-    Observable<Weibo> getWeiboById(Map<String, Object> params, long id);
+    public Observable<Weibo> getWeiboById(String token, String source, int isGetLongText, long id);
 
     public Observable<Weibo> getWeiboById(String token, long id);
+
+    public Observable<List<Attitude>> getWeiboAttiyudes(String token, long id, int page, int count);
 
     void saveWeibo(String mToken, Weibo weibo);
 
     void saveUploadImageResponse(UploadImageResponse uploadImageResponse);
+
+    public Observable<List<Attitude>> getToMeAttiyudes(String token, long maxId, long sinceId,
+                                                       String source, int page, int count);
 }

@@ -45,9 +45,8 @@ public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> i
 
     @Override
     protected UserWeiboPresent createPresent() {
-        AccessToken accessToken = UserPrefs.get().getWeiCoToken();
         String username = getArguments().getString(Key.USERNAME);
-        return new UserWeiboPresentImp(accessToken.getAccess_token(), username, this, new ServerWeiboSource(), new LocalWeiboSource());
+        return new UserWeiboPresentImp(UserPrefs.get().getAccount(), username, this, new ServerWeiboSource(), new LocalWeiboSource());
     }
 
     @Override

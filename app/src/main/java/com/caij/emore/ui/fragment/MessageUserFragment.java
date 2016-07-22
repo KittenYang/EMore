@@ -72,7 +72,8 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         priseView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), AttitudesToMeFragment.class, null);
+                startActivity(intent);
             }
         });
 

@@ -66,8 +66,7 @@
             android:textSize="10dp"
             android:gravity="center"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/tv_time"
-            android:layout_marginTop="9dp"/>
+            android:layout_alignTop="@id/tv_message"/>
 
     </RelativeLayout>
 

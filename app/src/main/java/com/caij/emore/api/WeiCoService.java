@@ -1,6 +1,7 @@
 package com.caij.emore.api;
 
 import com.caij.emore.Key;
+import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.database.bean.Weibo;
@@ -19,6 +20,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -52,15 +54,41 @@ public interface WeiCoService {
 
     @FormUrlEncoded
     @POST("/2/like/set_like")
-    public Observable<Response> attitudesWeibo(@FieldMap Map<String, Object> paramMap,
+    public Observable<Response> attitudesWeibo(@Field("access_token") String access_token,
+                                               @Field("source") String source,
                                                @Field("attitude") String attitude, @Field("id") long weiboId);
 
     @FormUrlEncoded
     @POST("/2/like/cancel_like")
-    public Observable<Response> destoryAttitudesWeibo(@FieldMap Map<String, Object> paramMap,
+    public Observable<Response> destoryAttitudesWeibo(@Field("access_token") String access_token,
+                                                      @Field("source") String source,
                                                @Field("attitude") String attitude, @Field("id") long weiboId);
 
     @GET("/2/statuses/show")
-    public Observable<Weibo> getWeiboById(@QueryMap Map<String, Object> paramMap, @Query("id") long weiboId);
+    public Observable<Weibo> getWeiboById(@Query("access_token") String access_token,
+                                          @Query("isGetLongText") int isGetLongText,
+                                          @Query("source") String source, @Query("id") long weiboId);
+
+    @FormUrlEncoded
+    @POST("/2/like/update")
+    Observable<Response> toAttitudeComment(@Field("access_token") String accessToken,
+                                           @Field("object_id") long id,
+                                           @Field("object_type") String type,
+                                           @Field("source") String source);
+
+    @FormUrlEncoded
+    @POST("/2/like/destroy")
+    Observable<Response> destoryAttitudeComment(@Field("access_token") String accessToken,
+                                                @Field("object_id") long id,
+                                                @Field("object_type") String type,
+                                                @Field("source") String source);
+
+    @GET("/2/like/to_me")
+    Observable<QueryWeiboAttitudeResponse> getToMeAttitudes(@Query("access_token") String accessToken,
+                                                            @Query("since_id") long since_id,
+                                                            @Query("max_id") long max_id,
+                                                            @Query("source") String source,
+                                                            @Query("page") int page,
+                                                            @Query("count") int count);
 
 }

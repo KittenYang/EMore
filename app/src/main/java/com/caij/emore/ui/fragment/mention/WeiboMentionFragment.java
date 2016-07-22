@@ -52,8 +52,7 @@ public class WeiboMentionFragment extends TimeLineWeiboFragment<WeiboMentionPres
 
     @Override
     protected WeiboMentionPresent createPresent() {
-        AccessToken token = UserPrefs.get().getWeiCoToken();
-       return new WeiboMentionPresentImp(token.getAccess_token(), new ServerWeiboSource(), new LocalWeiboSource(), this);
+       return new WeiboMentionPresentImp(UserPrefs.get().getAccount(), new ServerWeiboSource(), new LocalWeiboSource(), this);
     }
 
     @Override

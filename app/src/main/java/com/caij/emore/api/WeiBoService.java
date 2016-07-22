@@ -9,8 +9,10 @@ import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryUrlResponse;
+import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.DirectMessage;
@@ -46,6 +48,8 @@ import rx.Observable;
  * Created by Caij on 2016/5/28.
  */
 public interface WeiBoService {
+
+
 
     public class Factory {
 
@@ -276,4 +280,37 @@ public interface WeiBoService {
     @GET("/2/short_url/info.json")
     Call<QueryUrlResponse> getShortUrlInfo(@Query("access_token") String accessToken,
                                            @Query("url_short") List<String> url_shorts);
+
+
+
+    @GET("2/attitudes/show.json")
+    Observable<QueryWeiboAttitudeResponse> getWeiboAttitudes(@Query("access_token") String accessToken,
+                                                             @Query("id") long id, @Query("page") int page,
+                                                             @Query("count") int count);
+
+
+    //    @FormUrlEncoded
+//    @POST("2/attitudes/destroy.json")
+//    Observable<Response> destoryAttitudesWeibo(@Field("access_token")String token,  @Field("attitude")String attitude,
+//                                               @Field("id")long weiboId);
+//
+
+    //    https://api.weibo.com/2/attitudes/create.json
+//        smile,naughty,surprise,sad,heart
+//    @FormUrlEncoded
+//    @POST("2/attitudes/create.json")
+//    Observable<Response> attitudeWeibo(@Field("access_token") String accessToken,
+//                                      @Field("id") long weiboId,
+//                                      @Field("attitude") String attitude);
+
+//
+//    @GET
+//    Observable<QueryWeiboAttitudeResponse> getToMeAttitudes(@Url String url, @Query("access_token") String accessToken,
+//                                                            @Query("since_id") long since_id,
+//                                                             @Query("max_id") long max_id,
+//                                                            @Query("source") String source,
+//                                                            @Query("page") int page,
+//                                                             @Query("count") int count);
+
+
 }

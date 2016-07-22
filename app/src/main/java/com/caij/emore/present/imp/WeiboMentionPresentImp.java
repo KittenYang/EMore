@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.bean.Account;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboMentionPresent;
@@ -22,21 +23,15 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboMentionPresent {
+public class WeiboMentionPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> implements WeiboMentionPresent {
 
     private static final int COUNT = 20;
 
-    private final CompositeSubscription mLoginCompositeSubscription;
-    private String mToken;
-    private TimeLineWeiboView mTimeLineWeiboView;
     private List<Weibo> mWeibos;
 
-    public WeiboMentionPresentImp(String token, WeiboSource serverWeiboSource, WeiboSource localWeiboSource, TimeLineWeiboView timeLineWeiboView) {
-        super(token, timeLineWeiboView, serverWeiboSource, localWeiboSource);
-        mToken = token;
-        mTimeLineWeiboView = timeLineWeiboView;
+    public WeiboMentionPresentImp(Account account, WeiboSource serverWeiboSource, WeiboSource localWeiboSource, TimeLineWeiboView timeLineWeiboView) {
+        super(account, timeLineWeiboView, serverWeiboSource, localWeiboSource);
         mWeibos = new ArrayList<>();
-        mLoginCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -55,20 +50,20 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
 
                     @Override
                     public void onError(Throwable e) {
-                        mTimeLineWeiboView.onDefaultLoadError();
-                        mTimeLineWeiboView.onRefreshComplete();
+                        mView.onDefaultLoadError();
+                        mView.onRefreshComplete();
                     }
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
-                        mTimeLineWeiboView.setEntities(mWeibos);
+                        mView.setEntities(mWeibos);
 
-                        mTimeLineWeiboView.onRefreshComplete();
-                        mTimeLineWeiboView.onLoadComplete(weibos.size() > COUNT - 1);
+                        mView.onRefreshComplete();
+                        mView.onLoadComplete(weibos.size() > COUNT - 1);
                     }
                 });
-        mLoginCompositeSubscription.add(su);
+        mCompositeSubscription.add(su);
     }
 
     @Override
@@ -86,23 +81,23 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
 
                     @Override
                     public void onError(Throwable e) {
-                        mTimeLineWeiboView.onDefaultLoadError();
-                        mTimeLineWeiboView.onLoadComplete(true);
+                        mView.onDefaultLoadError();
+                        mView.onLoadComplete(true);
                     }
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
-                        mTimeLineWeiboView.setEntities(mWeibos);
+                        mView.setEntities(mWeibos);
 
-                        mTimeLineWeiboView.onLoadComplete(weibos.size() > COUNT - 1);
+                        mView.onLoadComplete(weibos.size() > COUNT - 1);
                     }
                 });
-        mLoginCompositeSubscription.add(su);
+        mCompositeSubscription.add(su);
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getWeiboMentions(mToken, 0, maxId, COUNT, 1)
+        return mServerWeiboSource.getWeiboMentions(mAccount.getWeicoToken().getAccess_token(), 0, maxId, COUNT, 1)
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(QueryWeiboResponse queryWeiboResponse) {
@@ -142,7 +137,7 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent implements WeiboM
 
     @Override
     public void onDestroy() {
-        mLoginCompositeSubscription.clear();
+        mCompositeSubscription.clear();
     }
 
 

@@ -1,6 +1,7 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.Key;
+import com.caij.emore.bean.Account;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.view.FriendWeiboView;
@@ -29,15 +30,15 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
     private List<Weibo> mWeibos;
     Observable<Weibo> mPublishWeiboObservable;
 
-    public FriendWeiboPresentImp(String token, FriendWeiboView view, WeiboSource serverWeiboSource,
+    public FriendWeiboPresentImp(Account account, FriendWeiboView view, WeiboSource serverWeiboSource,
                                  WeiboSource localWeiboSource) {
-        super(token, view, serverWeiboSource, localWeiboSource);
+        super(account, view, serverWeiboSource, localWeiboSource);
         mWeibos = new ArrayList<>();
     }
 
     @Override
     public void onCreate() {
-        Subscription subscription = mLocalWeiboSource.getFriendWeibo(mToken, 0, 0, PAGE_COUNT, 1)
+        Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getWeiyoToken().getAccess_token(), 0, 0, PAGE_COUNT, 1)
                 .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(List<Weibo> weibos) {
@@ -157,7 +158,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getFriendWeibo(mToken, 0, maxId, PAGE_COUNT, 1)
+        return mServerWeiboSource.getFriendWeibo(mAccount.getWeiyoToken().getAccess_token(), 0, maxId, PAGE_COUNT, 1)
                 .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(List<Weibo> weibos) {
@@ -183,7 +184,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
-                        mLocalWeiboSource.saveWeibos(mToken, weibos);
+                        mLocalWeiboSource.saveWeibos(mAccount.getWeiyoToken().getAccess_token(), weibos);
                         doSpanNext(weibos);
                     }
                 })

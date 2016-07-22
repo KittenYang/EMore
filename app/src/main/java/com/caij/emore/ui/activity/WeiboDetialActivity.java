@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -44,7 +45,7 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/12.
  */
-public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDetailView {
+public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDetailView, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.weibo_item_view)
     WeiboDetailItemView weiboItemView;
@@ -80,7 +81,21 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
         setTitle(getString(R.string.weibo_detail_title));
         mWeiboId = getIntent().getLongExtra(Key.ID, -1);
         ButterKnife.bind(this);
+
+        initView();
+
+        mWeiboDetailPresent = new WeiboDetailPresentImp(UserPrefs.get().getAccount(), mWeiboId,
+                this, new ServerWeiboSource(), new LocalWeiboSource());
+        mWeiboDetailPresent.onCreate();
+
+        if (WeicoAuthUtil.checkWeicoLogin(this, true)) {
+            doNext();
+        }
+    }
+
+    private void initView(){
         mAttachContainer.setVisibility(View.GONE);
+
         actionMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.
                 OnFloatingActionsMenuUpdateListener() {
             @Override
@@ -93,10 +108,6 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
                 flLay.setVisibility(View.GONE);
             }
         });
-
-        if (WeicoAuthUtil.checkWeicoLogin(this, true)) {
-            doNext();
-        }
     }
 
     private void doNext() {
@@ -113,11 +124,8 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
         tabLayout.setTabTextColors(getResources().getColor(R.color.text_54),
                 getResources().getColor(R.color.text_80));
 
-        AccessToken token = UserPrefs.get().getWeiCoToken();
-        mWeiboDetailPresent = new WeiboDetailPresentImp(token.getAccess_token(), mWeiboId,
-                this, new ServerWeiboSource(), new LocalWeiboSource());
-        mWeiboDetailPresent.onCreate();
         mWeiboDetailPresent.loadWeiboDetail();
+
     }
 
     @Override
@@ -130,17 +138,20 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
         switch (view.getId()) {
             case R.id.action_star:
                 mWeiboDetailPresent.attitudesWeibo(mWeibo);
+                actionMenu.collapse();
                 break;
             case R.id.action_repost: {
                 if (mWeibo != null) {
                     Intent intent = RepostWeiboActivity.newIntent(this, mWeibo);
                     startActivity(intent);
                 }
+                actionMenu.collapse();
                 break;
             }
             case R.id.action_comment: {
                 Intent intent = CommentWeiboActivity.newIntent(this, mWeiboId);
                 startActivity(intent);
+                actionMenu.collapse();
                 break;
             }
 
@@ -174,6 +185,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     @Override
     public void setWeibo(Weibo weibo) {
         mAttachContainer.setVisibility(View.VISIBLE);
+
         weiboItemView.setWeibo(weibo);
         mWeibo = weibo;
         mTabTitles.clear();
@@ -220,5 +232,10 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
         if (mWeiboDetailPresent != null) {
             mWeiboDetailPresent.onDestroy();
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        mWeiboDetailPresent.refreshWeiboDetail();
     }
 }

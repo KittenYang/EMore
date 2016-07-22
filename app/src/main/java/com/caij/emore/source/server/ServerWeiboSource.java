@@ -2,9 +2,11 @@ package com.caij.emore.source.server;
 
 import com.caij.emore.api.WeiBoService;
 import com.caij.emore.api.WeiCoService;
+import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
+import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
@@ -18,7 +20,6 @@ import com.caij.emore.utils.LogUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -198,13 +199,13 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<Response> attitudesWeibo(Map<String, Object> paramMap, String attitude, long weiboId) {
-        return mWeiCoService.attitudesWeibo(paramMap, attitude, weiboId);
+    public Observable<Response> attitudesWeibo(String token, String source, String attitude, long weiboId) {
+        return mWeiCoService.attitudesWeibo(token, source, attitude, weiboId);
     }
 
     @Override
-    public Observable<Response> destoryAttitudesWeibo(Map<String, Object> paramMap, String attitude, long weiboId) {
-        return mWeiCoService.destoryAttitudesWeibo(paramMap, attitude, weiboId);
+    public Observable<Response> destoryAttitudesWeibo(String token, String source, String attitude, long weiboId) {
+        return mWeiCoService.destoryAttitudesWeibo(token, source, attitude, weiboId);
     }
 
     @Override
@@ -213,13 +214,24 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<Weibo> getWeiboById(Map<String, Object> params, long id) {
-        return mWeiCoService.getWeiboById(params, id);
+    public Observable<Weibo> getWeiboById(String token, String source, int isGetLongText, long id) {
+        return mWeiCoService.getWeiboById(token, isGetLongText, source, id);
     }
 
     @Override
     public Observable<Weibo> getWeiboById(String token, long id) {
         return mWeiBoService.getWeiboById(token, id);
+    }
+
+    @Override
+    public Observable<List<Attitude>> getWeiboAttiyudes(String token, long id, int page, int count) {
+        return mWeiBoService.getWeiboAttitudes(token, id, page, count)
+                .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<List<Attitude>>>() {
+                    @Override
+                    public Observable<List<Attitude>> call(QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
+                        return Observable.just(queryWeiboAttitudeResponse.getAttitudes());
+                    }
+                });
     }
 
     @Override
@@ -230,6 +242,18 @@ public class ServerWeiboSource implements WeiboSource{
     @Override
     public void saveUploadImageResponse(UploadImageResponse uploadImageResponse) {
 
+    }
+
+    @Override
+    public Observable<List<Attitude>> getToMeAttiyudes(String token, long maxId, long sinceId,
+                                                       String source, int page, int count) {
+        return mWeiCoService.getToMeAttitudes(token, sinceId, maxId, source, page, count)
+                .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<List<Attitude>>>() {
+                    @Override
+                    public Observable<List<Attitude>> call(QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
+                        return Observable.just(queryWeiboAttitudeResponse.getAttitudes());
+                    }
+                });
     }
 
     @Override

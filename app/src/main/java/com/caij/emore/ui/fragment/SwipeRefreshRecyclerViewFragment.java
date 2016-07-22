@@ -40,7 +40,6 @@ public abstract class SwipeRefreshRecyclerViewFragment<E, P extends RefreshListP
                 getResources().getColor(R.color.gplus_color_2),
                 getResources().getColor(R.color.gplus_color_3),
                 getResources().getColor(R.color.gplus_color_4));
-
     }
 
     @Override

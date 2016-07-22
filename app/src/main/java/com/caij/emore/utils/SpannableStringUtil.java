@@ -294,4 +294,8 @@ public class SpannableStringUtil {
         return shortUrls;
     }
 
+    public static List<String> getCommentTextHttpUrl(Comment comment, List<String> shortUrls) {
+        return getTextUrl(comment.getText(), shortUrls);
+    }
+
 }

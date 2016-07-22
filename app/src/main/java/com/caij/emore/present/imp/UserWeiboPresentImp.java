@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.bean.Account;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.UserWeiboPresent;
@@ -29,8 +30,8 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
     private String mUsername;
     private int mFeature = 0;
 
-    public UserWeiboPresentImp(String token, String name, TimeLineWeiboView view, WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
-        super(token, view, serverWeiboSource, localWeiboSource);
+    public UserWeiboPresentImp(Account account, String name, TimeLineWeiboView view, WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
+        super(account, view, serverWeiboSource, localWeiboSource);
         mUsername = name;
         mWeibos = new ArrayList<>();
     }
@@ -120,7 +121,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getUseWeibo(mToken, mUsername, mFeature, 0, maxId, PAGE_COUNT, 1)
+        return mServerWeiboSource.getUseWeibo(mAccount.getWeicoToken().getAccess_token(), mUsername, mFeature, 0, maxId, PAGE_COUNT, 1)
                 .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(UserWeiboResponse response) {

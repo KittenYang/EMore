@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.caij.emore.UserPrefs;
+import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
@@ -33,7 +34,6 @@ import com.caij.emore.utils.db.DBManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import de.greenrobot.dao.query.QueryBuilder;
 import rx.Observable;
@@ -332,7 +332,7 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<Response> attitudesWeibo(Map<String, Object> paramMap, String attitude, final long weiboId) {
+    public Observable<Response> attitudesWeibo(String token, String source, String attitude, final long weiboId) {
         return Observable.create(new Observable.OnSubscribe<Response>() {
             @Override
             public void call(Subscriber<? super Response> subscriber) {
@@ -350,7 +350,7 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<Response> destoryAttitudesWeibo(Map<String, Object> paramMap, String attitude, final long weiboId) {
+    public Observable<Response> destoryAttitudesWeibo(String token, String source, String attitude, final long weiboId) {
         return Observable.create(new Observable.OnSubscribe<Response>() {
             @Override
             public void call(Subscriber<? super Response> subscriber) {
@@ -375,7 +375,7 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<Weibo> getWeiboById(Map<String, Object> params, final long id) {
+    public Observable<Weibo> getWeiboById(String token, String source, int isGetLongText, final long id) {
         return Observable.create(new Observable.OnSubscribe<Weibo>() {
             @Override
             public void call(Subscriber<? super Weibo> subscriber) {
@@ -413,6 +413,11 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
+    public Observable<List<Attitude>> getWeiboAttiyudes(String token, long id, int page, int count) {
+        return null;
+    }
+
+    @Override
     public void saveWeibo(String mToken, Weibo weibo) {
         insertWeibo(weibo);
     }
@@ -421,4 +426,10 @@ public class LocalWeiboSource implements WeiboSource {
     public void saveUploadImageResponse(UploadImageResponse uploadImageResponse) {
         DBManager.getDaoSession().getUploadImageResponseDao().insertOrReplace(uploadImageResponse);
     }
+
+    @Override
+    public Observable<List<Attitude>> getToMeAttiyudes(String token, long maxId, long sinceId, String source, int page, int count) {
+        return null;
+    }
+
 }

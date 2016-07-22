@@ -60,11 +60,11 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
                 getResources().getColor(R.color.gplus_color_2),
                 getResources().getColor(R.color.gplus_color_3),
                 getResources().getColor(R.color.gplus_color_4));
-        Observable<Activity> observable = RxBus.get().register(Key.EVENT_TOOL_BAR_DOUBLE_CLICK);
-        observable.subscribe(new Action1<Activity>() {
+        Observable<Object> observable = RxBus.get().register(Key.EVENT_TOOL_BAR_DOUBLE_CLICK);
+        observable.subscribe(new Action1<Object>() {
             @Override
-            public void call(Activity activity) {
-                if (getActivity() == activity) {
+            public void call(Object object) {
+                if (object == FriendWeiboFragment.this) {
                     mLoadMoreLoadMoreRecyclerView.smoothScrollToPosition(0);
                 }
             }
@@ -73,8 +73,7 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
 
     @Override
     protected FriendWeiboPresent createPresent() {
-        AccessToken token = UserPrefs.get().getEMoreToken();
-       return new FriendWeiboPresentImp(token.getAccess_token(), this,
+       return new FriendWeiboPresentImp( UserPrefs.get().getAccount(), this,
                 new ServerWeiboSource(), new LocalWeiboSource());
     }
 
