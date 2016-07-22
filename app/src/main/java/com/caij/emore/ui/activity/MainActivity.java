@@ -70,6 +70,8 @@ public class MainActivity extends BaseActivity implements SimpleUserView, View.O
     RadioButton mRbWeibo;
     @BindView(R.id.rb_message)
     RadioButton mRbMessage;
+    @BindView(R.id.material_drawer_account_header_background)
+    ImageView ivHeaderBackground;
 
     private Fragment mFriendWeiboFragment;
     private Fragment mMessageFragment;
@@ -165,6 +167,7 @@ public class MainActivity extends BaseActivity implements SimpleUserView, View.O
             mTvNavigationUsername.setText(user.getName());
             ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild().setCircle(true).build();
             ImageLoader.load(this, mImgNavigationAvatar, user.getAvatar_large(), R.drawable.circle_image_placeholder, config);
+            ImageLoader.load(this, ivHeaderBackground, user.getCover_image_phone(), R.mipmap.bg_nav_head);
             mImgNavigationAvatar.setTag(user);
         }
     }

@@ -75,17 +75,21 @@
 
                         <ImageView
                             android:id="@+id/imgVerified"
-                            android:layout_width="20dip"
-                            android:layout_height="20dip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="8dip"
-                            android:layout_toRightOf="@id/txtName" />
+                            android:layout_toRightOf="@id/txtName"
+                            android:layout_alignBottom="@id/txtName"
+                            android:layout_marginBottom="4dp"/>
 
                         <ImageView
                             android:id="@+id/imgGender"
-                            android:layout_width="20dip"
-                            android:layout_height="20dip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="8dip"
-                            android:layout_toRightOf="@id/imgVerified" />
+                            android:layout_toRightOf="@id/imgVerified"
+                            android:layout_alignBottom="@id/txtName"
+                            android:layout_marginBottom="4dp"/>
 
                     </RelativeLayout>
 

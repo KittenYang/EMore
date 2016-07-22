@@ -37,6 +37,7 @@ import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.SystemUtil;
+import com.caij.emore.utils.WeiboUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 
 import java.util.ArrayList;
@@ -159,6 +160,9 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
         ImageLoader.ImageConfigBuild build = new ImageLoader.ImageConfigBuild().setCircle(true).
                 setScaleType(ImageLoader.ScaleType.CENTER_CROP);
         ImageLoader.load(this, ivAvatar, user.getAvatar_large(), R.drawable.circle_image_placeholder, build.build());
+
+        WeiboUtil.setImageVerified(imgVerified, user);
+        WeiboUtil.setGender(user, imgGender);
 
         initContent(user);
 

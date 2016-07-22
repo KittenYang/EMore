@@ -18,6 +18,7 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.utils.WeiboUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,6 +88,8 @@ public abstract class WeiboItemView extends FrameLayout {
 
         tvName.setTag(weibo.getUser());
         ivAvatar.setTag(weibo.getUser());
+
+        WeiboUtil.setImageVerified(imgVerified, weibo.getUser());
     }
 
     @OnClick(R.id.tv_name)
