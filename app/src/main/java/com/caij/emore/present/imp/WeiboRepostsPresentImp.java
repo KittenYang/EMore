@@ -75,7 +75,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                         if (weibos.size() == 0) {
                             mWeiboRepostsView.onEmpty();
                         }else {
-                            mWeiboRepostsView.onLoadComplete(weibos.size() >= PAGE_COUNET);
+                            mWeiboRepostsView.onLoadComplete(weibos.size() >= PAGE_COUNET - 5);
                         }
                     }
                 });
@@ -104,7 +104,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeobos.addAll(weibos);
-                        mWeiboRepostsView.setEntities(weibos);
+                        mWeiboRepostsView.setEntities(mWeobos);
                         mWeiboRepostsView.onLoadComplete(weibos.size() >= 15);
                     }
                 });
