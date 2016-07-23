@@ -1,4 +1,4 @@
-package com.caij.emore.utils;
+package com.caij.emore.utils.weibo;
 
 import android.view.View;
 import android.widget.ImageView;

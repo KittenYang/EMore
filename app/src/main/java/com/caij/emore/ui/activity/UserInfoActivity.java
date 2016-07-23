@@ -1,7 +1,6 @@
 package com.caij.emore.ui.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,11 +32,9 @@ import com.caij.emore.ui.fragment.UserImageFragment;
 import com.caij.emore.ui.fragment.UserInfoFragment;
 import com.caij.emore.ui.fragment.weibo.UserWeiboFragment;
 import com.caij.emore.utils.CountUtil;
-import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.SystemUtil;
-import com.caij.emore.utils.WeiboUtil;
+import com.caij.emore.utils.weibo.WeiboUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 
 import java.util.ArrayList;

@@ -9,6 +9,7 @@ import com.caij.emore.present.view.WeiboRepostsView;
 import com.caij.emore.source.DefaultResponseSubscriber;
 import com.caij.emore.source.UrlSource;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -41,6 +42,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
     Observable<Weibo> mWeiboObservable;
     private UrlSource mServerUrlSource;
     private UrlSource mLocalUrlSource;
+    Observable<List<Weibo>> mWeiboRefreshObservable;
 
     public WeiboRepostsPresentImp(String token, long weiboId, WeiboSource repostSource, UrlSource servreUrlSource,
                                   UrlSource localUrlSource, WeiboRepostsView repostsView) {
@@ -56,6 +58,8 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
 
     @Override
     public void userFirstVisible() {
+        initEventListener();
+
         Subscription subscription = createObservable(0, true)
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mWeiboRepostsView) {
                     @Override
@@ -70,6 +74,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
+                        mWeobos.clear();
                         mWeobos.addAll(weibos);
                         mWeiboRepostsView.setEntities(weibos);
                         if (weibos.size() == 0) {
@@ -81,6 +86,60 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                 });
 
         mLoginCompositeSubscription.add(subscription);
+    }
+
+    /**
+     * 这里是在fist visible 后添加事件的  如果不可见  可见时会自动刷新
+     */
+    private void initEventListener() {
+        mWeiboObservable = RxBus.get().register(Key.EVENT_REPOST_WEIBO_SUCCESS);
+        mWeiboObservable.
+                filter(new Func1<Weibo, Boolean>() {
+                    @Override
+                    public Boolean call(Weibo weibo) {
+                        return weibo.getId() == mWeiboId;
+                    }
+                })
+                .doOnNext(new Action1<Weibo>() {
+                    @Override
+                    public void call(Weibo weibo) {
+                        doSpanNext(weibo);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Weibo>() {
+                    @Override
+                    public void call(Weibo weibo) {
+                        mWeobos.add(0, weibo);
+                        mWeiboRepostsView.onRepostWeiboSuccess(mWeobos);
+                    }
+                });
+
+        mWeiboRefreshObservable = RxBus.get().register(Key.EVENT_REPOST_WEIBO_REFRESH_COMPLETE);
+        mWeiboRefreshObservable.filter(new Func1<List<Weibo>, Boolean>() {
+                @Override
+                public Boolean call(List<Weibo> weibos) {
+                    return weibos != null && weibos.size() > 0 && weibos.get(0).getId() == mWeiboId;
+                }
+            })
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Action1<List<Weibo>>() {
+                @Override
+                public void call(List<Weibo> weibos) {
+                    LogUtil.d(WeiboRepostsPresentImp.this, "accept refresh event");
+
+                    mWeobos.clear();
+                    mWeobos.addAll(weibos);
+                    mWeiboRepostsView.setEntities(weibos);
+
+                    if (weibos.size() == 0) {
+                        mWeiboRepostsView.onEmpty();
+                    }else {
+                        mWeiboRepostsView.onLoadComplete(weibos.size() >= PAGE_COUNET - 5);
+                    }
+                }
+            });
     }
 
     @Override
@@ -139,35 +198,14 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
 
     @Override
     public void onCreate() {
-        mWeiboObservable = RxBus.get().register(Key.EVENT_REPOST_WEIBO_SUCCESS);
-        mWeiboObservable.
-                filter(new Func1<Weibo, Boolean>() {
-                    @Override
-                    public Boolean call(Weibo weibo) {
-                        return weibo.getId() == mWeiboId;
-                    }
-                })
-                .doOnNext(new Action1<Weibo>() {
-                    @Override
-                    public void call(Weibo weibo) {
-                        doSpanNext(weibo);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Weibo>() {
-                    @Override
-                    public void call(Weibo weibo) {
-                        mWeobos.add(0, weibo);
-                        mWeiboRepostsView.onRepostWeiboSuccess(mWeobos);
-                    }
-                });
+
     }
 
     @Override
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
         RxBus.get().unregister(Key.EVENT_REPOST_WEIBO_SUCCESS, mWeiboObservable);
+        RxBus.get().unregister(Key.EVENT_REPOST_WEIBO_REFRESH_COMPLETE, mWeiboRefreshObservable);
     }
 
     protected void doSpanNext(List<Weibo> weibos) {

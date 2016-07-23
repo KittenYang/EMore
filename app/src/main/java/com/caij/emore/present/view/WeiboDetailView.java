@@ -8,4 +8,6 @@ import com.caij.emore.database.bean.Weibo;
 public interface WeiboDetailView extends WeiboActionView {
 
     void setWeibo(Weibo weibo);
+
+    void onRefreshComplete();
 }

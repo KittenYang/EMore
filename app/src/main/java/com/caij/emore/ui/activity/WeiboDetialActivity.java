@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -45,7 +46,7 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/12.
  */
-public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDetailView, SwipeRefreshLayout.OnRefreshListener {
+public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDetailView, SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener {
 
     @BindView(R.id.weibo_item_view)
     WeiboDetailItemView weiboItemView;
@@ -63,6 +64,10 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     FloatingActionsMenu actionMenu;
     @BindView(R.id.fl_lay)
     FrameLayout flLay;
+    @BindView(R.id.appbar_layout)
+    AppBarLayout appBarLayout;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private long mWeiboId;
     private Weibo mWeibo;
@@ -108,12 +113,26 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
                 flLay.setVisibility(View.GONE);
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        appBarLayout.addOnOffsetChangedListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        appBarLayout.removeOnOffsetChangedListener(this);
     }
 
     private void doNext() {
         List<BaseFragment> fragments = new ArrayList<>(3);
-        fragments.add(WeiboRepostListFragment.newInstance(mWeiboId));
         fragments.add(WeiboCommentListFragment.newInstance(mWeiboId));
+        fragments.add(WeiboRepostListFragment.newInstance(mWeiboId));
         fragments.add(WeiboLikerListFragment.newInstance(mWeiboId));
         mTabTitles = new ArrayList<>(3);
         WeiboFragmentPagerAdapter adapter = new WeiboFragmentPagerAdapter(getSupportFragmentManager(),
@@ -125,7 +144,6 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
                 getResources().getColor(R.color.text_80));
 
         mWeiboDetailPresent.loadWeiboDetail();
-
     }
 
     @Override
@@ -190,8 +208,8 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
         mWeibo = weibo;
         mTabTitles.clear();
 
-        mTabTitles.add("转发 " + mWeibo.getReposts_count());
         mTabTitles.add("评论 " + mWeibo.getComments_count());
+        mTabTitles.add("转发 " + mWeibo.getReposts_count());
         mTabTitles.add("赞 " + mWeibo.getAttitudes_count());
         for (int i = 0; i < mTabTitles.size(); i ++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
@@ -202,8 +220,8 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     }
 
     @Override
-    public Context getContent() {
-        return null;
+    public void onRefreshComplete() {
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -238,5 +256,10 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     @Override
     public void onRefresh() {
         mWeiboDetailPresent.refreshWeiboDetail();
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        swipeRefreshLayout.setEnabled(verticalOffset == 0);
     }
 }

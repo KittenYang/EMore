@@ -11,46 +11,11 @@
         android:orientation="vertical"
         android:paddingTop="@dimen/spacing_large">
 
-        <RelativeLayout
-            android:id="@+id/rl_head"
-            android:layout_width="wrap_content"
+        <include layout="@layout/include_weibo_item_head"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing_weibo_detail_item"
-            android:paddingRight="@dimen/spacing_weibo_detail_item">
-
-            <ImageView
-                android:id="@+id/sdv_avatar"
-                android:layout_width="42dip"
-                android:layout_height="42dip"
-                android:layout_marginRight="8dip" />
-
-            <TextView
-                android:id="@+id/tv_name"
-                android:textSize="@dimen/text_size_medium"
-                android:textColor="@color/text_100"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/sdv_avatar"/>
-
-            <ImageView
-                android:id="@+id/img_verified"
-                android:layout_width="18dip"
-                android:layout_height="18dip"
-                android:layout_marginLeft="4dip"
-                android:layout_marginRight="10dp"
-                android:layout_toRightOf="@id/tv_name" android:visibility="gone"/>
-
-            <TextView
-                android:id="@+id/tv_source"
-                android:textSize="@dimen/text_size_medium_min"
-                android:textColor="@color/text_54"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_name"
-                android:layout_marginTop="2dip"
-                android:layout_toRightOf="@id/sdv_avatar"/>
-
-        </RelativeLayout>
+            android:layout_marginLeft="@dimen/spacing_weibo_detail_item"
+            android:layout_marginRight="@dimen/spacing_weibo_detail_item"/>
 
         <TextView
             android:id="@+id/tv_content"

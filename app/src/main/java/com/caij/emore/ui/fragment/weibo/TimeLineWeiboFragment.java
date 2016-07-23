@@ -51,10 +51,6 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends R
         }
     }
 
-    @Override
-    public Context getContent() {
-        return getActivity().getApplication();
-    }
 
     private void onMenuClick(final Weibo weibo, final int position) {
         List<String> items = new ArrayList<>();

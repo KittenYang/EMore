@@ -9,8 +9,6 @@ import com.caij.emore.database.bean.Weibo;
  */
 public interface WeiboActionView extends BaseView{
 
-    Context getContent();
-
     void onDeleteWeiboSuccess(Weibo weibo, int position);
 
     void onCollectSuccess(Weibo weibo);

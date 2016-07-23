@@ -4,6 +4,7 @@ import com.caij.emore.Key;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.QueryUrlResponse;
 import com.caij.emore.database.bean.UrlInfo;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboCommentsPresent;
 import com.caij.emore.present.view.WeiboCommentsView;
 import com.caij.emore.source.UrlSource;
@@ -11,6 +12,7 @@ import com.caij.emore.source.WeiboSource;
 import com.caij.emore.source.local.LocalUrlSource;
 import com.caij.emore.source.server.ServerUrlSource;
 import com.caij.emore.utils.GsonUtils;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -47,6 +49,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
     protected UrlSource mLocalUrlSource;
     protected UrlSource mServerUrlSource;
     private Observable<Comment> mCommentObservable;
+    private Observable<List<Comment>> mWeiboRefreshObservable;
 
     public WeiboCommentsPresentImp(String token, long weiboId,
                                    WeiboSource serverCommentSource,
@@ -61,8 +64,66 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
         mComments = new ArrayList<>();
     }
 
+    /**
+     * 这里是在fist visible 后添加事件的  如果不可见  可见时会自动刷新
+     */
+    private void initEventListener() {
+        mCommentObservable = RxBus.get().register(Key.EVENT_COMMENT_WEIBO_SUCCESS);
+        mCommentObservable
+                .filter(new Func1<Comment, Boolean>() {
+                    @Override
+                    public Boolean call(Comment comment) {
+                        return comment.getStatus().getId().longValue() == mWeiboId;
+                    }
+                })
+                .doOnNext(new Action1<Comment>() {
+                    @Override
+                    public void call(Comment comment) {
+                        List<String> shortUrls  = SpannableStringUtil.getCommentTextHttpUrl(comment, null);
+                        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource, mLocalUrlSource, mToken);
+                        SpannableStringUtil.paraeSpannable(comment, shortLongLinkMap);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Comment>() {
+                    @Override
+                    public void call(Comment comment) {
+                        mComments.add(0, comment);
+                        mWeiboCommentsView.onCommentSuccess(mComments);
+                    }
+                });
+
+
+        mWeiboRefreshObservable = RxBus.get().register(Key.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE);
+        mWeiboRefreshObservable.filter(new Func1<List<Comment>, Boolean>() {
+                @Override
+                public Boolean call(List<Comment> comments) {
+                    return comments != null && comments.size() > 0 && comments.get(0).getStatus().getId() == mWeiboId;
+                }
+            })
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Action1<List<Comment>>() {
+                @Override
+                public void call(List<Comment> comments) {
+                    LogUtil.d(WeiboCommentsPresentImp.this, "accept refresh event");
+
+                    mComments.clear();
+                    mComments.addAll(comments);
+                    mWeiboCommentsView.setEntities(mComments);
+                    if (comments.size() == 0) {
+                        mWeiboCommentsView.onEmpty();
+                    }else {
+                        mWeiboCommentsView.onLoadComplete(comments.size() >= 10);
+                    }
+                }
+            });
+    }
+
     @Override
     public void userFirstVisible() {
+        initEventListener();
+
         Subscription subscription =  createObservable(0, true)
                 .subscribe(new Subscriber<List<Comment>>() {
                     @Override
@@ -78,6 +139,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
 
                     @Override
                     public void onNext(List<Comment> comments) {
+                        mComments.clear();
                         mComments.addAll(comments);
                         mWeiboCommentsView.setEntities(mComments);
                         if (comments.size() == 0) {
@@ -179,37 +241,14 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
 
     @Override
     public void onCreate() {
-        mCommentObservable = RxBus.get().register(Key.EVENT_COMMENT_WEIBO_SUCCESS);
-        mCommentObservable
-                .filter(new Func1<Comment, Boolean>() {
-                    @Override
-                    public Boolean call(Comment comment) {
-                        return comment.getStatus().getId().longValue() == mWeiboId;
-                    }
-                })
-                .doOnNext(new Action1<Comment>() {
-                    @Override
-                    public void call(Comment comment) {
-                        List<String> shortUrls  = SpannableStringUtil.getCommentTextHttpUrl(comment, null);
-                        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource, mLocalUrlSource, mToken);
-                        SpannableStringUtil.paraeSpannable(comment, shortLongLinkMap);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Comment>() {
-                    @Override
-                    public void call(Comment comment) {
-                        mComments.add(0, comment);
-                        mWeiboCommentsView.onCommentSuccess(mComments);
-                    }
-                });
+
     }
 
     @Override
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
         RxBus.get().unregister(Key.EVENT_COMMENT_WEIBO_SUCCESS, mCommentObservable);
+        RxBus.get().unregister(Key.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE, mWeiboRefreshObservable);
     }
 
 

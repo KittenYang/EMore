@@ -18,7 +18,7 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.utils.WeiboUtil;
+import com.caij.emore.utils.weibo.WeiboUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -38,7 +38,6 @@ public class WeiboLikerListFragment extends RecyclerViewFragment<Attitude, ListP
         return fragment;
     }
 
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
