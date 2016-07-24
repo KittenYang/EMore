@@ -62,4 +62,5 @@ public interface Key {
     String EVENT_REPOST_WEIBO_REFRESH_COMPLETE = "event_repost_weibo_refresh_complete";
     String EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE = "event_weibo_comments_refresh_complete";
     String EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE = "event_weibo_attitude_refresh_complete";
+    String EVENT_UNREAD_MESSAGE_COMPLETE = "event_unread_message_complete";
 }

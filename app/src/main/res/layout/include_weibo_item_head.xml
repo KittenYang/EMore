@@ -25,10 +25,10 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dip"
         android:layout_toRightOf="@id/tv_name"
-        android:visibility="visible"
+        android:visibility="gone"
         android:src="@mipmap/avatar_vgirl"
         android:layout_marginBottom="2dp"
-        android:layout_alignBottom="@id/tv_name"/>
+        android:layout_alignBottom="@id/tv_name" />
 
     <TextView
         android:id="@+id/tv_source"

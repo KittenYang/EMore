@@ -13,6 +13,7 @@ import android.text.style.URLSpan;
 
 import com.caij.emore.R;
 import com.caij.emore.AppApplication;
+import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.User;
@@ -298,4 +299,11 @@ public class SpannableStringUtil {
         return getTextUrl(comment.getText(), shortUrls);
     }
 
+    public static List<String> getAttitudeTextHttpUrl(List<Attitude> attitudes) {
+        List<String> shortUrls = new ArrayList<>();
+        for (Attitude attitude : attitudes) {
+            getWeiboTextHttpUrl(attitude.getStatus(), shortUrls);
+        }
+        return shortUrls;
+    }
 }

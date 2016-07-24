@@ -10,6 +10,8 @@ import com.caij.emore.bean.Comment;
 import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.present.imp.CommentMentionPresentImp;
 import com.caij.emore.present.view.RefreshListView;
+import com.caij.emore.source.local.LocalMessageSource;
+import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
@@ -45,7 +47,8 @@ public class CommentMentionFragment extends SwipeRefreshRecyclerViewFragment<Com
 
     protected RefreshListPresent createPresent() {
         AccessToken accessToken = UserPrefs.get().getWeiCoToken();
-        return new CommentMentionPresentImp(accessToken.getAccess_token(), new ServerWeiboSource(), this);
+        return new CommentMentionPresentImp(accessToken.getAccess_token(), new ServerWeiboSource(),
+                new ServerMessageSource(), new LocalMessageSource(), this);
     }
 
     @Override

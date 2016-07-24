@@ -14,8 +14,11 @@ import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.MessageUser;
+import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.MessageUserPresent;
 import com.caij.emore.present.imp.MessageUserPresentImp;
+import com.caij.emore.present.view.MessageUserView;
+import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.ui.activity.CommentsActivity;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
@@ -30,7 +33,12 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<MessageUser.UserListBean, MessageUserPresent> {
+public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<MessageUser.UserListBean, MessageUserPresent> implements MessageUserView {
+
+
+    private TextView tvMentionCount;
+    private TextView tvCommentCount;
+    private TextView tvAttitudeCount;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -43,9 +51,13 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
                 build());
 
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        View mentionView = layoutInflater.inflate(R.layout.item_message_head, mLoadMoreLoadMoreRecyclerView, false);
+        final View mentionView = layoutInflater.inflate(R.layout.item_message_head, mLoadMoreLoadMoreRecyclerView, false);
         View commentView = layoutInflater.inflate(R.layout.item_message_head, mLoadMoreLoadMoreRecyclerView, false);
         View priseView = layoutInflater.inflate(R.layout.item_message_head, mLoadMoreLoadMoreRecyclerView, false);
+
+        tvMentionCount = (TextView) mentionView.findViewById(R.id.tv_unread_count);
+        tvCommentCount = (TextView) commentView.findViewById(R.id.tv_unread_count);
+        tvAttitudeCount = (TextView) priseView.findViewById(R.id.tv_unread_count);
 
         setValue(mentionView, "@我的", R.mipmap.messagescenter_at);
         setValue(commentView, "评论", R.mipmap.messagescenter_comments);
@@ -93,7 +105,7 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         if (WeicoAuthUtil.checkWeicoLogin(this, false)) {
             AccessToken accessToken = UserPrefs.get().getWeiCoToken();
             return new MessageUserPresentImp(accessToken.getAccess_token(), new ServerMessageSource(),
-                    null, this);
+                    new LocalMessageSource(), this);
         }
         return null;
     }
@@ -121,12 +133,29 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Key.AUTH && resultCode == Activity.RESULT_OK) {
-            mPresent = createPresent();
-            mSwipeRefreshLayout.setRefreshing(true);
-            mPresent.refresh();
+    public void onLoadUnReadMessageSuccess(UnReadMessage unReadMessage) {
+        if (unReadMessage != null) {
+            int mentionCount  = unReadMessage.getMention_cmt() + unReadMessage.getMention_status();
+            if (mentionCount > 0) {
+                tvMentionCount.setVisibility(View.VISIBLE);
+                tvMentionCount.setText(String.valueOf(mentionCount));
+            }else {
+                tvMentionCount.setVisibility(View.GONE);
+            }
+
+            if (unReadMessage.getCmt() > 0) {
+                tvCommentCount.setVisibility(View.VISIBLE);
+                tvCommentCount.setText(String.valueOf(unReadMessage.getCmt()));
+            }else {
+                tvCommentCount.setVisibility(View.GONE);
+            }
+
+            if (unReadMessage.getAttitude() > 0) {
+                tvAttitudeCount.setVisibility(View.VISIBLE);
+                tvAttitudeCount.setText(String.valueOf(unReadMessage.getAttitude()));
+            }else {
+                tvAttitudeCount.setVisibility(View.GONE);
+            }
         }
     }
 }

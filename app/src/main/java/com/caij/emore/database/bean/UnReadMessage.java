@@ -4,6 +4,9 @@ package com.caij.emore.database.bean;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
+
+import android.content.Intent;
+
 /**
  * Entity mapped to table "UN_READ_MESSAGE".
  */
@@ -31,6 +34,7 @@ public class UnReadMessage {
     private Integer hot_status;
     private Integer status;
     private Integer follower;
+    private Integer dm_single;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -42,7 +46,12 @@ public class UnReadMessage {
         this.uid = uid;
     }
 
-    public UnReadMessage(Long uid, Integer cmt, Integer dm, Integer chat_group_client, Integer mention_status, Integer mention_cmt, Integer invite, Integer attitude, Integer msgbox, Integer common_attitude, Integer page_follower, Integer all_mention_status, Integer attention_mention_status, Integer all_mention_cmt, Integer attention_mention_cmt, Integer all_cmt, Integer attention_cmt, Integer attention_follower, Integer chat_group_notice, Integer hot_status, Integer status, Integer follower) {
+    public UnReadMessage(Long uid, Integer cmt, Integer dm, Integer chat_group_client, Integer mention_status,
+                         Integer mention_cmt, Integer invite, Integer attitude, Integer msgbox,
+                         Integer common_attitude, Integer page_follower, Integer all_mention_status,
+                         Integer attention_mention_status, Integer all_mention_cmt, Integer attention_mention_cmt,
+                         Integer all_cmt, Integer attention_cmt, Integer attention_follower, Integer chat_group_notice,
+                         Integer hot_status, Integer status, Integer follower, Integer dm_single) {
         this.uid = uid;
         this.cmt = cmt;
         this.dm = dm;
@@ -65,6 +74,7 @@ public class UnReadMessage {
         this.hot_status = hot_status;
         this.status = status;
         this.follower = follower;
+        this.dm_single = dm_single;
     }
 
     public Long getUid() {
@@ -76,7 +86,7 @@ public class UnReadMessage {
     }
 
     public Integer getCmt() {
-        if (cmt == null) {
+        if (cmt == null || cmt < 0) {
             return 0;
         }
         return cmt;
@@ -87,7 +97,7 @@ public class UnReadMessage {
     }
 
     public Integer getDm() {
-        if (dm == null) {
+        if (dm == null || dm < 0) {
             return 0;
         }
         return dm;
@@ -106,7 +116,7 @@ public class UnReadMessage {
     }
 
     public Integer getMention_status() {
-        if (mention_status == null) {
+        if (mention_status == null || mention_status < 0) {
             return 0;
         }
         return mention_status;
@@ -117,7 +127,7 @@ public class UnReadMessage {
     }
 
     public Integer getMention_cmt() {
-        if (mention_cmt == null) {
+        if (mention_cmt == null || mention_cmt < 0) {
             return 0;
         }
         return mention_cmt;
@@ -136,7 +146,7 @@ public class UnReadMessage {
     }
 
     public Integer getAttitude() {
-        if (attitude == null) {
+        if (attitude == null || attitude < 0) {
             return 0;
         }
         return attitude;
@@ -243,7 +253,7 @@ public class UnReadMessage {
     }
 
     public Integer getStatus() {
-        if (status == null) {
+        if (status == null || status < 0) {
             return 0;
         }
         return status;
@@ -261,11 +271,24 @@ public class UnReadMessage {
         this.follower = follower;
     }
 
+    public Integer getDm_single() {
+        if (dm_single == null || dm_single < 0) {
+            return 0;
+        }
+        return dm_single;
+    }
+
+    public void setDm_single(Integer dm_single) {
+        this.dm_single = dm_single;
+    }
+
     // KEEP METHODS - put your custom methods here
     // KEEP METHODS END
 
     public static final String TYPE_MENTION_STATUS = "mention_status";
     public static final String TYPE_MENTION_CMT = "mention_cmt";
     public static final String TYPE_CMT = "cmt";
+    public static final String TYPE_STATUS = "ststus";
+    public static final String TYPE_DM = "dm";
 
 }

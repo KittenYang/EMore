@@ -21,6 +21,7 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.imp.FriendWeiboPresentImp;
 import com.caij.emore.present.view.FriendWeiboView;
+import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.publish.PublishWeiboActivity;
@@ -74,7 +75,7 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
     @Override
     protected FriendWeiboPresent createPresent() {
        return new FriendWeiboPresentImp( UserPrefs.get().getAccount(), this,
-                new ServerWeiboSource(), new LocalWeiboSource());
+                new ServerWeiboSource(), new LocalWeiboSource(), new LocalMessageSource());
     }
 
 

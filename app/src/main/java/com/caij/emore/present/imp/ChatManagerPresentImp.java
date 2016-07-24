@@ -7,13 +7,11 @@ import com.caij.emore.bean.AccessToken;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.present.ChatManagerPresent;
 import com.caij.emore.source.MessageSource;
-import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.utils.weibo.ApiUtil;
 
 import java.io.File;
 import java.net.URI;
@@ -63,7 +61,8 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
                     bean.getText(), bean.getRecipient_id());
         }else {
             final Map<String, Object> params = new HashMap<>();
-            ApiUtil.appendAuth(params);
+            params.put("source", Key.WEICO_APP_ID);
+            params.put("from", Key.WEICO_APP_FROM);
             final File file = new File(URI.create(bean.getLocakImage().getUrl()));
             sendMessageObservable = Observable.create(new Observable.OnSubscribe<String>() {
                 @Override

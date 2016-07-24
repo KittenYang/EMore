@@ -2,11 +2,13 @@ package com.caij.emore.source.server;
 
 import com.caij.emore.Key;
 import com.caij.emore.api.WeiBoService;
+import com.caij.emore.api.WeiCoService;
 import com.caij.emore.bean.MessageUser;
-import com.caij.emore.bean.UnreadMessageCount;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.MessageImage;
+import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
@@ -28,14 +30,16 @@ import rx.functions.Func1;
 public class ServerMessageSource implements MessageSource {
 
     private WeiBoService mWeiBoService;
+    private WeiCoService mWeiCoService;
 
     public ServerMessageSource() {
         mWeiBoService = WeiBoService.Factory.create();
+        mWeiCoService =  WeiCoService.WeiCoFactory.create();
     }
 
     @Override
-    public Observable<UnreadMessageCount> getUnReadMessage(String accessToken, long uid) {
-        return mWeiBoService.getUnReadMessage("https://rm.api.weibo.com/2/remind/unread_count.json", accessToken, uid);
+    public Observable<UnReadMessage> getUnReadMessage(String accessToken, long uid) {
+        return mWeiCoService.getUnreadMessageCount(accessToken, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, uid);
     }
 
     @Override
@@ -108,6 +112,16 @@ public class ServerMessageSource implements MessageSource {
     @Override
     public void removeMessage(DirectMessage bean) {
 
+    }
+
+    @Override
+    public void saveUnReadMessage(UnReadMessage serverUnReadMessage) {
+
+    }
+
+    @Override
+    public Observable<Response> resetUnReadMessage(String token, String source, String from, String type, int value) {
+        return mWeiCoService.resetUnReadMsg(token, source, from, type, value);
     }
 
 }

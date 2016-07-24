@@ -4,7 +4,6 @@ import com.caij.emore.Key;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.MessageUser;
-import com.caij.emore.bean.UnreadMessageCount;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
@@ -12,7 +11,6 @@ import com.caij.emore.bean.response.QueryUrlResponse;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
-import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.DirectMessage;
@@ -234,9 +232,9 @@ public interface WeiBoService {
                                                              @Query("count") int count,
                                                              @Query("page") int page);
 
-    @GET
-    Observable<UnreadMessageCount> getUnReadMessage(@Url String url, @Query("access_token") String accessToken,
-                                                    @Query("uid") long uid) ;
+//    @GET
+//    Observable<UnreadMessageCount> getUnReadMessage(@Url String url, @Query("access_token") String accessToken,
+//                                                    @Query("uid") long uid) ;
 
     @GET("/2/direct_messages/user_list.json")
     Observable<MessageUser> getMessageUserList(@Query("access_token") String accessToken,

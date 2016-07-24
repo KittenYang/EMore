@@ -4,15 +4,17 @@ import android.text.TextUtils;
 
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.MessageUser;
-import com.caij.emore.bean.UnreadMessageCount;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.Geo;
 import com.caij.emore.database.bean.MessageImage;
+import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.dao.DirectMessageDao;
 import com.caij.emore.database.dao.GeoDao;
 import com.caij.emore.database.dao.MessageImageDao;
+import com.caij.emore.database.dao.UnReadMessageDao;
 import com.caij.emore.database.dao.UserDao;
 import com.caij.emore.database.dao.WeiboDao;
 import com.caij.emore.source.MessageSource;
@@ -38,16 +40,29 @@ public class LocalMessageSource implements MessageSource {
     private DirectMessageDao mDirectMessageDao;
     private UserDao mUserDao;
     private GeoDao mGeoDao;
+    private UnReadMessageDao mUnReadMessageDao;
 
     public LocalMessageSource (){
         mDirectMessageDao = DBManager.getDaoSession().getDirectMessageDao();
         mUserDao = DBManager.getDaoSession().getUserDao();
         mGeoDao = DBManager.getDaoSession().getGeoDao();
+        mUnReadMessageDao = DBManager.getDaoSession().getUnReadMessageDao();
     }
 
     @Override
-    public Observable<UnreadMessageCount> getUnReadMessage(String accessToken, long uid) {
-        return null;
+    public Observable<UnReadMessage> getUnReadMessage(String accessToken, final long uid) {
+        return Observable.create(new Observable.OnSubscribe<UnReadMessage>() {
+            @Override
+            public void call(Subscriber<? super UnReadMessage> subscriber) {
+                try {
+                    UnReadMessage unReadMessage = mUnReadMessageDao.load(uid);
+                    subscriber.onNext(unReadMessage);
+                    subscriber.onCompleted();
+                }catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
     }
 
     @Override
@@ -179,5 +194,41 @@ public class LocalMessageSource implements MessageSource {
     @Override
     public void removeMessage(DirectMessage bean) {
         mDirectMessageDao.deleteByKey(bean.getId());
+    }
+
+    @Override
+    public void saveUnReadMessage(UnReadMessage serverUnReadMessage) {
+        mUnReadMessageDao.insertOrReplace(serverUnReadMessage);
+    }
+
+    @Override
+    public Observable<Response> resetUnReadMessage(String token, String source, String from, final String type, final int value) {
+        return Observable.create(new Observable.OnSubscribe<Response>() {
+            @Override
+            public void call(Subscriber<? super Response> subscriber) {
+                try {
+                    long id  = Long.parseLong(UserPrefs.get().getEMoreToken().getUid());
+                    UnReadMessage unReadMessage = mUnReadMessageDao.load(id);
+                    if (unReadMessage != null) {
+                        if (type.equals(UnReadMessage.TYPE_MENTION_STATUS)) {
+                            unReadMessage.setMention_status(value);
+                        }else if (type.equals(UnReadMessage.TYPE_MENTION_CMT)) {
+                            unReadMessage.setMention_cmt(value);
+                        }else if (type.equals(UnReadMessage.TYPE_CMT)) {
+                            unReadMessage.setCmt(value);
+                        }else if (type.equals(UnReadMessage.TYPE_STATUS)) {
+                            unReadMessage.setStatus(value);
+                        }else if (type.equals(UnReadMessage.TYPE_DM)) {
+                            unReadMessage.setDm_single(value);
+                        }
+                        mUnReadMessageDao.insertOrReplace(unReadMessage);
+                    }
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                }catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
     }
 }

@@ -20,6 +20,7 @@ public class Attitude {
     private String last_attitude;
     private String source;
     private String text;
+    private int attitude_type;
 
     public User getUser() {
         return user;
@@ -83,5 +84,13 @@ public class Attitude {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public int getAttitude_type() {
+        return attitude_type;
+    }
+
+    public void setAttitude_type(int attitude_type) {
+        this.attitude_type = attitude_type;
     }
 }

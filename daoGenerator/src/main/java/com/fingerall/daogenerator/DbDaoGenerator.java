@@ -24,6 +24,7 @@ public class DbDaoGenerator {
         createUrlInfo(sch);
         createUploadImageResponse(sch);
         createDraft(sch);
+        createUnReadMessage(sch);
         new de.greenrobot.daogenerator.DaoGenerator().generateAll(sch, "./app/src/main/java");
     }
 
@@ -218,6 +219,33 @@ public class DbDaoGenerator {
         entity.addIntProperty("type");
         entity.addStringProperty("content");
         entity.addStringProperty("image_paths");//以逗号分隔
+    }
+
+    static void createUnReadMessage(Schema sch) {
+        Entity entity = sch.addEntity("UnReadMessage");
+        entity.addLongProperty("uid").primaryKey();
+        entity.addIntProperty("cmt");
+        entity.addIntProperty("dm");
+        entity.addIntProperty("chat_group_client");
+        entity.addIntProperty("mention_status");
+        entity.addIntProperty("mention_cmt");
+        entity.addIntProperty("invite");
+        entity.addIntProperty("attitude");
+        entity.addIntProperty("msgbox");
+        entity.addIntProperty("common_attitude");
+        entity.addIntProperty("page_follower");
+        entity.addIntProperty("all_mention_status");
+        entity.addIntProperty("attention_mention_status");
+        entity.addIntProperty("all_mention_cmt");
+        entity.addIntProperty("attention_mention_cmt");
+        entity.addIntProperty("all_cmt");
+        entity.addIntProperty("attention_cmt");
+        entity.addIntProperty("attention_follower");
+        entity.addIntProperty("chat_group_notice");
+        entity.addIntProperty("hot_status");
+        entity.addIntProperty("status");
+        entity.addIntProperty("follower");
+        entity.addIntProperty("dm_single");
     }
 
 }

@@ -62,6 +62,11 @@ public class ToMeAttitudeAdapter extends BaseAdapter<Attitude, ToMeAttitudeAdapt
         ImageLoader.load(mContext, holder.sdvAvatar, attitude.getUser().getAvatar_large(),
                 R.drawable.circle_image_placeholder, mImageConfig);
         holder.tvHeadName.setText(attitude.getUser().getName());
+
+        if (attitude.getAttitude_type() == 0) {
+            holder.tvComment.setText("赞了这条微博");
+        }
+
         holder.tvComment.setText(attitude.getText());
 
         Weibo weibo = attitude.getStatus();

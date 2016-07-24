@@ -2,11 +2,13 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboMentionPresent;
 import com.caij.emore.present.view.TimeLineWeiboView;
+import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
-import com.caij.emore.utils.SpannableStringUtil;
+import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/4.
@@ -28,10 +29,18 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent<TimeLineWeiboView
     private static final int COUNT = 20;
 
     private List<Weibo> mWeibos;
+    MessageSource mServerMessageSource;
+    MessageSource mLocalMessageSource;
 
-    public WeiboMentionPresentImp(Account account, WeiboSource serverWeiboSource, WeiboSource localWeiboSource, TimeLineWeiboView timeLineWeiboView) {
+    public WeiboMentionPresentImp(Account account, WeiboSource serverWeiboSource,
+                                  WeiboSource localWeiboSource,
+                                  MessageSource serverMessageSource,
+                                  MessageSource localMessageSource,
+                                  TimeLineWeiboView timeLineWeiboView) {
         super(account, timeLineWeiboView, serverWeiboSource, localWeiboSource);
         mWeibos = new ArrayList<>();
+        mServerMessageSource = serverMessageSource;
+        mLocalMessageSource = localMessageSource;
     }
 
     @Override
@@ -61,6 +70,9 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent<TimeLineWeiboView
 
                         mView.onRefreshComplete();
                         mView.onLoadComplete(weibos.size() > COUNT - 1);
+
+                        MessageUtil.resetUnReadMessage(mAccount.getWeicoToken().getAccess_token(),
+                                UnReadMessage.TYPE_MENTION_STATUS, mServerMessageSource, mLocalMessageSource);
                     }
                 });
         mCompositeSubscription.add(su);

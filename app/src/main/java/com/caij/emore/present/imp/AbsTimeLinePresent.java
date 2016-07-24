@@ -22,18 +22,13 @@ import com.caij.emore.source.local.LocalImageSource;
 import com.caij.emore.source.local.LocalUrlSource;
 import com.caij.emore.source.server.ServerImageSource;
 import com.caij.emore.source.server.ServerUrlSource;
-import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.utils.weibo.ApiUtil;
 
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

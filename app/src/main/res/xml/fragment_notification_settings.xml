@@ -48,6 +48,11 @@
             android:defaultValue="true"
             android:key="@string/key_setting_dm"
             android:title="@string/settings_dm_notify" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_setting_attitude"
+            android:title="@string/settings_dm_attitude" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/category_notify_feedback">

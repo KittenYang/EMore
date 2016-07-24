@@ -2,9 +2,12 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
+import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.present.view.RefreshListView;
+import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +32,18 @@ public class AcceptCommentsPresentImp implements RefreshListPresent {
     private WeiboSource mWeiboSource;
     private RefreshListView<Comment> mMentionView;
     private List<Comment> mComments;
+    MessageSource mServerMessageSource;
+    MessageSource mLocalMessageSource;
 
-    public AcceptCommentsPresentImp(String token, WeiboSource weiboSource, RefreshListView<Comment> mentionView) {
+    public AcceptCommentsPresentImp(String token, WeiboSource weiboSource,
+                                    MessageSource serverMessageSource,
+                                    MessageSource localMessageSource,
+                                    RefreshListView<Comment> mentionView) {
         mToken = token;
         mWeiboSource = weiboSource;
         mMentionView = mentionView;
+        mServerMessageSource = serverMessageSource;
+        mLocalMessageSource = localMessageSource;
         mComments = new ArrayList<>();
         mLoginCompositeSubscription = new CompositeSubscription();
     }
@@ -73,6 +83,9 @@ public class AcceptCommentsPresentImp implements RefreshListPresent {
 
                         mMentionView.onRefreshComplete();
                         mMentionView.onLoadComplete(comments.size() > COUNT - 1);
+
+                        MessageUtil.resetUnReadMessage(mToken,
+                                UnReadMessage.TYPE_CMT, mServerMessageSource, mLocalMessageSource);
                     }
                 });
         mLoginCompositeSubscription.add(su);

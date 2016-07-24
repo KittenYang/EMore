@@ -9,6 +9,7 @@ import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.LocakImage;
 import com.caij.emore.database.bean.MessageImage;
+import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.ChatPresent;
 import com.caij.emore.present.view.DirectMessageView;
@@ -20,6 +21,7 @@ import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.io.File;
 import java.net.URI;
@@ -88,7 +90,6 @@ public class ChatPresentImp implements ChatPresent {
             maxId = mDirectMessages.get(0).getId();
         }
         Subscription subscription = mLocalMessageSource.getUserMessage(mToken.getAccess_token(), mUserId, 0, maxId, PAGE_COUNT, 1)
-                .subscribeOn(Schedulers.io())
                 .flatMap(new Func1<UserMessageResponse, Observable<DirectMessage>>() {
                     @Override
                     public Observable<DirectMessage> call(UserMessageResponse userMessageResponse) {
@@ -111,6 +112,7 @@ public class ChatPresentImp implements ChatPresent {
                     }
                 })
                 .toList()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<DirectMessage>>() {
                     @Override
@@ -309,6 +311,11 @@ public class ChatPresentImp implements ChatPresent {
                             mDirectMessageView.toScrollToPosition(mDirectMessages.size());
                         }else {
                             mDirectMessageView.attemptSmoothScrollToBottom();
+                        }
+
+                        if (directMessages.size() > 0) {
+                            MessageUtil.resetLocalUnReadMessageDisValue(mToken.getAccess_token(), UnReadMessage.TYPE_DM,
+                                    directMessages.size(), mLocalMessageSource);
                         }
                     }
                 });

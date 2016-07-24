@@ -27,6 +27,20 @@
         android:layout_marginLeft="@dimen/spacing_medium_bt"
         android:layout_weight="1"/>
 
+    <TextView
+        android:id="@+id/tv_unread_count"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:background="@drawable/red_message_count_bg"
+        android:textColor="@color/text_100_inverse"
+        android:textSize="10dp"
+        android:gravity="center"
+        android:text="99"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/tv_message"
+        android:layout_marginRight="@dimen/spacing_medium"
+        android:visibility="gone"/>
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

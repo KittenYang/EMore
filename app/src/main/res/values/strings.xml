@@ -144,6 +144,8 @@
     <string name="self_weibo_unable_attitude">自己的微博不能点赞哦</string>
     <string name="draft_box">草稿箱</string>
     <string name="delete_success">删除成功</string>
+    <string name="settings_dm_attitude">赞</string>
+    <string name="key_setting_attitude">key_setting_attitude</string>
 
     <string-array name="txtUnread">
         <item>1分钟</item>

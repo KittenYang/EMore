@@ -95,5 +95,5 @@ public interface WeiboSource {
     void saveUploadImageResponse(UploadImageResponse uploadImageResponse);
 
     public Observable<List<Attitude>> getToMeAttiyudes(String token, long maxId, long sinceId,
-                                                       String source, int page, int count);
+                                                       String source,  String from, int page, int count);
 }

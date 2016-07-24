@@ -408,7 +408,9 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<List<Attitude>> getToMeAttiyudes(String token, long maxId, long sinceId, String source, int page, int count) {
+    public Observable<List<Attitude>> getToMeAttiyudes(String token, long maxId,
+                                                       long sinceId, String source,  String from,
+                                                       int page, int count) {
         return null;
     }
 

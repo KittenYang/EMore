@@ -5,6 +5,7 @@ import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
+import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
@@ -89,7 +90,22 @@ public interface WeiCoService {
                                                             @Query("since_id") long since_id,
                                                             @Query("max_id") long max_id,
                                                             @Query("source") String source,
+                                                            @Query("from") String from,
                                                             @Query("page") int page,
                                                             @Query("count") int count);
+
+    @GET("/2/remind/unread_count")
+    Observable<UnReadMessage> getUnreadMessageCount(@Query("access_token") String accessToken,
+                                                    @Query("source") String source,
+                                                    @Query("from") String from,
+                                                    @Query("uid") long uid);
+
+    @FormUrlEncoded
+    @POST("/2/remind/set_count")
+    public Observable<Response> resetUnReadMsg(@Field("access_token") String accessToken,
+                                  @Field("source") String source,
+                                  @Field("from") String from,
+                                  @Field("type") String type,
+                                   @Field("value") int value);
 
 }

@@ -12,24 +12,6 @@ import com.caij.emore.present.imp.ChatManagerPresentImp;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
-import com.caij.emore.utils.EventUtil;
-import com.caij.emore.utils.ExecutorServiceUtil;
-import com.caij.emore.utils.LogUtil;
-import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.utils.weibo.ApiUtil;
-
-import java.io.File;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/11.

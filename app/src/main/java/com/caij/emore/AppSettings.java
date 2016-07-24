@@ -55,4 +55,9 @@ public class AppSettings {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(context.getString(R.string.key_setting_dm), true);
     }
+
+    public static boolean isNotifyAttitudeEnable(Context ctx) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        return prefs.getBoolean(ctx.getString(R.string.key_setting_attitude), true);
+    }
 }

@@ -29,6 +29,7 @@ public class NotificationSettingsFragment extends PreferenceFragment
 	private CheckBoxPreference pNotifyVibrate;// 振动
 	private CheckBoxPreference pNotifyLED;// LED
     private CheckBoxPreference pDm;// 私信
+	private CheckBoxPreference pAttitude;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -77,7 +78,9 @@ public class NotificationSettingsFragment extends PreferenceFragment
 
         pDm = (CheckBoxPreference) findPreference(getString(R.string.key_setting_dm));
 //        pDm.setOnPreferenceChangeListener(this);
-		
+
+		pAttitude = (CheckBoxPreference) findPreference(getString(R.string.key_setting_attitude));
+
 		refreshSettings(AppSettings.isNotifyEnable(getActivity()));
 	}
 	
@@ -91,6 +94,7 @@ public class NotificationSettingsFragment extends PreferenceFragment
 		pNotifySound.setEnabled(isCheck);
 		pNotifyVibrate.setEnabled(isCheck);
 		pNotifyLED.setEnabled(isCheck);
+		pAttitude.setEnabled(isCheck);
         pDm.setEnabled(isCheck);
 	}
 	

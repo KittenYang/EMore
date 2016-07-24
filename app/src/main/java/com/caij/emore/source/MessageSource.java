@@ -1,14 +1,14 @@
 package com.caij.emore.source;
 
 import com.caij.emore.bean.MessageUser;
-import com.caij.emore.bean.UnreadMessageCount;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.MessageImage;
+import com.caij.emore.database.bean.UnReadMessage;
 
 import java.util.Map;
 
-import okhttp3.MultipartBody;
 import rx.Observable;
 
 /**
@@ -16,7 +16,7 @@ import rx.Observable;
  */
 public interface MessageSource {
 
-    Observable<UnreadMessageCount> getUnReadMessage(String accessToken, long uid) ;
+    Observable<UnReadMessage> getUnReadMessage(String accessToken, long uid) ;
 
     Observable<MessageUser> getMessageUserList(String accessToken, int count, long cursor) ;
 
@@ -35,4 +35,8 @@ public interface MessageSource {
     void saveMessageImage(MessageImage messageImage);
 
     void removeMessage(DirectMessage bean);
+
+    void saveUnReadMessage(UnReadMessage serverUnReadMessage);
+
+    Observable<Response> resetUnReadMessage(String token, String source, String from, String type, int value);
 }

@@ -246,8 +246,8 @@ public class ServerWeiboSource implements WeiboSource{
 
     @Override
     public Observable<List<Attitude>> getToMeAttiyudes(String token, long maxId, long sinceId,
-                                                       String source, int page, int count) {
-        return mWeiCoService.getToMeAttitudes(token, sinceId, maxId, source, page, count)
+                                                       String source, String from, int page, int count) {
+        return mWeiCoService.getToMeAttitudes(token, sinceId, maxId, source, from, page, count)
                 .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<List<Attitude>>>() {
                     @Override
                     public Observable<List<Attitude>> call(QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {

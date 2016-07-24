@@ -2,12 +2,15 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.Key;
 import com.caij.emore.bean.Account;
+import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.view.FriendWeiboView;
 import com.caij.emore.source.DefaultResponseSubscriber;
+import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +32,13 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
     private List<Weibo> mWeibos;
     Observable<Weibo> mPublishWeiboObservable;
+    MessageSource mLocalMessageSource;
 
     public FriendWeiboPresentImp(Account account, FriendWeiboView view, WeiboSource serverWeiboSource,
-                                 WeiboSource localWeiboSource) {
+                                 WeiboSource localWeiboSource, MessageSource localMessageSource) {
         super(account, view, serverWeiboSource, localWeiboSource);
         mWeibos = new ArrayList<>();
+        mLocalMessageSource = localMessageSource;
     }
 
     @Override
@@ -117,6 +122,9 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                         }else {
                             mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1);
                         }
+
+                        MessageUtil.resetLocalUnReadMessage(mAccount.getWeicoToken().getAccess_token(),
+                                UnReadMessage.TYPE_STATUS, 0, mLocalMessageSource);
                     }
                 });
         mCompositeSubscription.add(subscription);
