@@ -113,4 +113,18 @@ public interface WeiCoService {
     public Observable<WeiboIds> getHotWeiboIds(@Url String url, @Query("a") String a, @Query("c") String c,
                                                @Query("catlog_id") String catlog_id, @Query("page") int page);
 
+    @GET("/2/search/statuses")
+    Observable<UnReadMessage> getTopics(@Query("access_token") String accessToken,
+                                                    @Query("source") String source,
+                                                    @Query("from") String from,
+                                                    @Query("uid") long uid);
+
+    @GET("/2/search/statuses")
+    public void searchStatus(@Query("access_token") String accessToken,
+                                      @Query("source") String source,
+                                      @Query("from") String from,
+                                      @Query("q") String q,
+                                      @Query("count") int count,
+                                      @Query("page") int page);
+
 }

@@ -275,6 +275,17 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
+    public Observable<List<Weibo>> getTopicsByKey(String access_token, String q, int page, int count) {
+        return mWeiBoService.getTopicsByKey(access_token, q, count, page)
+                .flatMap(new Func1<QueryWeiboResponse, Observable<List<Weibo>>>() {
+                    @Override
+                    public Observable<List<Weibo>> call(QueryWeiboResponse queryWeiboResponse) {
+                        return Observable.just(queryWeiboResponse.getStatuses());
+                    }
+                });
+    }
+
+    @Override
     public Observable<QueryRepostWeiboResponse> getRepostWeibos(String accessToken, long id, long since_id, long max_id, int count, int page) {
         return mWeiBoService.getRepostWeibos(accessToken, id, since_id, max_id, count, page);
     }

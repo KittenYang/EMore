@@ -101,4 +101,6 @@ public interface WeiboSource {
     Observable<List<Weibo>> getWeibosByIds(String access_token, String ids);
 
     Observable<WeiboIds> getHotWeibosIds(String access_token, int page);
+
+    Observable<List<Weibo>> getTopicsByKey(String access_token, String q, int page, int count);
 }

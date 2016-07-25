@@ -1,7 +1,14 @@
 package com.caij.emore.view.span;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.view.View;
+
+import com.caij.emore.Key;
+import com.caij.emore.ui.activity.DefaultFragmentActivity;
+import com.caij.emore.ui.fragment.TopicsFragment;
 
 
 /**
@@ -19,6 +26,11 @@ public class TopicSpan extends MyURLSpan {
 
     @Override
     public void onClick(View widget) {
-
+        Context context = widget.getContext();
+        String key  = getURL().replaceAll("#", "");
+        Bundle bundle = new Bundle();
+        bundle.putString(Key.ID, key);
+        Intent intent  = DefaultFragmentActivity.starFragmentV4(context, key, TopicsFragment.class, bundle);
+        context.startActivity(intent);
     }
 }

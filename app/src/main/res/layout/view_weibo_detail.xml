@@ -17,7 +17,7 @@
             android:layout_marginLeft="@dimen/spacing_weibo_detail_item"
             android:layout_marginRight="@dimen/spacing_weibo_detail_item"/>
 
-        <TextView
+        <com.caij.emore.view.FixClickableSpanBugTextView
             android:id="@+id/tv_content"
             style="@style/WeiboTextBody"
             android:layout_width="match_parent"
@@ -49,7 +49,7 @@
             android:paddingLeft="@dimen/spacing_weibo_detail_item"
             android:paddingRight="@dimen/spacing_weibo_detail_item">
 
-            <TextView
+            <com.caij.emore.view.FixClickableSpanBugTextView
                 android:id="@+id/tv_re_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

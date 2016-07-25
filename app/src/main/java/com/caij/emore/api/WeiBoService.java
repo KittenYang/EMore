@@ -290,6 +290,12 @@ public interface WeiBoService {
     Observable<QueryWeiboResponse> getWeibsoByIds(@Query("access_token") String accessToken,
                                                              @Query("ids") String ids);
 
+    @GET("2/search/topics.json")
+    public Observable<QueryWeiboResponse> getTopicsByKey(@Query("access_token") String accessToken,
+                             @Query("q") String q,
+                             @Query("count") int count,
+                             @Query("page") int page);
+
 
     //    @FormUrlEncoded
 //    @POST("2/attitudes/destroy.json")

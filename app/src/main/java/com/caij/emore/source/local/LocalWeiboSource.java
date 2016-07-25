@@ -425,4 +425,9 @@ public class LocalWeiboSource implements WeiboSource {
         return null;
     }
 
+    @Override
+    public Observable<List<Weibo>> getTopicsByKey(String access_token, String q, int page, int count) {
+        return null;
+    }
+
 }
