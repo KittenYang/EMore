@@ -264,6 +264,9 @@ public class UnReadMessage {
     }
 
     public Integer getFollower() {
+        if (follower == null || follower < 0) {
+            return 0;
+        }
         return follower;
     }
 
@@ -290,5 +293,7 @@ public class UnReadMessage {
     public static final String TYPE_CMT = "cmt";
     public static final String TYPE_STATUS = "ststus";
     public static final String TYPE_DM = "dm";
+    public static final String TYPE_ATTITUDE = "attitude";
+    public static final String TYPE_FOLLOWER = "follower";
 
 }

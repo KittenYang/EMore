@@ -12,4 +12,6 @@ public interface MainView extends BaseView{
     public void setUser(User user);
 
     void setUnReadMessage(UnReadMessage unReadMessage);
+
+    void setDraftCount(Integer integer);
 }

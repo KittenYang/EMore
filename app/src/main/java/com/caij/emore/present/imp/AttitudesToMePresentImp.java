@@ -4,15 +4,18 @@ import com.caij.emore.Key;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
+import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.present.view.RefreshListView;
+import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.source.local.LocalUrlSource;
 import com.caij.emore.source.server.ServerUrlSource;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.UrlUtil;
+import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +42,18 @@ public class AttitudesToMePresentImp implements RefreshListPresent {
     private WeiboSource mWeiboSource;
     private RefreshListView<Attitude> mView;
     private List<Attitude> mAttitudes;
+    MessageSource mServerMessageSource;
+    MessageSource mLocalMessageSource;
 
-    public AttitudesToMePresentImp(String token, WeiboSource weiboSource, RefreshListView<Attitude> view) {
+    public AttitudesToMePresentImp(String token, WeiboSource weiboSource,
+                                   MessageSource serverMessageSource,
+                                   MessageSource localMessageSource,
+                                   RefreshListView<Attitude> view) {
         mToken = token;
         mWeiboSource = weiboSource;
         mView = view;
+        mServerMessageSource = serverMessageSource;
+        mLocalMessageSource = localMessageSource;
         mAttitudes = new ArrayList<>();
         mLoginCompositeSubscription = new CompositeSubscription();
     }
@@ -77,6 +87,9 @@ public class AttitudesToMePresentImp implements RefreshListPresent {
 
                         mView.onRefreshComplete();
                         mView.onLoadComplete(attitudes.size() > COUNT - 1);
+
+                        MessageUtil.resetUnReadMessage(mToken, UnReadMessage.TYPE_ATTITUDE,
+                                mServerMessageSource, mLocalMessageSource);
                     }
                 });
         mLoginCompositeSubscription.add(su);

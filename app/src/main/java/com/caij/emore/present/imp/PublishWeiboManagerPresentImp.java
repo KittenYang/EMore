@@ -38,12 +38,13 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
 
     Observable<PublishBean> mPublishWeiboObservable;
     DraftSource mDraftSource;
+    private Account mAccount;
 
-    public PublishWeiboManagerPresentImp(WeiboSource serverWeiboSource,
+    public PublishWeiboManagerPresentImp(Account account, WeiboSource serverWeiboSource,
                                          WeiboSource localWeiboSource,
                                          DraftSource localDraftSource,
                                          PublishServiceView view) {
-        super(null,
+        super(account,
                 view, serverWeiboSource, localWeiboSource);
         mDraftSource = localDraftSource;
     }
@@ -74,7 +75,7 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
 
     private void publishWeiboMuImage(final PublishBean publishBean) {
         mView.onPublishStart(publishBean);
-        final Account account = UserPrefs.get().getAccount();
+//        final Account account = UserPrefs.get().getAccount();
         Subscription subscription = Observable.create(new Observable.OnSubscribe<List<String>>() {
                     @Override
                     public void call(Subscriber<? super List<String>> subscriber) {
@@ -102,7 +103,7 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
                     public Observable<UploadImageResponse> call(final String imagePath) {
                         try {
                             Observable<UploadImageResponse> serverObservable = mServerWeiboSource.
-                                    uploadWeiboOfOneImage(account.getWeicoToken().getAccess_token(), imagePath)
+                                    uploadWeiboOfOneImage(mAccount.getWeicoToken().getAccess_token(), imagePath)
                                     .doOnNext(new Action1<UploadImageResponse>() {
                                         @Override
                                         public void call(UploadImageResponse uploadImageResponse) {
@@ -111,7 +112,7 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
                                         }
                                     });
                             Observable<UploadImageResponse> localObservable = mLocalWeiboSource.
-                                    uploadWeiboOfOneImage(account.getWeicoToken().getAccess_token(), imagePath);
+                                    uploadWeiboOfOneImage(mAccount.getWeicoToken().getAccess_token(), imagePath);
                             return Observable.concat(localObservable, serverObservable)
                                     .first(new Func1<UploadImageResponse, Boolean>() {
                                         @Override
@@ -132,7 +133,7 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
                         for (UploadImageResponse uploadImageResponse : uploadImageResponses) {
                             sb.append(uploadImageResponse.getPic_id()).append(",");
                         }
-                        return mServerWeiboSource.publishWeiboOfMultiImage(account.getWeiyoToken().getAccess_token(), publishBean.getText(), sb.toString());
+                        return mServerWeiboSource.publishWeiboOfMultiImage(mAccount.getWeiyoToken().getAccess_token(), publishBean.getText(), sb.toString());
                     }
                 })
                 .doOnError(new Action1<Throwable>() {

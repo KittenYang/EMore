@@ -43,12 +43,12 @@ public class FriendshipActivity extends BaseToolBarActivity {
         long uid = getIntent().getLongExtra(Key.ID, -1);
         setTitle("好友");
         List<BaseFragment> fragments = new ArrayList<>();
-        fragments.add(FriendFragment.newInstance(uid));
         fragments.add(FollowsFragment.newInstance(uid));
+        fragments.add(FriendFragment.newInstance(uid));
 
         List<String> titles = new ArrayList<>();
-        titles.add("关注");
         titles.add("粉丝");
+        titles.add("关注");
         FriendshipPageAdapter friendshipPageAdapter = new FriendshipPageAdapter(
                 getSupportFragmentManager(), fragments, titles);
         viewPager.setAdapter(friendshipPageAdapter);

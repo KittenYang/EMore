@@ -10,6 +10,8 @@ import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.present.imp.AttitudesToMePresentImp;
+import com.caij.emore.source.local.LocalMessageSource;
+import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.adapter.ToMeAttitudeAdapter;
@@ -40,7 +42,8 @@ public class AttitudesToMeFragment extends SwipeRefreshRecyclerViewFragment<Atti
 
     protected RefreshListPresent createPresent() {
         AccessToken accessToken = UserPrefs.get().getWeiCoToken();
-        return new AttitudesToMePresentImp(accessToken.getAccess_token(), new ServerWeiboSource(), this);
+        return new AttitudesToMePresentImp(accessToken.getAccess_token(), new ServerWeiboSource(),
+                new ServerMessageSource(), new LocalMessageSource(), this);
     }
 
 

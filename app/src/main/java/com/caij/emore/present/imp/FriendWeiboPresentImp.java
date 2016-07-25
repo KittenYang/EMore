@@ -9,6 +9,7 @@ import com.caij.emore.present.view.FriendWeiboView;
 import com.caij.emore.source.DefaultResponseSubscriber;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.SPUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.MessageUtil;
 
@@ -43,7 +44,8 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
     @Override
     public void onCreate() {
-        Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getWeiyoToken().getAccess_token(), 0, 0, PAGE_COUNT, 1)
+        Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getWeiyoToken().getAccess_token(),
+                0, 0, PAGE_COUNT * 2, 1)
                 .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(List<Weibo> weibos) {
@@ -83,7 +85,12 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
                         mView.setEntities(mWeibos);
-                        mView.toRefresh();
+
+                        if (System.currentTimeMillis() -
+                                SPUtil.getLong(Key.FRIEND_WEIBO_UPDATE_TIME, -1) > 10 * 60 * 1000 ||
+                                weibos.size() <= 0) {
+                            mView.toRefresh();
+                        }
                     }
                 });
         mCompositeSubscription.add(subscription);
@@ -125,6 +132,8 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
                         MessageUtil.resetLocalUnReadMessage(mAccount.getWeicoToken().getAccess_token(),
                                 UnReadMessage.TYPE_STATUS, 0, mLocalMessageSource);
+
+                        SPUtil.saveLong(Key.FRIEND_WEIBO_UPDATE_TIME, System.currentTimeMillis());
                     }
                 });
         mCompositeSubscription.add(subscription);

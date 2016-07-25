@@ -31,13 +31,10 @@ public class AppApplication extends Application{
 
     private void initDB() {
         AccessToken accessToken = UserPrefs.get().getEMoreToken();
-        String dbName = "";
         if (accessToken != null) {
-            dbName = Key.DB_NAME + accessToken.getUid();
-        }else {
-            dbName = "default";
+            String dbName = Key.DB_NAME + accessToken.getUid();
+            DBManager.initDB(this, dbName, BuildConfig.DEBUG);
         }
-        DBManager.initDB(this, dbName, BuildConfig.DEBUG);
     }
 
     private void initCrashReport(){
@@ -59,7 +56,9 @@ public class AppApplication extends Application{
     }
 
     private void startWeiyoService() {
-        EMoreService.start(this);
+        if (UserPrefs.get().getEMoreToken() != null && UserPrefs.get().getWeiCoToken() != null) {
+            EMoreService.start(this);
+        }
     }
 
     public static Context getInstance() {

@@ -37,9 +37,10 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
     private MessageSource mServerMessageSource;
     private MessageSource mLocalMessageSource;
     private Observable<DirectMessage> mMessageSendObservable;
+    private String mToken;
 
     public ChatManagerPresentImp(String token, MessageSource serverMessageSource, MessageSource localMessageSource) {
-//        mToken = token;
+        mToken = token;
         mServerMessageSource = serverMessageSource;
         mLocalMessageSource = localMessageSource;
         mCompositeSubscription = new CompositeSubscription();
@@ -54,10 +55,10 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
 
     @Override
     public void senMessage(final DirectMessage bean) {
-        final AccessToken token = UserPrefs.get().getWeiCoToken();
+//        final AccessToken token = UserPrefs.get().getWeiCoToken();
         Observable<DirectMessage> sendMessageObservable;
         if (bean.getAtt_ids() == null || bean.getAtt_ids().size() == 0) { //文本
-            sendMessageObservable = mServerMessageSource.createTextMessage(token.getAccess_token(),
+            sendMessageObservable = mServerMessageSource.createTextMessage(mToken,
                     bean.getText(), bean.getRecipient_id());
         }else {
             final Map<String, Object> params = new HashMap<>();
@@ -78,7 +79,7 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
             }).flatMap(new Func1<String, Observable<DirectMessage>>() {
                 @Override
                 public Observable<DirectMessage> call(String path) {
-                    return mServerMessageSource.createImageMessage(token.getAccess_token(), params,
+                    return mServerMessageSource.createImageMessage(mToken, params,
                             "分享图片", path, bean.getRecipient_id(), bean.getRecipient_screen_name());
                 }
             });

@@ -220,6 +220,10 @@ public class LocalMessageSource implements MessageSource {
                             unReadMessage.setStatus(value);
                         }else if (type.equals(UnReadMessage.TYPE_DM)) {
                             unReadMessage.setDm_single(value);
+                        }else if (type.equals(UnReadMessage.TYPE_ATTITUDE)) {
+                            unReadMessage.setAttitude(value);
+                        }else if (type.equals(UnReadMessage.TYPE_FOLLOWER)) {
+                            unReadMessage.setFollower(value);
                         }
                         mUnReadMessageDao.insertOrReplace(unReadMessage);
                     }

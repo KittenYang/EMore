@@ -1,10 +1,12 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.Key;
+import com.caij.emore.database.bean.Draft;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.MainPresent;
 import com.caij.emore.present.view.MainView;
+import com.caij.emore.source.DraftSource;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.utils.LogUtil;
@@ -31,17 +33,21 @@ public class MainPresentImp implements MainPresent {
     private String mToken;
     private long mUid;
     private MessageSource mLocalMessageSource;
+    private DraftSource mDraftSource;
     private Observable<UnReadMessage> mUnReadMessageObservable;
+    private Observable<Draft> mDraftObservable;
 
     public MainPresentImp(String token, long uid, MainView userView,
                           UserSource serverUserSource, UserSource localUserSource,
-                          MessageSource localMessageSource) {
+                          MessageSource localMessageSource,
+                          DraftSource draftSource) {
         mUserView = userView;
         mServerUserSource = serverUserSource;
         mLocalUserSource = localUserSource;
         mToken = token;
         mUid = uid;
         mLocalMessageSource = localMessageSource;
+        mDraftSource = draftSource;
         mCompositeSubscription = new CompositeSubscription();
     }
 
@@ -74,15 +80,50 @@ public class MainPresentImp implements MainPresent {
         mUnReadMessageObservable.subscribe(new Action1<UnReadMessage>() {
             @Override
             public void call(UnReadMessage unReadMessage) {
-                mUserView.setUnReadMessage(unReadMessage);
+                if (unReadMessage != null) {
+                    mUserView.setUnReadMessage(unReadMessage);
+                }
             }
         });
+
+        mDraftObservable = RxBus.get().register(Key.EVENT_DRAFT_UPDATE);
+        mDraftObservable.subscribe(new Action1<Draft>() {
+            @Override
+            public void call(Draft draft) {
+                loadDrafts();
+            }
+        });
+
+        loadDrafts();
+    }
+
+    private void loadDrafts() {
+        mDraftSource.getDraftsCount()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        mUserView.setDraftCount(integer);
+                    }
+                });
     }
 
     @Override
     public void onDestroy() {
         mCompositeSubscription.clear();
         RxBus.get().unregister(Key.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
+        RxBus.get().unregister(Key.EVENT_DRAFT_UPDATE, mDraftObservable);
     }
 
     @Override

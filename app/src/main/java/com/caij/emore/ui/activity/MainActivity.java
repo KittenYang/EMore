@@ -25,6 +25,7 @@ import com.caij.emore.database.bean.User;
 import com.caij.emore.present.MainPresent;
 import com.caij.emore.present.imp.MainPresentImp;
 import com.caij.emore.present.view.MainView;
+import com.caij.emore.source.local.LocalDraftSource;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.local.LocalUserSource;
 import com.caij.emore.source.server.ServerUserSource;
@@ -71,6 +72,8 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     TextView tvUnreadMessageCount;
     @BindView(R.id.rl_item_message)
     RelativeLayout rlItemMessage;
+    @BindView(R.id.tv_draft_count)
+    TextView tvDraftCount;
 
     ActionBarDrawerToggle mActionBarDrawerToggle;
 
@@ -79,10 +82,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
 
     private Fragment mVisibleFragment;
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +99,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
 
         AccessToken token = UserPrefs.get().getEMoreToken();
         MainPresent simpleUserPresent = new MainPresentImp(token.getAccess_token(), Long.parseLong(token.getUid()),
-                this, new ServerUserSource(), new LocalUserSource(), new LocalMessageSource());
+                this, new ServerUserSource(), new LocalUserSource(), new LocalMessageSource(), new LocalDraftSource());
         simpleUserPresent.onCreate();
         simpleUserPresent.getWeiboUserInfoByUid();
 
@@ -158,15 +158,17 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         }
     }
 
+
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+    protected void onSaveInstanceState(Bundle outState) {
         if (mVisibleFragment == mFriendWeiboFragment) {
             outState.putString(Key.ID, FRIEND_WEIBO_FRAGMENT_TAG);
         }else if (mVisibleFragment == mMessageFragment) {
             outState.putString(Key.ID, MESSAGE_FRAGMENT_TAG);
         }
-        super.onSaveInstanceState(outState, outPersistentState);
+        super.onSaveInstanceState(outState);
     }
+
 
     private Drawable createNavMenuItemDrawable(int drawableId) {
         return DrawableUtil.createSelectThemeDrawable(this, drawableId, R.color.icon_normal_color, R.color.colorPrimary);
@@ -230,7 +232,17 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         }
     }
 
-    @OnClick({R.id.img_navigation_avatar, R.id.tv_setting, R.id.tv_draft,R.id.rl_item_weibo, R.id.rl_item_message})
+    @Override
+    public void setDraftCount(Integer integer) {
+        if(integer == null || integer <= 0) {
+            tvDraftCount.setVisibility(View.GONE);
+        }else {
+            tvDraftCount.setVisibility(View.VISIBLE);
+            tvDraftCount.setText(String.valueOf(integer));
+        }
+    }
+
+    @OnClick({R.id.img_navigation_avatar, R.id.tv_setting, R.id.rl_draft,R.id.rl_item_weibo, R.id.rl_item_message})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_setting: {
@@ -251,7 +263,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 RxBus.get().post(Key.EVENT_TOOL_BAR_DOUBLE_CLICK, mVisibleFragment);
                 break;
 
-            case R.id.tv_draft:
+            case R.id.rl_draft:
                 Intent intent = DefaultFragmentActivity.starFragmentV4(this, DraftFragment.class, null);
                 startActivity(intent);
                 mDrawerLayout.closeDrawer(Gravity.LEFT);

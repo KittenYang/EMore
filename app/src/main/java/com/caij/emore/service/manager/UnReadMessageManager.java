@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -19,11 +20,18 @@ import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.UnReadMessageManagerPresent;
 import com.caij.emore.present.imp.UnReadMessageManagerPresentImp;
 import com.caij.emore.present.view.UnReadMessageManagerPresentView;
+import com.caij.emore.service.EMoreService;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
+import com.caij.emore.ui.activity.CommentsActivity;
+import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.FriendshipActivity;
+import com.caij.emore.ui.activity.MainActivity;
+import com.caij.emore.ui.activity.MentionActivity;
 import com.caij.emore.ui.activity.UserInfoActivity;
+import com.caij.emore.ui.fragment.AttitudesToMeFragment;
+import com.caij.emore.ui.fragment.MessageUserFragment;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.EventUtil;
@@ -65,14 +73,15 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
     protected void doOnCreate() {
         mAlarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mUnReadMessageManagerPresent = new UnReadMessageManagerPresentImp(new ServerMessageSource(), new LocalMessageSource(), this);
+        mUnReadMessageManagerPresent = new UnReadMessageManagerPresentImp(UserPrefs.get().getWeiCoToken(),
+                new ServerMessageSource(), new LocalMessageSource(), this);
         mUnReadMessageManagerPresent.onCreate();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_SENDING_HEARTBEAT);
         ctx.registerReceiver(scheduleReceiver, intentFilter);
-        if (UserPrefs.get().getEMoreToken() != null) { //只有当前用户不为空的时候才定时拉取数据
-            scheduleHeartbeat(AppSettings.getMessageIntervalValue(ctx));
+
+        if (UserPrefs.get().getEMoreToken() == null || UserPrefs.get().getWeiCoToken() == null) {
+            EMoreService.stop(ctx);
         }
     }
 
@@ -96,43 +105,50 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
                     && serverUnReadMessage.getFollower() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getFollower() - localUnReadMessage.getFollower() > 0)) {
                 String text = serverUnReadMessage.getFollower() + "新粉丝";
+
+                Intent intent = FriendshipActivity.newIntent(ctx, Long.parseLong(UserPrefs.get().getEMoreToken().getUid()));
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getFollower(),
-                        R.mipmap.statusbar_ic_follower_small, FOLLOWER_NOTIFICATION_ID);
+                        R.mipmap.statusbar_ic_follower_small, FOLLOWER_NOTIFICATION_ID, intent);
             }
 
             if (AppSettings.isNotifyCommentEnable(ctx) && serverUnReadMessage.getCmt() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getCmt() - localUnReadMessage.getCmt() > 0)) {
                 String text = serverUnReadMessage.getCmt() + "条新评论";
+                Intent intent = new Intent(ctx, CommentsActivity.class);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getCmt(),
-                        R.mipmap.statusbar_ic_comment_small, COMMENT_NOTIFICATION_ID);
+                        R.mipmap.statusbar_ic_comment_small, COMMENT_NOTIFICATION_ID, intent);
             }
 
             if (AppSettings.isNotifyDmEnable(ctx) && serverUnReadMessage.getDm_single() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getDm_single() - localUnReadMessage.getDm_single() > 0)) {
                 String text = serverUnReadMessage.getDm_single() + "条私信";
+                Intent intent = DefaultFragmentActivity.starFragmentV4(ctx, MessageUserFragment.class, null);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getDm_single(),
-                        R.mipmap.statusbar_ic_dm_small, MESSAGE_NOTIFICATION_ID);
+                        R.mipmap.statusbar_ic_dm_small, MESSAGE_NOTIFICATION_ID, intent);
             }
 
             if (AppSettings.isNotifyWeiboMentionEnable(ctx) && serverUnReadMessage.getMention_status() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getMention_status() - localUnReadMessage.getMention_status() > 0)) {
                 String text = serverUnReadMessage.getMention_status() + ctx.getString(R.string.weibo_mention_count_hint);
+                Intent intent = new Intent(ctx, MentionActivity.class);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getMention_status(),
-                        R.mipmap.statusbar_ic_mention_small, WEIBI_MENTION_NOTIFICATION_ID);
+                        R.mipmap.statusbar_ic_mention_small, WEIBI_MENTION_NOTIFICATION_ID, intent);
             }
 
             if (AppSettings.isNotifyWeiboMentionEnable(ctx) && serverUnReadMessage.getMention_cmt() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getMention_cmt() - localUnReadMessage.getMention_cmt() > 0)) {
                 String text = serverUnReadMessage.getMention_cmt() + ctx.getString(R.string.comment_mention_count_hint);
+                Intent intent = new Intent(ctx, MentionActivity.class);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getMention_status(),
-                        R.mipmap.statusbar_ic_mention_small, COMMENT_MENTION_NOTIFICATION_ID);
+                        R.mipmap.statusbar_ic_mention_small, COMMENT_MENTION_NOTIFICATION_ID, intent);
             }
 
             if (AppSettings.isNotifyAttitudeEnable(ctx) && serverUnReadMessage.getAttitude() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getAttitude() - localUnReadMessage.getAttitude() > 0)) {
                 String text = serverUnReadMessage.getAttitude() + "新点赞";
+                Intent intent = DefaultFragmentActivity.starFragmentV4(ctx, AttitudesToMeFragment.class, null);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getMention_status(),
-                        R.mipmap.timeline_icon_unlike, ATTITUDE_NOTIFICATION_ID);
+                        R.mipmap.timeline_icon_unlike, ATTITUDE_NOTIFICATION_ID, intent);
             }
 
         }
@@ -175,14 +191,19 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
         }
     };
 
-    private void notifyNotification(String title, String contentText, int num, int drawable, int id) {
+    private void notifyNotification(String title, String contentText, int num, int drawable, int id, Intent intent) {
         Notification.Builder notificationBuilder = new Notification.Builder(ctx);
         notificationBuilder.setContentTitle(title);
         notificationBuilder.setContentText(contentText);
         notificationBuilder.setSmallIcon(drawable);
         notificationBuilder.setNumber(num);
-//        notificationBuilder.setContentIntent(intent);
+        Intent[] intents = new Intent[2];
+        intents[0] = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
+        intents[1] = intent;
+        PendingIntent pendingIntent = PendingIntent.getActivities(ctx,  -1, intents, PendingIntent.FLAG_CANCEL_CURRENT);
+        notificationBuilder.setContentIntent(pendingIntent);
         notificationBuilder.setLargeIcon(BitmapFactory.decodeResource(ctx.getResources(), R.mipmap.ic_launcher));
+        notificationBuilder.setAutoCancel(true);
         Notification notification = notificationBuilder.getNotification();
         mNotificationManager.notify(id, notification);
     }

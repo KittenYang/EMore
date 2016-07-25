@@ -132,7 +132,8 @@ public class DraftPresentImp implements DraftPresent {
                     public void call(Draft draft) {
                         if (mDrafts.contains(draft)) {
                             if (draft.getStatus() == Draft.STATUS_SENDING ||
-                                    draft.getStatus() == Draft.STATUS_SUCCESS) {
+                                    draft.getStatus() == Draft.STATUS_SUCCESS ||
+                                    draft.getStatus() == Draft.STATUS_DELETE) {
                                 mDrafts.remove(draft);
                             }else {
                                 for (Draft item : mDrafts) {
@@ -146,7 +147,11 @@ public class DraftPresentImp implements DraftPresent {
                                 }
                             }
                         }else {
-                            mDrafts.add(0, draft);
+                            if (draft.getStatus() != Draft.STATUS_SENDING &&
+                                    draft.getStatus() != Draft.STATUS_SUCCESS &&
+                                    draft.getStatus() != Draft.STATUS_DELETE) {
+                                mDrafts.add(0, draft);
+                            }
                         }
 
                         mView.onDraftUpdate(draft);
@@ -177,8 +182,15 @@ public class DraftPresentImp implements DraftPresent {
         ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
             @Override
             protected Object doInBackground(Object... params) {
+                draft.setStatus(Draft.STATUS_DELETE);
                 mDraftSource.deleteDraft(draft);
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                super.onPostExecute(o);
+                RxBus.get().post(Key.EVENT_DRAFT_UPDATE, draft);
             }
         });
     }

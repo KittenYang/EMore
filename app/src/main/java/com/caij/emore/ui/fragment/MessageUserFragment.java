@@ -25,20 +25,27 @@ import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.MentionActivity;
 import com.caij.emore.ui.adapter.MessageUserAdapter;
 import com.caij.emore.utils.DensityUtil;
+import com.caij.emore.utils.LogUtil;
+import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+
+import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * Created by Caij on 2016/7/4.
  */
 public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<MessageUser.UserListBean, MessageUserPresent> implements MessageUserView {
 
-
     private TextView tvMentionCount;
     private TextView tvCommentCount;
     private TextView tvAttitudeCount;
+
+    private boolean isHasNewDm;
+    private Observable<UnReadMessage> mUnReadMessageObservable;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -86,6 +93,19 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
             public void onClick(View v) {
                 Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), AttitudesToMeFragment.class, null);
                 startActivity(intent);
+            }
+        });
+
+        mUnReadMessageObservable = RxBus.get().register(Key.EVENT_HAS_NEW_DM);
+        mUnReadMessageObservable.subscribe(new Action1<UnReadMessage>() {
+            @Override
+            public void call(UnReadMessage o) {
+                isHasNewDm = true;
+                if (isVisible()) {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                    mPresent.refresh();
+                    isHasNewDm = false;
+                }
             }
         });
 
@@ -157,5 +177,23 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
                 tvAttitudeCount.setVisibility(View.GONE);
             }
         }
+    }
+
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (isHasNewDm && !hidden) {
+            LogUtil.d(this, "onHiddenChanged need refresh");
+            mSwipeRefreshLayout.setRefreshing(true);
+            mPresent.refresh();
+            isHasNewDm = false;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        RxBus.get().unregister(Key.EVENT_HAS_NEW_DM, mUnReadMessageObservable);
     }
 }

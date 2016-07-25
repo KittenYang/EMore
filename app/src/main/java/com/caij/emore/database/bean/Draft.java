@@ -94,6 +94,7 @@ public class Draft implements Serializable {
     public static final int STATUS_SAVE = 2;
     public static final int STATUS_SUCCESS = 1;
     public static final int STATUS_SENDING = 4;
+    public static final int STATUS_DELETE = 5;
 
     public static final int TYPE_WEIBO = 1;
 

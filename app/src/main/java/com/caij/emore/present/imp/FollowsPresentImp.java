@@ -1,10 +1,13 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.bean.response.FriendshipResponse;
+import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.FriendshipPresent;
 import com.caij.emore.present.view.FriendshipView;
+import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.UserSource;
+import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +32,18 @@ public class FollowsPresentImp implements FriendshipPresent {
     private FriendshipView mFriendshipView;
     private FriendshipResponse mLastFriendshipResponse;
     private List<User> mUsers;
+    MessageSource mServerMessageSource;
+    MessageSource mLocalMessageSource;
 
-    public FollowsPresentImp(String token, long uid, UserSource userSource, FriendshipView friendshipView) {
+    public FollowsPresentImp(String token, long uid, UserSource userSource,
+                             MessageSource serverMessageSource,
+                             MessageSource localMessageSource,
+                             FriendshipView friendshipView) {
         mToken = token;
         mUid = uid;
         mUserSource = userSource;
+        mServerMessageSource = serverMessageSource;
+        mLocalMessageSource = localMessageSource;
         mFriendshipView = friendshipView;
         mUsers = new ArrayList<>();
         mLoginCompositeSubscription = new CompositeSubscription();
@@ -72,6 +82,9 @@ public class FollowsPresentImp implements FriendshipPresent {
                         mUsers.addAll(friendshipResponse.getUsers());
                         mFriendshipView.setEntities(mUsers);
                         mFriendshipView.onLoadComplete(friendshipResponse.getUsers().size() > PAGE_SIZE - 1);
+
+                        MessageUtil.resetUnReadMessage(mToken, UnReadMessage.TYPE_FOLLOWER,
+                                mServerMessageSource, mLocalMessageSource);
                     }
                 });
         mLoginCompositeSubscription.add(subscription);

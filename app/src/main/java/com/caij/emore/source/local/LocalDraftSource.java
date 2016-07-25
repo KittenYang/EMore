@@ -28,7 +28,6 @@ public class LocalDraftSource implements DraftSource {
             public void call(Subscriber<? super List<Draft>> subscriber) {
                 try {
                     DraftDao draftDao = DBManager.getDaoSession().getDraftDao();
-                    DraftDao.Properties.Create_at.lt(maxTime);
                     QueryBuilder<Draft> queryBuilder = draftDao.queryBuilder();
 
                     WhereCondition conditionStauts = queryBuilder.or(DraftDao.Properties.Status.eq(Draft.STATUS_SAVE),
@@ -40,6 +39,29 @@ public class LocalDraftSource implements DraftSource {
                             .limit(pageCount).offset(pageIndex - 1)
                             .orderDesc(DraftDao.Properties.Create_at).list();
                     subscriber.onNext(drafts);
+                    subscriber.onCompleted();
+                }catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
+    }
+
+    @Override
+    public Observable<Integer> getDraftsCount() {
+        return Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                try {
+                    DraftDao draftDao = DBManager.getDaoSession().getDraftDao();
+                    QueryBuilder<Draft> queryBuilder = draftDao.queryBuilder();
+                    WhereCondition conditionStauts = queryBuilder.or(DraftDao.Properties.Status.eq(Draft.STATUS_SAVE),
+                            DraftDao.Properties.Status.eq(Draft.STATUS_FAIL));
+                    long time = System.currentTimeMillis() - 5 * 60 * 1000L; //这种表示发送时间太长 可能是杀进程导致 把他归为发送失败。5分钟
+                    WhereCondition conditionOther = queryBuilder.and(DraftDao.Properties.Status.eq(Draft.STATUS_SENDING),
+                            DraftDao.Properties.Create_at.lt(time));
+                    long count = queryBuilder.where(queryBuilder.or(conditionStauts, conditionOther)).count();
+                    subscriber.onNext((int)count);
                     subscriber.onCompleted();
                 }catch (Exception e) {
                     subscriber.onError(e);

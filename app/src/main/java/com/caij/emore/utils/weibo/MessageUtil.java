@@ -88,7 +88,9 @@ public class MessageUtil {
 
                     @Override
                     public void onNext(UnReadMessage unReadMessage) {
-                        RxBus.get().post(Key.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
+                        if (unReadMessage != null) {
+                            RxBus.get().post(Key.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
+                        }
                     }
                 });
     }
@@ -109,6 +111,10 @@ public class MessageUtil {
                             unReadMessage.setStatus(unReadMessage.getStatus() - disValue);
                         }else if (type.equals(UnReadMessage.TYPE_DM)) {
                             unReadMessage.setDm_single(unReadMessage.getDm_single() - disValue);
+                        }else if (type.equals(UnReadMessage.TYPE_ATTITUDE)) {
+                            unReadMessage.setAttitude(unReadMessage.getAttitude() - disValue);
+                        }else if (type.equals(UnReadMessage.TYPE_FOLLOWER)) {
+                            unReadMessage.setFollower(unReadMessage.getFollower() - disValue);
                         }
 
                         localMessageSource.saveUnReadMessage(unReadMessage);

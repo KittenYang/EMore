@@ -15,6 +15,8 @@ public interface DraftSource {
 
     Observable<List<Draft>> getDrafts(long maxTime, int pageCount, int pageSize);
 
+    Observable<Integer> getDraftsCount();
+
     void deleteDraft(Draft draft);
 
     void deleteDraftById(long id);

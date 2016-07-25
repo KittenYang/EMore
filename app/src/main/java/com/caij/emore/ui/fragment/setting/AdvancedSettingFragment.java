@@ -84,12 +84,13 @@ public class AdvancedSettingFragment extends PreferenceFragment
 			DialogUtil.showHintDialog(getActivity(), "提示", "是否切换账号", "确定", new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
+					UserPrefs.get().clear();
 					ActivityStack.getInstance().remove(getActivity());
 					ActivityStack.getInstance().finishAllActivity();
 					Intent intent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(), null, null);
 					startActivity(intent);
+					EMoreService.stop(getActivity());
 					getActivity().finish();
-					UserPrefs.get().clear();
 				}
 			}, "取消", null);
 		}else if ("key_exit".equals(preference.getKey())) {

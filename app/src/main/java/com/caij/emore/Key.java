@@ -42,6 +42,7 @@ public interface Key {
     String CID = "cid";
     String COMMENT = "comment";
     String DATE = "date";
+    String FRIEND_WEIBO_UPDATE_TIME = "friend_weibo_update_time";
 
     int REQUEST_CODE_SELECT_IMAGE = 1000;
 
@@ -63,4 +64,6 @@ public interface Key {
     String EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE = "event_weibo_comments_refresh_complete";
     String EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE = "event_weibo_attitude_refresh_complete";
     String EVENT_UNREAD_MESSAGE_COMPLETE = "event_unread_message_complete";
+    String EVENT_HAS_NEW_DM = "event_has_new_dm";
+
 }

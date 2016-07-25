@@ -2,7 +2,10 @@ package com.caij.emore.service.manager;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
@@ -15,6 +18,9 @@ import com.caij.emore.present.view.PublishServiceView;
 import com.caij.emore.source.local.LocalDraftSource;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
+import com.caij.emore.ui.activity.DefaultFragmentActivity;
+import com.caij.emore.ui.activity.MainActivity;
+import com.caij.emore.ui.fragment.DraftFragment;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ImageUtil;
@@ -54,7 +60,8 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
 
     @Override
     protected void doOnCreate() {
-        mPublishWeiboManagerPresent = new PublishWeiboManagerPresentImp(new ServerWeiboSource(),
+        mPublishWeiboManagerPresent = new PublishWeiboManagerPresentImp(UserPrefs.get().getAccount(),
+                new ServerWeiboSource(),
                 new LocalWeiboSource(), new LocalDraftSource(), this);
         mPublishWeiboManagerPresent.onCreate();
         mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -87,8 +94,14 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
     private void notifyPublishFailNotification() {
         Notification.Builder notificationBuilder = new Notification.Builder(ctx);
         notificationBuilder.setContentTitle(ctx.getString(R.string.publish_fail));
+        Intent[] intents = new Intent[2];
+        intents[0] = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
+        intents[1] = DefaultFragmentActivity.starFragmentV4(ctx, DraftFragment.class, null);;
+        PendingIntent pendingIntent = PendingIntent.getActivities(ctx,  -1, intents, PendingIntent.FLAG_CANCEL_CURRENT);
+        notificationBuilder.setContentIntent(pendingIntent);
         notificationBuilder.setContentText(ctx.getString(R.string.publish_fail_hint));
         notificationBuilder.setSmallIcon(R.mipmap.statusbar_ic_send_fail);
+        notificationBuilder.setAutoCancel(true);
         Notification notification = notificationBuilder.getNotification();
         mNotificationManager.notify(PUBLISH_WEIBO_NOTIFICATION_ID, notification);
     }

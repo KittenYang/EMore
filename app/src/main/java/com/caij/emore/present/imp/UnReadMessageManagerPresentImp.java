@@ -34,9 +34,11 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
     private MessageSource mLocalMessageSource;
     private CompositeSubscription mCompositeSubscription;
     private UnReadMessageManagerPresentView mView;
+    private AccessToken mToken;
 
-    public UnReadMessageManagerPresentImp(MessageSource serverMessageSource,
+    public UnReadMessageManagerPresentImp(AccessToken token, MessageSource serverMessageSource,
                                           MessageSource localMessageSource, UnReadMessageManagerPresentView view) {
+        mToken = token;
         mServerMessageSource = serverMessageSource;
         mLocalMessageSource = localMessageSource;
         mView = view;
@@ -67,9 +69,8 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
         if (!SystemUtil.isNetworkAvailable(AppApplication.getInstance())) {
             return;
         }
-        AccessToken accessToken = UserPrefs.get().getWeiCoToken();
-        if (accessToken != null) {
-            mServerMessageSource.getUnReadMessage(accessToken.getAccess_token(), Long.parseLong(accessToken.getUid()))
+        if (mToken != null) {
+            mServerMessageSource.getUnReadMessage(mToken.getAccess_token(), Long.parseLong(mToken.getUid()))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<UnReadMessage>() {
@@ -93,12 +94,11 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
     }
 
     private void notifyMessage(final UnReadMessage serverUnReadMessage) {
-        final AccessToken accessToken = UserPrefs.get().getWeiCoToken();
-        mLocalMessageSource.getUnReadMessage(null, Long.parseLong(accessToken.getUid()))
+        mLocalMessageSource.getUnReadMessage(null, Long.parseLong(mToken.getUid()))
                 .doOnNext(new Action1<UnReadMessage>() {
                     @Override
                     public void call(UnReadMessage unReadMessage) {
-                        serverUnReadMessage.setUid(Long.parseLong(accessToken.getUid()));
+                        serverUnReadMessage.setUid(Long.parseLong(mToken.getUid()));
                         mLocalMessageSource.saveUnReadMessage(serverUnReadMessage);
                     }
                 })
@@ -118,6 +118,11 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
                     @Override
                     public void onNext(UnReadMessage localUnReadMessage) {
                         mView.notifyMessage(serverUnReadMessage, localUnReadMessage);
+
+                        if (localUnReadMessage == null ||
+                                (serverUnReadMessage.getDm_single() - localUnReadMessage.getDm_single() > 0)) {
+                            RxBus.get().post(Key.EVENT_HAS_NEW_DM, serverUnReadMessage);
+                        }
                     }
                 });
     }

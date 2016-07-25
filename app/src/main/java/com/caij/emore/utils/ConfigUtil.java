@@ -14,6 +14,7 @@ public class ConfigUtil {
 
     public static void resetConfig(Context context, long uid) {
         DBManager.initDB(context, Key.DB_NAME + uid, BuildConfig.DEBUG);
+        //这里重新启动时为了重置Mamanger中Present的请求参数数据
         EMoreService.stop(context);
         EMoreService.start(context);
     }

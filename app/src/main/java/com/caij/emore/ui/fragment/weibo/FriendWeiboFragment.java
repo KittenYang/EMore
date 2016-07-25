@@ -25,6 +25,7 @@ import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.publish.PublishWeiboActivity;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
@@ -102,7 +103,6 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
 
     @Override
     protected void onUserFirstVisible() {
-
     }
 
     @Override
@@ -134,4 +134,5 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
