@@ -1,9 +1,11 @@
 package com.caij.emore.source.server;
 
+import com.caij.emore.Key;
 import com.caij.emore.api.WeiBoService;
 import com.caij.emore.api.WeiCoService;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
+import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
@@ -254,6 +256,22 @@ public class ServerWeiboSource implements WeiboSource{
                         return Observable.just(queryWeiboAttitudeResponse.getAttitudes());
                     }
                 });
+    }
+
+    @Override
+    public Observable<List<Weibo>> getWeibosByIds(String access_token, String ids) {
+        return mWeiBoService.getWeibsoByIds(access_token, ids)
+                .flatMap(new Func1<QueryWeiboResponse, Observable<List<Weibo>>>() {
+                    @Override
+                    public Observable<List<Weibo>> call(QueryWeiboResponse queryWeiboResponse) {
+                        return Observable.just(queryWeiboResponse.getStatuses());
+                    }
+                });
+    }
+
+    @Override
+    public Observable<WeiboIds> getHotWeibosIds(String access_token, int page) {
+        return mWeiCoService.getHotWeiboIds(Key.WEICO_API_URL, "get_cat_list", "default", "102803", page);
     }
 
     @Override

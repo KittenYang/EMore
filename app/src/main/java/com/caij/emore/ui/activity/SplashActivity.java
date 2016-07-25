@@ -23,8 +23,6 @@ public class SplashActivity extends BaseActivity{
         final Intent intent;
         if (eMoreAccessToken == null || eMoreAccessToken.isExpired()) {
             intent = EMoreLoginActivity.newEMoreLoginIntent(this, null, null);
-//            intent = EMoreLoginActivity.newEMoreLoginIntent(this, "271945881@qq.com", "caij645237189");
-//            intent = EMoreLoginActivity.newEMoreLoginIntent(this, "1871713922@qq.com", "c520520");
         }else if (weicoAccessToken == null || weicoAccessToken.isExpired()){
             intent = WeiCoLoginActivity.newWeiCoLoginIntent(this,
                     UserPrefs.get().getAccount().getUsername(),

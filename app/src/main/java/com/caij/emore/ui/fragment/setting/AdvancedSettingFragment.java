@@ -71,7 +71,8 @@ public class AdvancedSettingFragment extends PreferenceFragment
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 		if ("pNotification".equals(preference.getKey())) {
-			Intent intent = DefaultFragmentActivity.starFragment(getActivity(), NotificationSettingsFragment.class, null);
+			Intent intent = DefaultFragmentActivity.starFragment(getActivity(), getString(R.string.title_notification),
+					NotificationSettingsFragment.class, null);
 			startActivity(intent);
 		}
 		else if ("pFlow".equals(preference.getKey())) {
@@ -81,7 +82,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
         else if ("pOffline".equals(preference.getKey())) {
 
         }else if ("key_change_account".equals(preference.getKey())) {
-			DialogUtil.showHintDialog(getActivity(), "提示", "是否切换账号", "确定", new DialogInterface.OnClickListener() {
+			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), "是否切换账号", getString(R.string.ok), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					UserPrefs.get().clear();
@@ -92,22 +93,22 @@ public class AdvancedSettingFragment extends PreferenceFragment
 					EMoreService.stop(getActivity());
 					getActivity().finish();
 				}
-			}, "取消", null);
+			},getString(R.string.cancel), null);
 		}else if ("key_exit".equals(preference.getKey())) {
-			DialogUtil.showHintDialog(getActivity(), "提示", "是否退出", "确定", new DialogInterface.OnClickListener() {
+			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), "是否退出", getString(R.string.ok), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					EMoreService.stop(getActivity());
 					ActivityStack.getInstance().finishAllActivity();
 				}
-			}, "取消", null);
+			}, getString(R.string.cancel), null);
 		}else if ("clear_cache".equals(preference.getKey())) {
-			DialogUtil.showHintDialog(getActivity(), "提示", "是否清楚缓存", "是", new DialogInterface.OnClickListener() {
+			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), "是否清楚缓存", getString(R.string.ok), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					clearCache();
 				}
-			}, "取消", null);
+			}, getString(R.string.cancel), null);
 		}
 		return true;
 	}

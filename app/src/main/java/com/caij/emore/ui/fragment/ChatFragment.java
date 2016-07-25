@@ -106,8 +106,6 @@ public class ChatFragment extends BaseFragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecipientId = getArguments().getLong(Key.ID);
-        String recipientName = getArguments().getString(Key.USERNAME);
-        getActivity().setTitle(recipientName);
         initImage();
         getChildFragmentManager().beginTransaction().
                 replace(R.id.fl_emotion, new EmotionFragment()).commit();

@@ -40,7 +40,7 @@ public class NotificationSettingsFragment extends PreferenceFragment
 		BaseActivity activity = (BaseActivity) getActivity();
 		activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         activity.getSupportActionBar().setDisplayShowHomeEnabled(false);
-        activity.getSupportActionBar().setTitle(R.string.title_notification);
+//        activity.getSupportActionBar().setTitle(R.string.title_notification);
 		
 		setHasOptionsMenu(false);
 

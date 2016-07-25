@@ -21,12 +21,14 @@ public interface Key {
     String WEICO_APP_SECRET = "63b64d531b98c2dbff2443816f274dd3";
     String WEICO_CALLBACK_URL =  "http://oauth.weico.cc";
     String UID_ENCODE_KEY  = "Aet3YvcwIWKQAV0Tz1ap6yeTE/Pk+Vel5YtqqrPBebGWZhouTNpE19LfQ4AHOmaBpTCBOFnKl5+G\ncXPNhh4st3FYeW3SQhFVptAM0Yrhbyv5nLDenbfzEA9htaVdYteBXr49yMPZIkRPslYJmZXOvxjT\nZqVTwD9HFm9uBDseUl8";
+    String WEICO_API_URL = "http://weicoapi.weico.cc/portal.php";
 
     String BUGLY_KEY = "900037371";
 
     String SP_CONFIG = "sp_config";
     String URL = "url";
     String OBJ = "obj";
+    String TITLE = "title";
 
     String ID = "id";
     String TYPE = "type";
@@ -65,5 +67,6 @@ public interface Key {
     String EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE = "event_weibo_attitude_refresh_complete";
     String EVENT_UNREAD_MESSAGE_COMPLETE = "event_unread_message_complete";
     String EVENT_HAS_NEW_DM = "event_has_new_dm";
+
 
 }

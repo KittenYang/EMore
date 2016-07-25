@@ -91,7 +91,7 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         priseView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), AttitudesToMeFragment.class, null);
+                Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), getString(R.string.attitude), AttitudesToMeFragment.class, null);
                 startActivity(intent);
             }
         });
@@ -141,7 +141,7 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
     public void onItemClick(View view, int position) {
         MessageUser.UserListBean bean = mRecyclerViewAdapter.getItem(position - 3);
         bean.setUnread_count(0);
-        Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), ChatFragment.class,
+        Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), bean.getUser().getScreen_name(), ChatFragment.class,
                 ChatFragment.newInstance(bean.getUser().getScreen_name(), bean.getUser().getId()).getArguments());
         startActivity(intent);
         mLoadMoreLoadMoreRecyclerView.getAdapter().notifyItemChanged(position);

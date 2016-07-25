@@ -3,6 +3,7 @@ package com.caij.emore.ui.fragment.weibo;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,27 +42,10 @@ import rx.functions.Action1;
 public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresent> implements
         RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, FriendWeiboView {
 
-    @BindView(R.id.swipe_refresh_layout)
-    public SwipeRefreshLayout mSwipeRefreshLayout;
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.include_refresh_recycle_view, container, false);
-        ButterKnife.bind(this, view);
-        return view;
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeColors(
-                getResources().getColor(R.color.gplus_color_1),
-                getResources().getColor(R.color.gplus_color_2),
-                getResources().getColor(R.color.gplus_color_3),
-                getResources().getColor(R.color.gplus_color_4));
         Observable<Object> observable = RxBus.get().register(Key.EVENT_TOOL_BAR_DOUBLE_CLICK);
         observable.subscribe(new Action1<Object>() {
             @Override
@@ -79,11 +63,15 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
                 new ServerWeiboSource(), new LocalWeiboSource(), new LocalMessageSource());
     }
 
-
     @Override
     public void toRefresh() {
-        mSwipeRefreshLayout.setRefreshing(true);
-        mPresent.refresh();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                mPresent.refresh();
+            }
+        });
     }
 
     @Override
@@ -108,11 +96,6 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
     @Override
     public void onEmpty() {
 
-    }
-
-    @Override
-    public void onRefresh() {
-        mPresent.refresh();
     }
 
     @Override

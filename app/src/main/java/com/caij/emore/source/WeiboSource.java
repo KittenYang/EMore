@@ -2,6 +2,7 @@ package com.caij.emore.source;
 
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
+import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
@@ -96,4 +97,8 @@ public interface WeiboSource {
 
     public Observable<List<Attitude>> getToMeAttiyudes(String token, long maxId, long sinceId,
                                                        String source,  String from, int page, int count);
+
+    Observable<List<Weibo>> getWeibosByIds(String access_token, String ids);
+
+    Observable<WeiboIds> getHotWeibosIds(String access_token, int page);
 }

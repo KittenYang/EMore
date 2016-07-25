@@ -138,12 +138,11 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
             WeiboFragmentPagerAdapter adapter = new WeiboFragmentPagerAdapter(getSupportFragmentManager(),
                     fragments, titles);
             viewPager.setAdapter(adapter);
+            viewPager.setCurrentItem(1);
             viewPager.setOffscreenPageLimit(fragments.size());
             tabLayout.setupWithViewPager(viewPager);
             tabLayout.setTabTextColors(getResources().getColor(R.color.text_54),
                     getResources().getColor(R.color.text_80));
-
-            viewPager.setCurrentItem(1);
         }
     }
 

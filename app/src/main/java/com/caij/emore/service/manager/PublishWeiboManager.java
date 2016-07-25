@@ -96,7 +96,8 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
         notificationBuilder.setContentTitle(ctx.getString(R.string.publish_fail));
         Intent[] intents = new Intent[2];
         intents[0] = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
-        intents[1] = DefaultFragmentActivity.starFragmentV4(ctx, DraftFragment.class, null);;
+        intents[1] = DefaultFragmentActivity.starFragmentV4(ctx, ctx.getString(R.string.draft_box),
+                DraftFragment.class, null);
         PendingIntent pendingIntent = PendingIntent.getActivities(ctx,  -1, intents, PendingIntent.FLAG_CANCEL_CURRENT);
         notificationBuilder.setContentIntent(pendingIntent);
         notificationBuilder.setContentText(ctx.getString(R.string.publish_fail_hint));

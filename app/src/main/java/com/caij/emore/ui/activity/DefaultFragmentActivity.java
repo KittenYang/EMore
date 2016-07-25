@@ -18,19 +18,27 @@ public class DefaultFragmentActivity extends BaseToolBarActivity {
 
     private int mType;
 
-    public static Intent starFragmentV4(Context context, Class<? extends android.support.v4.app.Fragment> fragmentClazz, Bundle bundle) {
+    public static Intent starFragmentV4(Context context,
+                                        String title,
+                                        Class<? extends android.support.v4.app.Fragment> fragmentClazz,
+                                        Bundle bundle) {
         Intent intent = new Intent(context, DefaultFragmentActivity.class);
         intent.putExtra(Key.DATE, bundle);
         intent.putExtra(Key.OBJ, fragmentClazz);
         intent.putExtra(Key.TYPE, 1);
+        intent.putExtra(Key.TITLE, title);
         return intent;
     }
 
-    public static Intent starFragment(Context context, Class<? extends android.app.Fragment> fragmentClazz, Bundle bundle) {
+    public static Intent starFragment(Context context,
+                                      String title,
+                                      Class<? extends android.app.Fragment> fragmentClazz,
+                                      Bundle bundle) {
         Intent intent = new Intent(context, DefaultFragmentActivity.class);
         intent.putExtra(Key.DATE, bundle);
         intent.putExtra(Key.OBJ, fragmentClazz);
         intent.putExtra(Key.TYPE, 2);
+        intent.putExtra(Key.TITLE, title);
         return intent;
     }
 
@@ -45,6 +53,8 @@ public class DefaultFragmentActivity extends BaseToolBarActivity {
         Intent intent = getIntent();
 
         mType = intent.getIntExtra(Key.TYPE, -1);
+
+        setTitle(intent.getStringExtra(Key.TITLE));
 
         if (mType == 1) {
             attachV4Fragment(intent);

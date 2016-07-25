@@ -15,6 +15,7 @@ import com.caij.emore.present.view.TimeLineWeiboView;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.adapter.WeiboAdapter;
 import com.caij.emore.ui.fragment.RecyclerViewFragment;
+import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.view.recyclerview.BaseAdapter;
@@ -28,7 +29,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/4.
  */
-public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends RecyclerViewFragment<Weibo, P>
+public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends SwipeRefreshRecyclerViewFragment<Weibo, P>
         implements TimeLineWeiboView, RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener, WeiboAdapter.OnItemActionClickListener {
 
     @Override

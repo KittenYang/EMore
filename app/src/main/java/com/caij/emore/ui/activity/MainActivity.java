@@ -32,6 +32,7 @@ import com.caij.emore.source.server.ServerUserSource;
 import com.caij.emore.ui.fragment.DraftFragment;
 import com.caij.emore.ui.fragment.MessageUserFragment;
 import com.caij.emore.ui.fragment.weibo.FriendWeiboFragment;
+import com.caij.emore.ui.fragment.weibo.HotWeiboFragment;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.SystemUtil;
@@ -242,7 +243,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         }
     }
 
-    @OnClick({R.id.img_navigation_avatar, R.id.tv_setting, R.id.rl_draft,R.id.rl_item_weibo, R.id.rl_item_message})
+    @OnClick({R.id.img_navigation_avatar, R.id.tv_setting, R.id.rl_draft,R.id.rl_item_weibo, R.id.rl_item_message, R.id.tv_hot_weibo})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_setting: {
@@ -263,11 +264,12 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 RxBus.get().post(Key.EVENT_TOOL_BAR_DOUBLE_CLICK, mVisibleFragment);
                 break;
 
-            case R.id.rl_draft:
-                Intent intent = DefaultFragmentActivity.starFragmentV4(this, DraftFragment.class, null);
+            case R.id.rl_draft: {
+                Intent intent = DefaultFragmentActivity.starFragmentV4(this, getString(R.string.draft_box), DraftFragment.class, null);
                 startActivity(intent);
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
+            }
 
             case R.id.rl_item_weibo:
                 if (!rlItemWeibo.isSelected()) {
@@ -296,6 +298,14 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                     tvWeibo.setSelected(false);
                 }
                 break;
+
+            case R.id.tv_hot_weibo: {
+                Intent intent = DefaultFragmentActivity.starFragmentV4(this, getString(R.string.hot_weibo),
+                        HotWeiboFragment.class, null);
+                startActivity(intent);
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                break;
+            }
         }
     }
 

@@ -24,7 +24,6 @@ public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> imp
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("草稿箱");
     }
 
     @Override

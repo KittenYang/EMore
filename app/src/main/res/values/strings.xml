@@ -146,6 +146,8 @@
     <string name="delete_success">删除成功</string>
     <string name="settings_dm_attitude">赞</string>
     <string name="key_setting_attitude">key_setting_attitude</string>
+    <string name="hot_weibo">热门微博</string>
+    <string name="attitude">赞</string>
 
     <string-array name="txtUnread">
         <item>1分钟</item>

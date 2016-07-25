@@ -2,6 +2,7 @@ package com.caij.emore.ui.fragment.mention;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.view.View;
 
 import com.caij.emore.UserPrefs;
@@ -42,7 +43,12 @@ public class CommentMentionFragment extends SwipeRefreshRecyclerViewFragment<Com
     @Override
     protected void onUserFirstVisible() {
         super.onUserFirstVisible();
-        mSwipeRefreshLayout.setRefreshing(true);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
     }
 
     protected RefreshListPresent createPresent() {

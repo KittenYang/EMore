@@ -2,6 +2,7 @@ package com.caij.emore.api;
 
 import com.caij.emore.Key;
 import com.caij.emore.bean.Attitude;
+import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
@@ -107,5 +108,9 @@ public interface WeiCoService {
                                   @Field("from") String from,
                                   @Field("type") String type,
                                    @Field("value") int value);
+
+    @GET
+    public Observable<WeiboIds> getHotWeiboIds(@Url String url, @Query("a") String a, @Query("c") String c,
+                                               @Query("catlog_id") String catlog_id, @Query("page") int page);
 
 }

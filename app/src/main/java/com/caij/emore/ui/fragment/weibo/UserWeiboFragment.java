@@ -36,6 +36,7 @@ public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> i
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mSwipeRefreshLayout.setEnabled(false);
         HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter = mLoadMoreLoadMoreRecyclerView.getAdapter();
         View headView = getActivity().getLayoutInflater().
                 inflate(R.layout.header_view_profile_weibo, mLoadMoreLoadMoreRecyclerView, false);

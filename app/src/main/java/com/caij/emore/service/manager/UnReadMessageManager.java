@@ -122,7 +122,7 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
             if (AppSettings.isNotifyDmEnable(ctx) && serverUnReadMessage.getDm_single() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getDm_single() - localUnReadMessage.getDm_single() > 0)) {
                 String text = serverUnReadMessage.getDm_single() + "条私信";
-                Intent intent = DefaultFragmentActivity.starFragmentV4(ctx, MessageUserFragment.class, null);
+                Intent intent = DefaultFragmentActivity.starFragmentV4(ctx, "消息", MessageUserFragment.class, null);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getDm_single(),
                         R.mipmap.statusbar_ic_dm_small, MESSAGE_NOTIFICATION_ID, intent);
             }
@@ -146,7 +146,8 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
             if (AppSettings.isNotifyAttitudeEnable(ctx) && serverUnReadMessage.getAttitude() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getAttitude() - localUnReadMessage.getAttitude() > 0)) {
                 String text = serverUnReadMessage.getAttitude() + "新点赞";
-                Intent intent = DefaultFragmentActivity.starFragmentV4(ctx, AttitudesToMeFragment.class, null);
+                Intent intent = DefaultFragmentActivity.starFragmentV4(ctx, ctx.getString(R.string.attitude),
+                        AttitudesToMeFragment.class, null);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getMention_status(),
                         R.mipmap.timeline_icon_unlike, ATTITUDE_NOTIFICATION_ID, intent);
             }
@@ -155,7 +156,6 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
     }
 
     private void scheduleHeartbeat(long seconds){
-        seconds = 3 * 1000;
         cancelHeartbeatTimer();
 
         if (pendingIntent == null) {

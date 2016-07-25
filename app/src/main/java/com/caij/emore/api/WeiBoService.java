@@ -286,6 +286,10 @@ public interface WeiBoService {
                                                              @Query("id") long id, @Query("page") int page,
                                                              @Query("count") int count);
 
+    @GET("2/statuses/show_batch.json")
+    Observable<QueryWeiboResponse> getWeibsoByIds(@Query("access_token") String accessToken,
+                                                             @Query("ids") String ids);
+
 
     //    @FormUrlEncoded
 //    @POST("2/attitudes/destroy.json")
