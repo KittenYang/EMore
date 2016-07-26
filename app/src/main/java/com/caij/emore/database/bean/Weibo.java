@@ -410,7 +410,7 @@ public class Weibo implements Serializable {
         return weibo.id.equals(id);
     }
 
-    public static class LongText {
+    public static class LongText implements Serializable {
         private String content;
 
         public String getContent() {
