@@ -4,6 +4,7 @@ import com.caij.emore.Key;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.MessageUser;
+import com.caij.emore.bean.SinaSearchRecommend;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
@@ -295,6 +296,11 @@ public interface WeiBoService {
                              @Query("q") String q,
                              @Query("count") int count,
                              @Query("page") int page);
+
+    @GET
+    public Observable<SinaSearchRecommend> getSearchRecommend(@Url String url, @Query("where") String where,
+                                                          @Query("type") String type,
+                                                          @Query("key") String key);
 
 
     //    @FormUrlEncoded

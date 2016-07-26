@@ -3,6 +3,7 @@ package com.caij.emore.ui.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -110,8 +111,13 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         });
 
         if (mPresent != null) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            mPresent.refresh();
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                    mPresent.refresh();
+                }
+            });
         }
     }
 

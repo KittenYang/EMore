@@ -1,12 +1,17 @@
 package com.caij.emore.source.server;
 
+import com.caij.emore.Key;
 import com.caij.emore.api.WeiBoService;
+import com.caij.emore.api.WeiCoService;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.source.UserSource;
 
 
+import java.util.List;
+
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by Caij on 2016/5/30.
@@ -14,9 +19,11 @@ import rx.Observable;
 public class ServerUserSource implements UserSource{
 
     private WeiBoService mWeiBoService;
+    private WeiCoService mWeiCoService;
 
     public ServerUserSource() {
         mWeiBoService = WeiBoService.Factory.create();
+        mWeiCoService = WeiCoService.WeiCoFactory.create();
     }
 
     @Override
@@ -53,6 +60,17 @@ public class ServerUserSource implements UserSource{
     @Override
     public Observable<FriendshipResponse> getFollowers(String accessToken, long uid, int count, int trim_status, long cursor) {
         return mWeiBoService.getFollowers(accessToken, uid, count, trim_status, cursor);
+    }
+
+    @Override
+    public Observable<List<User>> getSearchUser(String access_token, String q, int page, int count) {
+        return mWeiCoService.searchUsers(access_token, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, q, count, page)
+                .flatMap(new Func1<FriendshipResponse, Observable<List<User>>>() {
+                    @Override
+                    public Observable<List<User>> call(FriendshipResponse queryWeiboResponse) {
+                        return Observable.just(queryWeiboResponse.getUsers());
+                    }
+                });
     }
 
 }

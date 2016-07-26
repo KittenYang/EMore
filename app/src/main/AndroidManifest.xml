@@ -110,6 +110,10 @@
         <activity android:name="com.caij.emore.ui.activity.DefaultFragmentActivity"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".ui.activity.SearchRecommendActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SearchActivity"/>
+
     </application>
 
 </manifest>

@@ -7,6 +7,7 @@ import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
+import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
@@ -14,6 +15,7 @@ import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.UploadImageResponse;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.ImageUtil;
@@ -284,6 +286,19 @@ public class ServerWeiboSource implements WeiboSource{
                     }
                 });
     }
+
+    @Override
+    public Observable<List<Weibo>> getSearchWeibo(String access_token, String q, int page, int count) {
+        return mWeiCoService.searchStatus(access_token, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, q, count, page)
+                .flatMap(new Func1<QueryWeiboResponse, Observable<List<Weibo>>>() {
+                    @Override
+                    public Observable<List<Weibo>> call(QueryWeiboResponse queryWeiboResponse) {
+                        return Observable.just(queryWeiboResponse.getStatuses());
+                    }
+                });
+    }
+
+
 
     @Override
     public Observable<QueryRepostWeiboResponse> getRepostWeibos(String accessToken, long id, long since_id, long max_id, int count, int page) {

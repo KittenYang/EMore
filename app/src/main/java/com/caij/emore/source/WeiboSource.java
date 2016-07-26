@@ -10,6 +10,7 @@ import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.UploadImageResponse;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 
 import java.io.IOException;
@@ -103,4 +104,7 @@ public interface WeiboSource {
     Observable<WeiboIds> getHotWeibosIds(String access_token, int page);
 
     Observable<List<Weibo>> getTopicsByKey(String access_token, String q, int page, int count);
+
+    Observable<List<Weibo>> getSearchWeibo(String access_token, String q, int page, int count);
+
 }

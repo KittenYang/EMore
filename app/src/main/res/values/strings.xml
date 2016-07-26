@@ -148,6 +148,7 @@
     <string name="key_setting_attitude">key_setting_attitude</string>
     <string name="hot_weibo">热门微博</string>
     <string name="attitude">赞</string>
+    <string name="search_hint_text">搜索用户或者微博</string>
 
     <string-array name="txtUnread">
         <item>1分钟</item>

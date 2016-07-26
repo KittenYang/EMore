@@ -23,6 +23,8 @@ public interface Key {
     String UID_ENCODE_KEY  = "Aet3YvcwIWKQAV0Tz1ap6yeTE/Pk+Vel5YtqqrPBebGWZhouTNpE19LfQ4AHOmaBpTCBOFnKl5+G\ncXPNhh4st3FYeW3SQhFVptAM0Yrhbyv5nLDenbfzEA9htaVdYteBXr49yMPZIkRPslYJmZXOvxjT\nZqVTwD9HFm9uBDseUl8";
     String WEICO_API_URL = "http://weicoapi.weico.cc/portal.php";
 
+    String SEARCH_URL = "http://s.weibo.com//ajax/suggestion";
+
     String BUGLY_KEY = "900037371";
 
     String SP_CONFIG = "sp_config";

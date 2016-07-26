@@ -1,23 +1,19 @@
 package com.caij.emore.ui.fragment.weibo;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.imp.FriendWeiboPresentImp;
@@ -25,14 +21,12 @@ import com.caij.emore.present.view.FriendWeiboView;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
+import com.caij.emore.ui.activity.SearchRecommendActivity;
 import com.caij.emore.ui.activity.publish.PublishWeiboActivity;
-import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -113,6 +107,9 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
                 break;
 
             case R.id.search:
+                Intent intent1 = new Intent(getActivity(), SearchRecommendActivity.class);
+                startActivity(intent1);
+                getActivity().overridePendingTransition(-1, -1);
                 break;
         }
         return super.onOptionsItemSelected(item);

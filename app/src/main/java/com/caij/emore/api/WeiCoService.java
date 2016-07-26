@@ -3,7 +3,9 @@ package com.caij.emore.api;
 import com.caij.emore.Key;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.WeiboIds;
+import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
+import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.database.bean.UnReadMessage;
@@ -120,11 +122,20 @@ public interface WeiCoService {
                                                     @Query("uid") long uid);
 
     @GET("/2/search/statuses")
-    public void searchStatus(@Query("access_token") String accessToken,
-                                      @Query("source") String source,
-                                      @Query("from") String from,
-                                      @Query("q") String q,
-                                      @Query("count") int count,
-                                      @Query("page") int page);
+    public Observable<QueryWeiboResponse> searchStatus(@Query("access_token") String accessToken,
+                                                       @Query("source") String source,
+                                                       @Query("from") String from,
+                                                       @Query("q") String q,
+                                                       @Query("count") int count,
+                                                       @Query("page") int page);
+
+
+    @GET("/2/search/users")
+    public Observable<FriendshipResponse> searchUsers(@Query("access_token") String accessToken,
+                                                      @Query("source") String source,
+                                                      @Query("from") String from,
+                                                      @Query("q") String q,
+                                                      @Query("count") int count,
+                                                      @Query("page") int page);
 
 }

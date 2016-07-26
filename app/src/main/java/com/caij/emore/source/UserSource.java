@@ -3,6 +3,8 @@ package com.caij.emore.source;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.database.bean.User;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -23,4 +25,6 @@ public interface UserSource {
     Observable<FriendshipResponse> getFriends(String accessToken, long uid, int count, int trim_status, long cursor);
 
     Observable<FriendshipResponse> getFollowers(String accessToken, long uid, int count, int trim_status, long cursor);
+
+    Observable<List<User>> getSearchUser(String access_token, String q, int page, int count);
 }

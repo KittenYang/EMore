@@ -21,6 +21,11 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="SearchActivity" parent="AppTheme">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/color_black</item>

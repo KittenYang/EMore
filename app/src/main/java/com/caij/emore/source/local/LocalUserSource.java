@@ -83,4 +83,9 @@ public class LocalUserSource implements UserSource{
     public Observable<FriendshipResponse> getFollowers(String accessToken, long uid, int count, int trim_status, long cursor) {
         return null;
     }
+
+    @Override
+    public Observable<List<User>> getSearchUser(String access_token, String q, int page, int count) {
+        return null;
+    }
 }
