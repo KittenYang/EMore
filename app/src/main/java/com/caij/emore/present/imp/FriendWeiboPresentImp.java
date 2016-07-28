@@ -86,13 +86,16 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                         mWeibos.addAll(weibos);
                         mView.setEntities(mWeibos);
 
-                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT * 2 - 1);
-
                         if (System.currentTimeMillis() -
                                 SPUtil.getLong(Key.FRIEND_WEIBO_UPDATE_TIME, -1) > 10 * 60 * 1000 ||
                                 weibos.size() <= 0) {
                             mView.toRefresh();
                         }
+
+                        if (weibos.size() > 5){
+                            mView.onLoadComplete(true);
+                        }
+
                     }
                 });
         mCompositeSubscription.add(subscription);

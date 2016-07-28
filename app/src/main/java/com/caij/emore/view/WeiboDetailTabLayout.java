@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
@@ -39,6 +40,9 @@ public class WeiboDetailTabLayout extends TabLayout{
         if (mTabsCount == 3) {
             try {
                 Field scrollerField = Tab.class.getDeclaredField("mView");
+                Field field = TabLayout.class.getDeclaredField("mTabStrip");
+                field.setAccessible(true);
+                final ViewGroup viewGroup = (ViewGroup) field.get(this);
                 scrollerField.setAccessible(true);
                 final View view = (View) scrollerField.get(tab);
                 final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
@@ -50,10 +54,13 @@ public class WeiboDetailTabLayout extends TabLayout{
                         if (getMeasuredWidth() > 0) {
                             parentWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
                         }
-                        int viewWidth  =  view.getWidth();
-
-                        if (parentWidth > 0 && viewWidth > 0) {
-                            int leftMargin = parentWidth - viewWidth * 3;
+                        int leftMargin = parentWidth - viewGroup.getChildAt(0).getMeasuredWidth()
+                                - viewGroup.getChildAt(1).getMeasuredWidth() - viewGroup.getChildAt(2).getMeasuredWidth();
+//                        LogUtil.d(WeiboDetailTabLayout.this, "leftMargin %s view1 %s view2 %s parentWidth %s",
+//                                leftMargin, viewGroup.getChildAt(0).getMeasuredWidth(),
+//                                viewGroup.getChildAt(1).getMeasuredWidth(),
+//                                parentWidth);
+                        if (parentWidth > 0 && leftMargin > 0) {
                             if (params.leftMargin != leftMargin) {
                                 params.leftMargin = leftMargin;
                                 view.setLayoutParams(params);

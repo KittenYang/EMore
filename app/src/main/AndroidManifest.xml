@@ -115,9 +115,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/SearchActivity"/>
 
-
         <activity android:name=".ui.activity.VideoViewPlayingActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/ImagePrewActivity"/>
 
     </application>
 
