@@ -7,6 +7,7 @@ import android.os.Parcel;
 import android.provider.Browser;
 import android.text.ParcelableSpan;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.View;
 
@@ -14,12 +15,15 @@ import com.caij.emore.AppSettings;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
+import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.ImagePrewActivity;
 import com.caij.emore.ui.activity.VideoViewPlayingActivity;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
+import com.caij.emore.utils.EmotionsUtil;
 import com.caij.emore.utils.SpannableStringUtil;
+import com.caij.emore.utils.SystemUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +40,7 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
     private int color;
     private int pressColor;
     private boolean pressed;
+    private ShortUrlInfo.UrlsBean urlBean;
 
     public MyURLSpan(String url) {
         this.mURL = url;
@@ -63,45 +68,51 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
 
     public void onClick(View widget) {
         Context context = widget.getContext();
-        String[] values = getURL().split(MyURLSpan.SCHEME_SPIT);
-        if (values.length == 1 || values.length == 0) {
-            toWebActivity(context, getURL());
-        }else {
-            int type = Integer.parseInt(values[0]);
-            String url =values[1];
-            switch (type) {
-                case UrlInfo.TYPE_WEB:
-                case UrlInfo.TYPE_WEB_PAGE:
-                    toWebActivity(context, url);
-                    break;
+        toDetaiPage(context, widget);
+    }
 
-                case UrlInfo.TYPE_VIDEO:
-                    if (url.contains("video.weibo.com") &&  widget.getTag() != null && widget.getTag() instanceof Weibo) {
-                        Intent intent = new Intent(context, VideoViewPlayingActivity.class);
-                        intent.putExtra(Key.ID, url);
-                        context.startActivity(intent);
-                    }else {
-                        toWebActivity(context, url);
-                    }
-                    break;
+    private void toDetaiPage(Context context, View widget){
+        if (urlBean != null) {
+            if (urlBean.getAnnotations() != null
+                    && urlBean.getAnnotations().size() > 0
+                    && urlBean.getAnnotations().get(0) != null) {
 
-                case UrlInfo.TYPE_IMAGE: {
-                    toWebActivity(context, url);
-                    break;
+                ShortUrlInfo.UrlsBean.AnnotationsBean annotationsBean = urlBean.getAnnotations().get(0);
+
+                switch (annotationsBean.getUrlType()) {
+                    case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_WEB:
+                    case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_WEB_PAGE:
+                        toWebActivity(context, getURL());
+                        break;
+
+                    case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_VIDEO:
+                        Intent intent;
+                        if (widget.getTag() != null && widget.getTag() instanceof Weibo) {
+                            Weibo weibo = (Weibo) widget.getTag();
+                            intent = VideoViewPlayingActivity.newIntent(context, weibo.getId());
+                            context.startActivity(intent);
+                        }else {
+                            toWebActivity(context, urlBean.getUrl_short());
+                        }
+                        break;
+
+                    case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_IMAGE:
+                        toWebActivity(context, urlBean.getUrl_long());
+                        break;
+
+                    case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_MUSIC:
+                        toWebActivity(context, urlBean.getUrl_long());
+                        break;
+
+                    default:
+                        toWebActivity(context, urlBean.getUrl_long());
+                        break;
                 }
-
-                case UrlInfo.TYPE_MUSIC:
-                    toWebActivity(context, url);
-                    break;
-                case UrlInfo.TYPE_FULL_TEXT:
-                    Intent intent = WeiboDetialActivity.newIntent(context, Long.parseLong(url));
-                    context.startActivity(intent);
-                    break;
-
-                default:
-                    toWebActivity(context, url);
-                    break;
+            }else {
+                toWebActivity(context, getURL());
             }
+        }else {
+            toWebActivity(context, getURL());
         }
     }
 
@@ -132,5 +143,9 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
         context.startActivity(intent);
+    }
+
+    public void setUrlBean(ShortUrlInfo.UrlsBean urlBean) {
+        this.urlBean = urlBean;
     }
 }

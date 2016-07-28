@@ -1,13 +1,13 @@
 package com.caij.emore.bean;
 
 /**
- * Created by Caij on 2016/7/27.
+ * Created by Caij on 2016/7/28.
  */
 public class VideoInfo {
 
 
     /**
-     * data : http://us.sinaimg.cn/004bLkEAjx073zAUlTBu05040100fLWS0k01.mp4?KID=unistore,video&Expires=1469621642&ssig=SNbTmlPo%2B2
+     * data : http://us.sinaimg.cn/004ikHdGjx072zZ4HkYn050401003wd80k01.mp4?KID=unistore,video&Expires=1469690829&ssig=LY0ywLOtFO
      * info :
      * retcode : 0
      */

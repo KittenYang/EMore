@@ -24,14 +24,7 @@ public class UrlInfoDao extends AbstractDao<UrlInfo, String> {
     */
     public static class Properties {
         public final static Property ShortUrl = new Property(0, String.class, "shortUrl", true, "SHORT_URL");
-        public final static Property LongUrl = new Property(1, String.class, "longUrl", false, "LONG_URL");
-        public final static Property Description = new Property(2, String.class, "description", false, "DESCRIPTION");
-        public final static Property Object_type = new Property(3, String.class, "object_type", false, "OBJECT_TYPE");
-        public final static Property Title = new Property(4, String.class, "title", false, "TITLE");
-        public final static Property Display_name = new Property(5, String.class, "display_name", false, "DISPLAY_NAME");
-        public final static Property Transcode = new Property(6, Integer.class, "transcode", false, "TRANSCODE");
-        public final static Property Type = new Property(7, Integer.class, "type", false, "TYPE");
-        public final static Property ShortUrlAvailable = new Property(8, Boolean.class, "shortUrlAvailable", false, "SHORT_URL_AVAILABLE");
+        public final static Property Url_info_json = new Property(1, String.class, "url_info_json", false, "URL_INFO_JSON");
     };
 
 
@@ -48,14 +41,7 @@ public class UrlInfoDao extends AbstractDao<UrlInfo, String> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"URL_INFO\" (" + //
                 "\"SHORT_URL\" TEXT PRIMARY KEY NOT NULL ," + // 0: shortUrl
-                "\"LONG_URL\" TEXT," + // 1: longUrl
-                "\"DESCRIPTION\" TEXT," + // 2: description
-                "\"OBJECT_TYPE\" TEXT," + // 3: object_type
-                "\"TITLE\" TEXT," + // 4: title
-                "\"DISPLAY_NAME\" TEXT," + // 5: display_name
-                "\"TRANSCODE\" INTEGER," + // 6: transcode
-                "\"TYPE\" INTEGER," + // 7: type
-                "\"SHORT_URL_AVAILABLE\" INTEGER);"); // 8: shortUrlAvailable
+                "\"URL_INFO_JSON\" TEXT);"); // 1: url_info_json
     }
 
     /** Drops the underlying database table. */
@@ -74,44 +60,9 @@ public class UrlInfoDao extends AbstractDao<UrlInfo, String> {
             stmt.bindString(1, shortUrl);
         }
  
-        String longUrl = entity.getLongUrl();
-        if (longUrl != null) {
-            stmt.bindString(2, longUrl);
-        }
- 
-        String description = entity.getDescription();
-        if (description != null) {
-            stmt.bindString(3, description);
-        }
- 
-        String object_type = entity.getObject_type();
-        if (object_type != null) {
-            stmt.bindString(4, object_type);
-        }
- 
-        String title = entity.getTitle();
-        if (title != null) {
-            stmt.bindString(5, title);
-        }
- 
-        String display_name = entity.getDisplay_name();
-        if (display_name != null) {
-            stmt.bindString(6, display_name);
-        }
- 
-        Integer transcode = entity.getTranscode();
-        if (transcode != null) {
-            stmt.bindLong(7, transcode);
-        }
- 
-        Integer type = entity.getType();
-        if (type != null) {
-            stmt.bindLong(8, type);
-        }
- 
-        Boolean shortUrlAvailable = entity.getShortUrlAvailable();
-        if (shortUrlAvailable != null) {
-            stmt.bindLong(9, shortUrlAvailable ? 1L: 0L);
+        String url_info_json = entity.getUrl_info_json();
+        if (url_info_json != null) {
+            stmt.bindString(2, url_info_json);
         }
     }
 
@@ -126,14 +77,7 @@ public class UrlInfoDao extends AbstractDao<UrlInfo, String> {
     public UrlInfo readEntity(Cursor cursor, int offset) {
         UrlInfo entity = new UrlInfo( //
             cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // shortUrl
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // longUrl
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // description
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // object_type
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // title
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // display_name
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // transcode
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // type
-            cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0 // shortUrlAvailable
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1) // url_info_json
         );
         return entity;
     }
@@ -142,14 +86,7 @@ public class UrlInfoDao extends AbstractDao<UrlInfo, String> {
     @Override
     public void readEntity(Cursor cursor, UrlInfo entity, int offset) {
         entity.setShortUrl(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setLongUrl(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setDescription(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setObject_type(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setTitle(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setDisplay_name(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setTranscode(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
-        entity.setType(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
-        entity.setShortUrlAvailable(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
+        entity.setUrl_info_json(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
      }
     
     /** @inheritdoc */

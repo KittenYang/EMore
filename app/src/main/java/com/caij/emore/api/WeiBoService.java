@@ -4,11 +4,11 @@ import com.caij.emore.Key;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.MessageUser;
+import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.SinaSearchRecommend;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
-import com.caij.emore.bean.response.QueryUrlResponse;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
@@ -277,8 +277,8 @@ public interface WeiBoService {
 
 
     @GET("/2/short_url/info.json")
-    Call<QueryUrlResponse> getShortUrlInfo(@Query("access_token") String accessToken,
-                                           @Query("url_short") List<String> url_shorts);
+    Call<ShortUrlInfo> getShortUrlInfo(@Query("access_token") String accessToken,
+                                       @Query("url_short") List<String> url_shorts);
 
 
 

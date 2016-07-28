@@ -1,7 +1,7 @@
 package com.caij.emore.source.server;
 
 import com.caij.emore.api.WeiBoService;
-import com.caij.emore.bean.response.QueryUrlResponse;
+import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.source.UrlSource;
 
@@ -17,9 +17,9 @@ import retrofit2.Response;
 public class ServerUrlSource implements UrlSource {
 
     @Override
-    public QueryUrlResponse getShortUrlInfo(String token, List<String> shortUrls) {
-        Call<QueryUrlResponse> call = WeiBoService.Factory.create().getShortUrlInfo(token, shortUrls);
-        Response<QueryUrlResponse> responseResponse = null;
+    public ShortUrlInfo getShortUrlInfo(String token, List<String> shortUrls) {
+        Call<ShortUrlInfo> call = WeiBoService.Factory.create().getShortUrlInfo(token, shortUrls);
+        Response<ShortUrlInfo> responseResponse = null;
         try {
             responseResponse = call.execute();
             if (responseResponse.code() == 200) {

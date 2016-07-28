@@ -194,14 +194,7 @@ public class DbDaoGenerator {
     static void createUrlInfo(Schema sch) {
         Entity entity = sch.addEntity("UrlInfo");
         entity.addStringProperty("shortUrl").primaryKey();
-        entity.addStringProperty("longUrl");
-        entity.addStringProperty("description");
-        entity.addStringProperty("object_type");
-        entity.addStringProperty("title");
-        entity.addStringProperty("display_name");
-        entity.addIntProperty("transcode");
-        entity.addIntProperty("type");
-        entity.addBooleanProperty("shortUrlAvailable");
+        entity.addStringProperty("url_info_json");
     }
 
     static void createUploadImageResponse(Schema sch) {

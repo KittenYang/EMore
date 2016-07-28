@@ -139,8 +139,9 @@ public interface WeiCoService {
                                                       @Query("count") int count,
                                                       @Query("page") int page);
 
+    @FormUrlEncoded
     @POST
     public Observable<VideoInfo> getVideoInfo(@Url String url, @Query("a") String a, @Query("c") String c,
-                                              @Field("weibo_id") long weibo_id);
+                                              @FieldMap Map<String, Object> fields);
 
 }

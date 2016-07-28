@@ -1,37 +1,8 @@
 package com.caij.emore.ui.activity;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import com.baidu.cyberplayer.core.BMediaController;
-import com.baidu.cyberplayer.core.BVideoView;
-import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
-import com.baidu.cyberplayer.core.BVideoView.OnCompletionWithParamListener;
-import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
-import com.baidu.cyberplayer.core.BVideoView.OnInfoListener;
-import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
-import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
-import com.baidu.cyberplayer.subtitle.SubtitleManager;
-import com.baidu.cyberplayer.subtitle.utils.SubtitleError;
-import com.baidu.cyberplayer.subtitle.utils.SubtitleErrorCallback;
-import com.caij.emore.Key;
-import com.caij.emore.R;
-import com.caij.emore.bean.VideoInfo;
-import com.caij.emore.present.VideoPlayPresent;
-import com.caij.emore.present.imp.VideoPlayPresentImp;
-import com.caij.emore.present.view.VideoPlayView;
-import com.caij.emore.source.local.LocalVideoSource;
-import com.caij.emore.source.server.ServerVideoSource;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -39,16 +10,45 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
+
+import com.baidu.cyberplayer.core.BVideoView;
+import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
+import com.baidu.cyberplayer.core.BVideoView.OnCompletionWithParamListener;
+import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
+import com.baidu.cyberplayer.core.BVideoView.OnInfoListener;
+import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
+import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
+import com.caij.emore.Key;
+import com.caij.emore.R;
+import com.caij.emore.bean.VideoInfo;
+import com.caij.emore.present.VideoPlayPresent;
+import com.caij.emore.present.imp.VideoPlayPresentImp;
+import com.caij.emore.present.view.VideoPlayView;
+import com.caij.emore.source.server.ServerVideoInfoSource;
+import com.caij.emore.utils.DateUtil;
+import com.caij.emore.utils.LogUtil;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class VideoViewPlayingActivity extends BaseActivity implements OnPreparedListener,
         OnCompletionListener,
         OnErrorListener,
         OnInfoListener,
         OnPlayingBufferCacheListener,
-        OnCompletionWithParamListener, VideoPlayView {
+        OnCompletionWithParamListener, BVideoView.OnPositionUpdateListener, View.OnClickListener, SeekBar.OnSeekBarChangeListener, VideoPlayView {
     private final String TAG = "VideoViewPlayingActivity";
+
+    public static final int EVENT_UPDATE_POSITION = 100;
+    public static final int EVENT_VIDEO_PREPARE = 101;
+    public static final int EVENT_VIDEO_COMOLETION = 102;
+    public static final int EVENT_VIDEO_ERROR = 103;
 
     /**
      * 您的AK
@@ -56,6 +56,18 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
      */
     public static final String AK = "6770e0af7eb94cd2a4e7247a51b9522d";
     public static final String SK = "8cfa8441afde4170811317445bb11d53";
+    @BindView(R.id.view_holder)
+    FrameLayout viewHolder;
+    @BindView(R.id.pause)
+    ImageView pause;
+    @BindView(R.id.watch_time)
+    TextView watchTime;
+    @BindView(R.id.sb)
+    SeekBar sb;
+    @BindView(R.id.video_time)
+    TextView videoTime;
+    @BindView(R.id.seek_time)
+    LinearLayout seekTime;
 
     private String mVideoSource = null;
 
@@ -63,6 +75,9 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
 
     private EventHandler mEventHandler;
     private HandlerThread mHandlerThread;
+    private MainHandler mMainHandler;
+
+    private VideoPlayPresent mVideoPlayPresent;
 
     private final Object SYNC_Playing = new Object();
 
@@ -70,9 +85,7 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
 
     private WakeLock mWakeLock = null;
     private static final String POWER_LOCK = "VideoViewPlayingActivity";
-    private RelativeLayout mViewHolder;
 
-    private VideoPlayPresent mVideoPlayPresent;
 
     /**
      * 播放状态
@@ -83,9 +96,9 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
 
     private PLAYER_STATUS mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
 
-    public static Intent newIntent(Context context, long weiboId) {
+    public static Intent newIntent(Context context, long weibiId) {
         Intent intent = new Intent(context, VideoViewPlayingActivity.class);
-        intent.putExtra(Key.ID, weiboId);
+        intent.putExtra(Key.ID, weibiId);
         return intent;
     }
 
@@ -138,19 +151,41 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
         }
     }
 
+    private class MainHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == EVENT_UPDATE_POSITION) {
+                if (mVV.getDuration() != 0) {
+                    sb.setMax(mVV.getDuration());
+                    sb.setProgress(mVV.getCurrentPosition());
+                    watchTime.setText(DateUtil.formatSeconds(mVV.getCurrentPosition()));
+                    videoTime.setText(DateUtil.formatSeconds(mVV.getDuration()));
+                }
+            }else if (msg.what == EVENT_VIDEO_PREPARE) {
+                seekTime.setVisibility(View.VISIBLE);
+                pause.setImageResource(R.drawable.video_play_btn_pause);
+            }else if (msg.what == EVENT_VIDEO_COMOLETION) {
+                pause.setImageResource(R.drawable.video_play_btn_play2);
+            }else if (msg.what == EVENT_VIDEO_ERROR) {
+                pause.setImageResource(R.drawable.video_play_btn_play2);
+                showToast(getString(R.string.video_load_error));
+            }
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_video_play);
+        ButterKnife.bind(this);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
 
-//        mVideoSource = getIntent().getStringExtra(Key.ID);
-        mVideoSource = "http://us.sinaimg.cn/004bLkEAjx073zAUlTBu05040100fLWS0k01.mp4?KID=unistore,video&Expires=1469621642&ssig=SNbTmlPo%2B2";
-
+        LogUtil.d(this, "mVideoSource %s", mVideoSource);
         initUI();
         /**
          * 开启后台事件处理线程
@@ -160,8 +195,10 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
         mHandlerThread.start();
         mEventHandler = new EventHandler(mHandlerThread.getLooper());
 
-        long weiboId = getIntent().getLongExtra(Key.ID, -1);
-        mVideoPlayPresent = new VideoPlayPresentImp(weiboId, new ServerVideoSource(), new LocalVideoSource(), this);
+        mMainHandler = new MainHandler();
+        long weibiId = getIntent().getLongExtra(Key.ID, -1);
+        mVideoPlayPresent = new VideoPlayPresentImp(weibiId, new ServerVideoInfoSource(), this);
+
         mVideoPlayPresent.onCreate();
     }
 
@@ -169,8 +206,6 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
      * 初始化界面
      */
     private void initUI() {
-        mViewHolder = (RelativeLayout) findViewById(R.id.view_holder);
-
         /**
          * 设置ak
          */
@@ -180,7 +215,9 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
         mVV.setVideoScalingMode(BVideoView.VIDEO_SCALING_MODE_SCALE_TO_FIT);
         mVV.setRetainLastFrame(true);
 
-        mViewHolder.addView(mVV);
+        viewHolder.addView(mVV);
+
+        mVV.setOnPositionUpdateListener(this);
 
         /**
          * 注册listener
@@ -197,12 +234,10 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
          */
         mVV.setDecodeMode(BVideoView.DECODE_SW);
         mVV.selectResolutionType(BVideoView.RESOLUTION_TYPE_AUTO);
-    }
 
 
-    @Override
-    public void onGetVideoInfoSuccess(VideoInfo videoInfo) {
-        mEventHandler.sendEmptyMessage(UI_EVENT_PLAY);
+        pause.setOnClickListener(this);
+        sb.setOnSeekBarChangeListener(this);
     }
 
 
@@ -232,6 +267,10 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
         // 发起一次播放任务,当然您不一定要在这发起
         if (!mVV.isPlaying() && (mPlayerStatus != PLAYER_STATUS.PLAYER_IDLE)) {
             mVV.resume();
+        } else {
+            if (mVideoSource != null) {
+                mEventHandler.sendEmptyMessage(UI_EVENT_PLAY);
+            }
         }
     }
 
@@ -258,6 +297,8 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
          * 结束后台事件处理线程
          */
         mHandlerThread.quit();
+
+        mMainHandler.removeCallbacksAndMessages(null);
         mVideoPlayPresent.onDestroy();
     }
 
@@ -289,7 +330,6 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
      */
     @Override
     public void onPlayingBufferCache(int percent) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -303,6 +343,7 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
             SYNC_Playing.notify();
         }
         mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
+        mMainHandler.sendEmptyMessage(EVENT_VIDEO_ERROR);
         return true;
     }
 
@@ -317,6 +358,7 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
             SYNC_Playing.notify();
         }
         mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
+        mMainHandler.sendEmptyMessage(EVENT_VIDEO_COMOLETION);
     }
 
     /**
@@ -326,13 +368,60 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
     public void onPrepared() {
         // TODO Auto-generated method stub
         mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARED;
+        mMainHandler.sendEmptyMessage(EVENT_VIDEO_PREPARE);
     }
 
     @Override
     public void OnCompletionWithParam(int param) {
-//param = 307 is end of stream
         // TODO Auto-generated method stub
     }
 
+
+    @Override
+    public boolean onPositionUpdate(long l) {
+        mMainHandler.sendEmptyMessage(EVENT_UPDATE_POSITION);
+        return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.pause) {
+            if (mVV.isPlaying()) {
+                mVV.pause();
+                pause.setImageResource(R.drawable.video_play_btn_play2);
+            }else {
+                if (mPlayerStatus != PLAYER_STATUS.PLAYER_IDLE) {
+                    mVV.resume();
+                    pause.setImageResource(R.drawable.video_play_btn_pause);
+                }else {
+                    mEventHandler.sendEmptyMessage(UI_EVENT_PLAY);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (fromUser) {
+            watchTime.setText(DateUtil.formatSeconds(progress));
+            mVV.seekTo(progress);
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onGetVideoInfoSuccess(VideoInfo videoInfo) {
+        mVideoSource = videoInfo.getData();
+        mEventHandler.sendEmptyMessage(UI_EVENT_PLAY);
+    }
 
 }

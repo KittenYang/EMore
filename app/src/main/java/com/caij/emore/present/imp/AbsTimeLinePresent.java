@@ -6,8 +6,8 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.Attitude;
+import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
-import com.caij.emore.bean.response.QueryUrlResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.LocakImage;
 import com.caij.emore.database.bean.PicUrl;
@@ -259,7 +259,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
 
     protected void doSpanNext(List<Weibo> weibos) {
         List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibos);
-        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
+        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
                 mLocalUrlSource, mAccount.getWeiyoToken().getAccess_token());
         for (Weibo weibo : weibos) {
             SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
@@ -268,7 +268,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
 
     protected void doSpanNext(Weibo weibo) {
         List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, null);
-        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
+        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
                 mLocalUrlSource, mAccount.getWeiyoToken().getAccess_token());
         SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
     }

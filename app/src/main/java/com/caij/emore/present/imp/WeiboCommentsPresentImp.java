@@ -2,7 +2,7 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.Key;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.response.QueryUrlResponse;
+import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboCommentsPresent;
@@ -80,7 +80,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                     @Override
                     public void call(Comment comment) {
                         List<String> shortUrls  = SpannableStringUtil.getCommentTextHttpUrl(comment, null);
-                        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource, mLocalUrlSource, mToken);
+                        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource, mLocalUrlSource, mToken);
                         SpannableStringUtil.paraeSpannable(comment, shortLongLinkMap);
                     }
                 })
@@ -202,7 +202,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                     @Override
                     public void call(List<Comment> comments) {
                         List<String> shortUrls  = SpannableStringUtil.getCommentTextHttpUrl(comments);
-                        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource, mLocalUrlSource, mToken);
+                        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource, mLocalUrlSource, mToken);
                         for (Comment comment : comments) {
                             SpannableStringUtil.paraeSpannable(comment, shortLongLinkMap);
                         }

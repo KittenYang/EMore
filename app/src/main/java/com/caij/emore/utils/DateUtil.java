@@ -159,4 +159,23 @@ public class DateUtil {
         }
         return buffer.toString();
     }
+
+    public static String formatSeconds(int seconds) {
+        StringBuilder builder = new StringBuilder();
+        int temp = seconds / 60;
+        if (temp == 0 || temp < 10) {
+            builder.append("0" + temp);
+        } else {
+            builder.append(temp);
+        }
+        builder.append(":");
+        temp = seconds % 60;
+        if (temp == 0 || temp < 10) {
+            builder.append("0" + temp);
+        } else {
+            builder.append(temp);
+        }
+        return builder.toString();
+    }
+
 }

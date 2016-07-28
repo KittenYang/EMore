@@ -19,21 +19,18 @@ public class VideoPlayPresentImp implements VideoPlayPresent {
     private VideoPlayView mVideoPlayView;
     private long mWeiboId;
     private VideoSource mServerVideoSource;
-    private VideoSource mLocalVideoSource;
     private final CompositeSubscription mCompositeSubscription;
 
-    public VideoPlayPresentImp(long weiboId, VideoSource serverVideoSource,
-                               VideoSource localVideoSource, VideoPlayView videoPlayView) {
+    public VideoPlayPresentImp(long weiboId, VideoSource serverVideoSource,VideoPlayView videoPlayView) {
         mWeiboId = weiboId;
         mVideoPlayView = videoPlayView;
         mServerVideoSource = serverVideoSource;
-        mLocalVideoSource = localVideoSource;
         mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void onCreate() {
-        Subscription subscription = mServerVideoSource.geVideoInfo(mWeiboId)
+        Subscription subscription = mServerVideoSource.getVideoInfo(mWeiboId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<VideoInfo>() {
@@ -44,7 +41,7 @@ public class VideoPlayPresentImp implements VideoPlayPresent {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        mVideoPlayView.onDefaultLoadError();
                     }
 
                     @Override

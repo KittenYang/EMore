@@ -1,13 +1,10 @@
 package com.caij.emore.utils;
 
-import com.caij.emore.bean.response.QueryUrlResponse;
+import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.source.UrlSource;
 
-import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +15,8 @@ import java.util.Map;
  */
 public class UrlUtil {
 
-    public static Map<String, UrlInfo> getShortUrlInfos(List<String> shortUrls, UrlSource serverUrlSource, UrlSource localUrlSource, String token){
-        Map<String, UrlInfo> shortLongLinkMap = new HashMap<String, UrlInfo>();
+    public static Map<String, ShortUrlInfo.UrlsBean> getShortUrlInfos(List<String> shortUrls, UrlSource serverUrlSource, UrlSource localUrlSource, String token){
+        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = new HashMap<String, ShortUrlInfo.UrlsBean>();
         if (shortUrls.size() > 0) {
             int size = shortUrls.size() / 20 + 1;
             List<String> params = new ArrayList<String>(20);
@@ -27,10 +24,11 @@ public class UrlUtil {
                 params.clear();
                 for (int j = i * 20; j < Math.min(shortUrls.size(), (i + 1) * 20); j ++) {
                     String shortUrl  = shortUrls.get(j);
-                    if (UrlInfo.isShortUrl(shortUrl)) {
+                    if (isShortUrl(shortUrl)) {
                         UrlInfo urlInfo = localUrlSource.getShortUrlInfo(token, shortUrl);
                         if (urlInfo != null) {
-                            shortLongLinkMap.put(urlInfo.getShortUrl(), urlInfo);
+                            ShortUrlInfo.UrlsBean urlsBean = GsonUtils.fromJson(urlInfo.getUrl_info_json(), ShortUrlInfo.UrlsBean.class);
+                            shortLongLinkMap.put(urlInfo.getShortUrl(), urlsBean);
                         } else {
                             params.add(shortUrl);
                         }
@@ -38,20 +36,27 @@ public class UrlUtil {
                 }
                 if (params.size() > 0) {
                     try {
-                        QueryUrlResponse queryUrlResponse = serverUrlSource.getShortUrlInfo(token, params);
+                        ShortUrlInfo queryUrlResponse = serverUrlSource.getShortUrlInfo(token, params);
                         if (queryUrlResponse != null) {
-                            for (Object obj : queryUrlResponse.getUrls()) {
-                                UrlInfo shortLongLink = new UrlInfo(new JSONObject(GsonUtils.toJson(obj)));
+                            for (ShortUrlInfo.UrlsBean urlsBean : queryUrlResponse.getUrls()) {
+                                UrlInfo shortLongLink = new UrlInfo();
+                                shortLongLink.setShortUrl(urlsBean.getUrl_short());
+                                shortLongLink.setUrl_info_json(GsonUtils.toJson(urlsBean));
                                 localUrlSource.saveUrlInfo(shortLongLink);
-                                shortLongLinkMap.put(shortLongLink.getShortUrl(), shortLongLink);
+                                shortLongLinkMap.put(shortLongLink.getShortUrl(), urlsBean);
                             }
                         }
                     } catch (Exception e) {
-
+                        LogUtil.d("URLUTIL", e.getMessage());
                     }
                 }
             }
         }
         return shortLongLinkMap;
     }
+
+    private static boolean isShortUrl(String url) {
+        return url.contains("t.cn");
+    }
+
 }

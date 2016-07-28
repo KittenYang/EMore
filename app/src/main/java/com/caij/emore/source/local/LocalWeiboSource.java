@@ -156,8 +156,10 @@ public class LocalWeiboSource implements WeiboSource {
         }
 
         User user = weibo.getUser();
-        weibo.setUser_id(user.getId());
-        userDao.insertOrReplace(user);
+        if (user != null) {
+            weibo.setUser_id(user.getId());
+            userDao.insertOrReplace(user);
+        }
 
         List<PicUrl> picUrls = weibo.getPic_urls();
         if (picUrls != null) {

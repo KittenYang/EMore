@@ -1,6 +1,6 @@
 package com.caij.emore.source.local;
 
-import com.caij.emore.bean.response.QueryUrlResponse;
+import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.source.UrlSource;
 import com.caij.emore.utils.db.DBManager;
@@ -13,7 +13,7 @@ import java.util.List;
 public class LocalUrlSource implements UrlSource {
 
     @Override
-    public QueryUrlResponse getShortUrlInfo(String token, List<String> shortUrls) {
+    public ShortUrlInfo getShortUrlInfo(String token, List<String> shortUrls) {
         return null;
     }
 

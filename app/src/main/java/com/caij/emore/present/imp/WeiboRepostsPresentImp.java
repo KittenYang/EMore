@@ -1,6 +1,7 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.Key;
+import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
@@ -210,7 +211,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
 
     protected void doSpanNext(List<Weibo> weibos) {
         List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibos);
-        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
+        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
                 mLocalUrlSource, mToken);
         for (Weibo weibo : weibos) {
             SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
@@ -220,7 +221,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
 
     protected void doSpanNext(Weibo weibo) {
         List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, null);
-        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
+        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
                 mLocalUrlSource, mToken);
         SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
     }

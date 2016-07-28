@@ -4,6 +4,7 @@ import com.caij.emore.Key;
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
+import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
@@ -135,7 +136,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     @Override
                     public void call(List<Comment> comments) {
                         List<String> shortUrls  = SpannableStringUtil.getCommentTextHttpUrl(comments);
-                        Map<String, UrlInfo> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls,
+                        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls,
                                 mServerUrlSource, mLocalUrlSource, token);
                         for (Comment comment : comments) {
                             SpannableStringUtil.paraeSpannable(comment, shortLongLinkMap);

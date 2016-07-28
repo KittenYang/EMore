@@ -9,7 +9,5 @@ import rx.Observable;
  */
 public interface VideoSource {
 
-    public Observable<VideoInfo> geVideoInfo(long weibo_id);
-
-    public void saveVideoInfo(VideoInfo videoInfo);
+    public Observable<VideoInfo> getVideoInfo(long weiboId);
 }
