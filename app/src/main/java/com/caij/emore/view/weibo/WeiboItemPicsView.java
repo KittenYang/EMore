@@ -1,20 +1,28 @@
 package com.caij.emore.view.weibo;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.database.bean.PicUrl;
+import com.caij.emore.ui.activity.ImagePrewActivity;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.NavigationUtil;
+import com.caij.emore.utils.weibo.WeiboUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -260,8 +268,8 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
             }
         }
 
-        Intent intent = NavigationUtil.newImagePreActivityIntent(getContext(), paths, position);
-        getContext().startActivity(intent);
+        NavigationUtil.startImagePreActivity(getContext(), v, paths, position);
+
     }
 
 }

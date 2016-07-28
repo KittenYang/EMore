@@ -36,7 +36,6 @@ public interface WeiboSource {
 
     public Observable<Weibo> publishWeiboOfOneImage(String token, String content, String imagePath);
 
-//    public Observable<Weibo> publishWeiboOfMultiImage(String weiyoToken, String weicoToken, String content, List<String> imagePaths);
 
     Observable<UploadImageResponse> uploadWeiboOfOneImage(String access_token, String imagePath) throws IOException;
 

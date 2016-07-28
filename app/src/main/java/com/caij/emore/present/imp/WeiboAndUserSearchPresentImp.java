@@ -68,6 +68,7 @@ public class WeiboAndUserSearchPresentImp extends AbsTimeLinePresent<WeiboAndUse
                     @Override
                     public void onError(Throwable e) {
                         mView.onRefreshComplete();
+                        mView.onDefaultLoadError();
                     }
 
                     @Override

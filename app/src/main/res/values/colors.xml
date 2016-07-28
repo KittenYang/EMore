@@ -6,7 +6,7 @@
 
     <color name="transparent">#00000000</color>
 
-    <color name="color_black">#222222</color>
+    <color name="color_black">#000000</color>
     <color name="background_white_light">#fafafa</color>
     <color name="white">#ffffff</color>
 

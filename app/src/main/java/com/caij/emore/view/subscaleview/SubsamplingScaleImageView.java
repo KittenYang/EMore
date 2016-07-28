@@ -122,7 +122,10 @@ public class SubsamplingScaleImageView extends View {
     /** Scale the image so that both dimensions of the image will be equal to or less than the maxScale and equal to or larger than minScale. The image is then centered in the view. */
     public static final int SCALE_TYPE_CUSTOM = 3;
 
-    private static final List<Integer> VALID_SCALE_TYPES = Arrays.asList(SCALE_TYPE_CENTER_CROP, SCALE_TYPE_CENTER_INSIDE, SCALE_TYPE_CUSTOM);
+    public static final int SCALE_TYPE_TOP_CROP = 4;
+
+    private static final List<Integer> VALID_SCALE_TYPES = Arrays.asList(SCALE_TYPE_CENTER_CROP,
+            SCALE_TYPE_CENTER_INSIDE, SCALE_TYPE_CUSTOM, SCALE_TYPE_TOP_CROP);
 
     // Bitmap (preview or full image)
     private Bitmap bitmap;
@@ -137,7 +140,7 @@ public class SubsamplingScaleImageView extends View {
     private Map<Integer, List<Tile>> tileMap;
 
     // Overlay tile boundaries and other info
-    private boolean debug = true;
+    private boolean debug = false;
 
     // Image orientation setting
     private int orientation = ORIENTATION_0;
@@ -1230,14 +1233,13 @@ public class SubsamplingScaleImageView extends View {
         float scale = limitedScale(sat.scale);
         float scaleWidth = scale * sWidth();
         float scaleHeight = scale * sHeight();
-
         if (panLimit == PAN_LIMIT_CENTER && isReady()) {
             vTranslate.x = Math.max(vTranslate.x, getWidth()/2 - scaleWidth);
             vTranslate.y = Math.max(vTranslate.y, getHeight()/2 - scaleHeight);
         } else if (center) {
             vTranslate.x = Math.max(vTranslate.x, getWidth() - scaleWidth);
             vTranslate.y = Math.max(vTranslate.y, getHeight() - scaleHeight);
-        } else {
+        }else {
             vTranslate.x = Math.max(vTranslate.x, -scaleWidth);
             vTranslate.y = Math.max(vTranslate.y, -scaleHeight);
         }
@@ -1285,7 +1287,11 @@ public class SubsamplingScaleImageView extends View {
         scale = satTemp.scale;
         vTranslate.set(satTemp.vTranslate);
         if (init) {
-            vTranslate.set(vTranslateForSCenter(sWidth()/2, sHeight()/2, scale));
+            if (minimumScaleType == SCALE_TYPE_TOP_CROP) {
+                vTranslate.set(vTranslateForSTop(scale));
+            }else {
+                vTranslate.set(vTranslateForSCenter(sWidth()/2, sHeight()/2, scale));
+            }
         }
     }
 
@@ -1889,6 +1895,18 @@ public class SubsamplingScaleImageView extends View {
         return satTemp.vTranslate;
     }
 
+    private PointF vTranslateForSTop(float scale) {
+        int vxTop = getPaddingLeft();
+        int vyTop = getPaddingTop();
+        if (satTemp == null) {
+            satTemp = new ScaleAndTranslate(0, new PointF(0, 0));
+        }
+        satTemp.scale = scale;
+        satTemp.vTranslate.set(vxTop, vyTop);
+        fitToBounds(true, satTemp);
+        return satTemp.vTranslate;
+    }
+
     /**
      * Given a requested source center and scale, calculate what the actual center will have to be to keep the image in
      * pan limits, keeping the requested center as near to the middle of the screen as allowed.
@@ -1911,7 +1929,9 @@ public class SubsamplingScaleImageView extends View {
         int hPadding = getPaddingLeft() + getPaddingRight();
         if (minimumScaleType == SCALE_TYPE_CENTER_CROP) {
             return Math.max((getWidth() - hPadding) / (float) sWidth(), (getHeight() - vPadding) / (float) sHeight());
-        } else if (minimumScaleType == SCALE_TYPE_CUSTOM && minScale > 0) {
+        } else if (minimumScaleType == SCALE_TYPE_TOP_CROP) {
+            return Math.max((getWidth() - hPadding) / (float) sWidth(), (getHeight() - vPadding) / (float) sHeight());
+        }else if (minimumScaleType == SCALE_TYPE_CUSTOM && minScale > 0) {
             return minScale;
         } else {
             return Math.min((getWidth() - hPadding) / (float) sWidth(), (getHeight() - vPadding) / (float) sHeight());

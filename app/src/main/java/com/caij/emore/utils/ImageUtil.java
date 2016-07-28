@@ -255,4 +255,8 @@ public class ImageUtil {
         return rotation;
     }
 
+    public static boolean isBigImage(int width, int height) {
+        return width * 1f / height > 3.5  ||  height * 1f / width > 3.5;
+    }
+
 }

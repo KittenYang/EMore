@@ -69,6 +69,8 @@ public class WeiboDetailItemView extends WeiboItemView {
 
             setImages(reWeibo, flRePicsView);
             tvReContent.setText(reWeibo.getContentSpannableString());
+
+            tvReContent.setTag(reWeibo);
         }
     }
 

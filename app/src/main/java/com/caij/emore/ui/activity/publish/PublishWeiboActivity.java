@@ -134,9 +134,8 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
 
     @Override
     public void onItemClick(View view, int position) {
-        Intent intent = NavigationUtil.newImagePreActivityIntent(this,
+        NavigationUtil.startImagePreActivity(this, view,
                 (ArrayList<String>) mPublishImageAdapter.getEntities(), position);
-        startActivity(intent);
     }
 
     private boolean isContentChange() {

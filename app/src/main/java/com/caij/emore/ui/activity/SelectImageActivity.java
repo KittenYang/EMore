@@ -158,8 +158,7 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
                 } else if (image.getType() == 2) {
                     ArrayList<String> paths = new ArrayList<String>();
                     paths.add(image.getPath());
-                    Intent intent = NavigationUtil.newImagePreActivityIntent(SelectImageActivity.this, paths, 0);
-                    startActivity(intent);
+                    NavigationUtil.startImagePreActivity(SelectImageActivity.this, view, paths, 0);
                 }
             }
         });

@@ -11,9 +11,13 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 
 import com.caij.emore.AppSettings;
+import com.caij.emore.Key;
 import com.caij.emore.R;
+import com.caij.emore.UserPrefs;
 import com.caij.emore.database.bean.UrlInfo;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.ImagePrewActivity;
+import com.caij.emore.ui.activity.VideoViewPlayingActivity;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.utils.SpannableStringUtil;
 
@@ -72,7 +76,13 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
                     break;
 
                 case UrlInfo.TYPE_VIDEO:
-                    toWebActivity(context, url);
+                    if (url.contains("video.weibo.com") &&  widget.getTag() != null && widget.getTag() instanceof Weibo) {
+                        Intent intent = new Intent(context, VideoViewPlayingActivity.class);
+                        intent.putExtra(Key.ID, url);
+                        context.startActivity(intent);
+                    }else {
+                        toWebActivity(context, url);
+                    }
                     break;
 
                 case UrlInfo.TYPE_IMAGE: {

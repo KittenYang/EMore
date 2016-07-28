@@ -86,6 +86,7 @@ public class RepostWeiboListItemView extends WeiboItemView {
 
         rePicsView.setPics(reWeibo.getPic_urls());
         tvReContent.setText(reWeibo.getContentSpannableString());
+        tvReContent.setTag(reWeibo);
 
         tvLike.setTag(weibo);
         tvCommentCount.setTag(weibo);

@@ -2,6 +2,7 @@ package com.caij.emore.view.weibo;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -10,14 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
+import com.bumptech.glide.request.target.Target;
 import com.caij.emore.R;
 import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.LogUtil;
+import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.ToastUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -53,11 +57,22 @@ public class WeiboDetailItemPicsViewOf1BigImage extends ViewGroup implements Ima
         init(context);
     }
 
-    private void init(Context context) {
+    private void init(final Context context) {
         mMainHandler = new Handler();
         mWebView = new WebView(context);
         addView(mWebView);
         // // TODO: 2016/6/13 add progressbar
+
+        mWebView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPicUrl != null) {
+                    ArrayList<String> images = new ArrayList<String>();
+                    images.add(mPicUrl.getBmiddle_pic());
+                    NavigationUtil.startImagePreActivity(context, v, images, 0);
+                }
+            }
+        });
     }
 
     @Override
@@ -107,7 +122,7 @@ public class WeiboDetailItemPicsViewOf1BigImage extends ViewGroup implements Ima
             @Override
             public void run() {
                 try {
-                    final File file = ImageLoader.getFile(getContext(), picUrl.getBmiddle_pic(), mWebView.getMeasuredWidth(), mWebView.getMeasuredHeight());
+                    final File file = ImageLoader.getFile(getContext(), picUrl.getBmiddle_pic(), Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
                     mMainHandler.post(new Runnable() {
                         @Override
                         public void run() {

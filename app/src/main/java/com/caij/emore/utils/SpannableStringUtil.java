@@ -101,6 +101,7 @@ public class SpannableStringUtil {
                     case UrlInfo.TYPE_VIDEO:
                         imageKey = EmotionsUtil.VIDEO_CARD_IMAGE_KEY;
                         type = UrlInfo.TYPE_VIDEO;
+                        tagetUrl = shortLongLink.getLongUrl();
                         break;
 
                     case UrlInfo.TYPE_IMAGE:

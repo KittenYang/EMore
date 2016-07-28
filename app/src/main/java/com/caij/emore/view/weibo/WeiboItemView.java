@@ -86,6 +86,7 @@ public abstract class WeiboItemView extends FrameLayout {
 
         tvContent.setText(weibo.getContentSpannableString());
 
+        tvContent.setTag(weibo);
         tvName.setTag(weibo.getUser());
         ivAvatar.setTag(weibo.getUser());
 

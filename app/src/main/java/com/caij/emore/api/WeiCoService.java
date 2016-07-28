@@ -2,6 +2,7 @@ package com.caij.emore.api;
 
 import com.caij.emore.Key;
 import com.caij.emore.bean.Attitude;
+import com.caij.emore.bean.VideoInfo;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
@@ -137,5 +138,9 @@ public interface WeiCoService {
                                                       @Query("q") String q,
                                                       @Query("count") int count,
                                                       @Query("page") int page);
+
+    @POST
+    public Observable<VideoInfo> getVideoInfo(@Url String url, @Query("a") String a, @Query("c") String c,
+                                              @Field("weibo_id") long weibo_id);
 
 }

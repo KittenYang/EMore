@@ -1,15 +1,24 @@
 package com.caij.emore.utils.weibo;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.caij.emore.R;
 import com.caij.emore.database.bean.User;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Caij on 2016/7/22.
  */
 public class WeiboUtil {
+
+    private static Map<String, Drawable> ransitionBitmaps = new HashMap<>(9);
 
     public static void setImageVerified(ImageView imgVerified, User user) {
 //        -1普通用户;
@@ -59,4 +68,5 @@ public class WeiboUtil {
             imageView.setImageResource(R.mipmap.userinfo_icon_male);
         }
     }
+
 }
