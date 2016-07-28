@@ -39,6 +39,8 @@ public interface Key {
     String POSITION = "position";
     String MAX = "max";
 
+    String PATH = "path";
+
     String USERNAME = "username";
     String PWD = "pwd";
     int AUTH = 1;
@@ -70,7 +72,6 @@ public interface Key {
     String EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE = "event_weibo_attitude_refresh_complete";
     String EVENT_UNREAD_MESSAGE_COMPLETE = "event_unread_message_complete";
     String EVENT_HAS_NEW_DM = "event_has_new_dm";
-
 
 
 }

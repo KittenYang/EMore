@@ -10,6 +10,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -99,6 +100,12 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
     public static Intent newIntent(Context context, long weibiId) {
         Intent intent = new Intent(context, VideoViewPlayingActivity.class);
         intent.putExtra(Key.ID, weibiId);
+        return intent;
+    }
+
+    public static Intent newIntent(Context context, String path) {
+        Intent intent = new Intent(context, VideoViewPlayingActivity.class);
+        intent.putExtra(Key.PATH, path);
         return intent;
     }
 
@@ -197,9 +204,13 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
 
         mMainHandler = new MainHandler();
         long weibiId = getIntent().getLongExtra(Key.ID, -1);
-        mVideoPlayPresent = new VideoPlayPresentImp(weibiId, new ServerVideoInfoSource(), this);
+        mVideoSource = getIntent().getStringExtra(Key.PATH);
+        if (TextUtils.isEmpty(mVideoSource)) {
+            mVideoPlayPresent = new VideoPlayPresentImp(weibiId, new ServerVideoInfoSource(), this);
 
-        mVideoPlayPresent.onCreate();
+            mVideoPlayPresent.onCreate();
+        }
+
     }
 
     /**
@@ -299,7 +310,9 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
         mHandlerThread.quit();
 
         mMainHandler.removeCallbacksAndMessages(null);
-        mVideoPlayPresent.onDestroy();
+        if (mVideoPlayPresent != null) {
+            mVideoPlayPresent.onDestroy();
+        }
     }
 
     @Override

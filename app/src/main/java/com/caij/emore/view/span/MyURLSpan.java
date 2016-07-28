@@ -78,7 +78,7 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
                     && urlBean.getAnnotations().get(0) != null) {
 
                 ShortUrlInfo.UrlsBean.AnnotationsBean annotationsBean = urlBean.getAnnotations().get(0);
-
+                ShortUrlInfo.UrlsBean.AnnotationsBean.ObjectBean objectBean = annotationsBean.getObject();
                 switch (annotationsBean.getUrlType()) {
                     case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_WEB:
                     case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_WEB_PAGE:
@@ -87,7 +87,10 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
 
                     case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_VIDEO:
                         Intent intent;
-                        if (widget.getTag() != null && widget.getTag() instanceof Weibo) {
+                        if (objectBean != null && !objectBean.getUrl().contains("video.weibo.com")) {
+                            intent = VideoViewPlayingActivity.newIntent(context, objectBean.getStream().getUrl());
+                            context.startActivity(intent);
+                        }else if (widget.getTag() != null && widget.getTag() instanceof Weibo) {
                             Weibo weibo = (Weibo) widget.getTag();
                             intent = VideoViewPlayingActivity.newIntent(context, weibo.getId());
                             context.startActivity(intent);

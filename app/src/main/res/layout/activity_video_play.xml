@@ -20,15 +20,16 @@
         android:id="@+id/seek_time"
         android:gravity="center_vertical"
         android:layout_alignParentBottom="true"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:paddingRight="8dp">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/pause"
             android:layout_centerInParent="true"
-            android:paddingLeft="8dp"
             android:paddingRight="8dp"
+            android:paddingLeft="8dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:src="@drawable/video_play_btn_pause"/>
