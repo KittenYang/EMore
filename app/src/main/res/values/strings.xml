@@ -153,7 +153,6 @@
     <string name="key_setting_about">key_setting_about</string>
 
     <string-array name="txtUnread">
-        <item>1分钟</item>
         <item>5分钟</item>
         <item>15分钟</item>
         <item>30分钟</item>
@@ -161,7 +160,6 @@
     </string-array>
 
     <string-array name="interval_time_value">
-        <item>60000</item>
         <item>300000</item>
         <item>900000</item>
         <item>1800000</item>

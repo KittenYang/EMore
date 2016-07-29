@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
  */
 public class AppSettings {
 
-    public static final String MessageIntervalDefaultValue = "300000";
+    public static final String MessageIntervalDefaultValue = "900000";
 
     /**
      * 是否使用内置浏览器
