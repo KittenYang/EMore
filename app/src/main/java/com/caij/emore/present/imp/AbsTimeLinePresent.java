@@ -242,7 +242,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     @Override
                     public void onCompleted() {
                         mView.showDialogLoading(false, R.string.requesting);
-                        mView.onAttitudesSuccess(weibo);
+                        mView.onDestoryAttitudesSuccess(weibo);
                     }
 
                     @Override

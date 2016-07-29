@@ -73,5 +73,5 @@ public interface Key {
     String EVENT_UNREAD_MESSAGE_COMPLETE = "event_unread_message_complete";
     String EVENT_HAS_NEW_DM = "event_has_new_dm";
 
-
+    String EVENT_WEIBO_UPDATE = "event_weibo_update";
 }

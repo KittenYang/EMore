@@ -31,6 +31,7 @@ import com.caij.emore.ui.fragment.WeiboCommentListFragment;
 import com.caij.emore.ui.fragment.WeiboLikerListFragment;
 import com.caij.emore.ui.fragment.WeiboRepostListFragment;
 import com.caij.emore.utils.DialogUtil;
+import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.view.weibo.WeiboDetailItemView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -242,7 +243,14 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
 
     @Override
     public void onAttitudesSuccess(Weibo weibo) {
+        mWeibo.setAttitudes(true);
+        RxBus.get().post(Key.EVENT_WEIBO_UPDATE, mWeibo);
+    }
 
+    @Override
+    public void onDestoryAttitudesSuccess(Weibo weibo) {
+        mWeibo.setAttitudes(false);
+        RxBus.get().post(Key.EVENT_WEIBO_UPDATE, mWeibo);
     }
 
     @Override

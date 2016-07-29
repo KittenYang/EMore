@@ -148,6 +148,11 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
     }
 
     @Override
+    public void onDestoryAttitudesSuccess(Weibo weibo) {
+
+    }
+
+    @Override
     public void onAuthenticationError() {
 
     }

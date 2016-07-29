@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.caij.emore.Key;
@@ -17,6 +19,7 @@ import com.caij.emore.ui.adapter.WeiboAdapter;
 import com.caij.emore.ui.fragment.RecyclerViewFragment;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
+import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
@@ -26,11 +29,35 @@ import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.functions.Action1;
+
 /**
  * Created by Caij on 2016/6/4.
  */
 public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends SwipeRefreshRecyclerViewFragment<Weibo, P>
         implements TimeLineWeiboView, RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener, WeiboAdapter.OnItemActionClickListener {
+
+    Observable<Weibo> mWeiboUpdateObservable;
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mWeiboUpdateObservable = RxBus.get().register(Key.EVENT_WEIBO_UPDATE);
+        mWeiboUpdateObservable.subscribe(new Action1<Weibo>() {
+            @Override
+            public void call(Weibo weibo) {
+                for (int index = 0; index < mRecyclerViewAdapter.getEntities().size(); index++) {
+                    if (mRecyclerViewAdapter.getItem(index).equals(weibo)) {
+                        mRecyclerViewAdapter.removeEntity(weibo);
+                        mRecyclerViewAdapter.addEntity(index, weibo);
+                        mRecyclerViewAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     protected BaseAdapter<Weibo, ? extends BaseViewHolder> createRecyclerViewAdapter() {
@@ -51,7 +78,6 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends S
             mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_NO_MORE);
         }
     }
-
 
     private void onMenuClick(final Weibo weibo, final int position) {
         List<String> items = new ArrayList<>();
@@ -121,6 +147,13 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends S
     }
 
     @Override
+    public void onDestoryAttitudesSuccess(Weibo weibo) {
+        weibo.setAttitudes(!weibo.isAttitudes());
+        weibo.setAttitudes_count(weibo.getAttitudes_count() - 1);
+        mRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void onMenuClick(View v, int position) {
         onMenuClick(mRecyclerViewAdapter.getItem(position), position);
     }
@@ -137,4 +170,9 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends S
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        RxBus.get().unregister(Key.EVENT_WEIBO_UPDATE, mWeiboUpdateObservable);
+    }
 }
