@@ -1,12 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_white_light">
+
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@mipmap/splash_bg"
-        android:scaleType="centerCrop"/>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/sp_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="84dp"/>
 
-</LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_copyright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="copyright @ Caij"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/text_size_medium_min"
+        android:textColor="@color/text_80"
+        android:layout_marginBottom="24dp"/>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_above="@id/tv_copyright"
+        android:layout_centerHorizontal="true"
+        android:gravity="bottom">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EMore"
+            android:textSize="@dimen/text_size_medium"
+            android:textColor="@color/text_70"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_small"
+            android:text="微博第三方客户端"
+            android:layout_marginLeft="@dimen/spacing_micro"/>
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

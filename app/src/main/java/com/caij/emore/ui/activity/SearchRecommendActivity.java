@@ -154,4 +154,10 @@ public class SearchRecommendActivity extends BaseActivity implements SearchRecom
         Intent intent = DefaultFragmentActivity.starFragmentV4(this, "搜索结果", WeiboAndUserSearchFragment.class, bundle);
         startActivity(intent);
     }
+
+    @Override
+    public void onBackPressed() {
+        mSearchView.close(true);
+//        super.onBackPressed();
+    }
 }

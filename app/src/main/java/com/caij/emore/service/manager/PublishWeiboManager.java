@@ -70,6 +70,7 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
     @Override
     public void reset() {
         mPublishWeiboManagerPresent.onDestroy();
+        mNotificationManager.cancelAll();
     }
 
     private void notifyPublishNotification(PublishBean publishBean) {

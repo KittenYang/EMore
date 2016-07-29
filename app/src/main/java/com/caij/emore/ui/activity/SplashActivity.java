@@ -2,42 +2,63 @@ package com.caij.emore.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 
+import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * Created by Caij on 2016/5/28.
  */
 public class SplashActivity extends BaseActivity{
 
+    private Observable<Long> mToAppObservable;
+    private Subscription mToAppSubscription;
+    private Intent mToIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_splash);
+        setContentView(R.layout.activity_splash);
         AccessToken eMoreAccessToken = UserPrefs.get().getEMoreToken();
         AccessToken weicoAccessToken = UserPrefs.get().getWeiCoToken();
-        final Intent intent;
         if (eMoreAccessToken == null || eMoreAccessToken.isExpired()) {
-            intent = EMoreLoginActivity.newEMoreLoginIntent(this, null, null);
+            mToIntent = EMoreLoginActivity.newEMoreLoginIntent(this, null, null);
         }else if (weicoAccessToken == null || weicoAccessToken.isExpired()){
-            intent = WeiCoLoginActivity.newWeiCoLoginIntent(this,
+            mToIntent = WeiCoLoginActivity.newWeiCoLoginIntent(this,
                     UserPrefs.get().getAccount().getUsername(),
                     UserPrefs.get().getAccount().getPwd());
         }else {
-            intent = new Intent(this, MainActivity.class);
+            mToIntent = new Intent(this, MainActivity.class);
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(intent);
-                finish();
-            }
-        }, 2000);
+        mToAppObservable = Observable.timer(3, TimeUnit.SECONDS);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mToAppSubscription = mToAppObservable.subscribe(new Action1<Long>() {
+            @Override
+            public void call(Long aLong) {
+                startActivity(mToIntent);
+                finish();
+            }
+        });
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mToAppSubscription != null && !mToAppSubscription.isUnsubscribed()) {
+            mToAppSubscription.unsubscribe();
+        }
+    }
 }

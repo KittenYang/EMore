@@ -1,0 +1,79 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_white_light">
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="64dp"
+        android:src="@mipmap/sp_icon"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/text_70"
+        android:textSize="@dimen/text_size_large"
+        android:text="EMore"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/text_70"
+        android:textSize="@dimen/text_size_small"
+        android:text="简单易用的Weibo第三方客户端"/>
+
+    <TextView
+        android:id="@+id/tvVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="38.33dp"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:textColor="@color/text_70"
+        android:textSize="@dimen/text_size_small"
+        android:text="V6.5"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.33dp"
+        android:background="@color/divider_timeline_item" />
+
+    <TextView
+        android:id="@+id/tvHelp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:gravity="center_vertical"
+        android:text="关注 Caij(官方) 微博"
+        android:textColor="@color/text_80"
+        android:textSize="@dimen/text_size_medium"
+        android:padding="@dimen/spacing_large"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.33dp"
+        android:background="@color/divider_timeline_item" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/tvAppCopyright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/text_80"
+        android:textSize="@dimen/text_size_medium_min"
+        android:text="Copyright Caij" />
+
+</LinearLayout>

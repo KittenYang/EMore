@@ -283,14 +283,7 @@ public class ShortUrlInfo {
                 private String object_type;
                 private String summary;
                 private String display_name;
-                /**
-                 * id : 2566570841
-                 * object_type : person
-                 * display_name : 甩古_
-                 * url : http://weibo.com/u/2566570841
-                 */
 
-                private AuthorBean author;
                 /**
                  * duration : 354
                  * height : 360
@@ -357,14 +350,6 @@ public class ShortUrlInfo {
 
                 public void setDisplay_name(String display_name) {
                     this.display_name = display_name;
-                }
-
-                public AuthorBean getAuthor() {
-                    return author;
-                }
-
-                public void setAuthor(AuthorBean author) {
-                    this.author = author;
                 }
 
                 public StreamBean getStream() {
@@ -445,45 +430,6 @@ public class ShortUrlInfo {
 
                 public void setScid(String scid) {
                     this.scid = scid;
-                }
-
-                public static class AuthorBean {
-                    private long id;
-                    private String object_type;
-                    private String display_name;
-                    private String url;
-
-                    public long getId() {
-                        return id;
-                    }
-
-                    public void setId(long id) {
-                        this.id = id;
-                    }
-
-                    public String getObject_type() {
-                        return object_type;
-                    }
-
-                    public void setObject_type(String object_type) {
-                        this.object_type = object_type;
-                    }
-
-                    public String getDisplay_name() {
-                        return display_name;
-                    }
-
-                    public void setDisplay_name(String display_name) {
-                        this.display_name = display_name;
-                    }
-
-                    public String getUrl() {
-                        return url;
-                    }
-
-                    public void setUrl(String url) {
-                        this.url = url;
-                    }
                 }
 
                 public static class StreamBean {

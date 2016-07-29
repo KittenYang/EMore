@@ -14,6 +14,7 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.service.EMoreService;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
+import com.caij.emore.ui.fragment.AppAboutFragment;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.DialogUtil;
@@ -36,9 +37,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
 		addPreferencesFromResource(R.xml.fragment_advanced_item);
-		getActivity().setTitle("设置");
 		Preference pNotification = (Preference) findPreference("pNotification");
 		pNotification.setOnPreferenceClickListener(this);
 		Preference pFlow = (Preference) findPreference("pFlow");
@@ -50,6 +49,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 		changeAccount.setOnPreferenceClickListener(this);
 		Preference exitPreference = findPreference("key_exit");
 		exitPreference.setOnPreferenceClickListener(this);
+		findPreference(getString(R.string.key_setting_about)).setOnPreferenceClickListener(this);
 		lodCacheSize();
 	}
 
@@ -109,6 +109,9 @@ public class AdvancedSettingFragment extends PreferenceFragment
 					clearCache();
 				}
 			}, getString(R.string.cancel), null);
+		}else if (getString(R.string.key_setting_about).equals(preference.getKey())) {
+			Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), "关于", AppAboutFragment.class, null);
+			startActivity(intent);
 		}
 		return true;
 	}

@@ -90,6 +90,7 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
         ctx.unregisterReceiver(scheduleReceiver);
         cancelHeartbeatTimer();
         mUnReadMessageManagerPresent.onDestroy();
+        mNotificationManager.cancelAll();
     }
 
     @Override
