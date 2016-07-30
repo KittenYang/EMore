@@ -63,7 +63,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     public Boolean call(Weibo weibo) {
                         return weibo != null
                                 && weibo.getUpdate_time() != null
-                                && System.currentTimeMillis() - weibo.getUpdate_time() < 10 * 60 * 1000
+                                && System.currentTimeMillis() - weibo.getUpdate_time() < 2 * 60 * 60 * 1000
                                 && !weibo.getText().contains("全文： http");
                     }
                 })

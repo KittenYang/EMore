@@ -119,7 +119,8 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                 .first(new Func1<User, Boolean>() {
                     @Override
                     public Boolean call(User user) {
-                        return user != null && System.currentTimeMillis() - user.getUpdate_time() < 10 * 60 * 1000;
+                        //缓存时间 两个小时
+                        return user != null && System.currentTimeMillis() - user.getUpdate_time() < 2 * 60 * 60 * 1000;
                     }
                 })
                 .subscribeOn(Schedulers.io())
