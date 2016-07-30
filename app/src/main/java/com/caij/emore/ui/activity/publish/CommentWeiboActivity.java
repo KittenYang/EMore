@@ -45,6 +45,7 @@ public class CommentWeiboActivity extends PublishActivity implements CommentWeib
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.comment);
         btnCamera.setVisibility(View.GONE);
         AccessToken token = UserPrefs.get().getEMoreToken();
         long weiboId = getIntent().getLongExtra(Key.ID, -1);

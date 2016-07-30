@@ -63,6 +63,7 @@ public class RepostWeiboActivity extends PublishActivity implements RepostWeiboV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.repost);
         AccessToken accessToken = UserPrefs.get().getEMoreToken();
         Weibo weibo = (Weibo) getIntent().getSerializableExtra(Key.OBJ);
         Comment comment = (Comment) getIntent().getSerializableExtra(Key.COMMENT);

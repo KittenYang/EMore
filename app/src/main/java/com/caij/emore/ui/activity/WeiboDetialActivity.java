@@ -31,6 +31,7 @@ import com.caij.emore.ui.fragment.WeiboCommentListFragment;
 import com.caij.emore.ui.fragment.WeiboLikerListFragment;
 import com.caij.emore.ui.fragment.WeiboRepostListFragment;
 import com.caij.emore.utils.DialogUtil;
+import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.view.weibo.WeiboDetailItemView;
@@ -121,6 +122,8 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
                 getResources().getColor(R.color.gplus_color_2),
                 getResources().getColor(R.color.gplus_color_3),
                 getResources().getColor(R.color.gplus_color_4));
+
+        actionStar.setIconDrawable(DrawableUtil.createSelectThemeDrawable(this, R.mipmap.ic_star, R.color.white, R.color.red_message_bg));
     }
 
     @Override
@@ -161,7 +164,11 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_star:
-                mWeiboDetailPresent.attitudesWeibo(mWeibo);
+                if (mWeibo.isAttitudes()) {
+                    mWeiboDetailPresent.destoryAttitudesWeibo(mWeibo);
+                }else {
+                    mWeiboDetailPresent.attitudesWeibo(mWeibo);
+                }
                 actionMenu.collapse();
                 break;
             case R.id.action_repost: {
@@ -209,14 +216,14 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     @Override
     public void setWeibo(Weibo weibo) {
         mAttachContainer.setVisibility(View.VISIBLE);
-
+        actionStar.setSelected(weibo.isAttitudes());
         weiboItemView.setWeibo(weibo);
         mWeibo = weibo;
         mTabTitles.clear();
 
-        mTabTitles.add("评论 " + mWeibo.getComments_count());
-        mTabTitles.add("转发 " + mWeibo.getReposts_count());
-        mTabTitles.add("赞 " + mWeibo.getAttitudes_count());
+        mTabTitles.add(getString(R.string.comment) + mWeibo.getComments_count());
+        mTabTitles.add(getString(R.string.repost) + mWeibo.getReposts_count());
+        mTabTitles.add(getString(R.string.attitude) + mWeibo.getAttitudes_count());
         for (int i = 0; i < mTabTitles.size(); i ++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             if (tab != null) {
@@ -250,12 +257,14 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     public void onAttitudesSuccess(Weibo weibo) {
         mWeibo.setAttitudes(true);
         RxBus.get().post(Key.EVENT_WEIBO_UPDATE, mWeibo);
+        actionStar.setSelected(true);
     }
 
     @Override
     public void onDestoryAttitudesSuccess(Weibo weibo) {
         mWeibo.setAttitudes(false);
         RxBus.get().post(Key.EVENT_WEIBO_UPDATE, mWeibo);
+        actionStar.setSelected(false);
     }
 
     @Override
