@@ -8,6 +8,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,7 +48,7 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/8.
  */
-public class UserInfoActivity extends BaseActivity implements DetailUserView {
+public class UserInfoActivity extends BaseActivity implements DetailUserView, AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
 
     UserInfoDetailPresent mUserInfoDetailPresent;
 
@@ -85,9 +86,12 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
     ViewPager viewPager;
     @BindView(R.id.cl_root)
     View viewRoot;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private User mUser;
     private MenuItem menuItem;
+    private ArrayList<String> mTabTitles;
 
     public static Intent newIntent(Context context, String name) {
         Intent intent = new Intent(context, UserInfoActivity.class);
@@ -108,7 +112,20 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
             params.bottomMargin = SystemUtil.getStatusBarHeight(this) + params.bottomMargin;
             layDetail.setLayoutParams(params);
         }
+
         viewRoot.setVisibility(View.GONE);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeColors(
+                getResources().getColor(R.color.gplus_color_1),
+                getResources().getColor(R.color.gplus_color_2),
+                getResources().getColor(R.color.gplus_color_3),
+                getResources().getColor(R.color.gplus_color_4));
+
+        mTabTitles = new ArrayList<>(3);
+        mTabTitles.add(getString(R.string.user_info_page));
+        mTabTitles.add(getString(R.string.weibo));
+        mTabTitles.add(getString(R.string.photo));
+
         if (WeicoAuthUtil.checkWeicoLogin(this, true)) {
             doNext();
         }
@@ -126,23 +143,30 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
     }
 
     private void initContent(User user) {
+        mTabTitles.clear();
+        mTabTitles.add(getString(R.string.user_info_page));
+        mTabTitles.add(getString(R.string.weibo) + " (" + CountUtil.getCounter(this, user.getStatuses_count()) + ")");
+        mTabTitles.add(getString(R.string.photo));
         if (viewPager.getAdapter() == null) {
-            List<String> titles = new ArrayList<>(3);
-            titles.add(getString(R.string.user_info_page));
-            titles.add(getString(R.string.weibo) + " (" + CountUtil.getCounter(this, user.getStatuses_count()) + ")");
-            titles.add(getString(R.string.photo));
             List<BaseFragment> fragments = new ArrayList<>(3);
             fragments.add(UserInfoFragment.newInstance(user));
             fragments.add(UserWeiboFragment.newInstance(user.getScreen_name()));
             fragments.add(UserImageFragment.newInstance(user.getScreen_name()));
             WeiboFragmentPagerAdapter adapter = new WeiboFragmentPagerAdapter(getSupportFragmentManager(),
-                    fragments, titles);
+                    fragments, mTabTitles);
             viewPager.setAdapter(adapter);
             viewPager.setCurrentItem(1);
             viewPager.setOffscreenPageLimit(fragments.size());
             tabLayout.setupWithViewPager(viewPager);
             tabLayout.setTabTextColors(getResources().getColor(R.color.text_54),
                     getResources().getColor(R.color.text_80));
+        }else {
+            for (int i = 0; i < mTabTitles.size(); i ++) {
+                TabLayout.Tab tab = tabLayout.getTabAt(i);
+                if (tab != null) {
+                    tab.setText(mTabTitles.get(i));
+                }
+            }
         }
     }
 
@@ -165,6 +189,18 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
         if (menuItem != null) {
             updateMenu(user, menuItem);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        appbar.addOnOffsetChangedListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        appbar.removeOnOffsetChangedListener(this);
     }
 
     @Override
@@ -233,6 +269,11 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
         updateMenu(mUser, menuItem);
     }
 
+    @Override
+    public void onRefreshComplete() {
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -254,4 +295,13 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView {
         }
     }
 
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        swipeRefreshLayout.setEnabled(verticalOffset == 0);
+    }
+
+    @Override
+    public void onRefresh() {
+        mUserInfoDetailPresent.onRefresh();
+    }
 }

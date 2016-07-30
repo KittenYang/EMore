@@ -2,6 +2,7 @@ package com.caij.emore.view.weibo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.activity.publish.CommentWeiboActivity;
 import com.caij.emore.ui.activity.publish.RepostWeiboActivity;
 import com.caij.emore.utils.CountUtil;
+import com.caij.emore.utils.LogUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -86,6 +88,7 @@ public class RepostWeiboListItemView extends WeiboItemView {
 
         rePicsView.setPics(reWeibo.getPic_urls());
         tvReContent.setText(reWeibo.getContentSpannableString());
+
         tvReContent.setTag(reWeibo);
 
         tvLike.setTag(weibo);

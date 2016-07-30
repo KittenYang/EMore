@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.caij.emore.database.dao.DaoMaster;
 import com.caij.emore.database.dao.DaoSession;
 
+import de.greenrobot.dao.identityscope.IdentityScopeType;
 import de.greenrobot.dao.query.QueryBuilder;
 
 /**
@@ -23,7 +24,8 @@ public class DBManager {
         DaoMaster daoMaster = new DaoMaster(dbHelp.getWritableDatabase());
         QueryBuilder.LOG_SQL = isDebug;
         QueryBuilder.LOG_VALUES = isDebug;
-        sDaoSession = daoMaster.newSession();
+        //这里参数为None 意思是数据不缓存在内存中
+        sDaoSession = daoMaster.newSession(IdentityScopeType.None);
     }
 
     public static DaoSession getDaoSession() {

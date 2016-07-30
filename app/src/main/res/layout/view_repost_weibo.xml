@@ -44,7 +44,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="2dip"
-            android:text="哈哈，我发了条微博被baby转发了，教主吃屎！"
             android:textColor="@color/text_54"
             android:textSize="@dimen/text_size_medium"/>
 

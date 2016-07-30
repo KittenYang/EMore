@@ -116,6 +116,11 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
         });
 
         swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeColors(
+                getResources().getColor(R.color.gplus_color_1),
+                getResources().getColor(R.color.gplus_color_2),
+                getResources().getColor(R.color.gplus_color_3),
+                getResources().getColor(R.color.gplus_color_4));
     }
 
     @Override

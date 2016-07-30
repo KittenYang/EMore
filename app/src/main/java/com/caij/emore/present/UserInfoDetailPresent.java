@@ -11,4 +11,5 @@ public interface UserInfoDetailPresent extends BasePresent {
 
     public void getWeiboUserInfoByName();
 
+    void onRefresh();
 }

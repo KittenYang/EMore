@@ -108,7 +108,13 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
     public void getWeiboUserInfoByName() {
         mUserView.showDialogLoading(true);
         Observable<User> localObservable =   mLocalUserSource.getWeiboUserInfoByName(mToken, mName);
-        Observable<User> serverObservable =   mServerUserSource.getWeiboUserInfoByName(mToken, mName);
+        Observable<User> serverObservable =   mServerUserSource.getWeiboUserInfoByName(mToken, mName)
+                .doOnNext(new Action1<User>() {
+                    @Override
+                    public void call(User user) {
+                        mLocalUserSource.saveWeiboUser(user);
+                    }
+                });
         Subscription subscription = Observable.concat(localObservable, serverObservable)
                 .first(new Func1<User, Boolean>() {
                     @Override
@@ -136,6 +142,47 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                             }
                         }
                         mUserView.onDefaultLoadError();
+                    }
+
+                    @Override
+                    public void onNext(User user) {
+                        mUserView.setUser(user);
+                    }
+                });
+        mLoginCompositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void onRefresh() {
+        Observable<User> serverObservable =   mServerUserSource.getWeiboUserInfoByName(mToken, mName)
+                .doOnNext(new Action1<User>() {
+                    @Override
+                    public void call(User user) {
+                        mLocalUserSource.saveWeiboUser(user);
+                    }
+                });
+        Subscription subscription = serverObservable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public void onCompleted() {
+                        mUserView.onRefreshComplete();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mUserView.showDialogLoading(false);
+                        if (e instanceof HttpException) {
+                            HttpException httpException = (HttpException) e;
+                            int code  = httpException.code();
+                            if (code == 400) {
+                                mUserView.showHint(R.string.user_undefine);
+                                return;
+                            }
+                        }
+                        mUserView.onDefaultLoadError();
+                        mUserView.onRefreshComplete();
                     }
 
                     @Override

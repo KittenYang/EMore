@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -34,6 +35,8 @@ import java.util.regex.Pattern;
  * Created by Caij on 2016/6/8.
  */
 public class SpannableStringUtil {
+
+    public static final String FULL_TEXT_SCHEME = "fulltext://";
 
     public static int color = AppApplication.getInstance().getResources().getColor(R.color.link_text_color);
     public static int pressColor = AppApplication.getInstance().getResources().getColor(R.color.link_text_press_color);
@@ -176,7 +179,7 @@ public class SpannableStringUtil {
 
     private static CharSequence createFullTextString(String url) {
         String[] strs  = url.split("/");
-        return " <a href=\"" + ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_FULL_TEXT + MyURLSpan.SCHEME_SPIT + strs[strs.length - 1] +"\">全文</a>";
+        return " <a href=\"" + SpannableStringUtil.FULL_TEXT_SCHEME + strs[strs.length - 1] +"\">全文</a>";
     }
 
     public static void praseDefaultEmotions(Spannable spannableString) {
@@ -238,18 +241,19 @@ public class SpannableStringUtil {
         SpannableStringUtil.praseSoftEmotions(contentSpannableString);
         weibo.setContentSpannableString(contentSpannableString);
 
-
-        if (weibo.getRetweeted_status() != null) {
-            Weibo reWeibo = weibo.getRetweeted_status();
+        Weibo reWeibo = weibo.getRetweeted_status();
+        if (reWeibo != null) {
             String reUserName = "";
             User reUser = reWeibo.getUser();
-            if (reUser != null && !TextUtils.isEmpty(reUser.getScreen_name()))
+            if (reUser != null && !TextUtils.isEmpty(reUser.getScreen_name())) {
                 reUserName = String.format("@%s :", reUser.getScreen_name());
+            }
             SpannableStringBuilder reContentSpannableString = praseHttpUrlText(reUserName + reWeibo.getText() + " ", shortLongLinkMap);
             SpannableStringUtil.praseName(reContentSpannableString);
             SpannableStringUtil.praseTopic(reContentSpannableString);
             SpannableStringUtil.praseDefaultEmotions(reContentSpannableString);
             SpannableStringUtil.praseSoftEmotions(contentSpannableString);
+
             reWeibo.setContentSpannableString(reContentSpannableString);
         }
     }

@@ -13,4 +13,6 @@ public interface DetailUserView extends BaseView{
     void onFollowSuccess();
 
     void onUnfollowSuccess();
+
+    void onRefreshComplete();
 }

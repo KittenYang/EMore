@@ -115,7 +115,14 @@ public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
                 toWebActivity(context, getURL());
             }
         }else {
-            toWebActivity(context, getURL());
+            //这里有两种情况 一种是网页 一种是全文
+            if (getURL().startsWith(SpannableStringUtil.FULL_TEXT_SCHEME)) {
+                String weibiId = getURL().replace(SpannableStringUtil.FULL_TEXT_SCHEME, "");
+                Intent intent = WeiboDetialActivity.newIntent(context, Long.parseLong(weibiId));
+                context.startActivity(intent);
+            }else {
+                toWebActivity(context, getURL());
+            }
         }
     }
 
