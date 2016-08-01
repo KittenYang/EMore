@@ -16,6 +16,7 @@ import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.ui.fragment.AppAboutFragment;
 import com.caij.emore.utils.ActivityStack;
+import com.caij.emore.utils.AppUtil;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.EventUtil;
@@ -25,8 +26,6 @@ import com.caij.emore.utils.ExecutorServiceUtil;
 /**
  * 更多高级设置
  * 
- * @author Jeff.Wang
- *
  * @date 2014年10月21日
  */
 public class AdvancedSettingFragment extends PreferenceFragment
@@ -82,28 +81,28 @@ public class AdvancedSettingFragment extends PreferenceFragment
         else if ("pOffline".equals(preference.getKey())) {
 
         }else if ("key_change_account".equals(preference.getKey())) {
-			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), "是否切换账号", getString(R.string.ok), new DialogInterface.OnClickListener() {
+			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), getString(R.string.change_account_hint), getString(R.string.ok), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					UserPrefs.get().clear();
+					AppUtil.stop(getActivity());
 					ActivityStack.getInstance().remove(getActivity());
 					ActivityStack.getInstance().finishAllActivity();
 					Intent intent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(), null, null);
 					startActivity(intent);
-					EMoreService.stop(getActivity());
 					getActivity().finish();
 				}
 			},getString(R.string.cancel), null);
 		}else if ("key_exit".equals(preference.getKey())) {
-			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), "是否退出", getString(R.string.ok), new DialogInterface.OnClickListener() {
+			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), getString(R.string.exit_hint), getString(R.string.ok), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					EMoreService.stop(getActivity());
+					AppUtil.stop(getActivity());
 					ActivityStack.getInstance().finishAllActivity();
 				}
 			}, getString(R.string.cancel), null);
 		}else if ("clear_cache".equals(preference.getKey())) {
-			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), "是否清楚缓存", getString(R.string.ok), new DialogInterface.OnClickListener() {
+			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), getString(R.string.clear_cache_hint), getString(R.string.ok), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					clearCache();

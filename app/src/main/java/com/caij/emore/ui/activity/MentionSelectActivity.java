@@ -15,6 +15,7 @@ public class MentionSelectActivity extends BaseToolBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(getString(R.string.mention_friend));
         MentionSelectFragment fragment = new MentionSelectFragment();
         Bundle bundle = new Bundle();
         bundle.putLong(Key.ID, Long.parseLong(UserPrefs.get().getEMoreToken().getUid()));

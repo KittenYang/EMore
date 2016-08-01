@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.caij.emore.BuildConfig;
 import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
@@ -12,10 +11,6 @@ import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.imp.LoginPresentImp;
 import com.caij.emore.present.view.LoginView;
 import com.caij.emore.source.server.LoginSourceImp;
-import com.caij.emore.ui.activity.MainActivity;
-import com.caij.emore.utils.ConfigUtil;
-import com.caij.emore.utils.EventUtil;
-import com.caij.emore.utils.db.DBManager;
 
 /**
  * Created by Caij on 2016/7/8.
@@ -77,7 +72,7 @@ public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
     }
 
 //    private void init(String uid) {
-//        ConfigUtil.resetConfig(this, Long.parseLong(uid));
+//        AppUtil.resetConfig(this, Long.parseLong(uid));
 //    }
 
     @Override

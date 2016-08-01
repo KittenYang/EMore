@@ -10,12 +10,20 @@ import com.caij.emore.utils.db.DBManager;
 /**
  * Created by Caij on 2016/7/15.
  */
-public class ConfigUtil {
+public class AppUtil {
 
     public static void resetConfig(Context context, long uid) {
-        DBManager.initDB(context, Key.DB_NAME + uid, BuildConfig.DEBUG);
-        //这里重新启动时为了重置Mamanger中Present的请求参数数据
+        stop(context);
+        start(context, uid);
+    }
+
+    public static void stop(Context context) {
+        DBManager.getDaoSession().getDatabase().close();
         EMoreService.stop(context);
+    }
+
+    public static void start(Context context, long uid) {
+        DBManager.initDB(context, Key.DB_NAME + uid, BuildConfig.DEBUG);
         EMoreService.start(context);
     }
 }

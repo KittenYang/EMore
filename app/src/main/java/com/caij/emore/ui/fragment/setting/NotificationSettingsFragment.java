@@ -25,9 +25,6 @@ public class NotificationSettingsFragment extends PreferenceFragment
 	private CheckBoxPreference pCommentMention;// 提及评论
 	private CheckBoxPreference pFollower;// 粉丝
 	private CheckBoxPreference pComment;// 评论
-	private CheckBoxPreference pNotifySound;// 声音
-	private CheckBoxPreference pNotifyVibrate;// 振动
-	private CheckBoxPreference pNotifyLED;// LED
     private CheckBoxPreference pDm;// 私信
 	private CheckBoxPreference pAttitude;
 
@@ -53,31 +50,16 @@ public class NotificationSettingsFragment extends PreferenceFragment
 		setMessageIntervalSetting(AppSettings.getMessageIntervalValue(getActivity()));
 		
 		pNightClose = (CheckBoxPreference) findPreference(getString(R.string.key_night_close));
-//		pNightClose.setOnPreferenceChangeListener(this);
-		
+
 		pStatusMention = (CheckBoxPreference) findPreference(getString(R.string.key_status_mention));
-//		pStatusMention.setOnPreferenceChangeListener(this);
-		
+
 		pCommentMention = (CheckBoxPreference) findPreference(getString(R.string.key_comment_mention));
-//		pCommentMention.setOnPreferenceChangeListener(this);
-		
+
 		pFollower = (CheckBoxPreference) findPreference(getString(R.string.key_setting_follower));
-//		pFollower.setOnPreferenceChangeListener(this);
-		
+
 		pComment = (CheckBoxPreference) findPreference(getString(R.string.key_setting_comment));
-//		pComment.setOnPreferenceChangeListener(this);
-		
-		pNotifySound = (CheckBoxPreference) findPreference(getString(R.string.key_setting_notify_sound));
-//		pNotifySound.setOnPreferenceChangeListener(this);
-		
-		pNotifyVibrate = (CheckBoxPreference) findPreference(getString(R.string.key_setting_notify_vibrate));
-//		pNotifyVibrate.setOnPreferenceChangeListener(this);
-		
-		pNotifyLED = (CheckBoxPreference) findPreference(getString(R.string.key_setting_notify_led));
-//		pNotifyLED.setOnPreferenceChangeListener(this);
 
         pDm = (CheckBoxPreference) findPreference(getString(R.string.key_setting_dm));
-//        pDm.setOnPreferenceChangeListener(this);
 
 		pAttitude = (CheckBoxPreference) findPreference(getString(R.string.key_setting_attitude));
 
@@ -91,23 +73,13 @@ public class NotificationSettingsFragment extends PreferenceFragment
 		pCommentMention.setEnabled(isCheck);
 		pFollower.setEnabled(isCheck);
 		pComment.setEnabled(isCheck);
-		pNotifySound.setEnabled(isCheck);
-		pNotifyVibrate.setEnabled(isCheck);
-		pNotifyLED.setEnabled(isCheck);
 		pAttitude.setEnabled(isCheck);
         pDm.setEnabled(isCheck);
 	}
 	
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//		ActivityHelper.putBooleanShareData("org.aisen.weibo.sina.NOTIFICATION", isChecked);
-
 		refreshSettings(isChecked);
-		
-//		if (isChecked)
-//			UnreadService.startService();
-//		else
-//			UnreadService.stopService();
 	}
 
 	@Override

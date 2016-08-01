@@ -55,21 +55,21 @@
             android:title="@string/settings_dm_attitude" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/category_notify_feedback">
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="@string/key_setting_notify_sound"
-            android:title="@string/settings_notify_sound" />
+    <!--<PreferenceCategory android:title="@string/category_notify_feedback">-->
+        <!--<CheckBoxPreference-->
+            <!--android:defaultValue="true"-->
+            <!--android:key="@string/key_setting_notify_sound"-->
+            <!--android:title="@string/settings_notify_sound" />-->
 
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="@string/key_setting_notify_vibrate"
-            android:title="@string/settings_notify_virate" />
+        <!--<CheckBoxPreference-->
+            <!--android:defaultValue="true"-->
+            <!--android:key="@string/key_setting_notify_vibrate"-->
+            <!--android:title="@string/settings_notify_virate" />-->
 
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="@string/key_setting_notify_led"
-            android:title="@string/settings_notify_led" />
-    </PreferenceCategory>
+        <!--<CheckBoxPreference-->
+            <!--android:defaultValue="true"-->
+            <!--android:key="@string/key_setting_notify_led"-->
+            <!--android:title="@string/settings_notify_led" />-->
+    <!--</PreferenceCategory>-->
 
 </PreferenceScreen>

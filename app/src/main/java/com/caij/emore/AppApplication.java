@@ -7,6 +7,7 @@ import android.os.Build;
 
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.service.EMoreService;
+import com.caij.emore.utils.AppUtil;
 import com.caij.emore.utils.ChannelUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.SPUtil;
@@ -24,16 +25,10 @@ public class AppApplication extends Application{
         super.onCreate();
         mApplication = this;
         SPUtil.init(this, Key.SP_CONFIG);
-        initDB();
         initCrashReport();
-        startWeiyoService();
-    }
-
-    private void initDB() {
-        AccessToken accessToken = UserPrefs.get().getEMoreToken();
-        if (accessToken != null) {
-            String dbName = Key.DB_NAME + accessToken.getUid();
-            DBManager.initDB(this, dbName, BuildConfig.DEBUG);
+        if (UserPrefs.get().getEMoreToken() != null && UserPrefs.get().getWeiCoToken() != null) {
+            AccessToken accessToken = UserPrefs.get().getEMoreToken();
+            AppUtil.start(this, Long.parseLong(accessToken.getUid()));
         }
     }
 
@@ -52,12 +47,6 @@ public class AppApplication extends Application{
                     CrashReport.initCrashReport(getApplicationContext(), Key.BUGLY_KEY, true, strategy);
                 }
             });
-        }
-    }
-
-    private void startWeiyoService() {
-        if (UserPrefs.get().getEMoreToken() != null && UserPrefs.get().getWeiCoToken() != null) {
-            EMoreService.start(this);
         }
     }
 

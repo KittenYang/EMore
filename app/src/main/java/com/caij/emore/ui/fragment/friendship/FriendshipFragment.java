@@ -22,8 +22,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 /**
  * Created by Caij on 2016/7/3.
  */
-public abstract class FriendshipFragment<P extends ListPresent> extends RecyclerViewFragment<User, P> implements
-        LoadMoreRecyclerView.OnLoadMoreListener, FriendshipView,RecyclerViewOnItemClickListener {
+public abstract class FriendshipFragment<P extends ListPresent> extends RecyclerViewFragment<User, P> implements FriendshipView,RecyclerViewOnItemClickListener {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

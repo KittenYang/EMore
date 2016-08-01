@@ -153,6 +153,10 @@
     <string name="key_setting_about">key_setting_about</string>
     <string name="comment">评论</string>
     <string name="repost">转发</string>
+    <string name="mention_friend">\@朋友</string>
+    <string name="exit_hint">退出后将收不到消息提醒</string>
+    <string name="change_account_hint">是否切换账号</string>
+    <string name="clear_cache_hint">是否清楚缓存</string>
 
     <string-array name="txtUnread">
         <item>5分钟</item>

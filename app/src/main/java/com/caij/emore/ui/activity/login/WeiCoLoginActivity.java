@@ -14,7 +14,7 @@ import com.caij.emore.present.view.WeiCoLoginView;
 import com.caij.emore.source.server.LoginSourceImp;
 import com.caij.emore.ui.activity.MainActivity;
 import com.caij.emore.utils.ActivityStack;
-import com.caij.emore.utils.ConfigUtil;
+import com.caij.emore.utils.AppUtil;
 
 /**
  * Created by Caij on 2016/7/8.
@@ -85,7 +85,7 @@ public class WeiCoLoginActivity extends AbsLoginActivity implements WeiCoLoginVi
     }
 
     private void init(String uid) {
-        ConfigUtil.resetConfig(this, Long.parseLong(uid));
+        AppUtil.resetConfig(this, Long.parseLong(uid));
     }
 
     @Override

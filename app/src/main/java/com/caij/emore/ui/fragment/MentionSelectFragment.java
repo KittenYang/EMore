@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.view.View;
 
 import com.caij.emore.Key;
-import com.caij.emore.ui.fragment.friendship.FollowsFragment;
+import com.caij.emore.ui.fragment.friendship.FriendFragment;
 
 /**
  * Created by Caij on 2016/8/1.
  */
-public class MentionSelectFragment extends FollowsFragment {
+public class MentionSelectFragment extends FriendFragment {
     @Override
     public void onItemClick(View view, int position) {
 //        super.onItemClick(view, position);
