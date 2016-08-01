@@ -34,6 +34,7 @@ import com.caij.emore.ui.fragment.UserInfoFragment;
 import com.caij.emore.ui.fragment.weibo.UserWeiboFragment;
 import com.caij.emore.utils.CountUtil;
 import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.weibo.WeiboUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
@@ -88,10 +89,13 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView, Ap
     View viewRoot;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.tv_action_bar_name)
+    TextView tvTitleUserName;
 
     private User mUser;
     private MenuItem menuItem;
     private ArrayList<String> mTabTitles;
+    private String mUserName;
 
     public static Intent newIntent(Context context, String name) {
         Intent intent = new Intent(context, UserInfoActivity.class);
@@ -104,9 +108,15 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView, Ap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_pager);
         ButterKnife.bind(this);
+
+        Intent intent = getIntent();
+        mUserName = intent.getStringExtra(Key.USERNAME);
+
         setSupportActionBar(toolbar);
-        setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("");
+        tvTitleUserName.setText(mUserName);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) layDetail.getLayoutParams();
             params.bottomMargin = SystemUtil.getStatusBarHeight(this) + params.bottomMargin;
@@ -132,11 +142,9 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView, Ap
     }
 
     private void doNext() {
-        Intent intent = getIntent();
         AccessToken token = UserPrefs.get().getWeiCoToken();
 
-        String userName = intent.getStringExtra(Key.USERNAME);
-        mUserInfoDetailPresent = new UserInfoDetailPresentImp(token.getAccess_token(), userName, this,
+        mUserInfoDetailPresent = new UserInfoDetailPresentImp(token.getAccess_token(), mUserName, this,
                 new ServerUserSource(), new LocalUserSource());
 
         mUserInfoDetailPresent.getWeiboUserInfoByName();
@@ -298,6 +306,12 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView, Ap
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         swipeRefreshLayout.setEnabled(verticalOffset == 0);
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        if (Math.abs(verticalOffset) == maxScroll) {
+            tvTitleUserName.setVisibility(View.VISIBLE);
+        }else {
+            tvTitleUserName.setVisibility(View.GONE);
+        }
     }
 
     @Override
