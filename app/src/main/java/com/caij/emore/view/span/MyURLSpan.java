@@ -66,8 +66,9 @@ public class MyURLSpan extends URLSpan implements ParcelableSpan {
                     case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_VIDEO:
                         Intent intent;
                         if (objectBean != null && !objectBean.getUrl().contains("video.weibo.com")) {
-                            intent = VideoViewPlayingActivity.newIntent(context, objectBean.getStream().getUrl());
-                            context.startActivity(intent);
+//                            intent = VideoViewPlayingActivity.newIntent(context, objectBean.getTarget_url());
+//                            context.startActivity(intent);
+                            toWebActivity(context, getURL());
                         }else if (widget.getTag() != null && widget.getTag() instanceof Weibo) {
                             Weibo weibo = (Weibo) widget.getTag();
                             intent = VideoViewPlayingActivity.newIntent(context, weibo.getId());

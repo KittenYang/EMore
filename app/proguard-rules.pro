@@ -71,7 +71,7 @@
 -keep public class com.tencent.bugly.**{*;}
 
 ### bean
--keep class com.caij.weiyo.database.** { *; }
--keep class com.caij.weiyo.bean.** { *; }
+-keep class com.caij.emore.database.** { *; }
+-keep class com.caij.emore.bean.** { *; }
 
--keep class com.sina.weibo.security.** { *; }
+-keep class com.baidu.cyberplayer.** { *; }
