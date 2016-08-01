@@ -1,6 +1,7 @@
 package com.caij.emore.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.present.imp.WeiboRepostsPresentImp;
@@ -17,6 +19,7 @@ import com.caij.emore.present.view.WeiboRepostsView;
 import com.caij.emore.source.local.LocalUrlSource;
 import com.caij.emore.source.server.ServerUrlSource;
 import com.caij.emore.source.server.ServerWeiboSource;
+import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.adapter.RepostAdapter;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
@@ -76,7 +79,13 @@ public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRe
 
     @Override
     public void onItemClick(View view, int position) {
+        Weibo weibo = mRecyclerViewAdapter.getItem(position);
+        if (view.getId() == R.id.imgPhoto) {
+            Intent intent = UserInfoActivity.newIntent(getActivity(), weibo.getUser().getScreen_name());
+            startActivity(intent);
+        }else {
 
+        }
     }
 
     @Override

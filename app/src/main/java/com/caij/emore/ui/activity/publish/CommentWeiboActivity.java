@@ -76,8 +76,13 @@ public class CommentWeiboActivity extends PublishActivity implements CommentWeib
     }
 
     @Override
-    protected void onSelectSuccess(ArrayList<String> paths) {
+    protected void onSelectImageSuccess(ArrayList<String> paths) {
 
+    }
+
+    @Override
+    protected void onSelectMentionSuccess(String name) {
+        etContent.append("@" + name + " ");
     }
 
     @Override

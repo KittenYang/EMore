@@ -16,25 +16,19 @@ import android.widget.EditText;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.Account;
 import com.caij.emore.bean.Emotion;
 import com.caij.emore.database.bean.Draft;
-import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboPublishPresent;
 import com.caij.emore.present.imp.WeiboPublishPresentImp;
 import com.caij.emore.present.view.WeiboPublishView;
 import com.caij.emore.source.local.LocalDraftSource;
-import com.caij.emore.source.server.ServerWeiboSource;
-import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.adapter.PublishImageAdapter;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.NavigationUtil;
-import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -95,7 +89,7 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
         if (draft.getImages() != null && draft.getImages().size() > 0) {
             List<String> images = new ArrayList<>(draft.getImages().size());
             images.addAll(draft.getImages());
-            onSelectSuccess((ArrayList<String>) images);
+            onSelectImageSuccess((ArrayList<String>) images);
         }
     }
 
@@ -126,10 +120,15 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
     }
 
     @Override
-    protected void onSelectSuccess(ArrayList<String> paths) {
+    protected void onSelectImageSuccess(ArrayList<String> paths) {
         mRecyclerView.setVisibility(View.VISIBLE);
         mPublishImageAdapter.addEntities(paths);
         mPublishImageAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onSelectMentionSuccess(String name) {
+        etContent.append("@" + name + " ");
     }
 
     @Override

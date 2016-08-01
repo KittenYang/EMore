@@ -95,8 +95,13 @@ public class RepostWeiboActivity extends PublishActivity implements RepostWeiboV
     }
 
     @Override
-    protected void onSelectSuccess(ArrayList<String> paths) {
+    protected void onSelectImageSuccess(ArrayList<String> paths) {
 
+    }
+
+    @Override
+    protected void onSelectMentionSuccess(String name) {
+        etContent.append("@" + name + " ");
     }
 
     @Override

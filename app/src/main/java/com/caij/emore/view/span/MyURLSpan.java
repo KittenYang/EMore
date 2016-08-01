@@ -9,6 +9,7 @@ import android.text.ParcelableSpan;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.view.View;
 
 import com.caij.emore.AppSettings;
@@ -32,38 +33,15 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/8.
  */
-public class MyURLSpan extends ClickableSpan implements ParcelableSpan {
+public class MyURLSpan extends URLSpan implements ParcelableSpan {
 
-    public static final String SCHEME_SPIT = "__";
-
-    private final String mURL;
     private int color;
     private int pressColor;
     private boolean pressed;
     private ShortUrlInfo.UrlsBean urlBean;
 
     public MyURLSpan(String url) {
-        this.mURL = url;
-    }
-
-    public MyURLSpan(Parcel src) {
-        this.mURL = src.readString();
-    }
-
-    public int getSpanTypeId() {
-        return 11;
-    }
-
-    public int describeContents() {
-        return 0;
-    }
-
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.mURL);
-    }
-
-    public String getURL() {
-        return this.mURL;
+        super(url);
     }
 
     public void onClick(View widget) {

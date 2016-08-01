@@ -19,6 +19,7 @@ import com.caij.emore.present.WeiboCommentsPresent;
 import com.caij.emore.present.imp.WeiboCommentsPresentImp;
 import com.caij.emore.present.view.WeiboCommentsView;
 import com.caij.emore.source.server.ServerWeiboSource;
+import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
 import com.caij.emore.ui.activity.publish.RepostWeiboActivity;
 import com.caij.emore.ui.adapter.CommentAdapter;
@@ -102,38 +103,43 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
     @Override
     public void onItemClick(View view, int position) {
         final Comment comment = mRecyclerViewAdapter.getItem(position);
-        if (comment.getUser().getId() == Long.parseLong(UserPrefs.get().getEMoreToken().getUid())) {
-            String[] array = new String[]{"删除", "复制"};
-            DialogUtil.showItemDialog(getActivity(), null, array, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == 0) {
-                        mPresent.deleteComment(comment);
-                    }else if (which == 1) {
-                        // 将文本内容放到系统剪贴板里。
-                        mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, comment.getText()));
-                        ToastUtil.show(getActivity(), "复制成功");
-                    }
-                }
-            });
+        if (view.getId() == R.id.imgPhoto) {
+            Intent intent = UserInfoActivity.newIntent(getActivity(), comment.getUser().getScreen_name());
+            startActivity(intent);
         }else {
-            String[] array = new String[]{"回复", "转发", "复制"};
-            DialogUtil.showItemDialog(getActivity(), null, array, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == 0) {
-                        Intent intent = ReplyCommentActivity.newIntent(getActivity(), comment.getStatus().getId(), comment.getId());
-                        startActivityForResult(intent, REPLY_COMMENT_REQUEST_CODE);
-                    }else if (which == 1) {
-                        Intent intent = RepostWeiboActivity.newIntent(getActivity(), comment.getStatus(), comment);
-                        startActivityForResult(intent, REPLY_COMMENT_REQUEST_CODE);
-                    }else if (which == 2) {
-                        // 将文本内容放到系统剪贴板里。
-                        mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, comment.getText()));
-                        ToastUtil.show(getActivity(), "复制成功");
+            if (comment.getUser().getId() == Long.parseLong(UserPrefs.get().getEMoreToken().getUid())) {
+                String[] array = new String[]{"删除", "复制"};
+                DialogUtil.showItemDialog(getActivity(), null, array, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            mPresent.deleteComment(comment);
+                        } else if (which == 1) {
+                            // 将文本内容放到系统剪贴板里。
+                            mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, comment.getText()));
+                            ToastUtil.show(getActivity(), "复制成功");
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                String[] array = new String[]{"回复", "转发", "复制"};
+                DialogUtil.showItemDialog(getActivity(), null, array, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            Intent intent = ReplyCommentActivity.newIntent(getActivity(), comment.getStatus().getId(), comment.getId());
+                            startActivityForResult(intent, REPLY_COMMENT_REQUEST_CODE);
+                        } else if (which == 1) {
+                            Intent intent = RepostWeiboActivity.newIntent(getActivity(), comment.getStatus(), comment);
+                            startActivityForResult(intent, REPLY_COMMENT_REQUEST_CODE);
+                        } else if (which == 2) {
+                            // 将文本内容放到系统剪贴板里。
+                            mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, comment.getText()));
+                            ToastUtil.show(getActivity(), "复制成功");
+                        }
+                    }
+                });
+            }
         }
     }
 }

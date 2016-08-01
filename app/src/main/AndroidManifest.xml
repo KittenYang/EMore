@@ -119,6 +119,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/ImagePrewActivity"/>
 
+        <activity android:name="com.caij.emore.ui.activity.MentionSelectActivity"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

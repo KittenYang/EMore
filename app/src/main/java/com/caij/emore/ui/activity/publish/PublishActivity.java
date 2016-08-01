@@ -10,6 +10,7 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.Emotion;
 import com.caij.emore.ui.activity.BaseToolBarActivity;
+import com.caij.emore.ui.activity.MentionSelectActivity;
 import com.caij.emore.ui.fragment.EmotionFragment;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.SystemUtil;
@@ -29,6 +30,7 @@ import rx.functions.Action1;
 public abstract class PublishActivity extends BaseToolBarActivity {
 
     public static final int REQUEST_CODE_SELECT_IMAGES = 10;
+    public static final int REQUEST_CODE_SELECT_MENTION = 11;
 
     @BindView(R.id.btnCamera)
     LinearLayout btnCamera;
@@ -113,7 +115,8 @@ public abstract class PublishActivity extends BaseToolBarActivity {
                 }
                 break;
             case R.id.btn_mention:
-
+                intent = new Intent(this, MentionSelectActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_SELECT_MENTION);
                 break;
             case R.id.btn_trends:
 
@@ -154,12 +157,16 @@ public abstract class PublishActivity extends BaseToolBarActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_SELECT_IMAGES) {
                 ArrayList<String> paths = data.getStringArrayListExtra(Key.IMAGE_PATHS);
-                onSelectSuccess(paths);
+                onSelectImageSuccess(paths);
+            }else if (requestCode == REQUEST_CODE_SELECT_MENTION) {
+                String name = data.getStringExtra(Key.USERNAME);
+                onSelectMentionSuccess(name);
             }
         }
     }
 
-    protected abstract void onSelectSuccess(ArrayList<String> paths);
+    protected abstract void onSelectImageSuccess(ArrayList<String> paths);
+    protected abstract void onSelectMentionSuccess(String name);
 
     @Override
     protected void onDestroy() {

@@ -80,7 +80,7 @@ public class ImagePrePresentImp implements ImagePrePresent {
             protected void onPostExecute(BitmapFactory.Options options) {
                 super.onPostExecute(options);
                 if (options != null) {
-                    if (ImageUtil.isBigImage(options.outWidth, options.outHeight)) {
+                    if (ImageUtil.isLongImage(options.outWidth, options.outHeight)) {
                         mImagePreView.showBigImage(localFilePath);
                     } else {
                         mImagePreView.showLocalImage(localFilePath);

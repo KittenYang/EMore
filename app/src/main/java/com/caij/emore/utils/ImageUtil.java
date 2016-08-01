@@ -155,6 +155,12 @@ public class ImageUtil {
 
             int rotation = getFileExifRotation(Uri.fromFile(sourceFile));
 
+            if (isLongImage(options.outWidth, options.outHeight)) {
+                outPath = sourcePath;
+                LogUtil.d("compressImage", "source File file is LongImage ");
+                return;
+            }
+
             int inSampleSize = calculateInSampleSize(options.outWidth, options.outHeight, targetWidth, targetHeight, rotation);
 
             LogUtil.d("compressImage", "rotation  %s, options.outWidth %s, options.outHeight %s", rotation, options.outWidth, options.outHeight);
@@ -255,7 +261,7 @@ public class ImageUtil {
         return rotation;
     }
 
-    public static boolean isBigImage(int width, int height) {
+    public static boolean isLongImage(int width, int height) {
         return width * 1f / height > 3.5  ||  height * 1f / width > 3.5;
     }
 

@@ -20,10 +20,6 @@ public class TopicSpan extends MyURLSpan {
         super(url);
     }
 
-    public TopicSpan(Parcel src) {
-        super(src);
-    }
-
     @Override
     public void onClick(View widget) {
         Context context = widget.getContext();

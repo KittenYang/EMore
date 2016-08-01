@@ -1,6 +1,7 @@
 package com.caij.emore.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.Comment;
+import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.view.FixClickableSpanBugTextView;
@@ -24,8 +26,11 @@ import butterknife.ButterKnife;
  */
 public class CommentAdapter extends BaseAdapter<Comment, CommentAdapter.CommentViewHolder> {
 
+    private final ImageLoader.ImageConfig avatarImageConfig;
+
     public CommentAdapter(Context context) {
         super(context);
+        avatarImageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
     }
 
     @Override
@@ -45,9 +50,9 @@ public class CommentAdapter extends BaseAdapter<Comment, CommentAdapter.CommentV
 
         holder.txtName.setText(comment.getUser().getName());
 
-        ImageLoader.ImageConfig imageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
+
         ImageLoader.load(mContext, holder.imgPhoto, comment.getUser().getAvatar_large(),
-                R.drawable.circle_image_placeholder, imageConfig);
+                R.drawable.circle_image_placeholder, avatarImageConfig);
     }
 
     public static class CommentViewHolder extends BaseViewHolder {
@@ -61,9 +66,15 @@ public class CommentAdapter extends BaseAdapter<Comment, CommentAdapter.CommentV
         @BindView(R.id.txtDesc)
         TextView txtDesc;
 
-        public CommentViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
+        public CommentViewHolder(View itemView, final RecyclerViewOnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);
             ButterKnife.bind(this, itemView);
+            imgPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick(v, getLayoutPosition());
+                }
+            });
         }
     }
 
