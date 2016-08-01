@@ -67,13 +67,8 @@ public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
         UserPrefs.get().setPwd(mPassword);
         Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(this, mAccount, mPassword);
         startActivity(intent);
-//        init(UserPrefs.get().getEMoreToken().getUid());
         finish();
     }
-
-//    private void init(String uid) {
-//        AppUtil.resetConfig(this, Long.parseLong(uid));
-//    }
 
     @Override
     protected void onDestroy() {

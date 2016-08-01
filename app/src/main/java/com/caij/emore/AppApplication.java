@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.text.TextUtils;
 
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.service.EMoreService;
@@ -43,6 +44,9 @@ public class AppApplication extends Application{
                 @Override
                 protected void onPostExecute(String channel) {
                     CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
+                    if (TextUtils.isEmpty(channel)) {
+                        channel = "default";
+                    }
                     strategy.setAppChannel(channel);
                     CrashReport.initCrashReport(getApplicationContext(), Key.BUGLY_KEY, true, strategy);
                 }

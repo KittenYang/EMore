@@ -74,4 +74,4 @@
 -keep class com.caij.weiyo.database.** { *; }
 -keep class com.caij.weiyo.bean.** { *; }
 
--keep com.sina.weibo.security.**
+-keep class com.sina.weibo.security.** { *; }

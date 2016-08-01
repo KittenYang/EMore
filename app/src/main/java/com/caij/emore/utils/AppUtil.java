@@ -18,7 +18,9 @@ public class AppUtil {
     }
 
     public static void stop(Context context) {
-        DBManager.getDaoSession().getDatabase().close();
+        if (DBManager.getDaoSession() != null && DBManager.getDaoSession().getDatabase().isOpen()) {
+            DBManager.getDaoSession().getDatabase().close();
+        }
         EMoreService.stop(context);
     }
 
