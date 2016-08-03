@@ -39,7 +39,7 @@ public class FolderAdapter extends BaseAdapter<ImageFolder, FolderAdapter.Folder
     public void onBindViewHolder(FolderViewHolder holder, int position) {
         ImageFolder folder = getItem(position);
         String path = "file://" + folder.getImgPath();
-        ImageLoader.load(mContext, holder.imageView, path, R.drawable.weibo_image_placeholder, mImageConfig);
+        ImageLoader.loadUrl(mContext, holder.imageView, path, R.drawable.weibo_image_placeholder, mImageConfig);
         holder.tvFolderName.setText(folder.getName());
         holder.tvFolderImageCount.setText(folder.getCount() + mContext.getString(R.string.image_count));
         holder.ivSelect.setVisibility(folder.isSelected() ? View.VISIBLE : View.GONE);

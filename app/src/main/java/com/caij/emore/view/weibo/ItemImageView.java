@@ -86,7 +86,7 @@ public class ItemImageView extends ImageView {
 //        if (drawable instanceof GifDrawable) {
 //            gifDrawable = (GifDrawable) drawable;
 //        }else if (drawable instanceof TransitionDrawable) {
-//            // we fade in images on load which uses a TransitionDrawable; check its layers
+//            // we fade in images on loadUrl which uses a TransitionDrawable; check its layers
 //            TransitionDrawable fadingIn = (TransitionDrawable) drawable;
 //            for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
 //                if (fadingIn.getDrawable(i) instanceof GifDrawable) {
@@ -115,7 +115,7 @@ public class ItemImageView extends ImageView {
 //        if (drawable instanceof GifDrawable) {
 //            gifDrawable = (GifDrawable) drawable;
 //        }else if (drawable instanceof TransitionDrawable) {
-//            // we fade in images on load which uses a TransitionDrawable; check its layers
+//            // we fade in images on loadUrl which uses a TransitionDrawable; check its layers
 //            TransitionDrawable fadingIn = (TransitionDrawable) drawable;
 //            for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
 //                if (fadingIn.getDrawable(i) instanceof GifDrawable) {

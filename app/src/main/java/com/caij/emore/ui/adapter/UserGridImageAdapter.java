@@ -40,7 +40,7 @@ public class UserGridImageAdapter extends BaseAdapter<PicUrl, BaseViewHolder> {
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         ImageViewHolder imageView = (ImageViewHolder) holder;
         PicUrl image = getItem(position);
-        ImageLoader.load(mContext, imageView.imageView, image.getBmiddle_pic(), R.drawable.weibo_image_placeholder, mImageConfig);
+        ImageLoader.loadUrl(mContext, imageView.imageView, image.getBmiddle_pic(), R.drawable.weibo_image_placeholder, mImageConfig);
     }
 
     public static class ImageViewHolder extends BaseViewHolder {

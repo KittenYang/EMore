@@ -93,7 +93,7 @@ public class WeiboAndUserSearchFragment extends TimeLineWeiboFragment<WeiboAndUs
                 startActivity(intent);
             }
         });
-        ImageLoader.load(getActivity(), imageView, user.getAvatar_large(), R.drawable.circle_image_placeholder, mUserImageConfig);
+        ImageLoader.loadUrl(getActivity(), imageView, user.getAvatar_large(), R.drawable.circle_image_placeholder, mUserImageConfig);
         return view;
     }
 

@@ -72,7 +72,7 @@ public abstract class WeiboItemView extends FrameLayout {
     public void setWeibo(Weibo weibo) {
         tvName.setText(weibo.getUser().getName());
         ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild().setCircle(true).build();
-        ImageLoader.load(getContext(), ivAvatar,
+        ImageLoader.loadUrl(getContext(), ivAvatar,
                 weibo.getUser().getAvatar_large(), R.drawable.circle_image_placeholder, config);
 
         String createAt = "";

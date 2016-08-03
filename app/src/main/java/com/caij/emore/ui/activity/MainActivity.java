@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -199,7 +198,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         if (user != null) {
             mTvNavigationUsername.setText(user.getName());
             ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild().setCircle(true).build();
-            ImageLoader.load(this, mImgNavigationAvatar, user.getAvatar_large(), R.drawable.circle_image_placeholder, config);
+            ImageLoader.loadUrl(this, mImgNavigationAvatar, user.getAvatar_large(), R.drawable.circle_image_placeholder, config);
             ImageLoader.load(this, ivHeaderBackground, user.getCover_image_phone(), R.mipmap.bg_nav_head);
             mImgNavigationAvatar.setTag(user);
         }

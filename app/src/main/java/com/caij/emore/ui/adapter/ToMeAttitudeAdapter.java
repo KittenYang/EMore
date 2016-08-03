@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.Attitude;
-import com.caij.emore.bean.Comment;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
@@ -59,7 +58,7 @@ public class ToMeAttitudeAdapter extends BaseAdapter<Attitude, ToMeAttitudeAdapt
     @Override
     public void onBindViewHolder(CommentMentionViewHolder holder, int position) {
         Attitude attitude = getItem(position);
-        ImageLoader.load(mContext, holder.sdvAvatar, attitude.getUser().getAvatar_large(),
+        ImageLoader.loadUrl(mContext, holder.sdvAvatar, attitude.getUser().getAvatar_large(),
                 R.drawable.circle_image_placeholder, mImageConfig);
         holder.tvHeadName.setText(attitude.getUser().getName());
 

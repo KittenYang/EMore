@@ -1,28 +1,16 @@
 package com.caij.emore.view.weibo;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Canvas;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.database.bean.PicUrl;
-import com.caij.emore.ui.activity.ImagePrewActivity;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.NavigationUtil;
-import com.caij.emore.utils.weibo.WeiboUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +18,14 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/6.
  */
-public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener, ImageInterface {
+public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener, ImageInterface, Runnable {
 
     public static final float MAX_RADIO = 13 * 1.0f / 13;
+    public ImageLoader.ImageConfig mNormalImageConfig;
+    public ImageLoader.ImageConfig mLongAndGifImageConfig;
 
     protected int mSpaceWidth;
     protected List<PicUrl> mPicUrls;
-    protected Handler mMainHandler;
 
     public WeiboItemPicsView(Context context) {
         super(context);
@@ -60,14 +49,24 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
     }
 
     private void init(Context context) {
+        ImageLoader.ImageConfigBuild normalImageConfigBuild = new ImageLoader.ImageConfigBuild()
+                .setPriority(ImageLoader.Priority.LOW)
+                .setScaleType(ImageLoader.ScaleType.TOP);
+        processImageConfigBuild(normalImageConfigBuild);
+        mNormalImageConfig = normalImageConfigBuild.build();
+
+        ImageLoader.ImageConfigBuild longAndGifConfigBuild = new ImageLoader.ImageConfigBuild()
+                .setScaleType(ImageLoader.ScaleType.CENTER_CROP);
+        processImageConfigBuild(longAndGifConfigBuild);
+        mLongAndGifImageConfig = longAndGifConfigBuild.build();
+
         addItemViews();
         mSpaceWidth = getResources().getDimensionPixelSize(R.dimen.weibo_image_space);
-        mMainHandler = new Handler(Looper.getMainLooper());
     }
 
     protected void addItemViews() {
         for (int i = 0; i < 9; i ++) {
-            addView(createImageView(LayoutParams.MATCH_PARENT));
+            addView(createImageView(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         }
     }
 
@@ -77,26 +76,10 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
         int availableWidth = width - getPaddingLeft() - getPaddingRight();
         int height = 0;
         if (mPicUrls != null && mPicUrls.size() != 0) {
-            int defaultImageWidth = (availableWidth - 2 * mSpaceWidth) / 3;
-            for (int i = 0; i < getChildCount(); i ++) {
-                View child = getChildAt(i);
-                if (i < mPicUrls.size()) {
-                    if (mPicUrls.size() == 1) {
-                        PicUrl picUrl = mPicUrls.get(0);
-                        height = measureChildOnOneImage(picUrl, availableWidth, child);
-                    } else if (mPicUrls.size() == 4){
-                        height = defaultImageWidth * 2 + mSpaceWidth;
-                        child.measure(MeasureSpec.makeMeasureSpec(defaultImageWidth, MeasureSpec.EXACTLY),
-                                MeasureSpec.makeMeasureSpec(defaultImageWidth, MeasureSpec.EXACTLY));
-                    }else {
-                        height = defaultImageWidth * (mPicUrls.size() / 4 + 1) + mPicUrls.size() / 4 * mSpaceWidth;
-                        child.measure(MeasureSpec.makeMeasureSpec(defaultImageWidth, MeasureSpec.EXACTLY),
-                                MeasureSpec.makeMeasureSpec(defaultImageWidth, MeasureSpec.EXACTLY));
-                    }
-                }else {
-                    //这里需要给不显示的控件测量和定位，否则图片的点击事件会混乱
-                    child.measure(-1, -1);
-                }
+            if (mPicUrls.size() == 1) {
+                height = measureChildOnOneImage(availableWidth);
+            }else {
+                height = measureChildOnMultipleImage(availableWidth);
             }
         }
 //        LogUtil.d(this, "onMeasure width = %s  height = %s", width, height);
@@ -104,27 +87,49 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
         setMeasuredDimension(width, height);
     }
 
-    protected int measureChildOnOneImage(PicUrl picUrl, int availableWidth, View child) {
-        int imageWidth;
-        int imageHeight;
-        if (picUrl.getHeight() > 0 && picUrl.getWidth() > 0) {
-            if (picUrl.getWidth() * 1.0f / picUrl.getHeight() < MAX_RADIO) { //宽比高小很多  竖着的图
-                imageWidth = (int) (availableWidth * 1.0f / 2);
-                imageHeight = (int) (imageWidth * 1.34f);
-            } else if (picUrl.getHeight() * 1.0f / picUrl.getWidth() < MAX_RADIO) {//宽比高大很多  横着的图
-                imageWidth = (int) (availableWidth * 1.0f / 3 * 2);
-                imageHeight = (int) (imageWidth / 1.34f);
-            } else { //接近正方形
+    protected int measureChildOnOneImage(int availableWidth) {
+        View child = getChildAt(0);
+        int imageHeight = 0;
+        if (child != null && child.getVisibility() != GONE) {
+            int imageWidth;
+            PicUrl picUrl = mPicUrls.get(0);
+            if (picUrl.getHeight() > 0 && picUrl.getWidth() > 0) {
+                if (picUrl.getWidth() * 1.0f / picUrl.getHeight() < MAX_RADIO) { //宽比高小很多  竖着的图
+                    imageWidth = (int) (availableWidth * 1.0f / 2);
+                    imageHeight = (int) (imageWidth * 1.34f);
+                } else if (picUrl.getHeight() * 1.0f / picUrl.getWidth() < MAX_RADIO) {//宽比高大很多  横着的图
+                    imageWidth = (int) (availableWidth * 1.0f / 3 * 2);
+                    imageHeight = (int) (imageWidth / 1.34f);
+                } else { //接近正方形
+                    imageWidth = (int) (availableWidth * 1.0f / 3 * 2);
+                    imageHeight = imageWidth;
+                }
+            } else { //没有宽度信息就是默认正方形
                 imageWidth = (int) (availableWidth * 1.0f / 3 * 2);
                 imageHeight = imageWidth;
             }
-        } else { //没有宽度信息就是默认正方形
-            imageWidth = (int) (availableWidth * 1.0f / 3 * 2);
-            imageHeight = imageWidth;
+            child.measure(MeasureSpec.makeMeasureSpec(imageWidth, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(imageHeight, MeasureSpec.EXACTLY));
         }
-        child.measure(MeasureSpec.makeMeasureSpec(imageWidth, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(imageHeight, MeasureSpec.EXACTLY));
         return imageHeight;
+    }
+
+    protected int measureChildOnMultipleImage(int availableWidth) {
+        int defaultImageWidth = (availableWidth - 2 * mSpaceWidth) / 3;
+        int imageLine = mPicUrls.size() == 4 ? 2 : mPicUrls.size() / 4 + 1;
+        int height = defaultImageWidth * imageLine + (imageLine - 1) * mSpaceWidth;
+        for (int i = 0; i < getChildCount(); i ++) {
+            View child = getChildAt(i);
+
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
+
+            child.measure(MeasureSpec.makeMeasureSpec(defaultImageWidth, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(defaultImageWidth, MeasureSpec.EXACTLY));
+        }
+
+        return height;
     }
 
     @Override
@@ -135,6 +140,9 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
             ItemImageView childView = (ItemImageView) getChildAt(i);
             int startX = getPaddingLeft();
             int startY = getPaddingTop();
+            if (childView.getVisibility() == View.GONE) {
+                continue;
+            }
             if (i < mPicUrls.size()) {
                 if (mPicUrls.size() == 1) {
                     childView.layout(startX, startY, startX + childView.getMeasuredWidth(), startY + childView.getMeasuredHeight());
@@ -161,24 +169,11 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
 //                    LogUtil.d(this, "item image index = %s left = %s top = %s right = %s button = %s",
 //                            i, left, top, right, button);
                 }
-            }else {
-                //这里需要给不显示的控件测量和定位，否则图片的点击事件会混乱
-                childView.layout(-1, -1, -1, -1);
             }
         }
     }
 
-    @Override
-    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        for (int i = 0; i < getChildCount(); i++) {
-            if (getChildAt(i) == child && mPicUrls != null && i < mPicUrls.size()) {
-                return super.drawChild(canvas, child, drawingTime);
-            }
-        }
-        return false;
-    }
-
-    public static boolean isImageWidthAndHeightWillSame(PicUrl picUrl1, PicUrl picUrl2) {
+    public static boolean isImageWidthAndHeightSame(PicUrl picUrl1, PicUrl picUrl2) {
         return (picUrl1.getWidth() * 1.0f / picUrl1.getHeight() < MAX_RADIO && picUrl2.getWidth() * 1.0f / picUrl2.getHeight() < MAX_RADIO)
                 ||(picUrl1.getHeight() * 1.0f / picUrl1.getWidth() < MAX_RADIO && picUrl2.getHeight() * 1.0f / picUrl2.getWidth() < MAX_RADIO)
                 ||(picUrl1.getHeight() * 1.0f / picUrl1.getWidth() == MAX_RADIO && picUrl2.getHeight() * 1.0f / picUrl2.getWidth() == MAX_RADIO)
@@ -190,28 +185,38 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
             setVisibility(GONE);
         }else {
             setVisibility(VISIBLE);
-            boolean isNeedRequestLayout = false;
-            if (mPicUrls != null && mPicUrls.size() == picUrls.size()) { //这个时候图片长度一样
-                if (mPicUrls.size() == 1 && !isImageWidthAndHeightWillSame(mPicUrls.get(0), picUrls.get(0))) { //如果都等于1 要判断图片比例的问题
-                    isNeedRequestLayout = true;
+
+            for (int i = 0; i < getChildCount(); i++) {
+                if (i < picUrls.size()) {
+                    getChildAt(i).setVisibility(VISIBLE);
+                }else {
+                    getChildAt(i).setVisibility(GONE);
                 }
-            }else { //布局不一样才requestLayout
-                isNeedRequestLayout = true;
             }
 
-            this.mPicUrls = picUrls;
-            if (isNeedRequestLayout) {
+            //当只有一张的时候复用  图片宽度是有变化 需要判断
+            boolean isNeedRequestLayout = false;
+            if (mPicUrls != null
+                    && mPicUrls.size() == picUrls.size()
+                    && mPicUrls.size() == 1
+                    && !isImageWidthAndHeightSame(mPicUrls.get(0), picUrls.get(0))) { //这个时候图片长度一样
+                    isNeedRequestLayout = true;
+            }
+
+            if (isNeedRequestLayout && !isLayoutRequested()) {
                 requestLayout();
             }
 
+            this.mPicUrls = picUrls;
+
             //因为请求重新绘制requestLayout是通过主线程handler发送消息， 这个再通过handler发送消息展示图片就会在绘制以后
-            mMainHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    disPlayPics(mPicUrls);
-                }
-            });
+            post(this);
         }
+    }
+
+    @Override
+    public void run() {
+        disPlayPics(mPicUrls);
     }
 
     protected void disPlayPics(List<PicUrl> picUrls) {
@@ -223,24 +228,14 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
                 imgView.setUrl(picUrl);
                 imgView.setTag(url);
                 imgView.setOnClickListener(this);
-                ImageLoader.ImageConfig config;
                 if (imgView.isLongImage() || imgView.isGif()) {
-                    ImageLoader.ImageConfigBuild build = new ImageLoader.ImageConfigBuild()
-                            .setPriority( ImageLoader.Priority.LOW)
-                            .setScaleType(ImageLoader.ScaleType.TOP);
-                    processImageConfigBuild(build);
-                    config = build.build();
-                    ImageLoader.load(getContext(), imgView, url, R.drawable.weibo_image_placeholder, config);
+                    ImageLoader.loadUrl(getContext(), imgView, url, R.drawable.weibo_image_placeholder, mLongAndGifImageConfig);
                 } else {
-                    ImageLoader.ImageConfigBuild build = new ImageLoader.ImageConfigBuild()
-                            .setScaleType(ImageLoader.ScaleType.CENTER_CROP);
-                    processImageConfigBuild(build);
-                    config = build.build();
-                    ImageLoader.load(getContext(), imgView, url, R.drawable.weibo_image_placeholder, config);
+                    ImageLoader.loadUrl(getContext(), imgView, url, R.drawable.weibo_image_placeholder, mNormalImageConfig);
                 }
             }else {
                 //不可见的view 加载null 是为了在item复用imageview没有复用时关闭之前的请求
-                ImageLoader.load(getContext(), imgView, null, R.drawable.weibo_image_placeholder);
+                ImageLoader.loadUrl(getContext(), imgView, null, R.drawable.weibo_image_placeholder, mNormalImageConfig);
             }
         }
     }
@@ -248,9 +243,9 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
     protected void processImageConfigBuild(ImageLoader.ImageConfigBuild build) {
     }
 
-    private ItemImageView createImageView(int imageWidth) {
+    private ItemImageView createImageView(int imageWidth, int imageHeight) {
         ItemImageView imageView = new ItemImageView(getContext());
-        LayoutParams params = new LayoutParams(imageWidth, imageWidth);
+        LayoutParams params = new LayoutParams(imageWidth, imageHeight);
         imageView.setLayoutParams(params);
         return imageView;
     }
@@ -267,7 +262,6 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
                 position = i;
             }
         }
-
         NavigationUtil.startImagePreActivity(getContext(), v, paths, position);
 
     }

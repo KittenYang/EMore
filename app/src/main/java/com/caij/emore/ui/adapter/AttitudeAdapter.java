@@ -41,7 +41,7 @@ public class AttitudeAdapter extends BaseAdapter<Attitude, AttitudeAdapter.Attit
     public void onBindViewHolder(AttitudeViewHolder holder, int position) {
         Attitude attitude = getItem(position);
         holder.tvName.setText(attitude.getUser().getScreen_name());
-        ImageLoader.load(mContext, holder.ivAvatar, attitude.getUser().getAvatar_large(),
+        ImageLoader.loadUrl(mContext, holder.ivAvatar, attitude.getUser().getAvatar_large(),
                 R.drawable.circle_image_placeholder, mImageConfig);
     }
 

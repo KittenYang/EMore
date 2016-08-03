@@ -41,7 +41,7 @@ public class MessageUserAdapter extends BaseAdapter<MessageUser.UserListBean, Me
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         MessageUser.UserListBean userBean = getItem(position);
-        ImageLoader.load(mContext, holder.ivIcon, userBean.getUser().getAvatar_large(),
+        ImageLoader.loadUrl(mContext, holder.ivIcon, userBean.getUser().getAvatar_large(),
                 R.drawable.circle_image_placeholder, mImageConfig);
         holder.tvName.setText(userBean.getUser().getScreen_name());
         holder.tvMessage.setText(userBean.getDirect_message().getText());

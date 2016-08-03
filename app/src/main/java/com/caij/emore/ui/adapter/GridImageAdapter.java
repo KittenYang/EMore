@@ -66,7 +66,7 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
             imageView.selectCheckBox.setTag(image);
             imageView.viewShaw.setVisibility(image.isSelected() ? View.VISIBLE : View.GONE);
             String path = "file://" + image.getPath();
-            ImageLoader.load(mContext, imageView.imageView, path, R.drawable.weibo_image_placeholder, mImageConfig);
+            ImageLoader.loadUrl(mContext, imageView.imageView, path, R.drawable.weibo_image_placeholder, mImageConfig);
         }else if (holder instanceof  CameraViewHolder){
             CameraViewHolder cameraViewHolder = (CameraViewHolder) holder;
             cameraViewHolder.imageView.setBackgroundResource(R.mipmap.image_picker_take_image);

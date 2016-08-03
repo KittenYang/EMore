@@ -129,12 +129,12 @@ public class ImageLoader {
         public void onSuccess();
     }
 
-    public static void load(Context context, ImageView view, String url, int resourceId,  ImageConfig imageConfig) {
+    public static void loadUrl(Context context, ImageView view, String url, int resourceId, ImageConfig imageConfig) {
         DrawableTypeRequest request = createRequest(context, url);
         loadImage(context, view, request, resourceId, imageConfig);
     }
 
-    public static void load(Context context, ImageView view, File file, int resourceId,  ImageConfig imageConfig) {
+    public static void loadFile(Context context, ImageView view, File file, int resourceId, ImageConfig imageConfig) {
         DrawableTypeRequest request = createRequest(context, file);
         loadImage(context, view, request, resourceId, imageConfig);
     }
@@ -270,7 +270,7 @@ public class ImageLoader {
     }
 
     public static void load(Context context, ImageView imgView, String url, int imagePlaceholder) {
-        load(context, imgView, url, imagePlaceholder, new ImageConfigBuild().setScaleType(ScaleType.CENTER_CROP).build());
+        loadUrl(context, imgView, url, imagePlaceholder, new ImageConfigBuild().setScaleType(ScaleType.CENTER_CROP).build());
     }
 
 

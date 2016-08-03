@@ -1,8 +1,5 @@
 package com.caij.emore.ui.fragment;
 
-import android.graphics.Point;
-import android.graphics.PointF;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,17 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.caij.emore.BuildConfig;
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.present.ImagePrePresent;
 import com.caij.emore.present.imp.ImagePrePresentImp;
 import com.caij.emore.present.view.ImagePreView;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.LogUtil;
-import com.caij.emore.utils.weibo.WeiboUtil;
 import com.caij.emore.view.subscaleview.ImageSource;
 import com.caij.emore.view.subscaleview.SubsamplingScaleImageView;
 
@@ -28,7 +22,6 @@ import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * Created by Caij on 2016/6/24.
@@ -79,7 +72,7 @@ public class ImagePrewFragment extends BaseFragment implements ImagePreView {
 //            .setCacheMemory(false)
             .setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE)
             .build();
-        ImageLoader.load(getActivity(), mIvImage, picUrl, android.R.color.black, config);
+        ImageLoader.loadUrl(getActivity(), mIvImage, picUrl, android.R.color.black, config);
     }
 
     @Override
@@ -104,7 +97,7 @@ public class ImagePrewFragment extends BaseFragment implements ImagePreView {
 //                .setCacheMemory(false)
                 .setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE)
                 .build();
-        ImageLoader.load(getActivity(), mIvImage, new File(localFilePath), android.R.color.black, config);
+        ImageLoader.loadFile(getActivity(), mIvImage, new File(localFilePath), android.R.color.black, config);
     }
 
     @Override

@@ -262,7 +262,7 @@ public class ImageUtil {
     }
 
     public static boolean isLongImage(int width, int height) {
-        return width * 1f / height > 3.5  ||  height * 1f / width > 3.5;
+        return width * 1f / height > 3.0  ||  height * 1f / width > 3.0;
     }
 
 }

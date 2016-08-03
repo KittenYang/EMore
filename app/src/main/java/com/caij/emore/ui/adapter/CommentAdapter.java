@@ -1,7 +1,6 @@
 package com.caij.emore.ui.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.view.FixClickableSpanBugTextView;
@@ -26,11 +24,11 @@ import butterknife.ButterKnife;
  */
 public class CommentAdapter extends BaseAdapter<Comment, CommentAdapter.CommentViewHolder> {
 
-    private final ImageLoader.ImageConfig avatarImageConfig;
+    private final ImageLoader.ImageConfig mAvatarImageConfig;
 
     public CommentAdapter(Context context) {
         super(context);
-        avatarImageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
+        mAvatarImageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
     }
 
     @Override
@@ -51,8 +49,8 @@ public class CommentAdapter extends BaseAdapter<Comment, CommentAdapter.CommentV
         holder.txtName.setText(comment.getUser().getName());
 
 
-        ImageLoader.load(mContext, holder.imgPhoto, comment.getUser().getAvatar_large(),
-                R.drawable.circle_image_placeholder, avatarImageConfig);
+        ImageLoader.loadUrl(mContext, holder.imgPhoto, comment.getUser().getAvatar_large(),
+                R.drawable.circle_image_placeholder, mAvatarImageConfig);
     }
 
     public static class CommentViewHolder extends BaseViewHolder {

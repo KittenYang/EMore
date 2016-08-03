@@ -43,7 +43,7 @@ public class UserAdapter extends BaseAdapter<User, UserAdapter.UserViewHolder> {
         User user = getItem(position);
         holder.txtName.setText(user.getScreen_name());
         holder.txtDesc.setText(user.getDescription());
-        ImageLoader.load(mContext, holder.imgPhoto, user.getAvatar_large(),
+        ImageLoader.loadUrl(mContext, holder.imgPhoto, user.getAvatar_large(),
                 R.drawable.circle_image_placeholder, mImageConfig);
     }
 

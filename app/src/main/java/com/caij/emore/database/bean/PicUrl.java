@@ -5,6 +5,8 @@ package com.caij.emore.database.bean;
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
 
+import com.caij.emore.utils.ImageUtil;
+
 import java.io.Serializable;
 
 /**
@@ -103,7 +105,7 @@ public class PicUrl implements Serializable {
     }
 
     public boolean isBigImage() {
-        return this.getWidth() / this.getHeight() > 3 || this.getHeight() / this.getWidth() > 3;
+        return ImageUtil.isLongImage(getWidth(), getHeight());
     }
 
     public boolean isBigImageAndHeightBtWidth() {

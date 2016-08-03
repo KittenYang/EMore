@@ -14,7 +14,6 @@ import com.caij.emore.database.bean.LocakImage;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.glide.MaskTransformation;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
@@ -77,7 +76,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         if (holder instanceof OtherMessageViewHolder) {
             OtherMessageViewHolder viewHolder = (OtherMessageViewHolder) holder;
             viewHolder.tvMessage.setText(message.getText());
-            ImageLoader.load(mContext, viewHolder.ivAvatar, message.getSender().getAvatar_large(),
+            ImageLoader.loadUrl(mContext, viewHolder.ivAvatar, message.getSender().getAvatar_large(),
                     R.drawable.circle_image_placeholder, mAvatarImageConfig);
 
             if (position - 1 >= 0) {
@@ -94,7 +93,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         }else if (holder instanceof SelfMessageViewHolder) {
             SelfMessageViewHolder viewHolder = (SelfMessageViewHolder) holder;
             viewHolder.tvMessage.setText(message.getText());
-            ImageLoader.load(mContext, ((SelfMessageViewHolder) holder).ivAvatar, message.getSender().getAvatar_large(),
+            ImageLoader.loadUrl(mContext, ((SelfMessageViewHolder) holder).ivAvatar, message.getSender().getAvatar_large(),
                     R.drawable.circle_image_placeholder, mAvatarImageConfig);
             if (message.getLocal_status() == DirectMessage.STATUS_SEND) {
                 viewHolder.pbLoading.setVisibility(View.VISIBLE);
@@ -122,7 +121,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
             }
         }else if (holder instanceof SelfMessageViewImageHolder) {
             SelfMessageViewImageHolder viewHolder = (SelfMessageViewImageHolder) holder;
-            ImageLoader.load(mContext, viewHolder.ivAvatar, message.getSender().getAvatar_large(),
+            ImageLoader.loadUrl(mContext, viewHolder.ivAvatar, message.getSender().getAvatar_large(),
                     R.drawable.circle_image_placeholder, mAvatarImageConfig);
 
             LocakImage locakImage = message.getLocakImage();
@@ -134,7 +133,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
                     .setWidthAndHeight(layoutParams.width, layoutParams.height)
                     .setTransformation(mSelfTransformation)
                     .build();
-            ImageLoader.load(mContext, viewHolder.ivImage, appImageUrl(locakImage.getUrl()),
+            ImageLoader.loadUrl(mContext, viewHolder.ivImage, appImageUrl(locakImage.getUrl()),
                     R.drawable.messages_right_bubble, imageConfig);
 
             if (message.getLocal_status() == DirectMessage.STATUS_SEND) {
@@ -163,7 +162,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
             }
         }else if (holder instanceof OtherMessageViewImageHolder) {
             OtherMessageViewImageHolder viewHolder = (OtherMessageViewImageHolder) holder;
-            ImageLoader.load(mContext, viewHolder.ivAvatar, message.getSender().getAvatar_large(),
+            ImageLoader.loadUrl(mContext, viewHolder.ivAvatar, message.getSender().getAvatar_large(),
                     R.drawable.circle_image_placeholder, mAvatarImageConfig);
 
             LocakImage locakImage = message.getLocakImage();
@@ -175,7 +174,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
                     .setWidthAndHeight(layoutParams.width, layoutParams.height)
                     .setTransformation(mOtherTransformation)
                     .build();
-            ImageLoader.load(mContext, viewHolder.ivImage, appImageUrl(locakImage.getUrl()),
+            ImageLoader.loadUrl(mContext, viewHolder.ivImage, appImageUrl(locakImage.getUrl()),
                     R.drawable.messages_left_bubble, imageConfig);
 
 

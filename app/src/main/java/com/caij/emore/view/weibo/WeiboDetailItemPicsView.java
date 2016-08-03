@@ -29,22 +29,21 @@ public class WeiboDetailItemPicsView extends WeiboItemPicsView{
     }
 
     @Override
-    protected int measureChildOnOneImage(PicUrl picUrl, int availableWidth, View child) {
+    protected int measureChildOnOneImage(int availableWidth) {
         //如果是详情就撑满屏幕
-        int height = 0;
-        int imageWidth = availableWidth;
         int imageHeight;
+        PicUrl picUrl = mPicUrls.get(0);
+        View child = getChildAt(0);
         if (picUrl.getHeight() > 0 && picUrl.getWidth() > 0) {
-            imageHeight = (int) (imageWidth * picUrl.getHeight() * 1.0f / picUrl.getWidth());
-            child.measure(MeasureSpec.makeMeasureSpec(imageWidth, MeasureSpec.EXACTLY),
+            imageHeight = (int) (availableWidth * picUrl.getHeight() * 1.0f / picUrl.getWidth());
+            child.measure(MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(imageHeight, MeasureSpec.EXACTLY));
         }else {
-            imageHeight = imageWidth;
-            child.measure(MeasureSpec.makeMeasureSpec(imageWidth, MeasureSpec.EXACTLY),
+            imageHeight = availableWidth;
+            child.measure(MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(imageHeight, MeasureSpec.EXACTLY));
         }
-        height = imageHeight;
-        return height;
+        return imageHeight;
     }
 
 

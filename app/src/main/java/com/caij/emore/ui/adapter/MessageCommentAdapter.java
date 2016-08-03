@@ -58,7 +58,7 @@ public class MessageCommentAdapter extends BaseAdapter<Comment, MessageCommentAd
     @Override
     public void onBindViewHolder(CommentMentionViewHolder holder, int position) {
         Comment comment = getItem(position);
-        ImageLoader.load(mContext, holder.sdvAvatar, comment.getUser().getAvatar_large(),
+        ImageLoader.loadUrl(mContext, holder.sdvAvatar, comment.getUser().getAvatar_large(),
                 R.drawable.circle_image_placeholder, mImageConfig);
         holder.tvHeadName.setText(comment.getUser().getName());
         holder.tvComment.setText(comment.getText());

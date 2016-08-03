@@ -15,8 +15,11 @@ import com.caij.emore.view.recyclerview.BaseAdapter;
  */
 public class RepostAdapter extends BaseAdapter<Weibo, CommentAdapter.CommentViewHolder> {
 
+    ImageLoader.ImageConfig mAvatarImageConfig;
+
     public RepostAdapter(Context context) {
         super(context);
+        mAvatarImageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
     }
 
     @Override
@@ -36,9 +39,8 @@ public class RepostAdapter extends BaseAdapter<Weibo, CommentAdapter.CommentView
 
         holder.txtName.setText(weibo.getUser().getName());
 
-        ImageLoader.ImageConfig imageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
-        ImageLoader.load(mContext, holder.imgPhoto, weibo.getUser().getAvatar_large(),
-                R.drawable.circle_image_placeholder, imageConfig);
+        ImageLoader.loadUrl(mContext, holder.imgPhoto, weibo.getUser().getAvatar_large(),
+                R.drawable.circle_image_placeholder, mAvatarImageConfig);
     }
 
 }

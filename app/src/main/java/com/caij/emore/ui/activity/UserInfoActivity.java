@@ -34,7 +34,6 @@ import com.caij.emore.ui.fragment.UserInfoFragment;
 import com.caij.emore.ui.fragment.weibo.UserWeiboFragment;
 import com.caij.emore.utils.CountUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.weibo.WeiboUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
@@ -187,7 +186,7 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView, Ap
         txtFollowersCounter.setText(CountUtil.getCounter(this, user.getFollowers_count()) + getString(R.string.fans));
         ImageLoader.ImageConfigBuild build = new ImageLoader.ImageConfigBuild().setCircle(true).
                 setScaleType(ImageLoader.ScaleType.CENTER_CROP);
-        ImageLoader.load(this, ivAvatar, user.getAvatar_large(), R.drawable.circle_image_placeholder, build.build());
+        ImageLoader.loadUrl(this, ivAvatar, user.getAvatar_large(), R.drawable.circle_image_placeholder, build.build());
 
         WeiboUtil.setImageVerified(imgVerified, user);
         WeiboUtil.setGender(user, imgGender);
