@@ -77,6 +77,19 @@ public class ImageLoader {
 
         }
 
+        public static ImageConfigBuild clone(ImageConfig imageConfig) {
+            ImageConfigBuild imageConfigBuild = new ImageConfigBuild();
+            imageConfigBuild.setCacheMemory(imageConfig.isCacheMemory);
+            imageConfigBuild.setWidthAndHeight(imageConfig.width, imageConfig.height);
+            imageConfigBuild.setDiskCacheStrategy(imageConfig.diskCacheStrategy);
+            imageConfigBuild.setTransformation(imageConfig.transformation);
+            imageConfigBuild.setCircle(imageConfig.isCircle);
+            imageConfigBuild.setPriority(imageConfig.priority);
+            imageConfigBuild.setScaleType(imageConfig.scaleType);
+            imageConfigBuild.setSupportGif(imageConfig.isSupportGif);
+            return imageConfigBuild;
+        }
+
         public ImageConfigBuild setWidthAndHeight(int width, int height) {
             this.width = width;
             this.height = height;

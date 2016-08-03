@@ -21,6 +21,7 @@ import java.util.List;
 public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener, ImageInterface, Runnable {
 
     public static final float MAX_RADIO = 13 * 1.0f / 13;
+
     public ImageLoader.ImageConfig mNormalImageConfig;
     public ImageLoader.ImageConfig mLongAndGifImageConfig;
 
@@ -52,12 +53,10 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
         ImageLoader.ImageConfigBuild normalImageConfigBuild = new ImageLoader.ImageConfigBuild()
                 .setPriority(ImageLoader.Priority.LOW)
                 .setScaleType(ImageLoader.ScaleType.TOP);
-        processImageConfigBuild(normalImageConfigBuild);
         mNormalImageConfig = normalImageConfigBuild.build();
 
         ImageLoader.ImageConfigBuild longAndGifConfigBuild = new ImageLoader.ImageConfigBuild()
                 .setScaleType(ImageLoader.ScaleType.CENTER_CROP);
-        processImageConfigBuild(longAndGifConfigBuild);
         mLongAndGifImageConfig = longAndGifConfigBuild.build();
 
         addItemViews();
@@ -228,10 +227,13 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
                 imgView.setUrl(picUrl);
                 imgView.setTag(url);
                 imgView.setOnClickListener(this);
+
                 if (imgView.isLongImage() || imgView.isGif()) {
-                    ImageLoader.loadUrl(getContext(), imgView, url, R.drawable.weibo_image_placeholder, mLongAndGifImageConfig);
+                    ImageLoader.ImageConfig imageConfig  = processImageConfig(mLongAndGifImageConfig);
+                    ImageLoader.loadUrl(getContext(), imgView, url, R.drawable.weibo_image_placeholder, imageConfig);
                 } else {
-                    ImageLoader.loadUrl(getContext(), imgView, url, R.drawable.weibo_image_placeholder, mNormalImageConfig);
+                    ImageLoader.ImageConfig imageConfig = processImageConfig(mNormalImageConfig);
+                    ImageLoader.loadUrl(getContext(), imgView, url, R.drawable.weibo_image_placeholder, imageConfig);
                 }
             }else {
                 //不可见的view 加载null 是为了在item复用imageview没有复用时关闭之前的请求
@@ -240,7 +242,8 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
         }
     }
 
-    protected void processImageConfigBuild(ImageLoader.ImageConfigBuild build) {
+    protected ImageLoader.ImageConfig processImageConfig(ImageLoader.ImageConfig imageConfig) {
+        return imageConfig;
     }
 
     private ItemImageView createImageView(int imageWidth, int imageHeight) {

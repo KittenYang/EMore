@@ -48,15 +48,18 @@ public class WeiboDetailItemPicsView extends WeiboItemPicsView{
 
 
     @Override
-    protected void processImageConfigBuild(ImageLoader.ImageConfigBuild build) {
-        super.processImageConfigBuild(build);
+    protected ImageLoader.ImageConfig processImageConfig(ImageLoader.ImageConfig  imageConfig) {
         //详情页是一张图片的时候不存到内存中
         if (mPicUrls == null || mPicUrls.size() == 1) {
-            build.setCacheMemory(false);
+            ImageLoader.ImageConfigBuild imageConfigBuild = ImageLoader.ImageConfigBuild.clone(imageConfig);
+            imageConfigBuild.setSupportGif(true);
+            imageConfigBuild.setCacheMemory(false);
             if (mPicUrls.get(0).getThumbnail_pic().contains("gif")) {
-                build.setSupportGif(true);
-                build.setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE);
+                imageConfigBuild.setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE);
             }
+            return imageConfigBuild.build();
+        }else {
+            return super.processImageConfig(imageConfig);
         }
     }
 }
