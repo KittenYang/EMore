@@ -160,6 +160,7 @@
     <string name="network_error">网络出错，请检查网络</string>
     <string name="server_error">服务器出错</string>
     <string name="self_weibo_unable_collect">自己的微博不能收藏哦</string>
+    <string name="web_page">网页详情</string>
 
     <string-array name="txtUnread">
         <item>5分钟</item>

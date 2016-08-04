@@ -42,10 +42,6 @@ public abstract class AbsLoginActivity extends WebActivity {
     private AsyncTask<Object, Object, String> mHtmlAsyncTask;
     private boolean mAccountFilled = false;
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

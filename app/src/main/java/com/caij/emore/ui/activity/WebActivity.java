@@ -41,6 +41,7 @@ public class WebActivity extends BaseToolBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        setTitle(R.string.web_page);
         initView();
         handlerIntent(getIntent());
     }
@@ -64,7 +65,13 @@ public class WebActivity extends BaseToolBarActivity {
         setting.setDomStorageEnabled(true);
         setting.setAppCacheEnabled(true);
         mWebView.setWebViewClient(new MyWebViewClient(mProgressBar));
-        mWebView.setWebChromeClient(new MyWebChromeClient(mProgressBar));
+        mWebView.setWebChromeClient(new MyWebChromeClient(mProgressBar){
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+                setTitle(title);
+            }
+        });
     }
 
     @Override
