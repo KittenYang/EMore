@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/7/3.
  */
-public class FriendshipResponse {
+public class FriendshipResponse extends Response {
     private List<User> users;
 
     private long next_cursor;

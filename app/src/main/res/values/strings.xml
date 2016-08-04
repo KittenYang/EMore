@@ -157,6 +157,9 @@
     <string name="exit_hint">退出后将收不到消息提醒</string>
     <string name="change_account_hint">是否切换账号</string>
     <string name="clear_cache_hint">是否清楚缓存</string>
+    <string name="network_error">网络出错，请检查网络</string>
+    <string name="server_error">服务器出错</string>
+    <string name="self_weibo_unable_collect">自己的微博不能收藏哦</string>
 
     <string-array name="txtUnread">
         <item>5分钟</item>

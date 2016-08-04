@@ -5,6 +5,7 @@ import com.caij.emore.present.ListPresent;
 import com.caij.emore.present.SearchRecommendPresent;
 import com.caij.emore.present.view.SearchRecommendView;
 import com.caij.emore.source.SearchSource;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import rx.Subscriber;
 import rx.Subscription;
@@ -41,8 +42,7 @@ public class SearchRecommendPresentImp implements SearchRecommendPresent {
     public void search(String key) {
         mCompositeSubscription.clear();
         Subscription subscription = mServerSearchSource.getSearchRecommend(key)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new SchedulerTransformer<SinaSearchRecommend>())
                 .subscribe(new Subscriber<SinaSearchRecommend>() {
                     @Override
                     public void onCompleted() {

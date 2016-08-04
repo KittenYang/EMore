@@ -5,6 +5,7 @@ import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
+import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
@@ -24,7 +25,7 @@ import rx.Observable;
  */
 public interface WeiboSource {
 
-    public Observable<List<Weibo>> getFriendWeibo(String accessToken, long since_id, long max_id,
+    public Observable<QueryWeiboResponse> getFriendWeibo(String accessToken, long since_id, long max_id,
                                                   int count, int page);
 
     public void saveWeibos(String accessToken, List<Weibo> weibos);
@@ -54,7 +55,7 @@ public interface WeiboSource {
                                                                 int count, int page);
 
 
-    public Observable<List<Comment>> getCommentsByWeibo(String accessToken, long id,
+    public Observable<QueryWeiboCommentResponse> getCommentsByWeibo(String accessToken, long id,
                                                         long since_id, long max_id,
                                                         int count, int page);
 
@@ -89,21 +90,21 @@ public interface WeiboSource {
 
     public Observable<Weibo> getWeiboById(String token, long id);
 
-    public Observable<List<Attitude>> getWeiboAttiyudes(String token, long id, int page, int count);
+    public Observable<QueryWeiboAttitudeResponse> getWeiboAttiyudes(String token, long id, int page, int count);
 
     void saveWeibo(String mToken, Weibo weibo);
 
     void saveUploadImageResponse(UploadImageResponse uploadImageResponse);
 
-    public Observable<List<Attitude>> getToMeAttiyudes(String token, long maxId, long sinceId,
+    public Observable<QueryWeiboAttitudeResponse> getToMeAttiyudes(String token, long maxId, long sinceId,
                                                        String source,  String from, int page, int count);
 
-    Observable<List<Weibo>> getWeibosByIds(String access_token, String ids);
+    Observable<QueryWeiboResponse> getWeibosByIds(String access_token, String ids);
 
     Observable<WeiboIds> getHotWeibosIds(String access_token, int page);
 
-    Observable<List<Weibo>> getTopicsByKey(String access_token, String q, int page, int count);
+    Observable<QueryWeiboResponse> getTopicsByKey(String access_token, String q, int page, int count);
 
-    Observable<List<Weibo>> getSearchWeibo(String access_token, String q, int page, int count);
+    Observable<QueryWeiboResponse> getSearchWeibo(String access_token, String q, int page, int count);
 
 }

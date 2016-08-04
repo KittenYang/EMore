@@ -3,6 +3,7 @@ package com.caij.emore.bean;
 import android.text.Spannable;
 import android.text.SpannableString;
 
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 
@@ -11,7 +12,7 @@ import java.io.Serializable;
 /**
  * Created by Caij on 2016/6/16.
  */
-public class Comment implements Serializable {
+public class Comment extends Response implements Serializable {
 
     private String created_at;
     private long id;

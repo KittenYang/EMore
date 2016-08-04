@@ -9,6 +9,7 @@ import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
+import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
@@ -60,12 +61,12 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<List<Weibo>> getFriendWeibo(String accessToken, final long since_id, final long max_id,
+    public Observable<QueryWeiboResponse> getFriendWeibo(String accessToken, final long since_id, final long max_id,
                                                   final int count, final int page) {
-        return Observable.create(new Observable.OnSubscribe<List<Weibo>>() {
+        return Observable.create(new Observable.OnSubscribe<QueryWeiboResponse>() {
 
             @Override
-            public void call(Subscriber<? super List<Weibo>> subscriber) {
+            public void call(Subscriber<? super QueryWeiboResponse> subscriber) {
                 try {
                     Cursor cursor = userDao.queryBuilder().where(UserDao.Properties.Following.eq(true))
                             .buildCursor().query();
@@ -119,7 +120,9 @@ public class LocalWeiboSource implements WeiboSource {
                         selectWeibo(weibo);
                     }
 
-                    subscriber.onNext(friendWeibos);
+                    QueryWeiboResponse queryWeiboResponse = new QueryWeiboResponse();
+                    queryWeiboResponse.setStatuses(friendWeibos);
+                    subscriber.onNext(queryWeiboResponse);
                 }catch (Exception e) {
                     subscriber.onError(e);
                 }
@@ -295,7 +298,7 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<List<Comment>> getCommentsByWeibo(String accessToken, long id, long since_id, long max_id, int count, int page) {
+    public Observable<QueryWeiboCommentResponse> getCommentsByWeibo(String accessToken, long id, long since_id, long max_id, int count, int page) {
         return null;
     }
 
@@ -336,18 +339,39 @@ public class LocalWeiboSource implements WeiboSource {
 
     @Override
     public Observable<Attitude> attitudesWeibo(String token, String source, String attitude, final long weiboId) {
-        LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
-        LikeBean likeBean = new LikeBean(weiboId, true);
-        dao.insertOrReplace(likeBean);
-        return null;
+        return Observable.create(new Observable.OnSubscribe<Attitude>() {
+            @Override
+            public void call(Subscriber<? super Attitude> subscriber) {
+                try {
+                    LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
+                    LikeBean likeBean = new LikeBean(weiboId, true);
+                    dao.insertOrReplace(likeBean);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                }catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
+
     }
 
     @Override
-    public Observable<Response> destoryAttitudesWeibo(String token, String source, String attitude, final long weiboId) {
-        LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
-        LikeBean likeBean = new LikeBean(weiboId, false);
-        dao.insertOrReplace(likeBean);
-        return null;
+    public Observable<Response> destoryAttitudesWeibo(String token, final String source, String attitude, final long weiboId) {
+        return Observable.create(new Observable.OnSubscribe<Response>() {
+            @Override
+            public void call(Subscriber<? super Response> subscriber) {
+                try {
+                    LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
+                    LikeBean likeBean = new LikeBean(weiboId, false);
+                    dao.insertOrReplace(likeBean);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                }catch (Exception e){
+                    subscriber.onError(e);
+                }
+            }
+        });
     }
 
     @Override
@@ -396,7 +420,7 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<List<Attitude>> getWeiboAttiyudes(String token, long id, int page, int count) {
+    public Observable<QueryWeiboAttitudeResponse> getWeiboAttiyudes(String token, long id, int page, int count) {
         return null;
     }
 
@@ -411,14 +435,14 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<List<Attitude>> getToMeAttiyudes(String token, long maxId,
-                                                       long sinceId, String source,  String from,
-                                                       int page, int count) {
+    public Observable<QueryWeiboAttitudeResponse> getToMeAttiyudes(String token, long maxId,
+                                                                   long sinceId, String source, String from,
+                                                                   int page, int count) {
         return null;
     }
 
     @Override
-    public Observable<List<Weibo>> getWeibosByIds(String access_token, String ids) {
+    public Observable<QueryWeiboResponse> getWeibosByIds(String access_token, String ids) {
         return null;
     }
 
@@ -428,12 +452,12 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<List<Weibo>> getTopicsByKey(String access_token, String q, int page, int count) {
+    public Observable<QueryWeiboResponse> getTopicsByKey(String access_token, String q, int page, int count) {
         return null;
     }
 
     @Override
-    public Observable<List<Weibo>> getSearchWeibo(String access_token, String q, int page, int count) {
+    public Observable<QueryWeiboResponse> getSearchWeibo(String access_token, String q, int page, int count) {
         return null;
     }
 

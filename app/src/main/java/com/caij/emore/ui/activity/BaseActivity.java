@@ -68,6 +68,11 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
     }
 
     @Override
+    public void showHint(String string) {
+        showToast(string);
+    }
+
+    @Override
     public void showDialogLoading(boolean isShow, int hintStringId) {
         if (isShow) {
             mLoadingDialog = DialogUtil.showProgressDialog(this, null, getString(hintStringId));

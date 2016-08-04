@@ -11,6 +11,7 @@ import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -54,8 +55,7 @@ public class MainPresentImp implements MainPresent {
     @Override
     public void onCreate() {
         Subscription subscription = mLocalMessageSource.getUnReadMessage(mToken, mUid)
-                .observeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new SchedulerTransformer<UnReadMessage>())
                 .subscribe(new Subscriber<UnReadMessage>() {
                     @Override
                     public void onCompleted() {
@@ -99,8 +99,7 @@ public class MainPresentImp implements MainPresent {
 
     private void loadDrafts() {
         mDraftSource.getDraftsCount()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new SchedulerTransformer<Integer>())
                 .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
@@ -128,8 +127,8 @@ public class MainPresentImp implements MainPresent {
 
     @Override
     public void getWeiboUserInfoByUid() {
-        Observable<User> localObservable =   mLocalUserSource.getWeiboUserInfoByUid(mToken, mUid);
-        Observable<User> serverObservable =   mServerUserSource.getWeiboUserInfoByUid(mToken, mUid);
+        Observable<User> localObservable =  mLocalUserSource.getWeiboUserInfoByUid(mToken, mUid);
+        Observable<User> serverObservable =  mServerUserSource.getWeiboUserInfoByUid(mToken, mUid);
         Subscription subscription = Observable.concat(localObservable, serverObservable)
                 .first(new Func1<User, Boolean>() {
                     @Override
@@ -137,8 +136,7 @@ public class MainPresentImp implements MainPresent {
                         return user != null && System.currentTimeMillis() - user.getUpdate_time() < 60 * 60 * 1000;
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new SchedulerTransformer<User>())
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public void onCompleted() {

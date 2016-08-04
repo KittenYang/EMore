@@ -13,6 +13,7 @@ import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -20,25 +21,31 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/20.
  */
 public class DraftPresentImp implements DraftPresent {
 
+    private static final int PAGE_COUNT = 20;
+
     private DraftSource mDraftSource;
     private List<Draft> mDrafts;
     private DraftListView mView;
     private Observable<Draft> mDraftObservable;
+    private CompositeSubscription mCompositeSubscription;
 
     public DraftPresentImp(DraftSource draftSource, DraftListView view) {
         mDraftSource = draftSource;
         mDrafts = new ArrayList<>();
         mView = view;
+        mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -52,23 +59,7 @@ public class DraftPresentImp implements DraftPresent {
         if (mDrafts.size() > 0) {
             maxTime = mDrafts.get(mDrafts.size() - 1).getCreate_at();
         }
-        mDraftSource.getDrafts(maxTime, 20, 1)
-                .flatMap(new Func1<List<Draft>, Observable<Draft>>() {
-                    @Override
-                    public Observable<Draft> call(List<Draft> drafts) {
-                        return Observable.from(drafts);
-                    }
-                })
-                .doOnNext(new Action1<Draft>() {
-                    @Override
-                    public void call(Draft draft) {
-                        List<String> images  = GsonUtils.fromJson(draft.getImage_paths(), new TypeToken<List<String>>(){}.getType());
-                        draft.setImages(images);
-                    }
-                })
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        Subscription subscription = createDraftObservable(maxTime)
                 .subscribe(new Subscriber<List<Draft>>() {
                     @Override
                     public void onCompleted() {
@@ -86,27 +77,12 @@ public class DraftPresentImp implements DraftPresent {
                         mView.setEntities(mDrafts);
                     }
                 });
+        mCompositeSubscription.add(subscription);
     }
 
     @Override
     public void onCreate() {
-        mDraftSource.getDrafts(Long.MAX_VALUE, 20, 1)
-                .flatMap(new Func1<List<Draft>, Observable<Draft>>() {
-                    @Override
-                    public Observable<Draft> call(List<Draft> drafts) {
-                        return Observable.from(drafts);
-                    }
-                })
-                .doOnNext(new Action1<Draft>() {
-                    @Override
-                    public void call(Draft draft) {
-                        List<String> images  = GsonUtils.fromJson(draft.getImage_paths(), new TypeToken<List<String>>(){}.getType());
-                        draft.setImages(images);
-                    }
-                })
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        Subscription subscription = createDraftObservable(Long.MAX_VALUE)
                 .subscribe(new Subscriber<List<Draft>>() {
                     @Override
                     public void onCompleted() {
@@ -124,6 +100,8 @@ public class DraftPresentImp implements DraftPresent {
                         mView.setEntities(mDrafts);
                     }
                 });
+
+        mCompositeSubscription.add(subscription);
 
         mDraftObservable = RxBus.get().register(Key.EVENT_DRAFT_UPDATE);
         mDraftObservable.observeOn(AndroidSchedulers.mainThread())
@@ -159,9 +137,35 @@ public class DraftPresentImp implements DraftPresent {
                 });
     }
 
+    private Observable<List<Draft>> createDraftObservable(long maxTime) {
+        return mDraftSource.getDrafts(maxTime, PAGE_COUNT, 1)
+                .flatMap(new Func1<List<Draft>, Observable<Draft>>() {
+                    @Override
+                    public Observable<Draft> call(List<Draft> drafts) {
+                        return Observable.from(drafts);
+                    }
+                })
+                .filter(new Func1<Draft, Boolean>() {
+                    @Override
+                    public Boolean call(Draft draft) {
+                        return !mDrafts.contains(draft);
+                    }
+                })
+                .doOnNext(new Action1<Draft>() {
+                    @Override
+                    public void call(Draft draft) {
+                        List<String> images  = GsonUtils.fromJson(draft.getImage_paths(), new TypeToken<List<String>>(){}.getType());
+                        draft.setImages(images);
+                    }
+                })
+                .toList()
+                .compose(new SchedulerTransformer<List<Draft>>());
+    }
+
     @Override
     public void onDestroy() {
-
+        mCompositeSubscription.clear();
+        RxBus.get().unregister(Key.EVENT_DRAFT_UPDATE, mDraftObservable);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.caij.emore.present.imp;
 import com.caij.emore.Key;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
+import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.UrlInfo;
@@ -15,6 +16,10 @@ import com.caij.emore.source.local.LocalUrlSource;
 import com.caij.emore.source.server.ServerUrlSource;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.UrlUtil;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.DefaultTransformer;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
@@ -65,18 +70,15 @@ public class AttitudesToMePresentImp implements RefreshListPresent {
 
     @Override
     public void refresh() {
-        Subscription su =  mWeiboSource.getToMeAttiyudes(mToken, 0, 0, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, 1, COUNT)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Attitude>>() {
+        Subscription su =  createGetAttitudeObservable(0, true)
+                .subscribe(new DefaultResponseSubscriber<List<Attitude>>(mView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mView.onRefreshComplete();
                     }
 
@@ -101,19 +103,16 @@ public class AttitudesToMePresentImp implements RefreshListPresent {
         if (mAttitudes.size() > 0) {
             maxId = mAttitudes.get(mAttitudes.size() - 1).getId();
         }
-        Subscription su = mWeiboSource.getToMeAttiyudes(mToken, maxId, 0, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, 1, COUNT)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Attitude>>() {
+        Subscription su = createGetAttitudeObservable(maxId, false)
+                .subscribe(new DefaultResponseSubscriber<List<Attitude>>(mView) {
                     @Override
-                    public void onCompleted() {
-
+                    protected void onFail(Throwable e) {
+                        mView.onLoadComplete(true);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
-                        mView.onLoadComplete(true);
+                    public void onCompleted() {
+
                     }
 
                     @Override
@@ -125,6 +124,25 @@ public class AttitudesToMePresentImp implements RefreshListPresent {
                     }
                 });
         mLoginCompositeSubscription.add(su);
+    }
+
+    private Observable<List<Attitude>> createGetAttitudeObservable(long maxId, final boolean isRefresh) {
+        return mWeiboSource.getToMeAttiyudes(mToken, maxId, 0, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, 1, COUNT)
+                .compose(new ErrorCheckerTransformer<QueryWeiboAttitudeResponse>())
+                .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<Attitude>>() {
+                    @Override
+                    public Observable<Attitude> call(QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
+                        return Observable.from(queryWeiboAttitudeResponse.getAttitudes());
+                    }
+                })
+                .filter(new Func1<Attitude, Boolean>() {
+                    @Override
+                    public Boolean call(Attitude attitude) {
+                        return !mAttitudes.contains(attitude) || isRefresh;
+                    }
+                })
+                .toList()
+                .compose(new SchedulerTransformer<List<Attitude>>());
     }
 
     @Override

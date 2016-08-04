@@ -6,6 +6,9 @@ import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
+import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
+import com.caij.emore.bean.response.QueryWeiboCommentResponse;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboDetailPresent;
@@ -14,6 +17,9 @@ import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import java.util.List;
 import java.util.Map;
@@ -67,6 +73,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                                 && !weibo.getText().contains("全文： http");
                     }
                 })
+                .compose(new ErrorCheckerTransformer<Weibo>())
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
@@ -77,15 +84,14 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Weibo>() {
+                .subscribe(new DefaultResponseSubscriber<Weibo>(mView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mView.showDialogLoading(false);
                     }
 
@@ -132,6 +138,13 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                 });
 
         Observable<List<Comment>> observableWeiboCommnet = mServerWeiboSource.getCommentsByWeibo(token, mWeiboId, 0, 0, 20, 1)
+                .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
+                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<List<Comment>>>() {
+                    @Override
+                    public Observable<List<Comment>> call(QueryWeiboCommentResponse queryWeiboCommentResponse) {
+                        return Observable.just(queryWeiboCommentResponse.getComments());
+                    }
+                })
                 .doOnNext(new Action1<List<Comment>>() {
                     @Override
                     public void call(List<Comment> comments) {
@@ -144,7 +157,14 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     }
                 });
 
-        Observable<List<Attitude>> observableWeiboAttitude = mServerWeiboSource.getWeiboAttiyudes(token, mWeiboId, 1, 20);
+        Observable<List<Attitude>> observableWeiboAttitude = mServerWeiboSource.getWeiboAttiyudes(token, mWeiboId, 1, 20)
+                .compose(new ErrorCheckerTransformer<QueryWeiboAttitudeResponse>())
+                .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<List<Attitude>>>() {
+                    @Override
+                    public Observable<List<Attitude>> call(QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
+                        return Observable.just(queryWeiboAttitudeResponse.getAttitudes());
+                    }
+                });
 
         Subscription subscription = Observable.zip(weiboObservable, observableRepostWeibo,
                 observableWeiboCommnet, observableWeiboAttitude,
@@ -159,17 +179,15 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                         return zip;
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Zip>() {
+                .compose(new SchedulerTransformer<Zip>())
+                .subscribe(new DefaultResponseSubscriber<Zip>(mView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mView.onRefreshComplete();
                     }
 

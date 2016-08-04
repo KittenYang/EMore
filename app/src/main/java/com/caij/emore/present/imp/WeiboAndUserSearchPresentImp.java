@@ -1,6 +1,8 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.bean.Account;
+import com.caij.emore.bean.response.QueryRepostWeiboResponse;
+import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.TimeLinePresent;
@@ -8,6 +10,9 @@ import com.caij.emore.present.WeiboAndUserSearchPresent;
 import com.caij.emore.present.view.WeiboAndUserSearchView;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,23 +57,22 @@ public class WeiboAndUserSearchPresentImp extends AbsTimeLinePresent<WeiboAndUse
         Subscription subscription = Observable.zip(weiboObservable, userObservable, new Func2<List<Weibo>, List<User>, Zip>() {
             @Override
             public Zip call(List<Weibo> weibos, List<User> users) {
-                Zip zip = new Zip();
-                zip.weibos = weibos;
-                zip.users = users;
-                return zip;
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Zip>() {
+                        Zip zip = new Zip();
+                        zip.weibos = weibos;
+                        zip.users = users;
+                        return zip;
+                    }
+                })
+                .compose(new SchedulerTransformer<Zip>())
+                .subscribe(new DefaultResponseSubscriber<Zip>(mView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    protected void onFail(Throwable e) {
                         mView.onRefreshComplete();
-                        mView.onDefaultLoadError();
                     }
 
                     @Override
@@ -101,14 +105,14 @@ public class WeiboAndUserSearchPresentImp extends AbsTimeLinePresent<WeiboAndUse
     @Override
     public void loadMore() {
         Subscription subscription = createObservable(mPage, false)
-                .subscribe(new Subscriber<List<Weibo>>() {
+                .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    protected void onFail(Throwable e) {
                         mView.onLoadComplete(true);
                     }
 
@@ -136,10 +140,11 @@ public class WeiboAndUserSearchPresentImp extends AbsTimeLinePresent<WeiboAndUse
 
     private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
         return mServerWeiboSource.getSearchWeibo(mAccount.getWeicoToken().getAccess_token(), mKey, page, PAGE_COUNT)
-                .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
+                .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
+                .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
-                    public Observable<Weibo> call(List<Weibo> weibos) {
-                        return Observable.from(weibos);
+                    public Observable<Weibo> call(QueryWeiboResponse response) {
+                        return Observable.from(response.getStatuses());
                     }
                 })
                 .filter(new Func1<Weibo, Boolean>() {

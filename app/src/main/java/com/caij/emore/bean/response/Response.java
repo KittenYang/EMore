@@ -1,5 +1,7 @@
 package com.caij.emore.bean.response;
 
+import android.text.TextUtils;
+
 /**
  * Created by Caij on 2016/6/29.
  */
@@ -35,5 +37,9 @@ public class Response {
 
     public void setRequest(String request) {
         this.request = request;
+    }
+
+    public boolean isSuccessful() {
+        return error_code == 0 && TextUtils.isEmpty(error);
     }
 }

@@ -46,15 +46,9 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<List<Weibo>> getFriendWeibo(String accessToken, long sinceId, long maxId,
+    public Observable<QueryWeiboResponse> getFriendWeibo(String accessToken, long sinceId, long maxId,
                                                   int count, int page) {
-        return mWeiBoService.getFriendsWeibo(accessToken, sinceId, maxId, count, page)
-                .flatMap(new Func1<QueryWeiboResponse, Observable<List<Weibo>>>() {
-                    @Override
-                    public Observable<List<Weibo>> call(QueryWeiboResponse queryWeiboResponse) {
-                        return Observable.just(queryWeiboResponse.getStatuses());
-                    }
-                });
+        return mWeiBoService.getFriendsWeibo(accessToken, sinceId, maxId, count, page);
     }
 
     @Override
@@ -152,14 +146,8 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<List<Comment>> getCommentsByWeibo(String accessToken, long id, long since_id, long max_id, int count, int page) {
-        return mWeiBoService.getCommentsByWeibo(accessToken, id, since_id, max_id, count, page)
-                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<List<Comment>>>() {
-                    @Override
-                    public Observable<List<Comment>> call(QueryWeiboCommentResponse queryWeiboCommentResponse) {
-                        return Observable.just(queryWeiboCommentResponse.getComments());
-                    }
-                });
+    public Observable<QueryWeiboCommentResponse> getCommentsByWeibo(String accessToken, long id, long since_id, long max_id, int count, int page) {
+        return mWeiBoService.getCommentsByWeibo(accessToken, id, since_id, max_id, count, page);
     }
 
     @Override
@@ -228,14 +216,8 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<List<Attitude>> getWeiboAttiyudes(String token, long id, int page, int count) {
-        return mWeiBoService.getWeiboAttitudes(token, id, page, count)
-                .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<List<Attitude>>>() {
-                    @Override
-                    public Observable<List<Attitude>> call(QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
-                        return Observable.just(queryWeiboAttitudeResponse.getAttitudes());
-                    }
-                });
+    public Observable<QueryWeiboAttitudeResponse> getWeiboAttiyudes(String token, long id, int page, int count) {
+        return mWeiBoService.getWeiboAttitudes(token, id, page, count);
     }
 
     @Override
@@ -249,26 +231,14 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<List<Attitude>> getToMeAttiyudes(String token, long maxId, long sinceId,
+    public Observable<QueryWeiboAttitudeResponse> getToMeAttiyudes(String token, long maxId, long sinceId,
                                                        String source, String from, int page, int count) {
-        return mWeiCoService.getToMeAttitudes(token, sinceId, maxId, source, from, page, count)
-                .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<List<Attitude>>>() {
-                    @Override
-                    public Observable<List<Attitude>> call(QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
-                        return Observable.just(queryWeiboAttitudeResponse.getAttitudes());
-                    }
-                });
+        return mWeiCoService.getToMeAttitudes(token, sinceId, maxId, source, from, page, count);
     }
 
     @Override
-    public Observable<List<Weibo>> getWeibosByIds(String access_token, String ids) {
-        return mWeiBoService.getWeibsoByIds(access_token, ids)
-                .flatMap(new Func1<QueryWeiboResponse, Observable<List<Weibo>>>() {
-                    @Override
-                    public Observable<List<Weibo>> call(QueryWeiboResponse queryWeiboResponse) {
-                        return Observable.just(queryWeiboResponse.getStatuses());
-                    }
-                });
+    public Observable<QueryWeiboResponse> getWeibosByIds(String access_token, String ids) {
+        return mWeiBoService.getWeibsoByIds(access_token, ids);
     }
 
     @Override
@@ -277,25 +247,13 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<List<Weibo>> getTopicsByKey(String access_token, String q, int page, int count) {
-        return mWeiBoService.getTopicsByKey(access_token, q, count, page)
-                .flatMap(new Func1<QueryWeiboResponse, Observable<List<Weibo>>>() {
-                    @Override
-                    public Observable<List<Weibo>> call(QueryWeiboResponse queryWeiboResponse) {
-                        return Observable.just(queryWeiboResponse.getStatuses());
-                    }
-                });
+    public Observable<QueryWeiboResponse> getTopicsByKey(String access_token, String q, int page, int count) {
+        return mWeiBoService.getTopicsByKey(access_token, q, count, page);
     }
 
     @Override
-    public Observable<List<Weibo>> getSearchWeibo(String access_token, String q, int page, int count) {
-        return mWeiCoService.searchStatus(access_token, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, q, count, page)
-                .flatMap(new Func1<QueryWeiboResponse, Observable<List<Weibo>>>() {
-                    @Override
-                    public Observable<List<Weibo>> call(QueryWeiboResponse queryWeiboResponse) {
-                        return Observable.just(queryWeiboResponse.getStatuses());
-                    }
-                });
+    public Observable<QueryWeiboResponse> getSearchWeibo(String access_token, String q, int page, int count) {
+        return mWeiCoService.searchStatus(access_token, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, q, count, page);
     }
 
 

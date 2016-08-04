@@ -2,13 +2,16 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.WeiboIds;
+import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.HotWeiboPresent;
-import com.caij.emore.present.view.FriendWeiboView;
 import com.caij.emore.present.view.TimeLineWeiboView;
-import com.caij.emore.source.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +55,6 @@ public class HotWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> im
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mView.onDefaultLoadError();
                         mView.onRefreshComplete();
                     }
 
@@ -89,7 +91,6 @@ public class HotWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> im
 
                         @Override
                         protected void onFail(Throwable e) {
-                            mView.onDefaultLoadError();
                             mView.onLoadComplete(true);
                         }
 
@@ -107,9 +108,9 @@ public class HotWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> im
     private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
         final String token = mAccount.getWeicoToken().getAccess_token();
         return mServerWeiboSource.getHotWeibosIds(token, page)
-                .flatMap(new Func1<WeiboIds, Observable<List<Weibo>>>() {
+                .flatMap(new Func1<WeiboIds, Observable<QueryWeiboResponse>>() {
                     @Override
-                    public Observable<List<Weibo>> call(WeiboIds weiboIds) {
+                    public Observable<QueryWeiboResponse> call(WeiboIds weiboIds) {
                         StringBuilder sb = new StringBuilder();
                         for (long id : weiboIds.getIds()) {
                             sb.append(id).append(",");
@@ -117,10 +118,11 @@ public class HotWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> im
                         return mServerWeiboSource.getWeibosByIds(token, sb.toString());
                     }
                 })
-                .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
+                .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
+                .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
-                    public Observable<Weibo> call(List<Weibo> weibos) {
-                        return Observable.from(weibos);
+                    public Observable<Weibo> call(QueryWeiboResponse response) {
+                        return Observable.from(response.getStatuses());
                     }
                 })
                 .filter(new Func1<Weibo, Boolean>() {
@@ -146,8 +148,7 @@ public class HotWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> im
                         doSpanNext(weibos);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(new SchedulerTransformer<List<Weibo>>());
     }
 
     @Override

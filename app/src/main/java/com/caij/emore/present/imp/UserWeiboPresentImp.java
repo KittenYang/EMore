@@ -6,6 +6,9 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.present.view.TimeLineWeiboView;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,15 +62,14 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
     @Override
     public void refresh() {
         Subscription subscription = createObservable(0, true)
-                .subscribe(new Subscriber<List<Weibo>>() {
+                .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
                     @Override
                     public void onCompleted() {
                         mView.onRefreshComplete();
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mView.onRefreshComplete();
                     }
 
@@ -98,15 +100,14 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
             maxId = mWeibos.get(mWeibos.size() - 1).getId();
         }
         Subscription subscription = createObservable(maxId, false)
-                .subscribe(new Subscriber<List<Weibo>>() {
+                .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mView.onLoadComplete(true);
                     }
 
@@ -122,6 +123,7 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
         return mServerWeiboSource.getUseWeibo(mAccount.getWeicoToken().getAccess_token(), mUsername, mFeature, 0, maxId, PAGE_COUNT, 1)
+                .compose(new ErrorCheckerTransformer<UserWeiboResponse>())
                 .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(UserWeiboResponse response) {
@@ -150,7 +152,6 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
                         doSpanNext(weibos);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(new SchedulerTransformer<List<Weibo>>());
     }
 }

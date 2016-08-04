@@ -169,6 +169,11 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
     }
 
     @Override
+    public void showHint(String stringId) {
+
+    }
+
+    @Override
     public void showDialogLoading(boolean isShow, int hintStringId) {
 
     }

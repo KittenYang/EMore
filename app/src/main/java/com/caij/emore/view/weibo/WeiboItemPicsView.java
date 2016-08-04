@@ -53,11 +53,11 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
         ImageLoader.ImageConfigBuild normalImageConfigBuild = new ImageLoader.ImageConfigBuild()
                 .setPriority(ImageLoader.Priority.LOW)
                 .setScaleType(ImageLoader.ScaleType.TOP);
-        mNormalImageConfig = normalImageConfigBuild.build();
+        mLongAndGifImageConfig = normalImageConfigBuild.build();
 
         ImageLoader.ImageConfigBuild longAndGifConfigBuild = new ImageLoader.ImageConfigBuild()
                 .setScaleType(ImageLoader.ScaleType.CENTER_CROP);
-        mLongAndGifImageConfig = longAndGifConfigBuild.build();
+        mNormalImageConfig = longAndGifConfigBuild.build();
 
         addItemViews();
         mSpaceWidth = getResources().getDimensionPixelSize(R.dimen.weibo_image_space);

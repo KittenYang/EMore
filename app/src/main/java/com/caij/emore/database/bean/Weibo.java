@@ -10,6 +10,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.LogUtil;
 
@@ -24,7 +25,7 @@ import java.util.List;
 /**
  * Entity mapped to table "WEIBO".
  */
-public class Weibo implements Serializable {
+public class Weibo extends Response implements Serializable {
 
     private String created_at;
     private Long id;

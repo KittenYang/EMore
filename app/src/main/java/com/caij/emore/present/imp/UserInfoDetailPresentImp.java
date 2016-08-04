@@ -1,11 +1,14 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.R;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
 import com.caij.emore.present.view.DetailUserView;
-import com.caij.emore.source.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.UserSource;
+import com.caij.emore.utils.rxjava.DefaultTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
@@ -50,17 +53,15 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                         mLocalUserSource.saveWeiboUser(user);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<User>() {
+                .compose(new DefaultTransformer<User>())
+                .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
                     @Override
                     public void onCompleted() {
                         mUserView.showDialogLoading(false);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mUserView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mUserView.showDialogLoading(false);
                     }
 
@@ -82,8 +83,7 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                         mLocalUserSource.saveWeiboUser(user);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new SchedulerTransformer<User>())
                 .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
                     @Override
                     public void onCompleted() {
@@ -93,7 +93,6 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                     @Override
                     protected void onFail(Throwable e) {
                         mUserView.showDialogLoading(false);
-                        mUserView.onDefaultLoadError();
                     }
 
                     @Override
@@ -123,16 +122,15 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                         return user != null && System.currentTimeMillis() - user.getUpdate_time() < 2 * 60 * 60 * 1000;
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<User>() {
+                .compose(new DefaultTransformer<User>())
+                .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
                     @Override
                     public void onCompleted() {
                         mUserView.showDialogLoading(false);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    protected void onFail(Throwable e) {
                         mUserView.showDialogLoading(false);
                         if (e instanceof HttpException) {
                             HttpException httpException = (HttpException) e;
@@ -142,7 +140,6 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                                 return;
                             }
                         }
-                        mUserView.onDefaultLoadError();
                     }
 
                     @Override
@@ -155,7 +152,7 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
 
     @Override
     public void onRefresh() {
-        Observable<User> serverObservable =   mServerUserSource.getWeiboUserInfoByName(mToken, mName)
+        Observable<User> serverObservable = mServerUserSource.getWeiboUserInfoByName(mToken, mName)
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User user) {
@@ -163,27 +160,24 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                     }
                 });
         Subscription subscription = serverObservable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<User>() {
+                .compose(new DefaultTransformer<User>())
+                .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
                     @Override
                     public void onCompleted() {
                         mUserView.onRefreshComplete();
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    protected void onFail(Throwable e) {
+                        mUserView.onRefreshComplete();
                         mUserView.showDialogLoading(false);
                         if (e instanceof HttpException) {
                             HttpException httpException = (HttpException) e;
                             int code  = httpException.code();
                             if (code == 400) {
                                 mUserView.showHint(R.string.user_undefine);
-                                return;
                             }
                         }
-                        mUserView.onDefaultLoadError();
-                        mUserView.onRefreshComplete();
                     }
 
                     @Override

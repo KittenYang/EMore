@@ -5,12 +5,14 @@ package com.caij.emore.database.bean;
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
 
+import com.caij.emore.bean.response.Response;
+
 import java.io.Serializable;
 
 /**
  * Entity mapped to table "USER".
  */
-public class User implements Serializable {
+public class User  extends Response implements Serializable {
 
     private Long id;
     private String idstr;

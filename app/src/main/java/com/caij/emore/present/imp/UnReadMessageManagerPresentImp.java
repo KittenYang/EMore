@@ -16,6 +16,7 @@ import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -71,8 +72,7 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
         }
         if (mToken != null) {
             mServerMessageSource.getUnReadMessage(mToken.getAccess_token(), Long.parseLong(mToken.getUid()))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(new SchedulerTransformer<UnReadMessage>())
                     .subscribe(new Subscriber<UnReadMessage>() {
                         @Override
                         public void onCompleted() {
@@ -102,8 +102,7 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
                         mLocalMessageSource.saveUnReadMessage(serverUnReadMessage);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new SchedulerTransformer<UnReadMessage>())
                 .subscribe(new Subscriber<UnReadMessage>() {
                     @Override
                     public void onCompleted() {

@@ -1,5 +1,6 @@
 package com.caij.emore.bean;
 
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.User;
 
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/7/10.
  */
-public class MessageUser {
+public class MessageUser extends Response {
 
 
     private long next_cursor;
@@ -77,6 +78,12 @@ public class MessageUser {
 
         public void setUnread_count(int unread_count) {
             this.unread_count = unread_count;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            UserListBean bean = (UserListBean) o;
+            return bean.getUser().getId().equals(getUser().getId());
         }
     }
 }

@@ -43,6 +43,11 @@ public class BaseFragment extends Fragment implements BaseView{
     }
 
     @Override
+    public void showHint(String string) {
+        showHint(string);
+    }
+
+    @Override
     public void showDialogLoading(boolean isShow, int hintStringId) {
         if (isShow) {
             mLoadingDialog = DialogUtil.showProgressDialog(getActivity(), null, getString(hintStringId));

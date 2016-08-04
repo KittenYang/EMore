@@ -1,10 +1,12 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.bean.Comment;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.present.ReplyCommentWeiboPresent;
 import com.caij.emore.present.view.CommentWeiboView;
-import com.caij.emore.source.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.rxjava.DefaultTransformer;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -48,13 +50,11 @@ public class ReplyCommentPresentImp implements ReplyCommentWeiboPresent {
     public void toReplyComment(String comment) {
         mCommentWeiboView.showDialogLoading(true);
         Subscription subscription = mCommentSource.replyComment(mToken, comment, mCid, mWeiboId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new DefaultTransformer<Comment>())
                 .subscribe(new DefaultResponseSubscriber<Comment>(mCommentWeiboView) {
                     @Override
                     protected void onFail(Throwable e) {
                         mCommentWeiboView.showDialogLoading(false);
-                        mCommentWeiboView.onDefaultLoadError();
                     }
 
                     @Override

@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
@@ -7,14 +8,19 @@ import com.caij.emore.present.FriendshipPresent;
 import com.caij.emore.present.view.FriendshipView;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.UserSource;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -61,30 +67,28 @@ public class FollowsPresentImp implements FriendshipPresent {
 
     @Override
     public void userFirstVisible() {
-        Subscription subscription = mUserSource.getFollowers(mToken, mUid, PAGE_SIZE, 0, 0)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<FriendshipResponse>() {
+        Subscription subscription = createUsersObservable(0, true)
+                .subscribe(new DefaultResponseSubscriber<List<User>>(mFriendshipView) {
+                    @Override
+                    protected void onFail(Throwable e) {
+
+                    }
+
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mFriendshipView.onDefaultLoadError();
-                        mFriendshipView.onLoadComplete(false);
-                    }
-
-                    @Override
-                    public void onNext(FriendshipResponse friendshipResponse) {
-                        mLastFriendshipResponse = friendshipResponse;
-                        mUsers.addAll(friendshipResponse.getUsers());
+                    public void onNext(List<User> users) {
+                        mUsers.addAll(users);
                         mFriendshipView.setEntities(mUsers);
-                        mFriendshipView.onLoadComplete(friendshipResponse.getUsers().size() > PAGE_SIZE - 1);
+                        mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
 
-                        MessageUtil.resetUnReadMessage(mToken, UnReadMessage.TYPE_FOLLOWER,
-                                mServerMessageSource, mLocalMessageSource);
+                        if (mUid == Long.parseLong(UserPrefs.get().getEMoreToken().getUid())) {
+                            MessageUtil.resetUnReadMessage(mToken, UnReadMessage.TYPE_FOLLOWER,
+                                    mServerMessageSource, mLocalMessageSource);
+                        }
                     }
                 });
         mLoginCompositeSubscription.add(subscription);
@@ -92,29 +96,45 @@ public class FollowsPresentImp implements FriendshipPresent {
 
     @Override
     public void loadMore() {
-        Subscription subscription = mUserSource.getFollowers(mToken, mUid, PAGE_SIZE, 0, mLastFriendshipResponse.getNext_cursor())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<FriendshipResponse>() {
+        Subscription subscription = createUsersObservable(mLastFriendshipResponse.getNext_cursor(), false)
+                .subscribe(new DefaultResponseSubscriber<List<User>>(mFriendshipView) {
+                    @Override
+                    protected void onFail(Throwable e) {
+                        mFriendshipView.onLoadComplete(true);
+                    }
+
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mFriendshipView.onDefaultLoadError();
-                        mFriendshipView.onLoadComplete(true);
-                    }
-
-                    @Override
-                    public void onNext(FriendshipResponse friendshipResponse) {
-                        mLastFriendshipResponse = friendshipResponse;
-                        mUsers.addAll(friendshipResponse.getUsers());
+                    public void onNext(List<User> users) {
+                        mUsers.addAll(users);
                         mFriendshipView.setEntities(mUsers);
-                        mFriendshipView.onLoadComplete(friendshipResponse.getUsers().size() > PAGE_SIZE - 1);
+                        mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
                     }
                 });
         mLoginCompositeSubscription.add(subscription);
+    }
+
+    public Observable<List<User>> createUsersObservable(long next_cursor, final boolean isRefresh) {
+        return mUserSource.getFollowers(mToken, mUid, PAGE_SIZE, 0, next_cursor)
+                .compose(new ErrorCheckerTransformer<FriendshipResponse>())
+                .flatMap(new Func1<FriendshipResponse, Observable<User>>() {
+                    @Override
+                    public Observable<User> call(FriendshipResponse friendshipResponse) {
+                        mLastFriendshipResponse = friendshipResponse;
+                        return Observable.from(friendshipResponse.getUsers());
+                    }
+                })
+                .filter(new Func1<User, Boolean>() {
+                    @Override
+                    public Boolean call(User user) {
+                        return !mUsers.contains(user) || isRefresh;
+                    }
+                })
+                .toList()
+                .compose(new SchedulerTransformer<List<User>>());
     }
 }

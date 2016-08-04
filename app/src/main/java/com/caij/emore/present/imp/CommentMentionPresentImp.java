@@ -7,6 +7,9 @@ import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.present.view.RefreshListView;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
@@ -60,24 +63,15 @@ public class CommentMentionPresentImp implements RefreshListPresent {
 
     @Override
     public void refresh() {
-        Subscription su =  mWeiboSource.getCommentsMentions(mToken, 0 ,0, COUNT, 1)
-                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<List<Comment>>>() {
-                    @Override
-                    public Observable<List<Comment>> call(QueryWeiboCommentResponse response) {
-                        return Observable.just(response.getComments());
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Comment>>() {
+        Subscription su = createGetCommentObservable(0, true)
+                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mMentionView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mMentionView.onRefreshComplete();
                     }
 
@@ -107,31 +101,15 @@ public class CommentMentionPresentImp implements RefreshListPresent {
         if (mComments != null && mComments.size() > 1) {
             maxId = mComments.get(mComments.size() - 1).getId();
         }
-        Subscription su = mWeiboSource.getCommentsMentions(mToken, 0, maxId, COUNT, 1)
-                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
-                    @Override
-                    public Observable<Comment> call(QueryWeiboCommentResponse response) {
-                        return Observable.from(response.getComments());
-                    }
-                })
-                .filter(new Func1<Comment, Boolean>() {
-                    @Override
-                    public Boolean call(Comment comment) {
-                        return !mComments.contains(comment);
-                    }
-                })
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Comment>>() {
+        Subscription su = createGetCommentObservable(maxId, false)
+                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mMentionView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mMentionView.onLoadComplete(true);
                     }
 
@@ -144,5 +122,24 @@ public class CommentMentionPresentImp implements RefreshListPresent {
                     }
                 });
         mLoginCompositeSubscription.add(su);
+    }
+
+    private Observable<List<Comment>> createGetCommentObservable(long maxId, final boolean isRefresh) {
+        return mWeiboSource.getCommentsMentions(mToken, 0, maxId, COUNT, 1)
+                .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
+                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
+                    @Override
+                    public Observable<Comment> call(QueryWeiboCommentResponse response) {
+                        return Observable.from(response.getComments());
+                    }
+                })
+                .filter(new Func1<Comment, Boolean>() {
+                    @Override
+                    public Boolean call(Comment comment) {
+                        return !mComments.contains(comment) || isRefresh;
+                    }
+                })
+                .toList()
+                .compose(new SchedulerTransformer<List<Comment>>());
     }
 }

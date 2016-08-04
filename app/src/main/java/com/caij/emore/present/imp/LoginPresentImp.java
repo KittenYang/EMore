@@ -6,6 +6,8 @@ import com.caij.emore.bean.AccessToken;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.view.LoginView;
 import com.caij.emore.source.LoginSource;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import rx.Subscriber;
 import rx.Subscription;
@@ -39,18 +41,16 @@ public class LoginPresentImp implements LoginPresent{
                         UserPrefs.get().setEMoreToken(accessToken);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<AccessToken>() {
+                .compose(new SchedulerTransformer<AccessToken>())
+                .subscribe(new DefaultResponseSubscriber<AccessToken>(mLoginView) {
                     @Override
                     public void onCompleted() {
                         mLoginView.showDialogLoading(false, R.string.logining);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    protected void onFail(Throwable e) {
                         mLoginView.showDialogLoading(false, R.string.logining);
-                        mLoginView.onDefaultLoadError();
                     }
 
                     @Override

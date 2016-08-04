@@ -1,6 +1,9 @@
-package com.caij.emore.source;
+package com.caij.emore.utils.rxjava;
 
+import com.caij.emore.BuildConfig;
+import com.caij.emore.R;
 import com.caij.emore.present.view.BaseView;
+import com.caij.emore.utils.LogUtil;
 
 import java.io.IOException;
 
@@ -20,19 +23,29 @@ public abstract class DefaultResponseSubscriber<T> extends Subscriber<T> {
 
     public void onError(Throwable e) {
         if (e instanceof IOException) { // network is bad
-            onFail(e);
+            onNetworkError(e);
         }else if (e instanceof HttpException){
             HttpException httpException = (HttpException) e;
             int code  = httpException.code();
             if (code == 401) {//AuthFailureError
 //                || code == 403 可能是没有权限
                 mBaseView.onAuthenticationError();
-            }else {
-                onFail(e);
+                return;
             }
+            mBaseView.showHint(R.string.server_error);
+        }else if (e instanceof ErrorResponseException) {
+            mBaseView.showHint(((ErrorResponseException) e).mResponse.getError());
         }else {
-            onFail(e);
+            mBaseView.showHint(R.string.net_request_error);
         }
+
+        LogUtil.d(this, e.getMessage());
+
+        onFail(e);
+    }
+
+    private void onNetworkError(Throwable e) {
+        mBaseView.showHint(R.string.network_error);
     }
 
     protected abstract void onFail(Throwable e);

@@ -11,6 +11,8 @@ public interface BaseView {
 
     void showHint(int stringId);
 
+    void showHint(String string);
+
     void showDialogLoading(boolean isShow, int hintStringId);
 
     void showDialogLoading(boolean isShow);

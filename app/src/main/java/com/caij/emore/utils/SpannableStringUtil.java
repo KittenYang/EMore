@@ -69,8 +69,10 @@ public class SpannableStringUtil {
             int start = spanned.getSpanStart(urlSpan);
             int end = spanned.getSpanEnd(urlSpan);
             weiboSpan= new MyURLSpan(urlSpan.getURL());
-            ShortUrlInfo.UrlsBean urlsBean = shortLongLinkMap.get(urlSpan.getURL());
-            weiboSpan.setUrlBean(urlsBean);
+            if (shortLongLinkMap != null) {
+                ShortUrlInfo.UrlsBean urlsBean = shortLongLinkMap.get(urlSpan.getURL());
+                weiboSpan.setUrlBean(urlsBean);
+            }
             weiboSpan.setTextColor(color);
             weiboSpan.setPressColor(pressColor);
             spanned.removeSpan(urlSpan);

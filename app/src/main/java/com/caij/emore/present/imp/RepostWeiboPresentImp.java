@@ -1,11 +1,13 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.Key;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.RepostWeiboPresent;
 import com.caij.emore.present.view.RepostWeiboView;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.DefaultTransformer;
 
 import rx.Subscriber;
 import rx.Subscription;
@@ -36,8 +38,7 @@ public class RepostWeiboPresentImp implements RepostWeiboPresent {
     @Override
     public void repostWeibo(String status) {
         Subscription subscription = mRepostSource.repostWeibo(mToken, status, mWeiboId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new DefaultTransformer<Weibo>())
                 .subscribe(new Subscriber<Weibo>() {
                     @Override
                     public void onCompleted() {

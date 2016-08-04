@@ -2,14 +2,15 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.Key;
 import com.caij.emore.bean.Attitude;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.present.WeiboRepostsPresent;
-import com.caij.emore.present.view.BaseListView;
 import com.caij.emore.present.view.WeiboAttitudesView;
-import com.caij.emore.source.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
         mAttitudeObservable.filter(new Func1<Attitude, Boolean>() {
             @Override
             public Boolean call(Attitude attitude) {
-                return attitude.getStatus().getId() == mWeiboId;
+                return attitude.getStatus().getId() == mWeiboId && !mAttitudes.contains(attitude);
             }
         }).subscribe(new Action1<Attitude>() {
             @Override
@@ -95,7 +96,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
     public void userFirstVisible() {
         initEventListener();
 
-        Subscription subscription = createObservable(1)
+        Subscription subscription = createObservable(1, true)
                 .subscribe(new DefaultResponseSubscriber<List<Attitude>>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -126,7 +127,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
 
     @Override
     public void loadMore() {
-        Subscription subscription = createObservable(mPage)
+        Subscription subscription = createObservable(mPage, false)
                 .subscribe(new DefaultResponseSubscriber<List<Attitude>>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -150,10 +151,23 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
         mLoginCompositeSubscription.add(subscription);
     }
 
-    private  Observable<List<Attitude>> createObservable(int page) {
+    private  Observable<List<Attitude>> createObservable(int page, final boolean isRefresh) {
         return mServerRepostSource.getWeiboAttiyudes(mToken, mWeiboId, page, PAGE_COUNET)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(new ErrorCheckerTransformer<QueryWeiboAttitudeResponse>())
+                .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<Attitude>>() {
+                    @Override
+                    public Observable<Attitude> call(QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
+                        return Observable.from(queryWeiboAttitudeResponse.getAttitudes());
+                    }
+                })
+                .filter(new Func1<Attitude, Boolean>() {
+                    @Override
+                    public Boolean call(Attitude attitude) {
+                        return !mAttitudes.contains(attitude) || isRefresh;
+                    }
+                })
+                .toList()
+                .compose(new SchedulerTransformer<List<Attitude>>());
     }
 
     @Override

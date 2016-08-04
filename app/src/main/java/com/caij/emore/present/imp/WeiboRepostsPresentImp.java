@@ -3,17 +3,18 @@ package com.caij.emore.present.imp;
 import com.caij.emore.Key;
 import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
-import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.present.view.WeiboRepostsView;
-import com.caij.emore.source.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.UrlSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mWeiboRepostsView) {
                     @Override
                     protected void onFail(Throwable e) {
-                        mWeiboRepostsView.onDefaultLoadError();
+                        mWeiboRepostsView.onLoadComplete(false);
                     }
 
                     @Override
@@ -94,8 +95,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
      */
     private void initEventListener() {
         mWeiboObservable = RxBus.get().register(Key.EVENT_REPOST_WEIBO_SUCCESS);
-        mWeiboObservable.
-                filter(new Func1<Weibo, Boolean>() {
+        mWeiboObservable.filter(new Func1<Weibo, Boolean>() {
                     @Override
                     public Boolean call(Weibo weibo) {
                         return weibo.getId() == mWeiboId;
@@ -153,7 +153,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mWeiboRepostsView) {
                     @Override
                     protected void onFail(Throwable e) {
-                        mWeiboRepostsView.onDefaultLoadError();
+                        mWeiboRepostsView.onLoadComplete(true);
                     }
 
                     @Override
@@ -174,6 +174,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
 
     private  Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
         return mServerRepostSource.getRepostWeibos(mToken, mWeiboId, 0, maxId, PAGE_COUNET, 1)
+                .compose(new ErrorCheckerTransformer<QueryRepostWeiboResponse>())
                 .flatMap(new Func1<QueryRepostWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(QueryRepostWeiboResponse queryRepostWeiboResponse) {
@@ -193,8 +194,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                         doSpanNext(weibos);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(new SchedulerTransformer<List<Weibo>>());
     }
 
     @Override

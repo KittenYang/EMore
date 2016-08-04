@@ -7,6 +7,7 @@ import com.caij.emore.bean.AccessToken;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.view.WeiCoLoginView;
 import com.caij.emore.source.LoginSource;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -41,8 +42,7 @@ public class WeiCoLoginPresentImp implements LoginPresent {
                         UserPrefs.get().setWeiCoToken(accessToken);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new SchedulerTransformer<AccessToken>())
                 .subscribe(new Subscriber<AccessToken>() {
                     @Override
                     public void onCompleted() {

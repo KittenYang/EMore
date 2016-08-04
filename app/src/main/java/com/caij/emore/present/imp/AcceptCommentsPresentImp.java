@@ -7,6 +7,11 @@ import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.present.view.RefreshListView;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.LogUtil;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.DefaultTransformer;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
@@ -25,7 +30,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class AcceptCommentsPresentImp implements RefreshListPresent {
 
-    private static final int COUNT = 20;
+    private static final int PAGE_COUNT = 20;
 
     private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
@@ -55,25 +60,16 @@ public class AcceptCommentsPresentImp implements RefreshListPresent {
 
     @Override
     public void refresh() {
-        Subscription su =  mWeiboSource.getAcceptComments(mToken, 0 ,0, COUNT, 1)
-                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<List<Comment>>>() {
+        Subscription su =  creategetCommentObservable(0, true)
+                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
                     @Override
-                    public Observable<List<Comment>> call(QueryWeiboCommentResponse response) {
-                        return Observable.just(response.getComments());
+                    protected void onFail(Throwable e) {
+                        mMentionView.onRefreshComplete();
                     }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Comment>>() {
+
                     @Override
                     public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mMentionView.onDefaultLoadError();
-                        mMentionView.onRefreshComplete();
                     }
 
                     @Override
@@ -82,7 +78,7 @@ public class AcceptCommentsPresentImp implements RefreshListPresent {
                         mMentionView.setEntities(mComments);
 
                         mMentionView.onRefreshComplete();
-                        mMentionView.onLoadComplete(comments.size() > COUNT - 1);
+                        mMentionView.onLoadComplete(comments.size() > PAGE_COUNT - 1);
 
                         MessageUtil.resetUnReadMessage(mToken,
                                 UnReadMessage.TYPE_CMT, mServerMessageSource, mLocalMessageSource);
@@ -97,7 +93,32 @@ public class AcceptCommentsPresentImp implements RefreshListPresent {
         if (mComments != null && mComments.size() > 1) {
             maxId = mComments.get(mComments.size() - 1).getId();
         }
-        Subscription su = mWeiboSource.getAcceptComments(mToken, 0, maxId, COUNT, 1)
+        Subscription subscription = creategetCommentObservable(maxId, false)
+                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
+                    @Override
+                    protected void onFail(Throwable e) {
+                        mMentionView.onLoadComplete(true);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Comment> comments) {
+                        mComments.addAll(comments);
+                        mMentionView.setEntities(mComments);
+
+                        mMentionView.onLoadComplete(comments.size() > PAGE_COUNT - 1);
+                    }
+                });
+        mLoginCompositeSubscription.add(subscription);
+    }
+
+    private Observable<List<Comment>> creategetCommentObservable(long maxId, final boolean isRefresh) {
+        return mWeiboSource.getAcceptComments(mToken, 0, maxId, PAGE_COUNT, 1)
+                .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
                 .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
                     @Override
                     public Observable<Comment> call(QueryWeiboCommentResponse response) {
@@ -107,33 +128,11 @@ public class AcceptCommentsPresentImp implements RefreshListPresent {
                 .filter(new Func1<Comment, Boolean>() {
                     @Override
                     public Boolean call(Comment comment) {
-                        return !mComments.contains(comment);
+                        return !mComments.contains(comment) || isRefresh;
                     }
                 })
                 .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Comment>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mMentionView.onDefaultLoadError();
-                        mMentionView.onLoadComplete(true);
-                    }
-
-                    @Override
-                    public void onNext(List<Comment> comments) {
-                        mComments.addAll(comments);
-                        mMentionView.setEntities(mComments);
-
-                        mMentionView.onLoadComplete(comments.size() > COUNT - 1);
-                    }
-                });
-        mLoginCompositeSubscription.add(su);
+                .compose(new SchedulerTransformer<List<Comment>>());
     }
 
     @Override

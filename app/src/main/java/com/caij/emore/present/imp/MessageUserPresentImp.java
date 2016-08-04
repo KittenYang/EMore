@@ -6,9 +6,11 @@ import com.caij.emore.bean.MessageUser;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.MessageUserPresent;
 import com.caij.emore.present.view.MessageUserView;
-import com.caij.emore.source.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -32,7 +35,7 @@ public class MessageUserPresentImp implements MessageUserPresent {
     private String mToken;
     private MessageSource mServerMessageSource;
     private MessageSource mLocalMessageSource;
-    private List<MessageUser.UserListBean> userListBeens;
+    private List<MessageUser.UserListBean> mUserListBeens;
     private MessageUserView mMessageUserView;
     private MessageUser mMessageUser;
     private Observable<UnReadMessage> mUnReadMessageObservable;
@@ -43,36 +46,31 @@ public class MessageUserPresentImp implements MessageUserPresent {
         mToken = token;
         mLocalMessageSource = localMessageSource;
         mMessageUserView = view;
-        userListBeens = new ArrayList<>();
+        mUserListBeens = new ArrayList<>();
         mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void refresh() {
-        Subscription subscription = mServerMessageSource.getMessageUserList(mToken, PAGE_COUNT, 0)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultResponseSubscriber<MessageUser>(mMessageUserView) {
-
-                    @Override
-                    public void onCompleted() {
-                        mMessageUserView.onRefreshComplete();
-
-                    }
-
-                    @Override
-                    public void onNext(MessageUser messageUser) {
-                        mMessageUser = messageUser;
-                        userListBeens.clear();
-                        userListBeens.addAll(messageUser.getUser_list());
-                        mMessageUserView.setEntities(userListBeens);
-                        mMessageUserView.onLoadComplete(messageUser.getUser_list().size() >= PAGE_COUNT - 1);
-                    }
-
+        Subscription subscription = createMessageObservable(0, true)
+                .subscribe(new DefaultResponseSubscriber<List<MessageUser.UserListBean>>(mMessageUserView) {
                     @Override
                     protected void onFail(Throwable e) {
                         mMessageUserView.onRefreshComplete();
-                        mMessageUserView.onDefaultLoadError();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onNext(List<MessageUser.UserListBean> userListBeen) {
+                        mUserListBeens.clear();
+                        mUserListBeens.addAll(userListBeen);
+                        mMessageUserView.setEntities(mUserListBeens);
+                        mMessageUserView.onLoadComplete(userListBeen.size() >= PAGE_COUNT - 1);
+                        mMessageUserView.onRefreshComplete();
                     }
                 });
         mCompositeSubscription.add(subscription);
@@ -86,26 +84,23 @@ public class MessageUserPresentImp implements MessageUserPresent {
     @Override
     public void loadMore() {
         long cursor = mMessageUser == null ? 0 : mMessageUser.getNext_cursor();
-        Subscription subscription = mServerMessageSource.getMessageUserList(mToken, PAGE_COUNT, cursor)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultResponseSubscriber<MessageUser>(mMessageUserView) {
+        Subscription subscription = createMessageObservable(cursor, false)
+                .subscribe(new DefaultResponseSubscriber<List<MessageUser.UserListBean>>(mMessageUserView) {
+                    @Override
+                    protected void onFail(Throwable e) {
+                        mMessageUserView.onLoadComplete(true);
+                    }
 
                     @Override
                     public void onCompleted() {
+
                     }
 
                     @Override
-                    public void onNext(MessageUser messageUser) {
-                        mMessageUser = messageUser;
-                        userListBeens.addAll(messageUser.getUser_list());
-                        mMessageUserView.setEntities(userListBeens);
-                        mMessageUserView.onLoadComplete(messageUser.getUser_list().size() >= PAGE_COUNT - 1);
-                    }
-
-                    @Override
-                    protected void onFail(Throwable e) {
-                        mMessageUserView.onDefaultLoadError();
+                    public void onNext(List<MessageUser.UserListBean> userListBeen) {
+                        mUserListBeens.addAll(userListBeen);
+                        mMessageUserView.setEntities(mUserListBeens);
+                        mMessageUserView.onLoadComplete(userListBeen.size() >= PAGE_COUNT - 1);
                     }
                 });
         mCompositeSubscription.add(subscription);
@@ -141,6 +136,26 @@ public class MessageUserPresentImp implements MessageUserPresent {
                 mMessageUserView.onLoadUnReadMessageSuccess(unReadMessage);
             }
         });
+    }
+
+    private Observable<List<MessageUser.UserListBean>> createMessageObservable(long next_cursor, final boolean isRefresh) {
+        return mServerMessageSource.getMessageUserList(mToken, PAGE_COUNT, next_cursor)
+                .compose(new ErrorCheckerTransformer<MessageUser>())
+                .flatMap(new Func1<MessageUser, Observable<MessageUser.UserListBean>>() {
+                    @Override
+                    public Observable<MessageUser.UserListBean> call(MessageUser messageUser) {
+                        mMessageUser = messageUser;
+                        return Observable.from(messageUser.getUser_list());
+                    }
+                })
+                .filter(new Func1<MessageUser.UserListBean, Boolean>() {
+                    @Override
+                    public Boolean call(MessageUser.UserListBean userListBean) {
+                        return !mUserListBeens.contains(userListBean) || isRefresh;
+                    }
+                })
+                .toList()
+                .compose(new SchedulerTransformer<List<MessageUser.UserListBean>>());
     }
 
     @Override

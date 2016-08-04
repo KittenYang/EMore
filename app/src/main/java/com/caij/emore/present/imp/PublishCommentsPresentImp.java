@@ -3,9 +3,14 @@ package com.caij.emore.present.imp;
 import com.caij.emore.R;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.present.PublishCommentsPresent;
 import com.caij.emore.present.view.MyPublishComentsView;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.DefaultTransformer;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,17 +58,15 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
     public void deleteComment(final Comment comment, final int position) {
         mMentionView.showDialogLoading(true, R.string.deleting);
        Subscription subscription = mWeiboSource.deleteComment(mToken, comment.getId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Comment>() {
+                .compose(new DefaultTransformer<Comment>())
+                .subscribe(new DefaultResponseSubscriber<Comment>(mMentionView) {
                     @Override
                     public void onCompleted() {
                         mMentionView.showDialogLoading(false, R.string.deleting);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mMentionView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mMentionView.showDialogLoading(false, R.string.deleting);
                     }
 
@@ -77,24 +80,15 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
 
     @Override
     public void refresh() {
-        Subscription su =  mWeiboSource.getPublishComments(mToken, 0 ,0, COUNT, 1)
-                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<List<Comment>>>() {
-                    @Override
-                    public Observable<List<Comment>> call(QueryWeiboCommentResponse response) {
-                        return Observable.just(response.getComments());
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Comment>>() {
+        Subscription su =  createCommentsObservable(0, true)
+                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mMentionView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mMentionView.onRefreshComplete();
                     }
 
@@ -121,31 +115,15 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
         if (mComments != null && mComments.size() > 1) {
             maxId = mComments.get(mComments.size() - 1).getId();
         }
-        Subscription su = mWeiboSource.getPublishComments(mToken, 0, maxId, COUNT, 1)
-                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
-                    @Override
-                    public Observable<Comment> call(QueryWeiboCommentResponse response) {
-                        return Observable.from(response.getComments());
-                    }
-                })
-                .filter(new Func1<Comment, Boolean>() {
-                    @Override
-                    public Boolean call(Comment comment) {
-                        return !mComments.contains(comment);
-                    }
-                })
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Comment>>() {
+        Subscription su = createCommentsObservable(maxId, false)
+                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mMentionView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mMentionView.onLoadComplete(true);
                     }
 
@@ -158,5 +136,24 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
                     }
                 });
         mLoginCompositeSubscription.add(su);
+    }
+
+    private Observable<List<Comment>> createCommentsObservable(long maxId, final boolean isRefresh) {
+        return mWeiboSource.getPublishComments(mToken, 0, maxId, COUNT, 1)
+                .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
+                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
+                    @Override
+                    public Observable<Comment> call(QueryWeiboCommentResponse response) {
+                        return Observable.from(response.getComments());
+                    }
+                })
+                .filter(new Func1<Comment, Boolean>() {
+                    @Override
+                    public Boolean call(Comment comment) {
+                        return !mComments.contains(comment) || isRefresh;
+                    }
+                })
+                .toList()
+                .compose(new SchedulerTransformer<List<Comment>>());
     }
 }

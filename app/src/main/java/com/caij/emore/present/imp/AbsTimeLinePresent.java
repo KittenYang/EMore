@@ -26,6 +26,8 @@ import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.DefaultTransformer;
 
 
 import java.io.IOException;
@@ -75,9 +77,13 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         Observable<Weibo> localObservable = mLocalWeiboSource.deleteWeibo(mAccount.getWeiyoToken().getAccess_token(),
                 weibo.getId());
         Subscription subscription = Observable.concat(serverObservable, localObservable)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Weibo>() {
+                .compose(new DefaultTransformer<Weibo>())
+                .subscribe(new DefaultResponseSubscriber<Weibo>(mView) {
+                    @Override
+                    protected void onFail(Throwable e) {
+                        mView.showDialogLoading(false, R.string.deleting);
+                    }
+
                     @Override
                     public void onCompleted() {
                         mView.onDeleteWeiboSuccess(weibo, position);
@@ -85,13 +91,8 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
-                        mView.showDialogLoading(false, R.string.deleting);
-                    }
-
-                    @Override
                     public void onNext(Weibo weibo) {
+
                     }
                 });
         mCompositeSubscription.add(subscription);
@@ -99,15 +100,25 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
 
     @Override
     public void collectWeibo(final Weibo weibo) {
+        AccessToken accessToken = UserPrefs.get().getEMoreToken();
+        long uid = Long.parseLong(accessToken.getUid());
+        if (uid == weibo.getUser().getId()) {
+            mView.showHint(R.string.self_weibo_unable_collect);
+            return;
+        }
         mView.showDialogLoading(true, R.string.collecting);
         Observable<FavoritesCreateResponse> serverObservable = mServerWeiboSource.collectWeibo(mAccount.getWeiyoToken().getAccess_token(),
                 weibo.getId());
         Observable<FavoritesCreateResponse> localObservable = mLocalWeiboSource.collectWeibo(mAccount.getWeiyoToken().getAccess_token(),
                 weibo.getId());
         Subscription subscription = Observable.concat(serverObservable, localObservable)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<FavoritesCreateResponse>() {
+                .compose(new DefaultTransformer<FavoritesCreateResponse>())
+                .subscribe(new DefaultResponseSubscriber<FavoritesCreateResponse>(mView) {
+                    @Override
+                    protected void onFail(Throwable e) {
+                        mView.showDialogLoading(false, R.string.collecting);
+                    }
+
                     @Override
                     public void onCompleted() {
                         mView.onCollectSuccess(weibo);
@@ -115,13 +126,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
-                        mView.showDialogLoading(false, R.string.collecting);
-                    }
-
-                    @Override
-                    public void onNext(FavoritesCreateResponse weibo) {
+                    public void onNext(FavoritesCreateResponse favoritesCreateResponse) {
 
                     }
                 });
@@ -136,9 +141,13 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         Observable<FavoritesCreateResponse> localObservable = mLocalWeiboSource.uncollectWeibo(mAccount.getWeiyoToken().getAccess_token(),
                 weibo.getId());
         Subscription subscription = Observable.concat(serverObservable, localObservable)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<FavoritesCreateResponse>() {
+                .compose(new DefaultTransformer<FavoritesCreateResponse>())
+                .subscribe(new DefaultResponseSubscriber<FavoritesCreateResponse>(mView) {
+                    @Override
+                    protected void onFail(Throwable e) {
+                        mView.showDialogLoading(false, R.string.uncollecting);
+                    }
+
                     @Override
                     public void onCompleted() {
                         mView.onUncollectSuccess(weibo);
@@ -146,13 +155,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
-                        mView.showDialogLoading(false, R.string.uncollecting);
-                    }
-
-                    @Override
-                    public void onNext(FavoritesCreateResponse weibo) {
+                    public void onNext(FavoritesCreateResponse favoritesCreateResponse) {
 
                     }
                 });
@@ -180,7 +183,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
 
     @Override
     public void attitudesWeibo(final Weibo weibo) {
-        AccessToken accessToken = UserPrefs.get().getEMoreToken();
+        final AccessToken accessToken = UserPrefs.get().getEMoreToken();
         long uid = Long.parseLong(accessToken.getUid());
         if (uid == weibo.getUser().getId()) {
             mView.showHint(R.string.self_weibo_unable_attitude);
@@ -191,17 +194,17 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         final String token  = mAccount.getWeicoToken().getAccess_token();
         Observable<Attitude> serverObservable = mServerWeiboSource.attitudesWeibo(token, Key.WEICO_APP_ID,
                 "smile", weibo.getId());
-        Subscription subscription = serverObservable
-                .doOnNext(new Action1<Attitude>() {
+
+        Observable<Attitude> localObservable = mLocalWeiboSource.attitudesWeibo(token, Key.WEICO_APP_ID,
+                "smile", weibo.getId());
+        Subscription subscription = Observable.concat(serverObservable, localObservable)
+                .compose(new DefaultTransformer<Attitude>())
+                .subscribe(new DefaultResponseSubscriber<Attitude>(mView) {
                     @Override
-                    public void call(Attitude attitude) {
-                        mLocalWeiboSource.attitudesWeibo(token,  Key.WEICO_APP_ID,
-                                "smile", weibo.getId());
+                    protected void onFail(Throwable e) {
+                        mView.showDialogLoading(false, R.string.requesting);
                     }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Attitude>() {
+
                     @Override
                     public void onCompleted() {
                         mView.showDialogLoading(false, R.string.requesting);
@@ -209,13 +212,10 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.showDialogLoading(false, R.string.requesting);
-                    }
-
-                    @Override
-                    public void onNext(Attitude s) {
-                        RxBus.get().post(Key.EVENT_ATTITUDE_WEIBO_SUCCESS, s);
+                    public void onNext(Attitude attitude) {
+                        if (attitude != null) {
+                            RxBus.get().post(Key.EVENT_ATTITUDE_WEIBO_SUCCESS, attitude);
+                        }
                     }
                 });
         mCompositeSubscription.add(subscription);
@@ -228,17 +228,17 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         Observable<Response> serverObservable = mServerWeiboSource.destoryAttitudesWeibo(token,
                 Key.WEICO_APP_ID, "smile", weibo.getId());
 
-        Subscription subscription = serverObservable
-                .doOnNext(new Action1<Response>() {
+        Observable<Response> localObservable = mLocalWeiboSource.destoryAttitudesWeibo(token,
+                Key.WEICO_APP_ID, "smile", weibo.getId());
+
+        Subscription subscription = Observable.concat(serverObservable, localObservable)
+                .compose(new DefaultTransformer<Response>())
+                .subscribe(new DefaultResponseSubscriber<Response>(mView) {
                     @Override
-                    public void call(Response response) {
-                        mLocalWeiboSource.destoryAttitudesWeibo(token,
-                                Key.WEICO_APP_ID,  "smile", weibo.getId());
+                    protected void onFail(Throwable e) {
+                        mView.showDialogLoading(false, R.string.requesting);
                     }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response>() {
+
                     @Override
                     public void onCompleted() {
                         mView.showDialogLoading(false, R.string.requesting);
@@ -246,12 +246,8 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.showDialogLoading(false, R.string.requesting);
-                    }
+                    public void onNext(Response response) {
 
-                    @Override
-                    public void onNext(Response s) {
                     }
                 });
         mCompositeSubscription.add(subscription);

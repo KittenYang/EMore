@@ -8,6 +8,9 @@ import com.caij.emore.present.WeiboMentionPresent;
 import com.caij.emore.present.view.TimeLineWeiboView;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
@@ -47,15 +50,14 @@ public class TopicPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> imple
     @Override
     public void refresh() {
         Subscription su = createObservable(1, true)
-                .subscribe(new Subscriber<List<Weibo>>() {
+                .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mView.onRefreshComplete();
                     }
 
@@ -76,15 +78,14 @@ public class TopicPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> imple
     @Override
     public void loadMore() {
         Subscription su = createObservable(page, false)
-                .subscribe(new Subscriber<List<Weibo>>() {
+                .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mView.onLoadComplete(true);
                     }
 
@@ -103,10 +104,11 @@ public class TopicPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> imple
 
     private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
         return mServerWeiboSource.getTopicsByKey(mAccount.getWeicoToken().getAccess_token(), mTopic, page, COUNT)
-                .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
+                .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
+                .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
-                    public Observable<Weibo> call(List<Weibo> queryWeiboResponse) {
-                        return Observable.from(queryWeiboResponse);
+                    public Observable<Weibo> call(QueryWeiboResponse queryWeiboResponse) {
+                        return Observable.from(queryWeiboResponse.getStatuses());
                     }
                 })
                 .filter(new Func1<Weibo, Boolean>() {
@@ -131,8 +133,7 @@ public class TopicPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> imple
                         doSpanNext(weibos);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(new SchedulerTransformer<List<Weibo>>());
     }
 
     @Override

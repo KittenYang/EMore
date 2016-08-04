@@ -3,6 +3,8 @@ package com.caij.emore.present.imp;
 import com.caij.emore.Key;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.ShortUrlInfo;
+import com.caij.emore.bean.response.QueryWeiboCommentResponse;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboCommentsPresent;
@@ -16,6 +18,10 @@ import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.DefaultTransformer;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import org.json.JSONObject;
 
@@ -125,15 +131,14 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
         initEventListener();
 
         Subscription subscription =  createObservable(0, true)
-                .subscribe(new Subscriber<List<Comment>>() {
+                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mWeiboCommentsView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mWeiboCommentsView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mWeiboCommentsView.onLoadComplete(false);
                     }
 
@@ -160,15 +165,14 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
             maxId = mComments.get(mComments.size() - 1).getId();
         }
         Subscription subscription = createObservable(maxId, false)
-                .subscribe(new Subscriber<List<Comment>>() {
+                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mWeiboCommentsView) {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mWeiboCommentsView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mWeiboCommentsView.onLoadComplete(true);
                     }
 
@@ -185,10 +189,11 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
 
     private Observable<List<Comment>> createObservable(long maxId, final boolean isRefresh) {
         return mServerCommentSource.getCommentsByWeibo(mToken, mWeiboId, 0, maxId, PAGE_COUNET, 1)
-                .flatMap(new Func1<List<Comment>, Observable<Comment>>() {
+                .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
+                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
                     @Override
-                    public Observable<Comment> call(List<Comment> comments) {
-                        return Observable.from(comments);
+                    public Observable<Comment> call(QueryWeiboCommentResponse response) {
+                        return Observable.from(response.getComments());
                     }
                 })
                 .filter(new Func1<Comment, Boolean>() {
@@ -208,25 +213,22 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                         }
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(new SchedulerTransformer<List<Comment>>());
     }
 
     @Override
     public void deleteComment(final Comment comment) {
         mWeiboCommentsView.showDialogLoading(true);
         Subscription subscription = mServerCommentSource.deleteComment(mToken, comment.getId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Comment>() {
+                .compose(new DefaultTransformer<Comment>())
+                .subscribe(new DefaultResponseSubscriber<Comment>(mWeiboCommentsView) {
                     @Override
                     public void onCompleted() {
                         mWeiboCommentsView.showDialogLoading(false);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mWeiboCommentsView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mWeiboCommentsView.showDialogLoading(false);
                     }
 

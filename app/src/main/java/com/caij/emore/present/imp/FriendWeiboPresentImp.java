@@ -2,15 +2,18 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.Key;
 import com.caij.emore.bean.Account;
+import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.view.FriendWeiboView;
-import com.caij.emore.source.DefaultResponseSubscriber;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.SPUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
@@ -46,10 +49,10 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
     public void onCreate() {
         Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getWeiyoToken().getAccess_token(),
                 0, 0, PAGE_COUNT * 2, 1)
-                .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
+                .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
-                    public Observable<Weibo> call(List<Weibo> weibos) {
-                        return Observable.from(weibos);
+                    public Observable<Weibo> call(QueryWeiboResponse response) {
+                        return Observable.from(response.getStatuses());
                     }
                 })
                 .map(new Func1<Weibo, Weibo>() {
@@ -120,7 +123,6 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mView.onDefaultLoadError();
                         mView.onRefreshComplete();
                     }
 
@@ -165,7 +167,6 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
                         @Override
                         protected void onFail(Throwable e) {
-                            mView.onDefaultLoadError();
                             mView.onLoadComplete(true);
                         }
 
@@ -181,10 +182,11 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
         return mServerWeiboSource.getFriendWeibo(mAccount.getWeiyoToken().getAccess_token(), 0, maxId, PAGE_COUNT, 1)
-                .flatMap(new Func1<List<Weibo>, Observable<Weibo>>() {
+                .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
+                .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
-                    public Observable<Weibo> call(List<Weibo> weibos) {
-                        return Observable.from(weibos);
+                    public Observable<Weibo> call(QueryWeiboResponse response) {
+                        return Observable.from(response.getStatuses());
                     }
                 })
                 .filter(new Func1<Weibo, Boolean>() {
@@ -210,8 +212,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                         doSpanNext(weibos);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(new SchedulerTransformer<List<Weibo>>());
     }
 
     @Override

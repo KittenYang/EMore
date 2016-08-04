@@ -1,12 +1,13 @@
 package com.caij.emore.bean;
 
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 
 /**
  * Created by Caij on 2016/7/21.
  */
-public class Attitude {
+public class Attitude extends Response {
 //    "id": 3658318092579477,
 //            "created_at": "Sun Dec 22 14:41:04 +0800 2013",
 //            "attitude": "heart",
@@ -92,5 +93,11 @@ public class Attitude {
 
     public void setAttitude_type(int attitude_type) {
         this.attitude_type = attitude_type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Attitude attitude = (Attitude) o;
+        return id == attitude.getId();
     }
 }
