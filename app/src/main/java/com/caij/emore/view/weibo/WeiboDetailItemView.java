@@ -13,6 +13,7 @@ import com.caij.emore.R;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.utils.SpannableStringUtil;
+import com.caij.emore.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -97,8 +98,12 @@ public class WeiboDetailItemView extends WeiboItemView {
     @OnClick(R.id.ll_re)
     public void onRePostLineaLayoutClick(View view) {
         Weibo weibo = (Weibo) view.getTag();
-        Intent intent = WeiboDetialActivity.newIntent(getContext(), weibo.getId());
-        getContext().startActivity(intent);
+        if (weibo.getUser() != null) {
+            Intent intent = WeiboDetialActivity.newIntent(getContext(), weibo.getId());
+            getContext().startActivity(intent);
+        }else {
+            ToastUtil.show(getContext(), getContext().getString(R.string.weibo_deleted));
+        }
     }
 
 }

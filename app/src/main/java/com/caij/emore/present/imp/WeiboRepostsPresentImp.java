@@ -39,6 +39,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
     private String mToken;
     private long mWeiboId;
     WeiboSource mServerRepostSource;
+    WeiboSource mLocalWeiboSource;
     WeiboRepostsView mWeiboRepostsView;
     List<Weibo> mWeobos;
     Observable<Weibo> mWeiboObservable;
@@ -46,10 +47,14 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
     private UrlSource mLocalUrlSource;
     Observable<List<Weibo>> mWeiboRefreshObservable;
 
-    public WeiboRepostsPresentImp(String token, long weiboId, WeiboSource repostSource, UrlSource servreUrlSource,
-                                  UrlSource localUrlSource, WeiboRepostsView repostsView) {
+    public WeiboRepostsPresentImp(String token, long weiboId, WeiboSource repostSource,
+                                  WeiboSource localWeiboSource,
+                                  UrlSource servreUrlSource,
+                                  UrlSource localUrlSource,
+                                  WeiboRepostsView repostsView) {
         mToken = token;
         mServerRepostSource = repostSource;
+        mLocalWeiboSource = localWeiboSource;
         mLocalUrlSource = localUrlSource;
         mServerUrlSource = servreUrlSource;
         mWeiboRepostsView = repostsView;
@@ -191,6 +196,9 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
+                        if (weibos.size() > 0) {
+                            mLocalWeiboSource.saveWeibo(mToken, weibos.get(0));
+                        }
                         doSpanNext(weibos);
                     }
                 })

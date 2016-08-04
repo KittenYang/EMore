@@ -156,16 +156,20 @@ public class LocalWeiboSource implements WeiboSource {
             weibo.setVisible_id(weiboId);
             visible.setId(weiboId);
             visibleDao.insertOrReplace(visible);
+        }else {
+            weibo.setVisible_id(String.valueOf(-1));
         }
 
         User user = weibo.getUser();
         if (user != null) {
             weibo.setUser_id(user.getId());
             userDao.insertOrReplace(user);
+        }else {
+            weibo.setUser_id(-1L);
         }
 
         List<PicUrl> picUrls = weibo.getPic_urls();
-        if (picUrls != null) {
+        if (picUrls != null && picUrls.size() > 0) {
             for (PicUrl picUrl : picUrls) {
                 picUrl.setWeibo_id(weibo.getId());
                 picUrl.setId(weiboId + picUrl.getThumbnail_pic());
@@ -176,28 +180,31 @@ public class LocalWeiboSource implements WeiboSource {
         if (weibo.getRetweeted_status() != null) {
             weibo.setRetweeted_status_id(weibo.getRetweeted_status().getId());
             insertWeibo(weibo.getRetweeted_status());
+        }else {
+            weibo.setRetweeted_status_id(-1L);
         }
         weiboDao.insertOrReplace(weibo);
     }
 
     private void selectWeibo(Weibo weibo) {
-        if (!TextUtils.isEmpty(weibo.getGeo_id())) {
-            weibo.setGeo(geoDao.load(weibo.getGeo_id()));
-        }
+        if (weibo.getUser_id() != null && weibo.getUser_id() > 0) { //如果user 为null  表示微博被删除了
+            weibo.setUser(userDao.load(weibo.getUser_id()));
+            if (!TextUtils.isEmpty(weibo.getGeo_id())) {
+                weibo.setGeo(geoDao.load(weibo.getGeo_id()));
+            }
 
-        if (!TextUtils.isEmpty(weibo.getVisible_id())) {
-            weibo.setVisible(visibleDao.load(weibo.getVisible_id()));
-        }
+            if (!TextUtils.isEmpty(weibo.getVisible_id())) {
+                weibo.setVisible(visibleDao.load(weibo.getVisible_id()));
+            }
 
-        weibo.setUser(userDao.load(weibo.getUser_id()));
+            List<PicUrl> picUrls = picUrlDao.queryBuilder().where(PicUrlDao.Properties.Weibo_id.eq(weibo.getId())).list();
+            weibo.setPic_urls(picUrls);
 
-        List<PicUrl> picUrls = picUrlDao.queryBuilder().where(PicUrlDao.Properties.Weibo_id.eq(weibo.getId())).list();
-        weibo.setPic_urls(picUrls);
-
-        if (weibo.getRetweeted_status_id() != null && weibo.getRetweeted_status_id() != 0) {
-            Weibo repostWeibo = weiboDao.load(weibo.getRetweeted_status_id());
-            selectWeibo(repostWeibo);
-            weibo.setRetweeted_status(repostWeibo);
+            if (weibo.getRetweeted_status_id() != null && weibo.getRetweeted_status_id() > 0) {
+                Weibo repostWeibo = weiboDao.load(weibo.getRetweeted_status_id());
+                selectWeibo(repostWeibo);
+                weibo.setRetweeted_status(repostWeibo);
+            }
         }
     }
 

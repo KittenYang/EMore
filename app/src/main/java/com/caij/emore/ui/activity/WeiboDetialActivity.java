@@ -221,9 +221,9 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
         mWeibo = weibo;
         mTabTitles.clear();
 
-        mTabTitles.add(getString(R.string.comment) + mWeibo.getComments_count());
-        mTabTitles.add(getString(R.string.repost) + mWeibo.getReposts_count());
-        mTabTitles.add(getString(R.string.attitude) + mWeibo.getAttitudes_count());
+        mTabTitles.add(getString(R.string.comment) + " " + mWeibo.getComments_count());
+        mTabTitles.add(getString(R.string.repost) + " " + mWeibo.getReposts_count());
+        mTabTitles.add(getString(R.string.attitude) + " " + mWeibo.getAttitudes_count());
         for (int i = 0; i < mTabTitles.size(); i ++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             if (tab != null) {

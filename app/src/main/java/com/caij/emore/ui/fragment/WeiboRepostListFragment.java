@@ -17,6 +17,7 @@ import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.present.imp.WeiboRepostsPresentImp;
 import com.caij.emore.present.view.WeiboRepostsView;
 import com.caij.emore.source.local.LocalUrlSource;
+import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerUrlSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.UserInfoActivity;
@@ -45,7 +46,6 @@ public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mLoadMoreLoadMoreRecyclerView.setBackgroundColor(getResources().getColor(R.color.white));
         mLoadMoreLoadMoreRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item))
                 .size(getResources().getDimensionPixelSize(R.dimen.divider)).build());
@@ -61,7 +61,8 @@ public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRe
         AccessToken token = UserPrefs.get().getWeiCoToken();
         long weiId = getArguments().getLong(Key.ID);
         return  new WeiboRepostsPresentImp(token.getAccess_token(), weiId,
-                new ServerWeiboSource(), new ServerUrlSource(),  new LocalUrlSource(),  this);
+                new ServerWeiboSource(), new LocalWeiboSource(),
+                new ServerUrlSource(),  new LocalUrlSource(),  this);
     }
 
     @Override

@@ -16,6 +16,7 @@ import com.caij.emore.ui.activity.publish.CommentWeiboActivity;
 import com.caij.emore.ui.activity.publish.RepostWeiboActivity;
 import com.caij.emore.utils.CountUtil;
 import com.caij.emore.utils.LogUtil;
+import com.caij.emore.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -100,8 +101,12 @@ public class RepostWeiboListItemView extends WeiboItemView {
     @OnClick(R.id.ll_re)
     public void onReLineaLayoutClick(View view) {
         Weibo weibo = (Weibo) view.getTag();
-        Intent intent = WeiboDetialActivity.newIntent(getContext(), weibo.getId());
-        getContext().startActivity(intent);
+        if (weibo.getUser() != null) {
+            Intent intent = WeiboDetialActivity.newIntent(getContext(), weibo.getId());
+            getContext().startActivity(intent);
+        }else {
+            ToastUtil.show(getContext(), getContext().getString(R.string.weibo_deleted));
+        }
     }
 
 

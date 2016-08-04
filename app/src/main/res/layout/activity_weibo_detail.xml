@@ -1,113 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/swipe_refresh_layout">
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white">
-
-            <com.caij.emore.view.weibo.WeiboDetailItemView
-                android:id="@+id/weibo_item_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-            </com.caij.emore.view.weibo.WeiboDetailItemView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/spacing_large"
-                android:paddingRight="@dimen/spacing_large">
-
-                <com.caij.emore.view.WeiboDetailTabLayout
-                    android:id="@+id/tabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:tabIndicatorColor="?attr/colorPrimary"
-                    app:tabMode="scrollable" />
-
-            </LinearLayout>
-
-        </android.support.design.widget.AppBarLayout>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager"
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:orientation="vertical">
 
-        </android.support.v4.view.ViewPager>
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appbar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                    <com.caij.emore.view.weibo.WeiboDetailItemView
+                        android:id="@+id/weibo_item_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    </com.caij.emore.view.weibo.WeiboDetailItemView>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spacing_medium"
+                        android:background="@color/re_post_press_bg"
+                        android:layout_marginTop="@dimen/spacing_medium"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.caij.emore.view.WeiboDetailTabLayout
+                        android:id="@+id/tabLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tabIndicatorColor="?attr/colorPrimary"
+                        app:tabMode="scrollable"
+                        android:layout_marginLeft="@dimen/spacing_large"
+                        android:layout_marginRight="@dimen/spacing_large"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.6dp"
+                        android:background="@color/divider_timeline_item"/>
+
+                </LinearLayout>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            </android.support.v4.view.ViewPager>
 
 
-    </android.support.design.widget.CoordinatorLayout>
+        </android.support.design.widget.CoordinatorLayout>
 
-    <FrameLayout
-        android:id="@+id/fl_lay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#33000000"
-        android:visibility="gone">
+        <FrameLayout
+            android:id="@+id/fl_lay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#33000000"
+            android:visibility="gone">
+
+        </FrameLayout>
+
+
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/action_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="@dimen/fab_spacing"
+            android:layout_marginRight="@dimen/fab_spacing"
+            android:minHeight="30dp"
+            app:fab_addButtonColorNormal="?attr/colorPrimary"
+            app:fab_addButtonColorPressed="?attr/colorPrimaryDark"
+            app:fab_labelStyle="@style/FAB_LABEL"
+            app:layout_anchor="@id/view_pager"
+            app:layout_anchorGravity="bottom|right">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/action_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="?attr/colorPrimary"
+                app:fab_colorPressed="?attr/colorPrimaryDark"
+                app:fab_icon="@mipmap/ic_star" />
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/action_repost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="?attr/colorPrimary"
+                app:fab_colorPressed="?attr/colorPrimaryDark"
+                app:fab_icon="@mipmap/ic_retweet" />
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/action_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="?attr/colorPrimary"
+                app:fab_colorPressed="?attr/colorPrimaryDark"
+                app:fab_icon="@mipmap/ic_reply" />
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
     </FrameLayout>
-
-
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/action_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="@dimen/fab_spacing"
-        android:layout_marginRight="@dimen/fab_spacing"
-        android:minHeight="30dip"
-        app:fab_addButtonColorNormal="?attr/colorPrimary"
-        app:fab_addButtonColorPressed="?attr/colorPrimaryDark"
-        app:fab_labelStyle="@style/FAB_LABEL"
-        app:layout_anchor="@id/view_pager"
-        app:layout_anchorGravity="bottom|right">
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_star"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="?attr/colorPrimary"
-            app:fab_colorPressed="?attr/colorPrimaryDark"
-            app:fab_icon="@mipmap/ic_star" />
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_repost"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="?attr/colorPrimary"
-            app:fab_colorPressed="?attr/colorPrimaryDark"
-            app:fab_icon="@mipmap/ic_retweet" />
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="?attr/colorPrimary"
-            app:fab_colorPressed="?attr/colorPrimaryDark"
-            app:fab_icon="@mipmap/ic_reply" />
-
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
-
-</FrameLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

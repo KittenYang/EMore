@@ -161,6 +161,7 @@
     <string name="server_error">服务器出错</string>
     <string name="self_weibo_unable_collect">自己的微博不能收藏哦</string>
     <string name="web_page">网页详情</string>
+    <string name="weibo_deleted">微博已经删除</string>
 
     <string-array name="txtUnread">
         <item>5分钟</item>

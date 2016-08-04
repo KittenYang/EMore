@@ -20,7 +20,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -33,16 +32,21 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
     private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private long mWeiboId;
-    WeiboSource mServerRepostSource;
+    WeiboSource mServerWeiboSource;
+    WeiboSource mLocalWeiboSource;
     WeiboAttitudesView mView;
     List<Attitude> mAttitudes;
     private int mPage;
     private Observable<Attitude> mAttitudeObservable;
     Observable<List<Attitude>> mWeiboRefreshObservable;
 
-    public WeiboAttitudesPresentImp(String token, long weiboId, WeiboSource repostSource, WeiboAttitudesView view) {
+    public WeiboAttitudesPresentImp(String token, long weiboId,
+                                    WeiboSource serverWeiboSource,
+                                    WeiboSource localWeiboSource,
+                                    WeiboAttitudesView view) {
         mToken = token;
-        mServerRepostSource = repostSource;
+        mServerWeiboSource = serverWeiboSource;
+        mLocalWeiboSource = localWeiboSource;
         mView = view;
         mWeiboId = weiboId;
         mLoginCompositeSubscription = new CompositeSubscription();
@@ -152,7 +156,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
     }
 
     private  Observable<List<Attitude>> createObservable(int page, final boolean isRefresh) {
-        return mServerRepostSource.getWeiboAttiyudes(mToken, mWeiboId, page, PAGE_COUNET)
+        return mServerWeiboSource.getWeiboAttiyudes(mToken, mWeiboId, page, PAGE_COUNET)
                 .compose(new ErrorCheckerTransformer<QueryWeiboAttitudeResponse>())
                 .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<Attitude>>() {
                     @Override
@@ -167,6 +171,14 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
                     }
                 })
                 .toList()
+                .doOnNext(new Action1<List<Attitude>>() {
+                    @Override
+                    public void call(List<Attitude> attitudes) {
+                        if (attitudes.size() > 0) {
+                            mLocalWeiboSource.saveWeibo(mToken, attitudes.get(0).getStatus());
+                        }
+                    }
+                })
                 .compose(new SchedulerTransformer<List<Attitude>>());
     }
 

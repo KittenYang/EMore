@@ -10,10 +10,11 @@
         android:orientation="vertical"
         android:paddingTop="@dimen/spacing_large">
 
-       <include layout="@layout/include_weibo_item_head"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_marginLeft="@dimen/spacing_weibo_item"/>
+        <include
+            layout="@layout/include_weibo_item_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_weibo_item" />
 
         <com.caij.emore.view.FixClickableSpanBugTextView
             android:id="@+id/tv_content"
@@ -21,35 +22,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_micro"
-            android:paddingBottom="2dp"
-            android:paddingTop="2dp"
-            android:lineSpacingExtra="2dip"
-            android:text="哈哈，我今天发了条微博"
+            android:lineSpacingExtra="2dp"
             android:paddingLeft="@dimen/spacing_weibo_item"
-            android:paddingRight="@dimen/spacing_weibo_item"/>
+            android:paddingRight="@dimen/spacing_weibo_item"
+            android:paddingTop="2dp" />
 
         <com.caij.emore.view.weibo.WeiboItemPicsView
             android:id="@+id/pics_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_micro"
             android:layout_marginBottom="@dimen/spacing_micro"
+            android:layout_marginLeft="@dimen/spacing_weibo_item"
             android:layout_marginRight="@dimen/spacing_weibo_item"
-            android:layout_marginLeft="@dimen/spacing_weibo_item">
+            android:layout_marginTop="@dimen/spacing_micro_plu">
 
         </com.caij.emore.view.weibo.WeiboItemPicsView>
 
-        <include layout="@layout/include_weibo_bottom"/>
+        <include layout="@layout/include_weibo_bottom" />
 
     </LinearLayout>
 
     <ImageView
         android:id="@+id/btn_menus"
-        android:layout_width="40dip"
-        android:layout_height="40dip"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="right"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:paddingBottom="8dip"
-        android:src="@mipmap/ic_menu_moreoverflow_card_dark_normal"/>
+        android:paddingBottom="8dp"
+        android:src="@mipmap/ic_menu_moreoverflow_card_dark_normal" />
 
 </merge>

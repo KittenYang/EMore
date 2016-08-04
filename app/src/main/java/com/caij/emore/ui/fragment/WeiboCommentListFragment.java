@@ -18,6 +18,7 @@ import com.caij.emore.bean.Comment;
 import com.caij.emore.present.WeiboCommentsPresent;
 import com.caij.emore.present.imp.WeiboCommentsPresentImp;
 import com.caij.emore.present.view.WeiboCommentsView;
+import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
@@ -52,7 +53,6 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mLoadMoreLoadMoreRecyclerView.setBackgroundColor(getResources().getColor(R.color.white));
         mLoadMoreLoadMoreRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item))
                 .size(getResources().getDimensionPixelSize(R.dimen.divider)).build());
@@ -69,7 +69,7 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
         AccessToken token = UserPrefs.get().getEMoreToken();
         long weibiId  = getArguments().getLong(Key.ID);
         return new WeiboCommentsPresentImp(token.getAccess_token(), weibiId,
-                new ServerWeiboSource(), this);
+                new ServerWeiboSource(), new LocalWeiboSource(), this);
     }
 
     @Override

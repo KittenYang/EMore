@@ -15,6 +15,7 @@ import com.caij.emore.database.bean.User;
 import com.caij.emore.present.ListPresent;
 import com.caij.emore.present.imp.WeiboAttitudesPresentImp;
 import com.caij.emore.present.view.WeiboAttitudesView;
+import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.adapter.AttitudeAdapter;
@@ -41,7 +42,6 @@ public class WeiboLikerListFragment extends RecyclerViewFragment<Attitude, ListP
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mLoadMoreLoadMoreRecyclerView.setBackgroundColor(getResources().getColor(R.color.white));
         mLoadMoreLoadMoreRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item))
                 .size(getResources().getDimensionPixelSize(R.dimen.divider)).build());
@@ -57,7 +57,7 @@ public class WeiboLikerListFragment extends RecyclerViewFragment<Attitude, ListP
         AccessToken token = UserPrefs.get().getWeiCoToken();
         long weiId = getArguments().getLong(Key.ID);
         return  new WeiboAttitudesPresentImp(token.getAccess_token(), weiId,
-                new ServerWeiboSource(), this);
+                new ServerWeiboSource(), new LocalWeiboSource(), this);
     }
 
     @Override

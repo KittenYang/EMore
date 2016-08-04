@@ -50,6 +50,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
     private String mToken;
     private long mWeiboId;
     WeiboSource mServerCommentSource;
+    WeiboSource mLocalWeiboSource;
     WeiboCommentsView mWeiboCommentsView;
     List<Comment> mComments;
     protected UrlSource mLocalUrlSource;
@@ -59,9 +60,11 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
 
     public WeiboCommentsPresentImp(String token, long weiboId,
                                    WeiboSource serverCommentSource,
+                                   WeiboSource localWeiboSource,
                                    WeiboCommentsView weiboCommentsView) {
         mToken = token;
         mServerCommentSource = serverCommentSource;
+        mLocalWeiboSource = localWeiboSource;
         mWeiboCommentsView = weiboCommentsView;
         mWeiboId = weiboId;
         mLocalUrlSource = new LocalUrlSource();
@@ -206,6 +209,9 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                 .doOnNext(new Action1<List<Comment>>() {
                     @Override
                     public void call(List<Comment> comments) {
+                        if (comments.size() > 0) {
+                            mLocalWeiboSource.saveWeibo(mToken, comments.get(0).getStatus());
+                        }
                         List<String> shortUrls  = SpannableStringUtil.getCommentTextHttpUrl(comments);
                         Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource, mLocalUrlSource, mToken);
                         for (Comment comment : comments) {

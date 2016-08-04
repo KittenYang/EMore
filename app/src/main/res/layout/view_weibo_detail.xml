@@ -11,11 +11,12 @@
         android:orientation="vertical"
         android:paddingTop="@dimen/spacing_large">
 
-        <include layout="@layout/include_weibo_item_head"
+        <include
+            layout="@layout/include_weibo_item_head"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_weibo_detail_item"
-            android:layout_marginRight="@dimen/spacing_weibo_detail_item"/>
+            android:layout_marginRight="@dimen/spacing_weibo_detail_item" />
 
         <com.caij.emore.view.FixClickableSpanBugTextView
             android:id="@+id/tv_content"
@@ -23,18 +24,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_micro"
-            android:paddingBottom="@dimen/spacing_micro"
-            android:paddingTop="@dimen/spacing_micro"
-            android:lineSpacingExtra="2dip"
+            android:lineSpacingExtra="2dp"
             android:paddingLeft="@dimen/spacing_weibo_detail_item"
-            android:paddingRight="@dimen/spacing_weibo_detail_item"/>
+            android:paddingRight="@dimen/spacing_weibo_detail_item"
+            android:paddingTop="@dimen/spacing_micro" />
 
         <FrameLayout
             android:id="@+id/fl_pics_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/spacing_weibo_detail_item"
-            android:paddingRight="@dimen/spacing_weibo_detail_item">
+            android:paddingRight="@dimen/spacing_weibo_detail_item"
+            android:layout_marginTop="@dimen/spacing_micro">
 
         </FrameLayout>
 
@@ -42,28 +43,26 @@
             android:id="@+id/ll_re"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:background="@drawable/repost_content_bg_selector"
-            android:paddingTop="@dimen/spacing_medium"
-            android:paddingBottom="@dimen/spacing_medium"
+            android:orientation="vertical"
+            android:paddingBottom="11dp"
             android:paddingLeft="@dimen/spacing_weibo_detail_item"
-            android:paddingRight="@dimen/spacing_weibo_detail_item">
+            android:paddingRight="@dimen/spacing_weibo_detail_item"
+            android:paddingTop="@dimen/spacing_medium">
 
             <com.caij.emore.view.FixClickableSpanBugTextView
                 android:id="@+id/tv_re_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lineSpacingExtra="2dip"
-                android:text="哈哈，我发了条微博被baby转发了，教主吃屎！"
+                android:lineSpacingExtra="2dp"
                 android:textColor="@color/text_54"
-                android:textSize="@dimen/text_size_medium"/>
+                android:textSize="@dimen/text_size_medium" />
 
             <FrameLayout
                 android:id="@+id/fl_re_pics_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/spacing_medium"
-                android:paddingBottom="@dimen/spacing_medium">
+                android:paddingTop="@dimen/spacing_medium">
 
             </FrameLayout>
 
