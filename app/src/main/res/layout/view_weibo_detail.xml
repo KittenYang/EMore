@@ -48,7 +48,8 @@
             android:paddingBottom="11dp"
             android:paddingLeft="@dimen/spacing_weibo_detail_item"
             android:paddingRight="@dimen/spacing_weibo_detail_item"
-            android:paddingTop="@dimen/spacing_medium">
+            android:paddingTop="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_micro_plu">
 
             <com.caij.emore.view.FixClickableSpanBugTextView
                 android:id="@+id/tv_re_content"
@@ -62,7 +63,7 @@
                 android:id="@+id/fl_re_pics_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/spacing_medium">
+                android:layout_marginTop="@dimen/spacing_medium">
 
             </FrameLayout>
 
