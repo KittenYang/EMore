@@ -5,6 +5,9 @@ import android.text.TextUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -83,5 +86,17 @@ public class FileUtil {
         }else {
             return kb + "KB";
         }
+    }
+
+    public static void copy(File source, File target) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(source);
+        FileOutputStream fileOutputStream = new FileOutputStream(target);
+        byte[] buf = new byte[1024 * 8];
+        int len;
+        while ((len = fileInputStream.read(buf)) != -1) {
+            fileOutputStream.write(buf, 0, len);
+        }
+        fileInputStream.close();
+        fileOutputStream.close();
     }
 }

@@ -65,7 +65,7 @@ public class ServerMessageSource implements MessageSource {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 try {
-                    String type  = ImageUtil.getImageType(file);
+                    String type  = ImageUtil.getImageType(file).getValue();
                     subscriber.onNext(type);
                     subscriber.onCompleted();
                 } catch (IOException e) {

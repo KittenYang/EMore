@@ -41,6 +41,27 @@ import static android.media.ExifInterface.TAG_ORIENTATION;
  */
 public class ImageUtil {
 
+    public enum ImageType {
+
+        GIF("gif"),
+        /** JPG type. */
+        JPEG("jpeg"),
+        /** PNG type with alpha. */
+        PNG("png"),
+        /** Unrecognized type. */
+        UNKNOWN("png");
+
+        private final String value;
+
+        ImageType(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
     private final static String PATTERN = "yyyyMMddHH_mmss";
     private static final int TARGET_WIDTH = 1080;
     private static final int TARGET_HEIGHT = 1920;
@@ -75,27 +96,27 @@ public class ImageUtil {
         return result;
     }
 
-    public static String getImageType(File file) throws IOException {
+    public static ImageType getImageType(File file) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(file);
         ImageHeaderParser imageHeaderParser= new ImageHeaderParser(fileInputStream);
         ImageHeaderParser.ImageType imageType = imageHeaderParser.getType();
         switch (imageType) {
             case GIF:
-                return "gif";
+                return ImageType.GIF;
 
             case JPEG:
-                return "jpeg";
+                return ImageType.JPEG;
 
             case PNG_A:
-                return "png";
+                return ImageType.PNG;
 
             case PNG:
-                return "png";
+                return ImageType.PNG;
 
             case UNKNOWN:
-                return "jpeg";
+                return ImageType.UNKNOWN;
         }
-        return "jpeg";
+        return ImageType.UNKNOWN;
     }
 
     public static String createCameraImagePath(Context context) {
@@ -134,19 +155,19 @@ public class ImageUtil {
                 return;
             }
 
-            if ("gif".equals(getImageType(sourceFile))) {
-                outPath = sourcePath;
-                LogUtil.d("compressImage", "source File file is gif ");
-                return;
-            }
-
-            LogUtil.d("compressImage", "source file length %s", FileUtil.getFileSizeString(sourceFile));
-
             if (!ourFile.getParentFile().exists()) {
                 boolean isSuccess  = ourFile.getParentFile().mkdirs();
                 if (!isSuccess) {
                     throw new FileNotFoundException("文件夹创建失败");
                 }
+            }
+
+            LogUtil.d("compressImage", "source file length %s", FileUtil.getFileSizeString(sourceFile));
+
+            if (ImageType.GIF.equals(getImageType(sourceFile))) {
+                FileUtil.copy(new File(sourcePath), new File(outPath));
+                LogUtil.d("compressImage", "source File file is gif ");
+                return;
             }
 
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -198,10 +219,10 @@ public class ImageUtil {
 
             LogUtil.d("compressImage", "out file length %s", FileUtil.getFileSizeString(ourFile));
         }catch (Exception e) {
-            outPath = sourcePath;
+            FileUtil.copy(new File(sourcePath), new File(outPath));
             LogUtil.d("compressImage", "Exception 上传原图");
         }catch (OutOfMemoryError error) {
-            outPath = sourcePath;
+            FileUtil.copy(new File(sourcePath), new File(outPath));
             LogUtil.d("compressImage", "OutOfMemoryError 上传原图");
         }
     }
