@@ -219,11 +219,19 @@ public class ImageUtil {
 
             LogUtil.d("compressImage", "out file length %s", FileUtil.getFileSizeString(ourFile));
         }catch (Exception e) {
-            FileUtil.copy(new File(sourcePath), new File(outPath));
             LogUtil.d("compressImage", "Exception 上传原图");
+            try {
+                FileUtil.copy(new File(sourcePath), new File(outPath));
+            } catch (IOException e1) {
+                LogUtil.d("compressImage", e1.getMessage());
+            }
         }catch (OutOfMemoryError error) {
-            FileUtil.copy(new File(sourcePath), new File(outPath));
             LogUtil.d("compressImage", "OutOfMemoryError 上传原图");
+            try {
+                FileUtil.copy(new File(sourcePath), new File(outPath));
+            } catch (IOException e) {
+                LogUtil.d("compressImage", e.getMessage());
+            }
         }
     }
 
