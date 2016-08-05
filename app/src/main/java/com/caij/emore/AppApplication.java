@@ -3,16 +3,13 @@ package com.caij.emore;
 import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.text.TextUtils;
 
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.service.EMoreService;
 import com.caij.emore.utils.AppUtil;
 import com.caij.emore.utils.ChannelUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.SPUtil;
-import com.caij.emore.utils.db.DBManager;
 import com.tencent.bugly.crashreport.CrashReport;
 
 /**

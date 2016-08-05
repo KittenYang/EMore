@@ -26,6 +26,10 @@ public class AppUtil {
 
     public static void start(Context context, long uid) {
         DBManager.initDB(context, Key.DB_NAME + uid, BuildConfig.DEBUG);
+        startService(context);
+    }
+
+    public static void startService(Context context) {
         EMoreService.start(context);
     }
 }

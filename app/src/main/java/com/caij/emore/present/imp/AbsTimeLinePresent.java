@@ -73,11 +73,12 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
     public void deleteWeibo(final Weibo weibo, final int position) {
         mView.showDialogLoading(true, R.string.deleting);
         Observable<Weibo> serverObservable = mServerWeiboSource.deleteWeibo(mAccount.getWeiyoToken().getAccess_token(),
-                weibo.getId());
+                weibo.getId())
+                .compose(new DefaultTransformer<Weibo>());
+
         Observable<Weibo> localObservable = mLocalWeiboSource.deleteWeibo(mAccount.getWeiyoToken().getAccess_token(),
                 weibo.getId());
         Subscription subscription = Observable.concat(serverObservable, localObservable)
-                .compose(new DefaultTransformer<Weibo>())
                 .subscribe(new DefaultResponseSubscriber<Weibo>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -108,11 +109,12 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         }
         mView.showDialogLoading(true, R.string.collecting);
         Observable<FavoritesCreateResponse> serverObservable = mServerWeiboSource.collectWeibo(mAccount.getWeiyoToken().getAccess_token(),
-                weibo.getId());
+                weibo.getId())
+                .compose(new DefaultTransformer<FavoritesCreateResponse>());
+
         Observable<FavoritesCreateResponse> localObservable = mLocalWeiboSource.collectWeibo(mAccount.getWeiyoToken().getAccess_token(),
                 weibo.getId());
         Subscription subscription = Observable.concat(serverObservable, localObservable)
-                .compose(new DefaultTransformer<FavoritesCreateResponse>())
                 .subscribe(new DefaultResponseSubscriber<FavoritesCreateResponse>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -137,11 +139,12 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
     public void uncollectWeibo(final Weibo weibo) {
         mView.showDialogLoading(true, R.string.uncollecting);
         Observable<FavoritesCreateResponse> serverObservable = mServerWeiboSource.uncollectWeibo(mAccount.getWeiyoToken().getAccess_token(),
-                weibo.getId());
+                weibo.getId())
+                .compose(new DefaultTransformer<FavoritesCreateResponse>());
+
         Observable<FavoritesCreateResponse> localObservable = mLocalWeiboSource.uncollectWeibo(mAccount.getWeiyoToken().getAccess_token(),
                 weibo.getId());
         Subscription subscription = Observable.concat(serverObservable, localObservable)
-                .compose(new DefaultTransformer<FavoritesCreateResponse>())
                 .subscribe(new DefaultResponseSubscriber<FavoritesCreateResponse>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -193,12 +196,12 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         mView.showDialogLoading(true, R.string.requesting);
         final String token  = mAccount.getWeicoToken().getAccess_token();
         Observable<Attitude> serverObservable = mServerWeiboSource.attitudesWeibo(token, Key.WEICO_APP_ID,
-                "smile", weibo.getId());
+                "smile", weibo.getId())
+                .compose(new DefaultTransformer<Attitude>());
 
         Observable<Attitude> localObservable = mLocalWeiboSource.attitudesWeibo(token, Key.WEICO_APP_ID,
                 "smile", weibo.getId());
         Subscription subscription = Observable.concat(serverObservable, localObservable)
-                .compose(new DefaultTransformer<Attitude>())
                 .subscribe(new DefaultResponseSubscriber<Attitude>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -226,13 +229,13 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         mView.showDialogLoading(true, R.string.requesting);
         final String token  = mAccount.getWeicoToken().getAccess_token();
         Observable<Response> serverObservable = mServerWeiboSource.destoryAttitudesWeibo(token,
-                Key.WEICO_APP_ID, "smile", weibo.getId());
+                Key.WEICO_APP_ID, "smile", weibo.getId())
+                .compose(new DefaultTransformer<Response>());
 
         Observable<Response> localObservable = mLocalWeiboSource.destoryAttitudesWeibo(token,
                 Key.WEICO_APP_ID, "smile", weibo.getId());
 
         Subscription subscription = Observable.concat(serverObservable, localObservable)
-                .compose(new DefaultTransformer<Response>())
                 .subscribe(new DefaultResponseSubscriber<Response>(mView) {
                     @Override
                     protected void onFail(Throwable e) {

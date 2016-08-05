@@ -8,6 +8,7 @@ import com.caij.emore.present.view.DetailUserView;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.utils.rxjava.DefaultTransformer;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import retrofit2.adapter.rxjava.HttpException;
@@ -47,6 +48,7 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
     public void follow() {
         mUserView.showDialogLoading(true);
         Subscription subscription = mServerUserSource.followUser(mToken, mName)
+                .compose(new ErrorCheckerTransformer<User>())
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User user) {
@@ -77,6 +79,7 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
     public void unFollow() {
         mUserView.showDialogLoading(true);
         Subscription subscription = mServerUserSource.unfollowUser(mToken, mName)
+                .compose(new ErrorCheckerTransformer<User>())
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User user) {

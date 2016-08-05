@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Process;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -83,6 +84,7 @@ public class WebActivity extends BaseToolBarActivity {
     protected void onDestroy() {
         super.onDestroy();
         mWebView.destroy();
+        Process.killProcess(Process.myPid());
     }
 
     static protected class MyWebViewClient extends WebViewClient {

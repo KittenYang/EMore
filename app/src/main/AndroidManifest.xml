@@ -28,8 +28,17 @@
         <meta-data android:name="com.caij.emore.utils.glide.MyGlideModule"
             android:value="GlideModule"/>
 
-        <service android:name=".service.EMoreService"/>
+        <service android:name=".service.EMoreService"
+            android:process=":v587"
+            android:description="@string/emore_service_desc"/>
         <service android:name=".service.EMoreService$GrayInnerService"/>
+
+        <receiver android:name=".receiver.KeepAliveReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+            </intent-filter>
+        </receiver>
+
 
         <activity android:name="com.caij.emore.ui.activity.SplashActivity"
             android:theme="@style/SplashActivity">
@@ -61,7 +70,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.caij.emore.ui.activity.WebActivity">
+        <activity android:name="com.caij.emore.ui.activity.WebActivity"
+            android:process=":web"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
