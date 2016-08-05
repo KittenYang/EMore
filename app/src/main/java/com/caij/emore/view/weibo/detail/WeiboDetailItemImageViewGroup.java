@@ -1,4 +1,4 @@
-package com.caij.emore.view.weibo;
+package com.caij.emore.view.weibo.detail;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,25 +6,26 @@ import android.view.View;
 
 import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.view.weibo.list.WeiboItemImageViewGroup;
 
 /**
  * Created by Caij on 2016/6/13.
  */
-public class WeiboDetailItemPicsView extends WeiboItemPicsView{
+public class WeiboDetailItemImageViewGroup extends WeiboItemImageViewGroup {
 
-    public WeiboDetailItemPicsView(Context context) {
+    public WeiboDetailItemImageViewGroup(Context context) {
         super(context);
     }
 
-    public WeiboDetailItemPicsView(Context context, AttributeSet attrs) {
+    public WeiboDetailItemImageViewGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WeiboDetailItemPicsView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WeiboDetailItemImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public WeiboDetailItemPicsView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public WeiboDetailItemImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 

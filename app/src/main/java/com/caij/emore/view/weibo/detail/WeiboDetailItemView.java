@@ -1,4 +1,4 @@
-package com.caij.emore.view.weibo;
+package com.caij.emore.view.weibo.detail;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.caij.emore.R;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
-import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.ToastUtil;
+import com.caij.emore.view.weibo.WeiboItemView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -80,14 +80,14 @@ public class WeiboDetailItemView extends WeiboItemView {
             viewGroup.setVisibility(GONE);
         }else if (weibo.getPic_urls() != null && weibo.getPic_urls().size() == 1 && weibo.getPic_urls().get(0).isBigImageAndHeightBtWidth()) {
             viewGroup.setVisibility(VISIBLE);
-            WeiboDetailItemPicsViewOf1BigImage imagesView = new WeiboDetailItemPicsViewOf1BigImage(getContext());
+            WeiboDetailItemImageViewGroupOf1BigImage imagesView = new WeiboDetailItemImageViewGroupOf1BigImage(getContext());
             viewGroup.addView(imagesView,
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
             imagesView.setPics(weibo.getPic_urls());
         } else {
             viewGroup.setVisibility(VISIBLE);
-            WeiboDetailItemPicsView imagesView = new WeiboDetailItemPicsView(getContext());
+            WeiboDetailItemImageViewGroup imagesView = new WeiboDetailItemImageViewGroup(getContext());
             viewGroup.addView(imagesView,
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));

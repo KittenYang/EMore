@@ -1,4 +1,4 @@
-package com.caij.emore.view.weibo;
+package com.caij.emore.view.weibo.list;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -11,6 +11,8 @@ import com.caij.emore.R;
 import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.NavigationUtil;
+import com.caij.emore.view.weibo.ImageInterface;
+import com.caij.emore.view.weibo.ItemImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/6.
  */
-public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener, ImageInterface, Runnable {
+public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickListener, ImageInterface, Runnable {
 
     public static final float MAX_RADIO = 13 * 1.0f / 13;
 
@@ -28,23 +30,23 @@ public class WeiboItemPicsView extends ViewGroup implements View.OnClickListener
     protected int mSpaceWidth;
     protected List<PicUrl> mPicUrls;
 
-    public WeiboItemPicsView(Context context) {
+    public WeiboItemImageViewGroup(Context context) {
         super(context);
         init(context);
     }
 
-    public WeiboItemPicsView(Context context, AttributeSet attrs) {
+    public WeiboItemImageViewGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public WeiboItemPicsView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WeiboItemImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public WeiboItemPicsView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public WeiboItemImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
     }

@@ -1,7 +1,6 @@
 package com.caij.emore.ui.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -14,15 +13,12 @@ import android.widget.FrameLayout;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
-import com.caij.emore.bean.Account;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboDetailPresent;
 import com.caij.emore.present.imp.WeiboDetailPresentImp;
 import com.caij.emore.present.view.WeiboDetailView;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
-import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.activity.publish.CommentWeiboActivity;
 import com.caij.emore.ui.activity.publish.RepostWeiboActivity;
 import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
@@ -30,11 +26,10 @@ import com.caij.emore.ui.fragment.BaseFragment;
 import com.caij.emore.ui.fragment.WeiboCommentListFragment;
 import com.caij.emore.ui.fragment.WeiboLikerListFragment;
 import com.caij.emore.ui.fragment.WeiboRepostListFragment;
-import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
-import com.caij.emore.view.weibo.WeiboDetailItemView;
+import com.caij.emore.view.weibo.detail.WeiboDetailItemView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 

@@ -27,7 +27,7 @@
             android:paddingRight="@dimen/spacing_weibo_item"
             android:paddingTop="2dp" />
 
-        <com.caij.emore.view.weibo.WeiboItemPicsView
+        <com.caij.emore.view.weibo.list.WeiboItemImageViewGroup
             android:id="@+id/pics_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:layout_marginRight="@dimen/spacing_weibo_item"
             android:layout_marginTop="@dimen/spacing_micro_plu">
 
-        </com.caij.emore.view.weibo.WeiboItemPicsView>
+        </com.caij.emore.view.weibo.list.WeiboItemImageViewGroup>
 
         <include layout="@layout/include_weibo_bottom" />
 

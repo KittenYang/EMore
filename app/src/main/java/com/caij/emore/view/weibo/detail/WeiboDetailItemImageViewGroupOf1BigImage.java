@@ -1,4 +1,4 @@
-package com.caij.emore.view.weibo;
+package com.caij.emore.view.weibo.detail;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -19,6 +19,7 @@ import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.ToastUtil;
+import com.caij.emore.view.weibo.ImageInterface;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,30 +30,30 @@ import java.util.concurrent.ExecutionException;
  * Created by Caij on 2016/6/13.
  * 这个是微博详情页的大图，需要全部加载，之前的控件ImageView展示不了，需要用WebView
  */
-public class WeiboDetailItemPicsViewOf1BigImage extends ViewGroup implements ImageInterface{
+public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implements ImageInterface {
 
     private PicUrl mPicUrl;
     private Handler mMainHandler;
     private WebView mWebView;
     private AsyncTask downImageAsyncTask;
 
-    public WeiboDetailItemPicsViewOf1BigImage(Context context) {
+    public WeiboDetailItemImageViewGroupOf1BigImage(Context context) {
         super(context);
         init(context);
     }
 
-    public WeiboDetailItemPicsViewOf1BigImage(Context context, AttributeSet attrs) {
+    public WeiboDetailItemImageViewGroupOf1BigImage(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public WeiboDetailItemPicsViewOf1BigImage(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WeiboDetailItemImageViewGroupOf1BigImage(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public WeiboDetailItemPicsViewOf1BigImage(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public WeiboDetailItemImageViewGroupOf1BigImage(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
     }

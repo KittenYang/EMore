@@ -10,9 +10,8 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
-import com.caij.emore.view.weibo.RepostWeiboListItemView;
-import com.caij.emore.view.weibo.WeiboItemView;
-import com.caij.emore.view.weibo.WeiboListItemView;
+import com.caij.emore.view.weibo.list.RepostWeiboListItemView;
+import com.caij.emore.view.weibo.list.WeiboListItemView;
 
 import java.util.List;
 

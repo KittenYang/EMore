@@ -1,4 +1,4 @@
-package com.caij.emore.view.weibo;
+package com.caij.emore.view.weibo.list;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,8 @@ import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.activity.publish.CommentWeiboActivity;
 import com.caij.emore.ui.activity.publish.RepostWeiboActivity;
 import com.caij.emore.utils.CountUtil;
+import com.caij.emore.view.weibo.ImageInterface;
+import com.caij.emore.view.weibo.WeiboItemView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -33,7 +35,7 @@ public class WeiboListItemView extends WeiboItemView {
     ImageView btnMenus;
 
     @BindView(R.id.pics_view)
-    WeiboItemPicsView picsView;
+    ImageInterface picsView;
 
     private OnClickListener onMenuClickListener;
     private OnClickListener onLikeClickListener;
@@ -76,12 +78,16 @@ public class WeiboListItemView extends WeiboItemView {
         tvLike.setText(String.valueOf(weibo.getAttitudes_count()));
         tvLike.setSelected(weibo.isAttitudes());
 
-        picsView.setPics(weibo.getPic_urls());
+        setImages(weibo, picsView);
 
         tvLike.setTag(weibo);
         tvCommentCount.setTag(weibo);
         tvRepostCount.setTag(weibo);
         btnMenus.setTag(weibo);
+    }
+
+    protected void setImages(Weibo weibo, ImageInterface picsView) {
+        picsView.setPics(weibo.getPic_urls());
     }
 
     @OnClick({R.id.tv_like, R.id.tv_comment_count, R.id.tv_repost_count, R.id.btn_menus})

@@ -30,15 +30,15 @@ import butterknife.OnClick;
 public abstract class WeiboItemView extends FrameLayout {
 
     @BindView(R.id.sdv_avatar)
-    ImageView ivAvatar;
+    protected ImageView ivAvatar;
     @BindView(R.id.tv_name)
-    TextView tvName;
+    protected TextView tvName;
     @BindView(R.id.img_verified)
-    ImageView imgVerified;
+    protected ImageView imgVerified;
     @BindView(R.id.tv_source)
-    TextView tvDesc;
+    protected TextView tvDesc;
     @BindView(R.id.tv_content)
-    TextView tvContent;
+    protected TextView tvContent;
 
     public WeiboItemView(Context context) {
         super(context);
@@ -67,7 +67,6 @@ public abstract class WeiboItemView extends FrameLayout {
     }
 
     protected abstract int getLayoutId();
-
 
     public void setWeibo(Weibo weibo) {
         tvName.setText(weibo.getUser().getName());
