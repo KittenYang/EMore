@@ -75,6 +75,8 @@ public class DraftPresentImp implements DraftPresent {
                     public void onNext(List<Draft> drafts) {
                         mDrafts.addAll(drafts);
                         mView.setEntities(mDrafts);
+
+                        mView.onLoadComplete(drafts.size() >= PAGE_COUNT - 1);
                     }
                 });
         mCompositeSubscription.add(subscription);
@@ -98,6 +100,8 @@ public class DraftPresentImp implements DraftPresent {
                     public void onNext(List<Draft> drafts) {
                         mDrafts.addAll(drafts);
                         mView.setEntities(mDrafts);
+
+                        mView.onLoadComplete(drafts.size() >= PAGE_COUNT - 1);
                     }
                 });
 

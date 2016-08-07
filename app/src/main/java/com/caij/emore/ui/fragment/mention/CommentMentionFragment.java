@@ -21,23 +21,18 @@ import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 
 /**
  * Created by Caij on 2016/7/4.
  */
 public class CommentMentionFragment extends SwipeRefreshRecyclerViewFragment<Comment, RefreshListPresent> implements
-        LoadMoreRecyclerView.OnLoadMoreListener, RefreshListView<Comment>, RecyclerViewOnItemClickListener {
+        XRecyclerView.OnLoadMoreListener, RefreshListView<Comment>, RecyclerViewOnItemClickListener {
 
     @Override
     protected BaseAdapter<Comment, ? extends BaseViewHolder> createRecyclerViewAdapter() {
         return new MessageCommentAdapter(getActivity());
-    }
-
-    @Override
-    public void onEmpty() {
-
     }
 
     @Override

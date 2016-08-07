@@ -42,7 +42,7 @@ import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.view.recyclerview.HeaderAndFooterRecyclerViewAdapter;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 import com.caij.emore.view.recyclerview.LoadMoreView;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 
@@ -140,7 +140,7 @@ public class ChatFragment extends BaseFragment implements
         HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter
                 = new HeaderAndFooterRecyclerViewAdapter(mMessageAdapter);
         mLoadMoreView = new LoadMoreView(getActivity());
-        mLoadMoreView.setState(LoadMoreRecyclerView.STATE_EMPTY);
+        mLoadMoreView.setState(XRecyclerView.STATE_EMPTY);
         headerAndFooterRecyclerViewAdapter.addHeaderView(mLoadMoreView);
 
         mRecyclerView.addOnScrollListener(new OnScrollListener() {
@@ -148,8 +148,8 @@ public class ChatFragment extends BaseFragment implements
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int firstVisibleItemPosition = mLinearLayoutManager.findFirstVisibleItemPosition();
-                if (firstVisibleItemPosition == 0 && mLoadMoreView.getState() == LoadMoreRecyclerView.STATE_NORMAL) {
-                    mLoadMoreView.setState(LoadMoreRecyclerView.STATE_LOADING);
+                if (firstVisibleItemPosition == 0 && mLoadMoreView.getState() == XRecyclerView.STATE_NORMAL) {
+                    mLoadMoreView.setState(XRecyclerView.STATE_LOADING);
                     loadMore();
                 }
             }
@@ -213,21 +213,21 @@ public class ChatFragment extends BaseFragment implements
     @Override
     public void onLoadComplete(boolean isHaveMore) {
         if (isHaveMore) {
-            mLoadMoreView.setState(LoadMoreRecyclerView.STATE_NORMAL);
+            mLoadMoreView.setState(XRecyclerView.STATE_NORMAL);
         }else {
-            mLoadMoreView.setState(LoadMoreRecyclerView.STATE_EMPTY);
+            mLoadMoreView.setState(XRecyclerView.STATE_EMPTY);
         }
-    }
-
-    @Override
-    public void onEmpty() {
-
     }
 
     @Override
     public void setEntities(List<DirectMessage> entities) {
         mMessageAdapter.setEntities(entities);
         mMessageAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showErrorView() {
+
     }
 
     @Override

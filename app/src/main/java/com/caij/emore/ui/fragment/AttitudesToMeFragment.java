@@ -17,7 +17,7 @@ import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.adapter.ToMeAttitudeAdapter;
 import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 
 
 /**
@@ -37,12 +37,7 @@ public class AttitudesToMeFragment extends SwipeRefreshRecyclerViewFragment<Atti
     }
 
     @Override
-    public void onEmpty() {
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_EMPTY);
-    }
-
-    @Override
-    protected BaseAdapter createRecyclerViewAdapter() {
+    protected ToMeAttitudeAdapter createRecyclerViewAdapter() {
         return  new ToMeAttitudeAdapter(getActivity());
     }
 

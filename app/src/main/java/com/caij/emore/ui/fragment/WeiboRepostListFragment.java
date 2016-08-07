@@ -1,17 +1,16 @@
 package com.caij.emore.ui.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.present.imp.WeiboRepostsPresentImp;
@@ -24,7 +23,7 @@ import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.adapter.RepostAdapter;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.List;
@@ -33,7 +32,7 @@ import java.util.List;
  * Created by Caij on 2016/6/14.
  */
 public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRepostsPresent> implements WeiboRepostsView,
-        LoadMoreRecyclerView.OnLoadMoreListener {
+        XRecyclerView.OnLoadMoreListener {
 
     public static WeiboRepostListFragment newInstance(long weiboId) {
         Bundle args = new Bundle();
@@ -46,7 +45,7 @@ public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mLoadMoreLoadMoreRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
+        xRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item))
                 .size(getResources().getDimensionPixelSize(R.dimen.divider)).build());
     }
@@ -68,14 +67,18 @@ public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRe
     @Override
     protected void onUserFirstVisible() {
         super.onUserFirstVisible();
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
+        xRecyclerView.setFooterState(XRecyclerView.STATE_LOADING);
     }
 
+    @Override
+    protected void onReLoadBtnClick() {
+        xRecyclerView.setFooterState(XRecyclerView.STATE_LOADING);
+        mPresent.userFirstVisible();
+    }
 
     @Override
-    public void onEmpty() {
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_EMPTY);
-        // TODO: 2016/6/16
+    protected void setEmptyText(TextView textView) {
+        textView.setText(R.string.repost_empty);
     }
 
     @Override
@@ -93,9 +96,9 @@ public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRe
     public void onRepostWeiboSuccess(List<Weibo> weobos) {
         mRecyclerViewAdapter.setEntities(weobos);
         mRecyclerViewAdapter.notifyItemInserted(0);
-        LinearLayoutManager manager = (LinearLayoutManager) mLoadMoreLoadMoreRecyclerView.getLayoutManager();
+        LinearLayoutManager manager = (LinearLayoutManager) xRecyclerView.getLayoutManager();
         if (manager.findFirstVisibleItemPosition() < 2) {
-            mLoadMoreLoadMoreRecyclerView.smoothScrollToPosition(0);
+            xRecyclerView.smoothScrollToPosition(0);
         }
     }
 }

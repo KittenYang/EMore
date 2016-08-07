@@ -84,8 +84,8 @@ public class AttitudesToMePresentImp implements RefreshListPresent {
 
                     @Override
                     public void onNext(List<Attitude> attitudes) {
-                        AttitudesToMePresentImp.this.mAttitudes.addAll(attitudes);
-                        mView.setEntities(AttitudesToMePresentImp.this.mAttitudes);
+                        mAttitudes.addAll(attitudes);
+                        mView.setEntities(mAttitudes);
 
                         mView.onRefreshComplete();
                         mView.onLoadComplete(attitudes.size() > COUNT - 1);

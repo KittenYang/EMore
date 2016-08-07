@@ -1,6 +1,5 @@
 package com.caij.emore.ui.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,16 +51,16 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mSwipeRefreshLayout.setBackgroundColor(getResources().getColor(R.color.white));
-        mLoadMoreLoadMoreRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
+        xRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item)).
                 margin(DensityUtil.dip2px(getActivity(), 72), 0).
                 size(DensityUtil.dip2px(getActivity(), 0.5f)).
                 build());
 
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        final View mentionView = layoutInflater.inflate(R.layout.item_message_head, mLoadMoreLoadMoreRecyclerView, false);
-        View commentView = layoutInflater.inflate(R.layout.item_message_head, mLoadMoreLoadMoreRecyclerView, false);
-        View priseView = layoutInflater.inflate(R.layout.item_message_head, mLoadMoreLoadMoreRecyclerView, false);
+        final View mentionView = layoutInflater.inflate(R.layout.item_message_head, xRecyclerView, false);
+        View commentView = layoutInflater.inflate(R.layout.item_message_head, xRecyclerView, false);
+        View priseView = layoutInflater.inflate(R.layout.item_message_head, xRecyclerView, false);
 
         tvMentionCount = (TextView) mentionView.findViewById(R.id.tv_unread_count);
         tvCommentCount = (TextView) commentView.findViewById(R.id.tv_unread_count);
@@ -71,9 +70,9 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         setValue(commentView, "评论", R.mipmap.messagescenter_comments);
         setValue(priseView, "赞", R.mipmap.messagescenter_good);
 
-        mLoadMoreLoadMoreRecyclerView.getAdapter().addHeaderView(mentionView);
-        mLoadMoreLoadMoreRecyclerView.getAdapter().addHeaderView(commentView);
-        mLoadMoreLoadMoreRecyclerView.getAdapter().addHeaderView(priseView);
+        xRecyclerView.getAdapter().addHeaderView(mentionView);
+        xRecyclerView.getAdapter().addHeaderView(commentView);
+        xRecyclerView.getAdapter().addHeaderView(priseView);
 
         mentionView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +135,11 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         return null;
     }
 
+    @Override
+    protected View createEmptyView() {
+        return null;
+    }
+
     private void setValue(View view, String title, int drawable) {
         TextView tvTitle  = (TextView) view.findViewById(R.id.tv_title);
         ImageView ivIcon  = (ImageView) view.findViewById(R.id.iv_icon);
@@ -150,12 +154,7 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), bean.getUser().getScreen_name(), ChatFragment.class,
                 ChatFragment.newInstance(bean.getUser().getScreen_name(), bean.getUser().getId()).getArguments());
         startActivity(intent);
-        mLoadMoreLoadMoreRecyclerView.getAdapter().notifyItemChanged(position);
-    }
-
-    @Override
-    public void onEmpty() {
-
+        xRecyclerView.getAdapter().notifyItemChanged(position);
     }
 
     @Override

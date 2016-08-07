@@ -3,7 +3,6 @@ package com.caij.emore.present.imp;
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.QueryWeiboResponse;
-import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.HotWeiboPresent;
@@ -18,10 +17,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Caij on 2016/5/31.
@@ -63,11 +60,8 @@ public class HotWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> im
                         mWeibos.clear();
                         mWeibos.addAll(weibos);
                         mView.setEntities(mWeibos);
-                        if (weibos.size() == 0) {
-                            mView.onEmpty();
-                        }else {
-                            mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1);
-                        }
+
+                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 3);
 
                         page = 2;
                     }

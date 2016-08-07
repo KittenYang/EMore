@@ -10,7 +10,7 @@ import com.caij.emore.present.imp.FollowsPresentImp;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.source.server.ServerUserSource;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 
 /**
  * Created by Caij on 2016/7/3.
@@ -31,12 +31,6 @@ public class FollowsFragment extends FriendshipFragment<FriendshipPresent> {
         long uid = getArguments().getLong(Key.ID);
         return new FollowsPresentImp(accessToken.getAccess_token(), uid, new ServerUserSource(),
                 new ServerMessageSource(), new LocalMessageSource(), this);
-    }
-
-    @Override
-    protected void onUserFirstVisible() {
-        super.onUserFirstVisible();
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
     }
 
 }

@@ -4,13 +4,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
 import com.caij.emore.present.WeiboMentionPresent;
 import com.caij.emore.present.imp.WeiboMentionPresentImp;
 import com.caij.emore.source.local.LocalMessageSource;
@@ -18,17 +14,14 @@ import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.fragment.weibo.TimeLineWeiboFragment;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Caij on 2016/6/4.
  */
 public class WeiboMentionFragment extends TimeLineWeiboFragment<WeiboMentionPresent> implements
-        RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+        RecyclerViewOnItemClickListener, XRecyclerView.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -51,11 +44,6 @@ public class WeiboMentionFragment extends TimeLineWeiboFragment<WeiboMentionPres
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
-    }
-
-    @Override
-    public void onEmpty() {
-
     }
 
     @Override

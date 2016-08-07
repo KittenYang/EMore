@@ -57,26 +57,7 @@ public class FriendPresentImp implements FriendshipPresent {
 
     @Override
     public void userFirstVisible() {
-        Subscription subscription = createUsersObservable(0, true)
-                .subscribe(new DefaultResponseSubscriber<List<User>>(mFriendshipView) {
-                    @Override
-                    protected void onFail(Throwable e) {
-                        mFriendshipView.onLoadComplete(false);
-                    }
-
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onNext(List<User> users) {
-                        mUsers.addAll(users);
-                        mFriendshipView.setEntities(mUsers);
-                        mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
-                    }
-                });
-        mLoginCompositeSubscription.add(subscription);
+        refresh();
     }
 
     @Override
@@ -121,5 +102,32 @@ public class FriendPresentImp implements FriendshipPresent {
                 })
                 .toList()
                 .compose(new SchedulerTransformer<List<User>>());
+    }
+
+    @Override
+    public void refresh() {
+        Subscription subscription = createUsersObservable(0, true)
+                .subscribe(new DefaultResponseSubscriber<List<User>>(mFriendshipView) {
+                    @Override
+                    protected void onFail(Throwable e) {
+                        mFriendshipView.onRefreshComplete();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onNext(List<User> users) {
+                        mUsers.clear();
+                        mUsers.addAll(users);
+                        mFriendshipView.setEntities(mUsers);
+                        mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
+
+                        mFriendshipView.onRefreshComplete();
+                    }
+                });
+        mLoginCompositeSubscription.add(subscription);
     }
 }

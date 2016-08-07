@@ -71,7 +71,7 @@ public class WeiboMentionPresentImp extends AbsTimeLinePresent<TimeLineWeiboView
                         mView.setEntities(mWeibos);
 
                         mView.onRefreshComplete();
-                        mView.onLoadComplete(weibos.size() > COUNT - 1);
+                        mView.onLoadComplete(weibos.size() > COUNT - 2);
 
                         MessageUtil.resetUnReadMessage(mAccount.getWeicoToken().getAccess_token(),
                                 UnReadMessage.TYPE_MENTION_STATUS, mServerMessageSource, mLocalMessageSource);

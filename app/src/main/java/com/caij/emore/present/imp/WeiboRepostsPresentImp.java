@@ -71,7 +71,9 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mWeiboRepostsView) {
                     @Override
                     protected void onFail(Throwable e) {
-                        mWeiboRepostsView.onLoadComplete(false);
+                        if (mWeobos.size() == 0) {
+                            mWeiboRepostsView.showErrorView();
+                        }
                     }
 
                     @Override
@@ -81,14 +83,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
-                        mWeobos.clear();
-                        mWeobos.addAll(weibos);
-                        mWeiboRepostsView.setEntities(weibos);
-                        if (weibos.size() == 0) {
-                            mWeiboRepostsView.onEmpty();
-                        }else {
-                            mWeiboRepostsView.onLoadComplete(weibos.size() >= PAGE_COUNET - 5);
-                        }
+                        addRefreshDate(weibos);
                     }
                 });
 
@@ -135,17 +130,17 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                 public void call(List<Weibo> weibos) {
                     LogUtil.d(WeiboRepostsPresentImp.this, "accept refresh event");
 
-                    mWeobos.clear();
-                    mWeobos.addAll(weibos);
-                    mWeiboRepostsView.setEntities(weibos);
-
-                    if (weibos.size() == 0) {
-                        mWeiboRepostsView.onEmpty();
-                    }else {
-                        mWeiboRepostsView.onLoadComplete(weibos.size() >= PAGE_COUNET - 5);
-                    }
+                    addRefreshDate(weibos);
                 }
             });
+    }
+
+    private void addRefreshDate(List<Weibo> weibos) {
+        mWeobos.clear();
+        mWeobos.addAll(weibos);
+        mWeiboRepostsView.setEntities(weibos);
+
+        mWeiboRepostsView.onLoadComplete(weibos.size() >= PAGE_COUNET - 5);
     }
 
     @Override

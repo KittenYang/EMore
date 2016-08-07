@@ -18,12 +18,12 @@ import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 
 /**
  * Created by Caij on 2016/7/4.
  */
-public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment<Comment, PublishCommentsPresent> implements LoadMoreRecyclerView.OnLoadMoreListener,  MyPublishComentsView {
+public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment<Comment, PublishCommentsPresent> implements XRecyclerView.OnLoadMoreListener,  MyPublishComentsView {
 
     @Override
     protected BaseAdapter<Comment, ? extends BaseViewHolder> createRecyclerViewAdapter() {
@@ -70,8 +70,4 @@ public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment<Co
         mRecyclerViewAdapter.notifyItemRemoved(position);
     }
 
-    @Override
-    public void onEmpty() {
-
-    }
 }

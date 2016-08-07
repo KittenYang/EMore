@@ -9,14 +9,13 @@ import android.view.View;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.present.imp.UserWeiboPresentImp;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.view.recyclerview.HeaderAndFooterRecyclerViewAdapter;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 
 /**
  * Created by Caij on 2016/6/29.
@@ -37,9 +36,9 @@ public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> i
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mSwipeRefreshLayout.setEnabled(false);
-        HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter = mLoadMoreLoadMoreRecyclerView.getAdapter();
+        HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter = xRecyclerView.getAdapter();
         View headView = getActivity().getLayoutInflater().
-                inflate(R.layout.header_view_profile_weibo, mLoadMoreLoadMoreRecyclerView, false);
+                inflate(R.layout.header_view_profile_weibo, xRecyclerView, false);
         headerAndFooterRecyclerViewAdapter.addHeaderView(headView);
         headView.findViewById(R.id.txtName).setOnClickListener(this);
     }
@@ -51,14 +50,9 @@ public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> i
     }
 
     @Override
-    public void onEmpty() {
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_EMPTY);
-    }
-
-    @Override
     protected void onUserFirstVisible() {
         super.onUserFirstVisible();
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
+        xRecyclerView.setFooterState(XRecyclerView.STATE_LOADING);
     }
 
     @Override
@@ -72,10 +66,16 @@ public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> i
     }
 
     @Override
+    protected void onReLoadBtnClick() {
+        xRecyclerView.setFooterState(XRecyclerView.STATE_LOADING);
+        mPresent.userFirstVisible();
+    }
+
+    @Override
     public void onClick(DialogInterface dialog, int which) {
         mFilterDialog.dismiss();
         mPresent.filter(which);
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
+        xRecyclerView.setFooterState(XRecyclerView.STATE_LOADING);
     }
 
     @Override

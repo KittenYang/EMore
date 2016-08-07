@@ -6,10 +6,9 @@ import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.present.FriendshipPresent;
-import com.caij.emore.present.ListPresent;
 import com.caij.emore.present.imp.FriendPresentImp;
 import com.caij.emore.source.server.ServerUserSource;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 
 /**
  * Created by Caij on 2016/7/3.
@@ -30,11 +29,4 @@ public class FriendFragment extends FriendshipFragment<FriendshipPresent> {
         long uid = getArguments().getLong(Key.ID);
         return new FriendPresentImp(accessToken.getAccess_token(), uid, new ServerUserSource(), this);
     }
-
-    @Override
-    protected void onUserFirstVisible() {
-        super.onUserFirstVisible();
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
-    }
-
 }

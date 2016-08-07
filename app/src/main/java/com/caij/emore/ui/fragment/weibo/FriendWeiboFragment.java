@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
@@ -24,7 +25,7 @@ import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.SearchRecommendActivity;
 import com.caij.emore.ui.activity.publish.PublishWeiboActivity;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import rx.Observable;
@@ -34,7 +35,7 @@ import rx.functions.Action1;
  * Created by Caij on 2016/6/4.
  */
 public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresent> implements
-        RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, FriendWeiboView {
+        RecyclerViewOnItemClickListener, XRecyclerView.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, FriendWeiboView {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
             @Override
             public void call(Object object) {
                 if (object == FriendWeiboFragment.this) {
-                    mLoadMoreLoadMoreRecyclerView.smoothScrollToPosition(0);
+                    xRecyclerView.smoothScrollToPosition(0);
                 }
             }
         });
@@ -59,22 +60,17 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
 
     @Override
     public void toRefresh() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(true);
-                mPresent.refresh();
-            }
-        });
+        mSwipeRefreshLayout.setRefreshing(true);
+        mPresent.refresh();
     }
 
     @Override
     public void onWeiboPublishSuccess(Weibo weibo) {
         mRecyclerViewAdapter.addEntity(0, weibo);
         mRecyclerViewAdapter.notifyItemInserted(0);
-        LinearLayoutManager manager = (LinearLayoutManager) mLoadMoreLoadMoreRecyclerView.getLayoutManager();
+        LinearLayoutManager manager = (LinearLayoutManager) xRecyclerView.getLayoutManager();
         if (manager.findFirstVisibleItemPosition() < 2) {
-            mLoadMoreLoadMoreRecyclerView.smoothScrollToPosition(0);
+            xRecyclerView.smoothScrollToPosition(0);
         }
     }
 
@@ -85,11 +81,6 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
 
     @Override
     protected void onUserFirstVisible() {
-    }
-
-    @Override
-    public void onEmpty() {
-
     }
 
     @Override
@@ -115,4 +106,8 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void setEmptyText(TextView textView) {
+        textView.setText(R.string.friend_weibo_empty_hint);
+    }
 }

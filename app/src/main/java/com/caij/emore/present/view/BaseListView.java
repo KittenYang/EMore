@@ -9,7 +9,7 @@ public interface BaseListView<E> extends BaseView{
 
     void onLoadComplete(boolean isHaveMore);
 
-    void onEmpty();
-
     void setEntities(List<E> entities);
+
+    void showErrorView();
 }

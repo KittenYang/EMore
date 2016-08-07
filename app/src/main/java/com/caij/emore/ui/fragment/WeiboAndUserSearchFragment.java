@@ -50,7 +50,7 @@ public class WeiboAndUserSearchFragment extends TimeLineWeiboFragment<WeiboAndUs
     }
 
     private View createHeadUserView() {
-        mHeadUserView = getActivity().getLayoutInflater().inflate(R.layout.item_search_head, mLoadMoreLoadMoreRecyclerView, false);
+        mHeadUserView = getActivity().getLayoutInflater().inflate(R.layout.item_search_head, xRecyclerView, false);
         mUserlinearLayout = (LinearLayout) mHeadUserView.findViewById(R.id.ll_user);
         mUserImageConfig = new ImageLoader.ImageConfigBuild().setCircle(true)
                 .setScaleType(ImageLoader.ScaleType.CENTER_CROP)
@@ -66,15 +66,10 @@ public class WeiboAndUserSearchFragment extends TimeLineWeiboFragment<WeiboAndUs
     }
 
     @Override
-    public void onEmpty() {
-
-    }
-
-    @Override
     public void setUsers(List<User> users) {
         int length = Math.min(6, users.size());
         if (length > 0) {
-            mLoadMoreLoadMoreRecyclerView.getAdapter().addHeaderView(createHeadUserView());
+            xRecyclerView.getAdapter().addHeaderView(createHeadUserView());
             for (int i = 0; i < length; i ++) {
                 mUserlinearLayout.addView(createUserView(users.get(i)));
             }

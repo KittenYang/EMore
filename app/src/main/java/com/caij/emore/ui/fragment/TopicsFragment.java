@@ -7,8 +7,6 @@ import android.view.View;
 
 import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.present.HotWeiboPresent;
-import com.caij.emore.present.imp.HotWeiboPresentImp;
 import com.caij.emore.present.imp.TopicPresentImp;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
@@ -39,8 +37,4 @@ public class TopicsFragment extends TimeLineWeiboFragment<TopicPresentImp> {
                 new ServerWeiboSource(), new LocalWeiboSource(), this);
     }
 
-    @Override
-    public void onEmpty() {
-
-    }
 }

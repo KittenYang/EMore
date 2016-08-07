@@ -6,6 +6,7 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.present.view.TimeLineWeiboImageView;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,14 +103,16 @@ public class UserImagePresentImp implements UserWeiboPresent {
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Weibo>>() {
+                .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
                     @Override
                     public void onCompleted() {
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
+                        if (mPicUrl.size() == 0) {
+                            mView.showErrorView();
+                        }
                     }
 
                     @Override
@@ -117,11 +120,8 @@ public class UserImagePresentImp implements UserWeiboPresent {
                         mWeibos.clear();
                         mWeibos.addAll(weibos);
                         mView.setEntities(mPicUrl);
-                        if (weibos.size() == 0) {
-                            mView.onEmpty();
-                        }else {
-                            mView.onLoadComplete(weibos.size() >= PAGE_COUNT);
-                        }
+
+                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT);
                     }
                 });
         mLoginCompositeSubscription.add(subscription);

@@ -4,16 +4,12 @@ import com.caij.emore.Key;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
-import com.caij.emore.bean.response.Response;
-import com.caij.emore.database.bean.UrlInfo;
-import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboCommentsPresent;
 import com.caij.emore.present.view.WeiboCommentsView;
 import com.caij.emore.source.UrlSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.source.local.LocalUrlSource;
 import com.caij.emore.source.server.ServerUrlSource;
-import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.UrlUtil;
@@ -23,15 +19,11 @@ import com.caij.emore.utils.rxjava.DefaultTransformer;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -117,14 +109,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                 public void call(List<Comment> comments) {
                     LogUtil.d(WeiboCommentsPresentImp.this, "accept refresh event");
 
-                    mComments.clear();
-                    mComments.addAll(comments);
-                    mWeiboCommentsView.setEntities(mComments);
-                    if (comments.size() == 0) {
-                        mWeiboCommentsView.onEmpty();
-                    }else {
-                        mWeiboCommentsView.onLoadComplete(comments.size() >= 10);
-                    }
+                    addRefreshDate(comments);
                 }
             });
     }
@@ -142,23 +127,27 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mWeiboCommentsView.onLoadComplete(false);
+                        if (mComments.size() == 0) {
+                            mWeiboCommentsView.showErrorView();
+                        }
                     }
 
                     @Override
                     public void onNext(List<Comment> comments) {
-                        mComments.clear();
-                        mComments.addAll(comments);
-                        mWeiboCommentsView.setEntities(mComments);
-                        if (comments.size() == 0) {
-                            mWeiboCommentsView.onEmpty();
-                        }else {
-                            mWeiboCommentsView.onLoadComplete(comments.size() >= 10);
-                        }
+                        addRefreshDate(comments);
                     }
                 });
 
         mLoginCompositeSubscription.add(subscription);
+    }
+
+    private void addRefreshDate(List<Comment> comments) {
+        mComments.clear();
+        mComments.addAll(comments);
+        mWeiboCommentsView.setEntities(mComments);
+
+
+        mWeiboCommentsView.onLoadComplete(comments.size() >= PAGE_COUNET - 5);
     }
 
     @Override
@@ -183,7 +172,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                     public void onNext(List<Comment> comments) {
                         mComments.addAll(comments);
                         mWeiboCommentsView.setEntities(mComments);
-                        mWeiboCommentsView.onLoadComplete(comments.size() > 15);
+                        mWeiboCommentsView.onLoadComplete(comments.size() > PAGE_COUNET - 5);
                     }
                 });
 

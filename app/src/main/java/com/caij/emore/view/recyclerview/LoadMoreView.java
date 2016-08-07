@@ -47,25 +47,25 @@ public class LoadMoreView extends RelativeLayout{
     public void setState(int state) {
         this.mState = state;
         switch (state) {
-            case LoadMoreRecyclerView.STATE_NORMAL:
+            case XRecyclerView.STATE_NORMAL:
                 mLoadingContent.setVisibility(VISIBLE);
                 mLoading.setVisibility(View.GONE);
                 mHint.setVisibility(VISIBLE);
                 mHint.setText(getContext().getString(R.string.pull_loading));
                 break;
-            case LoadMoreRecyclerView.STATE_LOADING:
+            case XRecyclerView.STATE_LOADING:
                 mLoadingContent.setVisibility(VISIBLE);
                 mLoading.setVisibility(View.VISIBLE);
                 mHint.setVisibility(VISIBLE);
                 mHint.setText(getContext().getString(R.string.loading));
                 break;
-            case LoadMoreRecyclerView.STATE_NO_MORE:
+            case XRecyclerView.STATE_NO_MORE:
                 mLoadingContent.setVisibility(VISIBLE);
                 mLoading.setVisibility(View.GONE);
                 mHint.setVisibility(VISIBLE);
                 mHint.setText(getContext().getString(R.string.no_more));
                 break;
-            case LoadMoreRecyclerView.STATE_EMPTY:
+            case XRecyclerView.STATE_EMPTY:
                 mHint.setVisibility(View.GONE);
                 mLoading.setVisibility(View.GONE);
                 mLoadingContent.setVisibility(GONE);

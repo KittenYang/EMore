@@ -14,12 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Caij on 2016/5/31.
@@ -65,12 +62,14 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
                     @Override
                     public void onCompleted() {
-                        mView.onRefreshComplete();
+
                     }
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mView.onRefreshComplete();
+                        if (mWeibos.size() == 0) {
+                            mView.showErrorView();
+                        }
                     }
 
                     @Override
@@ -78,11 +77,8 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
                         mWeibos.clear();
                         mWeibos.addAll(weibos);
                         mView.setEntities(mWeibos);
-                        if (weibos.size() == 0) {
-                            mView.onEmpty();
-                        }else {
-                            mView.onLoadComplete(weibos.size() >= PAGE_COUNT);
-                        }
+
+                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT);
                     }
                 });
         mCompositeSubscription.add(subscription);

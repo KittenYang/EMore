@@ -83,15 +83,8 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
                     public void call(List<Attitude> attitudes) {
                         LogUtil.d(WeiboAttitudesPresentImp.this, "accept refresh event");
 
-                        mAttitudes.clear();
-                        mAttitudes.addAll(attitudes);
-                        mView.setEntities(mAttitudes);
-                        if (attitudes.size() == 0) {
-                            mView.onEmpty();
-                        }else {
-                            mView.onLoadComplete(attitudes.size() >= PAGE_COUNET - 3);
-                        }
-                        mPage = 2;
+                        addRefreshDate(attitudes);
+
                     }
                 });
     }
@@ -104,7 +97,9 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
                 .subscribe(new DefaultResponseSubscriber<List<Attitude>>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
-                        mView.onDefaultLoadError();
+                        if (mAttitudes.size() == 0) {
+                            mView.showErrorView();
+                        }
                     }
 
                     @Override
@@ -114,19 +109,21 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
 
                     @Override
                     public void onNext(List<Attitude> attitudes) {
-                        mAttitudes.clear();
-                        mAttitudes.addAll(attitudes);
-                        mView.setEntities(mAttitudes);
-                        if (attitudes.size() == 0) {
-                            mView.onEmpty();
-                        }else {
-                            mView.onLoadComplete(attitudes.size() >= PAGE_COUNET);
-                        }
-                        mPage = 2;
+                        addRefreshDate(attitudes);
                     }
                 });
 
         mLoginCompositeSubscription.add(subscription);
+    }
+
+    private void addRefreshDate(List<Attitude> attitudes) {
+        mAttitudes.clear();
+        mAttitudes.addAll(attitudes);
+        mView.setEntities(mAttitudes);
+
+        mView.onLoadComplete(attitudes.size() >= PAGE_COUNET - 3);
+
+        mPage = 2;
     }
 
     @Override
@@ -135,7 +132,6 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
                 .subscribe(new DefaultResponseSubscriber<List<Attitude>>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
-                        mView.onDefaultLoadError();
                     }
 
                     @Override

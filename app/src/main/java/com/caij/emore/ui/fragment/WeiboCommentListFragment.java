@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
@@ -28,7 +29,7 @@ import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -37,7 +38,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/14.
  */
-public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, WeiboCommentsPresent> implements WeiboCommentsView, LoadMoreRecyclerView.OnLoadMoreListener, RecyclerViewOnItemClickListener {
+public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, WeiboCommentsPresent> implements WeiboCommentsView, XRecyclerView.OnLoadMoreListener, RecyclerViewOnItemClickListener {
 
     private static final int REPLY_COMMENT_REQUEST_CODE = 100;
     private ClipboardManager mClipboardManager;
@@ -53,7 +54,7 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mLoadMoreLoadMoreRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
+        xRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item))
                 .size(getResources().getDimensionPixelSize(R.dimen.divider)).build());
         mClipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -75,13 +76,18 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
     @Override
     protected void onUserFirstVisible() {
         super.onUserFirstVisible();
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
+        xRecyclerView.setFooterState(XRecyclerView.STATE_LOADING);
     }
 
     @Override
-    public void onEmpty() {
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_EMPTY);
-        // TODO: 2016/6/16
+    protected void onReLoadBtnClick() {
+        xRecyclerView.setFooterState(XRecyclerView.STATE_LOADING);
+        mPresent.userFirstVisible();
+    }
+
+    @Override
+    protected void setEmptyText(TextView textView) {
+        textView.setText(R.string.comment_empty);
     }
 
     @Override
@@ -94,9 +100,9 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
     public void onCommentSuccess(List<Comment> comments) {
         mRecyclerViewAdapter.setEntities(comments);
         mRecyclerViewAdapter.notifyItemInserted(0);
-        LinearLayoutManager manager = (LinearLayoutManager) mLoadMoreLoadMoreRecyclerView.getLayoutManager();
+        LinearLayoutManager manager = (LinearLayoutManager) xRecyclerView.getLayoutManager();
         if (manager.findFirstVisibleItemPosition() < 2) {
-            mLoadMoreLoadMoreRecyclerView.smoothScrollToPosition(0);
+            xRecyclerView.smoothScrollToPosition(0);
         }
     }
 

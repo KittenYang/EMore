@@ -128,14 +128,11 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
+                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1);
+
                         mWeibos.clear();
                         mWeibos.addAll(weibos);
                         mView.setEntities(mWeibos);
-                        if (weibos.size() == 0) {
-                            mView.onEmpty();
-                        }else {
-                            mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1);
-                        }
 
                         MessageUtil.resetLocalUnReadMessage(mAccount.getWeicoToken().getAccess_token(),
                                 UnReadMessage.TYPE_STATUS, 0, mLocalMessageSource);

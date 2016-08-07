@@ -20,12 +20,12 @@ import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.adapter.UserGridImageAdapter;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 
 /**
  * Created by Caij on 2016/6/29.
  */
-public class UserImageFragment extends RecyclerViewFragment<PicUrl, UserWeiboPresent> implements TimeLineWeiboImageView, LoadMoreRecyclerView.OnLoadMoreListener {
+public class UserImageFragment extends RecyclerViewFragment<PicUrl, UserWeiboPresent> implements TimeLineWeiboImageView, XRecyclerView.OnLoadMoreListener {
 
 
     public static UserImageFragment newInstance(String username) {
@@ -48,7 +48,7 @@ public class UserImageFragment extends RecyclerViewFragment<PicUrl, UserWeiboPre
     }
 
     private void initView() {
-        mLoadMoreLoadMoreRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+        xRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 outRect.bottom = getResources().getDimensionPixelSize(R.dimen.image_item_space);
@@ -61,7 +61,7 @@ public class UserImageFragment extends RecyclerViewFragment<PicUrl, UserWeiboPre
                 getResources().getDimensionPixelOffset(R.dimen.spacing_medium));
         View headView  = new View(getActivity());
         headView.setLayoutParams(params);
-        mLoadMoreLoadMoreRecyclerView.getAdapter().addHeaderView(headView);
+        xRecyclerView.getAdapter().addHeaderView(headView);
     }
 
     @Override
@@ -76,16 +76,16 @@ public class UserImageFragment extends RecyclerViewFragment<PicUrl, UserWeiboPre
         return new UserImagePresentImp(accessToken.getAccess_token(), username, this, new ServerWeiboSource());
     }
 
-
     @Override
-    public void onEmpty() {
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_EMPTY);
+    protected void onReLoadBtnClick() {
+        xRecyclerView.setFooterState(XRecyclerView.STATE_LOADING);
+        mPresent.userFirstVisible();
     }
 
     @Override
     protected void onUserFirstVisible() {
         super.onUserFirstVisible();
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_LOADING);
+        xRecyclerView.setFooterState(XRecyclerView.STATE_LOADING);
     }
 
     @Override

@@ -37,11 +37,6 @@ public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> imp
     }
 
     @Override
-    public void onEmpty() {
-
-    }
-
-    @Override
     public void onItemClick(View view, int position) {
         Draft draft = mRecyclerViewAdapter.getItem(position);
         if (view.getId() == R.id.btnResend) {

@@ -1,7 +1,5 @@
 package com.caij.emore.ui.fragment.weibo;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,21 +7,19 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.caij.emore.Key;
-import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.TimeLinePresent;
 import com.caij.emore.present.view.TimeLineWeiboView;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.adapter.WeiboAdapter;
-import com.caij.emore.ui.fragment.RecyclerViewFragment;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.ArrayList;
@@ -36,7 +32,7 @@ import rx.functions.Action1;
  * Created by Caij on 2016/6/4.
  */
 public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends SwipeRefreshRecyclerViewFragment<Weibo, P>
-        implements TimeLineWeiboView, RecyclerViewOnItemClickListener, LoadMoreRecyclerView.OnLoadMoreListener, WeiboAdapter.OnItemActionClickListener {
+        implements TimeLineWeiboView, RecyclerViewOnItemClickListener, XRecyclerView.OnLoadMoreListener, WeiboAdapter.OnItemActionClickListener {
 
     Observable<Weibo> mWeiboUpdateObservable;
 
@@ -72,11 +68,7 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends S
 
     @Override
     public void onLoadComplete(boolean isHaveMore) {
-        if (isHaveMore) {
-            mLoadMoreLoadMoreRecyclerView.completeLoading();
-        }else {
-            mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_NO_MORE);
-        }
+        xRecyclerView.completeLoading(isHaveMore);
     }
 
     private void onMenuClick(final Weibo weibo, final int position) {

@@ -20,7 +20,7 @@ import com.caij.emore.ui.adapter.MessageCommentAdapter;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.LoadMoreRecyclerView;
+import com.caij.emore.view.recyclerview.XRecyclerView;
 import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
 
 
@@ -28,7 +28,7 @@ import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
  * Created by Caij on 2016/7/4.
  */
 public class AcceptCommentsFragment extends SwipeRefreshRecyclerViewFragment<Comment, RefreshListPresent> implements
-        LoadMoreRecyclerView.OnLoadMoreListener,RecyclerViewOnItemClickListener, RefreshListView<Comment> {
+        XRecyclerView.OnLoadMoreListener,RecyclerViewOnItemClickListener, RefreshListView<Comment> {
 
     @Override
     protected void onUserFirstVisible() {
@@ -39,11 +39,6 @@ public class AcceptCommentsFragment extends SwipeRefreshRecyclerViewFragment<Com
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
-    }
-
-    @Override
-    public void onEmpty() {
-        mLoadMoreLoadMoreRecyclerView.setFooterState(LoadMoreRecyclerView.STATE_EMPTY);
     }
 
     @Override

@@ -163,6 +163,10 @@
     <string name="web_page">网页详情</string>
     <string name="weibo_deleted">微博已经删除</string>
     <string name="emore_service_desc">EMore App后台服务，关闭后将使得一些功能无法正常工作</string>
+    <string name="comment_empty">快来发表你的评论吧</string>
+    <string name="repost_empty">快来转发精彩内容吧</string>
+    <string name="attitude_empty">快来点个赞吧</string>
+    <string name="friend_weibo_empty_hint">什么都没有\n去逛逛热门微博吧</string>
 
     <string-array name="txtUnread">
         <item>5分钟</item>

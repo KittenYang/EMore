@@ -67,31 +67,7 @@ public class FollowsPresentImp implements FriendshipPresent {
 
     @Override
     public void userFirstVisible() {
-        Subscription subscription = createUsersObservable(0, true)
-                .subscribe(new DefaultResponseSubscriber<List<User>>(mFriendshipView) {
-                    @Override
-                    protected void onFail(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onNext(List<User> users) {
-                        mUsers.addAll(users);
-                        mFriendshipView.setEntities(mUsers);
-                        mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
-
-                        if (mUid == Long.parseLong(UserPrefs.get().getEMoreToken().getUid())) {
-                            MessageUtil.resetUnReadMessage(mToken, UnReadMessage.TYPE_FOLLOWER,
-                                    mServerMessageSource, mLocalMessageSource);
-                        }
-                    }
-                });
-        mLoginCompositeSubscription.add(subscription);
+        refresh();
     }
 
     @Override
@@ -136,5 +112,36 @@ public class FollowsPresentImp implements FriendshipPresent {
                 })
                 .toList()
                 .compose(new SchedulerTransformer<List<User>>());
+    }
+
+    @Override
+    public void refresh() {
+        Subscription subscription = createUsersObservable(0, true)
+                .subscribe(new DefaultResponseSubscriber<List<User>>(mFriendshipView) {
+                    @Override
+                    protected void onFail(Throwable e) {
+                        mFriendshipView.onRefreshComplete();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onNext(List<User> users) {
+                        mUsers.clear();
+                        mUsers.addAll(users);
+                        mFriendshipView.setEntities(mUsers);
+                        mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
+                        mFriendshipView.onRefreshComplete();
+
+                        if (mUid == Long.parseLong(UserPrefs.get().getEMoreToken().getUid())) {
+                            MessageUtil.resetUnReadMessage(mToken, UnReadMessage.TYPE_FOLLOWER,
+                                    mServerMessageSource, mLocalMessageSource);
+                        }
+                    }
+                });
+        mLoginCompositeSubscription.add(subscription);
     }
 }

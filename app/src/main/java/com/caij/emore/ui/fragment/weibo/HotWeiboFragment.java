@@ -35,8 +35,4 @@ public class HotWeiboFragment extends TimeLineWeiboFragment<HotWeiboPresent> {
                 new ServerWeiboSource(), new LocalWeiboSource());
     }
 
-    @Override
-    public void onEmpty() {
-
-    }
 }
