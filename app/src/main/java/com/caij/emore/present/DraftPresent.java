@@ -8,5 +8,5 @@ import com.caij.emore.database.bean.Draft;
 public interface DraftPresent extends ListPresent {
     void publishDraft(Draft draft);
 
-    void deleteDraft(Draft draft);
+    void deleteDraft(Draft draft, int position);
 }

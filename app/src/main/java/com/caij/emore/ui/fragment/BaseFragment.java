@@ -22,10 +22,10 @@ public class BaseFragment extends Fragment implements BaseView{
     @Override
     public void onAuthenticationError() {
         UserPrefs userPrefs = UserPrefs.get();
-        showToast("身份信息失效, 需要重新认证");
+        showToast(getString(R.string.auth_invalid_hint));
         ActivityStack.getInstance().remove(getActivity());
         ActivityStack.getInstance().finishAllActivity();
-        Intent intent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(), userPrefs.getAccount().getPwd(),
+        Intent intent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(), userPrefs.getAccount().getUsername(),
                 userPrefs.getAccount().getPwd());
         startActivity(intent);
         getActivity().finish();

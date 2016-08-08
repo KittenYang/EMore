@@ -3,14 +3,11 @@ package com.caij.emore.present.imp;
 import android.os.AsyncTask;
 
 import com.caij.emore.Event;
-import com.caij.emore.Key;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.DraftPresent;
-import com.caij.emore.present.view.BaseListView;
 import com.caij.emore.present.view.DraftListView;
 import com.caij.emore.source.DraftSource;
-import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -26,7 +23,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -115,24 +111,24 @@ public class DraftPresentImp implements DraftPresent {
                     public void call(Draft draft) {
                         if (mDrafts.contains(draft)) {
                             if (draft.getStatus() == Draft.STATUS_SENDING ||
-                                    draft.getStatus() == Draft.STATUS_SUCCESS ||
-                                    draft.getStatus() == Draft.STATUS_DELETE) {
+                                    draft.getStatus() == Draft.STATUS_SUCCESS) {
                                 mDrafts.remove(draft);
                             }else {
                                 for (Draft item : mDrafts) {
-                                    item.setCreate_at(draft.getCreate_at());
-                                    item.setImage_paths(draft.getImage_paths());
-                                    item.setContent(draft.getContent());
-                                    item.setStatus(draft.getStatus());
-                                    item.setImages(draft.getImages());
-                                    item.setType(draft.getType());
-                                    break;
+                                    if (item.equals(draft)) {
+                                        item.setCreate_at(draft.getCreate_at());
+                                        item.setImage_paths(draft.getImage_paths());
+                                        item.setContent(draft.getContent());
+                                        item.setStatus(draft.getStatus());
+                                        item.setImages(draft.getImages());
+                                        item.setType(draft.getType());
+                                        break;
+                                    }
                                 }
                             }
                         }else {
-                            if (draft.getStatus() != Draft.STATUS_SENDING &&
-                                    draft.getStatus() != Draft.STATUS_SUCCESS &&
-                                    draft.getStatus() != Draft.STATUS_DELETE) {
+                            if (draft.getStatus() == Draft.STATUS_SAVE ||
+                                    draft.getStatus() == Draft.STATUS_FAIL) {
                                 mDrafts.add(0, draft);
                             }
                         }
@@ -180,18 +176,17 @@ public class DraftPresentImp implements DraftPresent {
                 PublishBean publishBean = new PublishBean();
                 publishBean.setText(draft.getContent());
                 publishBean.setPics(draft.getImages());
-                EventUtil.publishWeibo(publishBean);
+                publishBean.setId(draft.getId());
+                RxBus.get().post(Event.PUBLISH_WEIBO, publishBean);
                 break;
         }
-        deleteDraft(draft);
     }
 
     @Override
-    public void deleteDraft(final Draft draft) {
+    public void deleteDraft(final Draft draft, final int position) {
         ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
             @Override
             protected Object doInBackground(Object... params) {
-                draft.setStatus(Draft.STATUS_DELETE);
                 mDraftSource.deleteDraft(draft);
                 return null;
             }
@@ -199,7 +194,6 @@ public class DraftPresentImp implements DraftPresent {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                RxBus.get().post(Event.EVENT_DRAFT_UPDATE, draft);
             }
         });
     }

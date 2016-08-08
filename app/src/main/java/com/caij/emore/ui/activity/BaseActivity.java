@@ -50,7 +50,7 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
         showToast("身份信息失效, 需要重新认证");
         ActivityStack.getInstance().remove(this);
         ActivityStack.getInstance().finishAllActivity();
-        Intent intent = EMoreLoginActivity.newEMoreLoginIntent(this, userPrefs.getAccount().getPwd(),
+        Intent intent = EMoreLoginActivity.newEMoreLoginIntent(this, userPrefs.getAccount().getUsername(),
                 userPrefs.getAccount().getPwd());
         startActivity(intent);
         finish();

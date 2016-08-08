@@ -31,8 +31,11 @@ public abstract class DefaultResponseSubscriber<T> extends Subscriber<T> {
 //                || code == 403 可能是没有权限
                 mBaseView.onAuthenticationError();
                 return;
+            }else if (code == 403) {
+                mBaseView.showHint(R.string.server_error_permissions);
+            }else {
+                mBaseView.showHint(R.string.server_error);
             }
-            mBaseView.showHint(R.string.server_error);
         }else if (e instanceof ErrorResponseException) {
             mBaseView.showHint(((ErrorResponseException) e).mResponse.getError());
         }else {

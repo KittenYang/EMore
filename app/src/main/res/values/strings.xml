@@ -187,5 +187,7 @@
         <item>3600000</item>
     </string-array>
     <string name="default_interval_time">900000</string>
+    <string name="server_error_permissions">没有权限或者刷新过于频繁，请稍后再试</string>
+    <string name="auth_invalid_hint">身份信息失效, 需要重新认证</string>
 
 </resources>

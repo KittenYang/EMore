@@ -1,5 +1,6 @@
 package com.caij.emore.ui.activity.login;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -85,7 +86,7 @@ public class WeiCoLoginActivity extends AbsLoginActivity implements WeiCoLoginVi
     }
 
     private void init(String uid) {
-        AppUtil.resetConfig(this, Long.parseLong(uid));
+        AppUtil.resetConfig((Application) getApplicationContext(), Long.parseLong(uid));
     }
 
     @Override

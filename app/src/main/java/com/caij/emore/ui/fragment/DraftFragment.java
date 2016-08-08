@@ -44,7 +44,7 @@ public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> imp
             mRecyclerViewAdapter.removeEntity(draft);
             mRecyclerViewAdapter.notifyItemRemoved(position);
         }else if (view.getId() == R.id.btnDel) {
-            mPresent.deleteDraft(draft);
+            mPresent.deleteDraft(draft, position);
             mRecyclerViewAdapter.removeEntity(draft);
             mRecyclerViewAdapter.notifyItemRemoved(position);
         }else {
@@ -61,4 +61,5 @@ public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> imp
     public void onDraftUpdate(Draft draft) {
         mRecyclerViewAdapter.notifyDataSetChanged();
     }
+
 }
