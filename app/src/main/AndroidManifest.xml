@@ -39,7 +39,6 @@
             </intent-filter>
         </receiver>
 
-
         <activity android:name="com.caij.emore.ui.activity.SplashActivity"
             android:theme="@style/SplashActivity">
             <intent-filter>
@@ -70,6 +69,7 @@
             </intent-filter>
         </activity>
 
+        <!--这里参考微信 网页浏览放到单独进程中-->
         <activity android:name="com.caij.emore.ui.activity.WebActivity"
             android:process=":web"
             android:launchMode="singleTask">

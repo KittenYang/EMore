@@ -3,6 +3,7 @@ package com.caij.emore.present.imp;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.response.UserMessageResponse;
@@ -147,7 +148,7 @@ public class ChatPresentImp implements ChatPresent {
 
     @Override
     public void onCreate() {
-        mSendMessageObservable = RxBus.get().register(Key.SEND_MESSAGE_RESULT_EVENT);
+        mSendMessageObservable = RxBus.get().register(Event.SEND_MESSAGE_RESULT_EVENT);
         mSendMessageObservable.subscribe(new Action1<DirectMessage>() {
             @Override
             public void call(DirectMessage message) {
@@ -385,7 +386,7 @@ public class ChatPresentImp implements ChatPresent {
     @Override
     public void onDestroy() {
         mCompositeSubscription.clear();
-        RxBus.get().unregister(Key.SEND_MESSAGE_RESULT_EVENT, mSendMessageObservable);
+        RxBus.get().unregister(Event.SEND_MESSAGE_RESULT_EVENT, mSendMessageObservable);
         cancelLooperLoadMessage();
     }
 

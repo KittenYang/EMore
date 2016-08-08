@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
@@ -251,14 +252,14 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     @Override
     public void onAttitudesSuccess(Weibo weibo) {
         mWeibo.setAttitudes(true);
-        RxBus.get().post(Key.EVENT_WEIBO_UPDATE, mWeibo);
+        RxBus.get().post(Event.EVENT_WEIBO_UPDATE, mWeibo);
         actionStar.setSelected(true);
     }
 
     @Override
     public void onDestoryAttitudesSuccess(Weibo weibo) {
         mWeibo.setAttitudes(false);
-        RxBus.get().post(Key.EVENT_WEIBO_UPDATE, mWeibo);
+        RxBus.get().post(Event.EVENT_WEIBO_UPDATE, mWeibo);
         actionStar.setSelected(false);
     }
 

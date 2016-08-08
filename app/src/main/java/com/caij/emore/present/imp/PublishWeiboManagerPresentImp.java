@@ -2,6 +2,7 @@ package com.caij.emore.present.imp;
 
 import android.os.AsyncTask;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.Account;
@@ -241,7 +242,7 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
     }
 
     private void postPublishWeiboSuccessEvent(Weibo weibo) {
-        RxBus.get().post(Key.EVENT_PUBLISH_WEIBO_SUCCESS, weibo);
+        RxBus.get().post(Event.EVENT_PUBLISH_WEIBO_SUCCESS, weibo);
     }
 
     @Override
@@ -267,7 +268,7 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
         }
         draft.setImages(publishBean.getPics());
         mDraftSource.saveDraft(draft);
-        RxBus.get().post(Key.EVENT_DRAFT_UPDATE, draft);
+        RxBus.get().post(Event.EVENT_DRAFT_UPDATE, draft);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment<Co
     @Override
     protected void onUserFirstVisible() {
         super.onUserFirstVisible();
-        new Handler().post(new Runnable() {
+        mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
                 mSwipeRefreshLayout.setRefreshing(true);

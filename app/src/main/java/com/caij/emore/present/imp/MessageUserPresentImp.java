@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.MessageUser;
@@ -129,7 +130,7 @@ public class MessageUserPresentImp implements MessageUserPresent {
                     }
                 });
 
-        mUnReadMessageObservable = RxBus.get().register(Key.EVENT_UNREAD_MESSAGE_COMPLETE);
+        mUnReadMessageObservable = RxBus.get().register(Event.EVENT_UNREAD_MESSAGE_COMPLETE);
         mUnReadMessageObservable.subscribe(new Action1<UnReadMessage>() {
             @Override
             public void call(UnReadMessage unReadMessage) {
@@ -161,6 +162,6 @@ public class MessageUserPresentImp implements MessageUserPresent {
     @Override
     public void onDestroy() {
         mCompositeSubscription.clear();
-        RxBus.get().unregister(Key.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
+        RxBus.get().unregister(Event.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
     }
 }

@@ -18,13 +18,10 @@ import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.FileUtil;
 import com.caij.emore.utils.LogUtil;
-import com.caij.emore.utils.UrlUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-
-import java.util.Map;
 
 /**
  * Created by Caij on 2016/5/28.
@@ -37,7 +34,7 @@ public abstract class AbsLoginActivity extends WebActivity {
     private static final String TAG = "AbsLoginActivity";
     private Dialog mLoginDialog;
 
-    protected String mAccount;
+    protected String mUsername;
     protected String mPassword;
     private AsyncTask<Object, Object, String> mHtmlAsyncTask;
     private boolean mAccountFilled = false;
@@ -59,10 +56,10 @@ public abstract class AbsLoginActivity extends WebActivity {
 
     @Override
     protected void handlerIntent(Intent intent) {
-        mAccount = getIntent().getStringExtra(Key.USERNAME);
+        mUsername = getIntent().getStringExtra(Key.USERNAME);
         mPassword = getIntent().getStringExtra(Key.PWD);
-        if (mAccount == null || mPassword == null) {
-            mAccount = "";
+        if (mUsername == null || mPassword == null) {
+            mUsername = "";
             mPassword = "";
         }
         loadLoginHtml();
@@ -76,7 +73,7 @@ public abstract class AbsLoginActivity extends WebActivity {
                 while (i > 0) {
                     try {
                         String js = FileUtil.readAssetsFile("oauth.js", getApplicationContext());
-                        js = js.replace("%username%", mAccount).replace("%password%", mPassword);
+                        js = js.replace("%username%", mUsername).replace("%password%", mPassword);
 
                         Document dom = Jsoup.connect(getLoginUrl()).get();
                         String html = dom.toString();
@@ -214,9 +211,9 @@ public abstract class AbsLoginActivity extends WebActivity {
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
             if (newProgress == 100) {
-                if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
+                if (!TextUtils.isEmpty(mUsername) && !TextUtils.isEmpty(mPassword)) {
                     if (!mAccountFilled && !TextUtils.isEmpty(view.getUrl()) && view.getUrl().equalsIgnoreCase("about:blank")) {
-                        LogUtil.d(TAG, "fillAccount(%s, %s)", mAccount, mPassword);
+                        LogUtil.d(TAG, "fillAccount(%s, %s)", mUsername, mPassword);
 
                         view.loadUrl("javascript:fillAccount()");
                         mAccountFilled = true;
@@ -235,7 +232,7 @@ public abstract class AbsLoginActivity extends WebActivity {
         @JavascriptInterface
         public void setAccount(String account, String password) {
             LogUtil.d(TAG, "account = %s, password = %s", account, password);
-            mAccount = account;
+            mUsername = account;
             mPassword = password;
         }
 

@@ -63,9 +63,9 @@ public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
 
     @Override
     public void onLoginSuccess(AccessToken accessToken) {
-        UserPrefs.get().setUsername(mAccount);
+        UserPrefs.get().setUsername(mUsername);
         UserPrefs.get().setPwd(mPassword);
-        Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(this, mAccount, mPassword);
+        Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(this, mUsername, mPassword);
         startActivity(intent);
         finish();
     }

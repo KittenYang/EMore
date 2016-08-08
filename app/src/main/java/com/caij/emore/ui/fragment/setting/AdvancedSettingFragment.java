@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Process;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -99,6 +100,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 				public void onClick(DialogInterface dialog, int which) {
 					AppUtil.stop(getActivity());
 					ActivityStack.getInstance().finishAllActivity();
+					Process.killProcess(Process.myPid());
 				}
 			}, getString(R.string.cancel), null);
 		}else if ("clear_cache".equals(preference.getKey())) {

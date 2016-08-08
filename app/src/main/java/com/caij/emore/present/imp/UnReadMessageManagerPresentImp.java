@@ -3,6 +3,7 @@ package com.caij.emore.present.imp;
 import android.os.AsyncTask;
 
 import com.caij.emore.AppApplication;
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
@@ -87,7 +88,7 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
                         @Override
                         public void onNext(UnReadMessage unreadMessage) {
                             notifyMessage(unreadMessage);
-                            RxBus.get().post(Key.EVENT_UNREAD_MESSAGE_COMPLETE, unreadMessage);
+                            RxBus.get().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unreadMessage);
                         }
                     });
         }
@@ -120,7 +121,7 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
 
                         if (localUnReadMessage == null ||
                                 (serverUnReadMessage.getDm_single() - localUnReadMessage.getDm_single() > 0)) {
-                            RxBus.get().post(Key.EVENT_HAS_NEW_DM, serverUnReadMessage);
+                            RxBus.get().post(Event.EVENT_HAS_NEW_DM, serverUnReadMessage);
                         }
                     }
                 });

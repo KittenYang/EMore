@@ -14,6 +14,7 @@ import com.caij.emore.AppSettings;
 import com.caij.emore.R;
 import com.caij.emore.ui.activity.BaseActivity;
 import com.caij.emore.utils.DateUtil;
+import com.caij.emore.utils.EventUtil;
 
 public class NotificationSettingsFragment extends PreferenceFragment
 		implements OnPreferenceClickListener, OnPreferenceChangeListener,OnCheckedChangeListener {
@@ -91,6 +92,7 @@ public class NotificationSettingsFragment extends PreferenceFragment
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		if ("pInterval".equals(preference.getKey())) {
 			setMessageIntervalSetting(Integer.parseInt(newValue.toString()));
+			EventUtil.postIntervalMillisUpdateEvent();
 		}
         else if ("pNotificationEnable".equalsIgnoreCase(preference.getKey())) {
             onCheckedChanged(null, Boolean.parseBoolean(newValue.toString()));

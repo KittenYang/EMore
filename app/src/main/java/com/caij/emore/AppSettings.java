@@ -9,8 +9,6 @@ import android.preference.PreferenceManager;
  */
 public class AppSettings {
 
-    public static final String MessageIntervalDefaultValue = "900000";
-
     /**
      * 是否使用内置浏览器
      *
@@ -28,7 +26,7 @@ public class AppSettings {
 
     public static long getMessageIntervalValue(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return Long.parseLong(prefs.getString(context.getString(R.string.key_message_interval), MessageIntervalDefaultValue));
+        return Long.parseLong(prefs.getString(context.getString(R.string.key_message_interval), context.getString(R.string.default_interval_time)));
     }
 
     public static boolean isNotifyWeiboMentionEnable(Context context) {

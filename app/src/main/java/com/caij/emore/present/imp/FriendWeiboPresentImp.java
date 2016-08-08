@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.response.QueryWeiboResponse;
@@ -103,7 +104,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                 });
         mCompositeSubscription.add(subscription);
 
-        mPublishWeiboObservable = RxBus.get().register(Key.EVENT_PUBLISH_WEIBO_SUCCESS);
+        mPublishWeiboObservable = RxBus.get().register(Event.EVENT_PUBLISH_WEIBO_SUCCESS);
         mPublishWeiboObservable.subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object weibo) {
@@ -215,7 +216,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
     @Override
     public void onDestroy() {
         mCompositeSubscription.clear();
-        RxBus.get().unregister(Key.EVENT_PUBLISH_WEIBO_SUCCESS, mPublishWeiboObservable);
+        RxBus.get().unregister(Event.EVENT_PUBLISH_WEIBO_SUCCESS, mPublishWeiboObservable);
     }
 
 }

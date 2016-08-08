@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.Comment;
@@ -57,7 +58,7 @@ public class CommentWeiboPresentImp implements CommentWeiboPresent {
                     public void onNext(Comment response) {
                         mCommentWeiboView.showDialogLoading(false, R.string.commenting);
                         mCommentWeiboView.onCommentSuccess(response);
-                        RxBus.get().post(Key.EVENT_COMMENT_WEIBO_SUCCESS, response);
+                        RxBus.get().post(Event.EVENT_COMMENT_WEIBO_SUCCESS, response);
                     }
                 });
         mLoginCompositeSubscription.add(subscription);

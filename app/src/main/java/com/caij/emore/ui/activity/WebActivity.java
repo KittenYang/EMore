@@ -81,10 +81,18 @@ public class WebActivity extends BaseToolBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if (mWebView.canGoBack()) {
+            mWebView.goBack();
+        }else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mWebView.destroy();
-        Process.killProcess(Process.myPid());
     }
 
     static protected class MyWebViewClient extends WebViewClient {

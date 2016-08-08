@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
@@ -260,7 +261,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 break;
             }
             case R.id.toolbar:
-                RxBus.get().post(Key.EVENT_TOOL_BAR_DOUBLE_CLICK, mVisibleFragment);
+                RxBus.get().post(Event.EVENT_TOOL_BAR_DOUBLE_CLICK, mVisibleFragment);
                 break;
 
             case R.id.rl_draft: {

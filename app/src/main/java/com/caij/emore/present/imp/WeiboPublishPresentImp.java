@@ -3,6 +3,7 @@ package com.caij.emore.present.imp;
 
 import android.os.AsyncTask;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.Account;
@@ -86,7 +87,7 @@ public class WeiboPublishPresentImp implements WeiboPublishPresent {
                 draft.setStatus(Draft.STATUS_SAVE);
                 draft.setImage_paths(GsonUtils.toJson(images));
                 mDraftSource.saveDraft(draft);
-                RxBus.get().post(Key.EVENT_DRAFT_UPDATE, draft);
+                RxBus.get().post(Event.EVENT_DRAFT_UPDATE, draft);
                 return null;
             }
         });

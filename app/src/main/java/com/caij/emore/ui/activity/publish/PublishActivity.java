@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.Emotion;
@@ -60,8 +61,8 @@ public abstract class PublishActivity extends BaseToolBarActivity {
         ButterKnife.bind(this);
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.fl_emotion, new EmotionFragment()).commit();
-        mEmotionObservable = RxBus.get().register(Key.ON_EMOTION_CLICK);
-        mEmotionDeleteObservable = RxBus.get().register(Key.ON_EMOTION_DELETE_CLICK);
+        mEmotionObservable = RxBus.get().register(Event.ON_EMOTION_CLICK);
+        mEmotionDeleteObservable = RxBus.get().register(Event.ON_EMOTION_DELETE_CLICK);
 
         mEmotionObservable.subscribe(new Action1<Emotion>() {
             @Override
@@ -171,7 +172,7 @@ public abstract class PublishActivity extends BaseToolBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        RxBus.get().unregister(Key.ON_EMOTION_CLICK, mEmotionObservable);
-        RxBus.get().unregister(Key.ON_EMOTION_DELETE_CLICK, mEmotionDeleteObservable);
+        RxBus.get().unregister(Event.ON_EMOTION_CLICK, mEmotionObservable);
+        RxBus.get().unregister(Event.ON_EMOTION_DELETE_CLICK, mEmotionDeleteObservable);
     }
 }

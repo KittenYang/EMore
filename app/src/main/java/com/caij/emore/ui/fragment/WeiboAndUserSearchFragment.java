@@ -39,14 +39,13 @@ public class WeiboAndUserSearchFragment extends TimeLineWeiboFragment<WeiboAndUs
         super.onViewCreated(view, savedInstanceState);
         mSwipeRefreshLayout.setEnabled(false);
 
-        new Handler().post(new Runnable() {
+        mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
                 mSwipeRefreshLayout.setRefreshing(true);
                 mPresent.refresh();
             }
         });
-
     }
 
     private View createHeadUserView() {

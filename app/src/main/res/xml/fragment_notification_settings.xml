@@ -8,12 +8,12 @@
 
     <PreferenceCategory android:title="@string/category_general">
         <ListPreference
-            android:defaultValue="0"
             android:dialogTitle="@string/settings_dt_notify_interval"
             android:entries="@array/txtUnread"
             android:entryValues="@array/interval_time_value"
             android:key="@string/key_message_interval"
-            android:title="@string/settings_dt_notify_interval" />
+            android:title="@string/settings_dt_notify_interval"
+            android:defaultValue="@string/default_interval_time"/>
 
         <CheckBoxPreference
             android:defaultValue="true"

@@ -6,9 +6,11 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
@@ -44,12 +46,25 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
     private TextView tvCommentCount;
     private TextView tvAttitudeCount;
 
-    private boolean isHasNewDm;
     private Observable<UnReadMessage> mUnReadMessageObservable;
+    private boolean isHasNewDm;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initView();
+        initEvent();
+
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                mPresent.refresh();
+            }
+        });
+    }
+
+    private void initView() {
         mSwipeRefreshLayout.setBackgroundColor(getResources().getColor(R.color.white));
         xRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item)).
@@ -66,9 +81,9 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         tvCommentCount = (TextView) commentView.findViewById(R.id.tv_unread_count);
         tvAttitudeCount = (TextView) priseView.findViewById(R.id.tv_unread_count);
 
-        setValue(mentionView, "@我的", R.mipmap.messagescenter_at);
-        setValue(commentView, "评论", R.mipmap.messagescenter_comments);
-        setValue(priseView, "赞", R.mipmap.messagescenter_good);
+        setValue(mentionView, getString(R.string.mention), R.mipmap.messagescenter_at);
+        setValue(commentView, getString(R.string.comment), R.mipmap.messagescenter_comments);
+        setValue(priseView, getString(R.string.attitude), R.mipmap.messagescenter_good);
 
         xRecyclerView.getAdapter().addHeaderView(mentionView);
         xRecyclerView.getAdapter().addHeaderView(commentView);
@@ -95,8 +110,10 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
                 startActivity(intent);
             }
         });
+    }
 
-        mUnReadMessageObservable = RxBus.get().register(Key.EVENT_HAS_NEW_DM);
+    private void initEvent() {
+        mUnReadMessageObservable = RxBus.get().register(Event.EVENT_HAS_NEW_DM);
         mUnReadMessageObservable.subscribe(new Action1<UnReadMessage>() {
             @Override
             public void call(UnReadMessage o) {
@@ -108,16 +125,6 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
                 }
             }
         });
-
-        if (mPresent != null) {
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(true);
-                    mPresent.refresh();
-                }
-            });
-        }
     }
 
     @Override
@@ -199,6 +206,6 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        RxBus.get().unregister(Key.EVENT_HAS_NEW_DM, mUnReadMessageObservable);
+        RxBus.get().unregister(Event.EVENT_HAS_NEW_DM, mUnReadMessageObservable);
     }
 }

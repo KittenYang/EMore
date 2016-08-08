@@ -2,6 +2,7 @@ package com.caij.emore.present.imp;
 
 import android.os.AsyncTask;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Draft;
@@ -107,7 +108,7 @@ public class DraftPresentImp implements DraftPresent {
 
         mCompositeSubscription.add(subscription);
 
-        mDraftObservable = RxBus.get().register(Key.EVENT_DRAFT_UPDATE);
+        mDraftObservable = RxBus.get().register(Event.EVENT_DRAFT_UPDATE);
         mDraftObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Draft>() {
                     @Override
@@ -169,7 +170,7 @@ public class DraftPresentImp implements DraftPresent {
     @Override
     public void onDestroy() {
         mCompositeSubscription.clear();
-        RxBus.get().unregister(Key.EVENT_DRAFT_UPDATE, mDraftObservable);
+        RxBus.get().unregister(Event.EVENT_DRAFT_UPDATE, mDraftObservable);
     }
 
     @Override
@@ -198,7 +199,7 @@ public class DraftPresentImp implements DraftPresent {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                RxBus.get().post(Key.EVENT_DRAFT_UPDATE, draft);
+                RxBus.get().post(Event.EVENT_DRAFT_UPDATE, draft);
             }
         });
     }

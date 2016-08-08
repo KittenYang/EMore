@@ -167,6 +167,11 @@
     <string name="repost_empty">快来转发精彩内容吧</string>
     <string name="attitude_empty">快来点个赞吧</string>
     <string name="friend_weibo_empty_hint">什么都没有\n去逛逛热门微博吧</string>
+    <string name="mention">\@我的</string>
+    <string name="new_followers">新粉丝</string>
+    <string name="new_comment">条新评论</string>
+    <string name="new_dm">条私信</string>
+    <string name="new_attitude">新点赞</string>
 
     <string-array name="txtUnread">
         <item>5分钟</item>
@@ -181,4 +186,6 @@
         <item>1800000</item>
         <item>3600000</item>
     </string-array>
+    <string name="default_interval_time">900000</string>
+
 </resources>

@@ -1,5 +1,6 @@
 package com.caij.emore.utils;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.DirectMessage;
@@ -14,29 +15,29 @@ public class EventUtil {
 
     //  发布微博事件
     public static void publishWeibo(PublishBean publishBean) {
-        RxBus.get().post(Key.PUBLISH_WEIBO, publishBean);
+        RxBus.get().post(Event.PUBLISH_WEIBO, publishBean);
     }
 
     public static Observable<PublishBean> registPublishEvent() {
-        return RxBus.get().register(Key.PUBLISH_WEIBO);
+        return RxBus.get().register(Event.PUBLISH_WEIBO);
     }
 
     public static void  unregistPublishEvent(Observable observable) {
-        RxBus.get().unregister(Key.PUBLISH_WEIBO, observable);
+        RxBus.get().unregister(Event.PUBLISH_WEIBO, observable);
     }
 
 
     //修改定时拉取消息时间
     public static void postIntervalMillisUpdateEvent() {
-        RxBus.get().post(Key.INTERVAL_MILLIS_UPDATE, null);
+        RxBus.get().post(Event.INTERVAL_MILLIS_UPDATE, null);
     }
 
     public static Observable<Object> registIntervalMillisUpdateEvent() {
-        return RxBus.get().register(Key.INTERVAL_MILLIS_UPDATE);
+        return RxBus.get().register(Event.INTERVAL_MILLIS_UPDATE);
     }
 
     public static void unregistIntervalMillisUpdateEvent(Observable observable) {
-        RxBus.get().unregister(Key.INTERVAL_MILLIS_UPDATE, observable);
+        RxBus.get().unregister(Event.INTERVAL_MILLIS_UPDATE, observable);
     }
 
 
@@ -59,14 +60,14 @@ public class EventUtil {
     /**
      */
     public static void sendMessage(DirectMessage bean) {
-        RxBus.get().post(Key.SEND_MESSAGE_EVENT, bean);
+        RxBus.get().post(Event.SEND_MESSAGE_EVENT, bean);
     }
 
     public static Observable<DirectMessage> registSendMessageEvent() {
-        return RxBus.get().register(Key.SEND_MESSAGE_EVENT);
+        return RxBus.get().register(Event.SEND_MESSAGE_EVENT);
     }
 
     public static void unregistSendMessageEvent(Observable observable) {
-        RxBus.get().unregister(Key.SEND_MESSAGE_EVENT, observable);
+        RxBus.get().unregister(Event.SEND_MESSAGE_EVENT, observable);
     }
 }

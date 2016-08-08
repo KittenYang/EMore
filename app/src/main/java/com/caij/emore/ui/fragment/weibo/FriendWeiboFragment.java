@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
@@ -22,6 +23,7 @@ import com.caij.emore.present.view.FriendWeiboView;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
+import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.SearchRecommendActivity;
 import com.caij.emore.ui.activity.publish.PublishWeiboActivity;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -41,7 +43,7 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-        Observable<Object> observable = RxBus.get().register(Key.EVENT_TOOL_BAR_DOUBLE_CLICK);
+        Observable<Object> observable = RxBus.get().register(Event.EVENT_TOOL_BAR_DOUBLE_CLICK);
         observable.subscribe(new Action1<Object>() {
             @Override
             public void call(Object object) {
@@ -109,5 +111,13 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
     @Override
     protected void setEmptyText(TextView textView) {
         textView.setText(R.string.friend_weibo_empty_hint);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), getString(R.string.hot_weibo),
+                        HotWeiboFragment.class, null);
+                startActivity(intent);
+            }
+        });
     }
 }

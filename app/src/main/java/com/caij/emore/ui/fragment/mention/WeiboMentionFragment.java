@@ -28,7 +28,6 @@ public class WeiboMentionFragment extends TimeLineWeiboFragment<WeiboMentionPres
         super.onViewCreated(view, savedInstanceState);
     }
 
-
     @Override
     protected WeiboMentionPresent createPresent() {
        return new WeiboMentionPresentImp(UserPrefs.get().getAccount(), new ServerWeiboSource(), new LocalWeiboSource(),
@@ -38,7 +37,7 @@ public class WeiboMentionFragment extends TimeLineWeiboFragment<WeiboMentionPres
     @Override
     protected void onUserFirstVisible() {
         super.onUserFirstVisible();
-        new Handler().post(new Runnable() {
+        mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
                 mSwipeRefreshLayout.setRefreshing(true);

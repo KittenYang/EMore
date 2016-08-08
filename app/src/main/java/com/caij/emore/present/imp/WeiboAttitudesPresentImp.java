@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
@@ -57,7 +58,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
      * 这里是在fist visible 后添加事件的  如果不可见  可见时会自动刷新
      */
     private void initEventListener() {
-        mAttitudeObservable = RxBus.get().register(Key.EVENT_ATTITUDE_WEIBO_SUCCESS);
+        mAttitudeObservable = RxBus.get().register(Event.EVENT_ATTITUDE_WEIBO_SUCCESS);
         mAttitudeObservable.filter(new Func1<Attitude, Boolean>() {
             @Override
             public Boolean call(Attitude attitude) {
@@ -71,7 +72,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
             }
         });
 
-        mWeiboRefreshObservable = RxBus.get().register(Key.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE);
+        mWeiboRefreshObservable = RxBus.get().register(Event.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE);
         mWeiboRefreshObservable.filter(new Func1<List<Attitude>, Boolean>() {
             @Override
             public Boolean call(List<Attitude> attitudes) {
@@ -185,7 +186,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
     @Override
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
-        RxBus.get().unregister(Key.EVENT_ATTITUDE_WEIBO_SUCCESS, mAttitudeObservable);
-        RxBus.get().unregister(Key.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE, mWeiboRefreshObservable);
+        RxBus.get().unregister(Event.EVENT_ATTITUDE_WEIBO_SUCCESS, mAttitudeObservable);
+        RxBus.get().unregister(Event.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE, mWeiboRefreshObservable);
     }
 }

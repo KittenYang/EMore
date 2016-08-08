@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.Process;
 import android.support.annotation.Nullable;
 
 import com.caij.emore.service.manager.ChatManager;
@@ -72,6 +73,7 @@ public class EMoreService extends Service {
         mPublishWeiboManager.reset();
         mUnReadMessageManager.reset();
         mChatManager.reset();
+        Process.killProcess(Process.myPid());
     }
 
     /**

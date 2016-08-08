@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.Emotion;
@@ -144,7 +145,7 @@ public class EmotionItemFragment extends BaseFragment {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        RxBus.get().post(Key.ON_EMOTION_DELETE_CLICK, null);
+                        RxBus.get().post(Event.ON_EMOTION_DELETE_CLICK, null);
                     }
                 });
             }else {
@@ -155,7 +156,7 @@ public class EmotionItemFragment extends BaseFragment {
                     holder.imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            RxBus.get().post(Key.ON_EMOTION_CLICK, emotion);
+                            RxBus.get().post(Event.ON_EMOTION_CLICK, emotion);
                             LogUtil.d(emotion, "emotion click key " + emotion.key);
                         }
                     });

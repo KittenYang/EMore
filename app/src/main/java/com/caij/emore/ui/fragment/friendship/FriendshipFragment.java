@@ -41,7 +41,12 @@ public abstract class FriendshipFragment<P extends RefreshListPresent> extends S
     @Override
     protected void onUserFirstVisible() {
         super.onUserFirstVisible();
-        mSwipeRefreshLayout.setRefreshing(true);
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
     }
 
     @Override

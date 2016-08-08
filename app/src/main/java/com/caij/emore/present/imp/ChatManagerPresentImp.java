@@ -1,6 +1,7 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.AppApplication;
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
@@ -111,7 +112,7 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
                     @Override
                     public void onError(Throwable e) {
                         bean.setLocal_status(DirectMessage.STATUS_FAIL);
-                        RxBus.get().post(Key.SEND_MESSAGE_RESULT_EVENT, bean);
+                        RxBus.get().post(Event.SEND_MESSAGE_RESULT_EVENT, bean);
                         LogUtil.d(ChatManagerPresentImp.this, "message send error " + e.getMessage());
                     }
 
@@ -124,7 +125,7 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
                         bean.setRecipient(directMessage.getRecipient());
                         bean.setMedia_type(directMessage.getMedia_type());
                         bean.setLocal_status(DirectMessage.STATUS_SUCCESS);
-                        RxBus.get().post(Key.SEND_MESSAGE_RESULT_EVENT, directMessage);
+                        RxBus.get().post(Event.SEND_MESSAGE_RESULT_EVENT, directMessage);
                         LogUtil.d(ChatManagerPresentImp.this, "message send success");
                     }
                 });

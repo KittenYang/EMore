@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
@@ -94,7 +95,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
      * 这里是在fist visible 后添加事件的  如果不可见  可见时会自动刷新
      */
     private void initEventListener() {
-        mWeiboObservable = RxBus.get().register(Key.EVENT_REPOST_WEIBO_SUCCESS);
+        mWeiboObservable = RxBus.get().register(Event.EVENT_REPOST_WEIBO_SUCCESS);
         mWeiboObservable.filter(new Func1<Weibo, Boolean>() {
                     @Override
                     public Boolean call(Weibo weibo) {
@@ -117,7 +118,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                     }
                 });
 
-        mWeiboRefreshObservable = RxBus.get().register(Key.EVENT_REPOST_WEIBO_REFRESH_COMPLETE);
+        mWeiboRefreshObservable = RxBus.get().register(Event.EVENT_REPOST_WEIBO_REFRESH_COMPLETE);
         mWeiboRefreshObservable.filter(new Func1<List<Weibo>, Boolean>() {
                 @Override
                 public Boolean call(List<Weibo> weibos) {
@@ -208,8 +209,8 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
     @Override
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
-        RxBus.get().unregister(Key.EVENT_REPOST_WEIBO_SUCCESS, mWeiboObservable);
-        RxBus.get().unregister(Key.EVENT_REPOST_WEIBO_REFRESH_COMPLETE, mWeiboRefreshObservable);
+        RxBus.get().unregister(Event.EVENT_REPOST_WEIBO_SUCCESS, mWeiboObservable);
+        RxBus.get().unregister(Event.EVENT_REPOST_WEIBO_REFRESH_COMPLETE, mWeiboRefreshObservable);
     }
 
     protected void doSpanNext(List<Weibo> weibos) {

@@ -21,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
@@ -111,8 +112,8 @@ public class ChatFragment extends BaseFragment implements
                 replace(R.id.fl_emotion, new EmotionFragment()).commit();
         initView();
 
-        mEmotionObservable = RxBus.get().register(Key.ON_EMOTION_CLICK);
-        mEmotionDeleteObservable = RxBus.get().register(Key.ON_EMOTION_DELETE_CLICK);
+        mEmotionObservable = RxBus.get().register(Event.ON_EMOTION_CLICK);
+        mEmotionDeleteObservable = RxBus.get().register(Event.ON_EMOTION_DELETE_CLICK);
         mEmotionObservable.subscribe(new Action1<Emotion>() {
             @Override
             public void call(Emotion emotion) {
@@ -234,8 +235,8 @@ public class ChatFragment extends BaseFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         mChatPresent.onDestroy();
-        RxBus.get().unregister(Key.ON_EMOTION_CLICK, mEmotionObservable);
-        RxBus.get().unregister(Key.ON_EMOTION_DELETE_CLICK, mEmotionDeleteObservable);
+        RxBus.get().unregister(Event.ON_EMOTION_CLICK, mEmotionObservable);
+        RxBus.get().unregister(Event.ON_EMOTION_DELETE_CLICK, mEmotionDeleteObservable);
     }
 
     @OnClick({R.id.et_content, R.id.iv_emotion, R.id.iv_add, R.id.tv_send})

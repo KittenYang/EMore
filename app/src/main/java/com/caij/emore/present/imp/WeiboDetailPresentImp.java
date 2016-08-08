@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.Attitude;
@@ -194,9 +195,9 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     @Override
                     public void onNext(Zip zip) {
                         mView.setWeibo(zip.weibo);
-                        RxBus.get().post(Key.EVENT_REPOST_WEIBO_REFRESH_COMPLETE, zip.weibos);
-                        RxBus.get().post(Key.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE, zip.comments);
-                        RxBus.get().post(Key.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE, zip.attitudes);
+                        RxBus.get().post(Event.EVENT_REPOST_WEIBO_REFRESH_COMPLETE, zip.weibos);
+                        RxBus.get().post(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE, zip.comments);
+                        RxBus.get().post(Event.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE, zip.attitudes);
                         mView.onRefreshComplete();
                     }
                 });

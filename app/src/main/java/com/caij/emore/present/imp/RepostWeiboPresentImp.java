@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.Weibo;
@@ -56,7 +57,7 @@ public class RepostWeiboPresentImp implements RepostWeiboPresent {
                         mRepostWeiboView.showDialogLoading(false);
                         mRepostWeiboView.onRepostSuccess(weibo);
 
-                        RxBus.get().post(Key.EVENT_REPOST_WEIBO_SUCCESS, weibo);
+                        RxBus.get().post(Event.EVENT_REPOST_WEIBO_SUCCESS, weibo);
                     }
                 });
         mLoginCompositeSubscription.add(subscription);

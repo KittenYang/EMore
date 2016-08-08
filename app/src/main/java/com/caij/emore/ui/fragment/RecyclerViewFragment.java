@@ -127,8 +127,9 @@ public abstract class RecyclerViewFragment<E, P extends ListPresent> extends Laz
 
     @Override
     public void setEntities(List<E> entities) {
-        if (xRecyclerView.getEmptyView() == null) {
-            xRecyclerView.setEmptyView(createEmptyView());
+        View emptyView = createEmptyView();
+        if (xRecyclerView.getEmptyView() == null && emptyView != null) {
+            xRecyclerView.setEmptyView(emptyView);
         }
         mRecyclerViewAdapter.setEntities(entities);
         mRecyclerViewAdapter.notifyDataSetChanged();

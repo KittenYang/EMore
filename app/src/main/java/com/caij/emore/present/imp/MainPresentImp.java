@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.database.bean.UnReadMessage;
@@ -76,7 +77,7 @@ public class MainPresentImp implements MainPresent {
                 });
         mCompositeSubscription.add(subscription);
 
-        mUnReadMessageObservable = RxBus.get().register(Key.EVENT_UNREAD_MESSAGE_COMPLETE);
+        mUnReadMessageObservable = RxBus.get().register(Event.EVENT_UNREAD_MESSAGE_COMPLETE);
         mUnReadMessageObservable.subscribe(new Action1<UnReadMessage>() {
             @Override
             public void call(UnReadMessage unReadMessage) {
@@ -86,7 +87,7 @@ public class MainPresentImp implements MainPresent {
             }
         });
 
-        mDraftObservable = RxBus.get().register(Key.EVENT_DRAFT_UPDATE);
+        mDraftObservable = RxBus.get().register(Event.EVENT_DRAFT_UPDATE);
         mDraftObservable.subscribe(new Action1<Draft>() {
             @Override
             public void call(Draft draft) {
@@ -121,8 +122,8 @@ public class MainPresentImp implements MainPresent {
     @Override
     public void onDestroy() {
         mCompositeSubscription.clear();
-        RxBus.get().unregister(Key.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
-        RxBus.get().unregister(Key.EVENT_DRAFT_UPDATE, mDraftObservable);
+        RxBus.get().unregister(Event.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
+        RxBus.get().unregister(Event.EVENT_DRAFT_UPDATE, mDraftObservable);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
@@ -217,7 +218,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     @Override
                     public void onNext(Attitude attitude) {
                         if (attitude != null) {
-                            RxBus.get().post(Key.EVENT_ATTITUDE_WEIBO_SUCCESS, attitude);
+                            RxBus.get().post(Event.EVENT_ATTITUDE_WEIBO_SUCCESS, attitude);
                         }
                     }
                 });

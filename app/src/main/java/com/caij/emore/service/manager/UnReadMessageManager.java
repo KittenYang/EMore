@@ -82,6 +82,8 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
 
         if (UserPrefs.get().getEMoreToken() == null || UserPrefs.get().getWeiCoToken() == null) {
             EMoreService.stop(ctx);
+        }else {
+            scheduleHeartbeat(AppSettings.getMessageIntervalValue(ctx));
         }
     }
 
@@ -105,7 +107,7 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
             if (AppSettings.isNotifyFollowerEnable(ctx)
                     && serverUnReadMessage.getFollower() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getFollower() - localUnReadMessage.getFollower() > 0)) {
-                String text = serverUnReadMessage.getFollower() + "新粉丝";
+                String text = serverUnReadMessage.getFollower() + ctx.getString(R.string.new_followers);
 
                 Intent intent = FriendshipActivity.newIntent(ctx, Long.parseLong(UserPrefs.get().getEMoreToken().getUid()));
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getFollower(),
@@ -114,7 +116,7 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
 
             if (AppSettings.isNotifyCommentEnable(ctx) && serverUnReadMessage.getCmt() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getCmt() - localUnReadMessage.getCmt() > 0)) {
-                String text = serverUnReadMessage.getCmt() + "条新评论";
+                String text = serverUnReadMessage.getCmt() + ctx.getString(R.string.new_comment);
                 Intent intent = new Intent(ctx, CommentsActivity.class);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getCmt(),
                         R.mipmap.statusbar_ic_comment_small, COMMENT_NOTIFICATION_ID, intent);
@@ -122,8 +124,8 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
 
             if (AppSettings.isNotifyDmEnable(ctx) && serverUnReadMessage.getDm_single() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getDm_single() - localUnReadMessage.getDm_single() > 0)) {
-                String text = serverUnReadMessage.getDm_single() + "条私信";
-                Intent intent = DefaultFragmentActivity.starFragmentV4(ctx, "消息", MessageUserFragment.class, null);
+                String text = serverUnReadMessage.getDm_single() + ctx.getString(R.string.new_dm);
+                Intent intent = DefaultFragmentActivity.starFragmentV4(ctx, ctx.getString(R.string.message), MessageUserFragment.class, null);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getDm_single(),
                         R.mipmap.statusbar_ic_dm_small, MESSAGE_NOTIFICATION_ID, intent);
             }
@@ -136,7 +138,7 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
                         R.mipmap.statusbar_ic_mention_small, WEIBI_MENTION_NOTIFICATION_ID, intent);
             }
 
-            if (AppSettings.isNotifyWeiboMentionEnable(ctx) && serverUnReadMessage.getMention_cmt() > 0
+            if (AppSettings.isNotifyCommentMentionEnable(ctx) && serverUnReadMessage.getMention_cmt() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getMention_cmt() - localUnReadMessage.getMention_cmt() > 0)) {
                 String text = serverUnReadMessage.getMention_cmt() + ctx.getString(R.string.comment_mention_count_hint);
                 Intent intent = new Intent(ctx, MentionActivity.class);
@@ -146,7 +148,7 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
 
             if (AppSettings.isNotifyAttitudeEnable(ctx) && serverUnReadMessage.getAttitude() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getAttitude() - localUnReadMessage.getAttitude() > 0)) {
-                String text = serverUnReadMessage.getAttitude() + "新点赞";
+                String text = serverUnReadMessage.getAttitude() + ctx.getString(R.string.new_attitude);
                 Intent intent = DefaultFragmentActivity.starFragmentV4(ctx, ctx.getString(R.string.attitude),
                         AttitudesToMeFragment.class, null);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getMention_status(),
