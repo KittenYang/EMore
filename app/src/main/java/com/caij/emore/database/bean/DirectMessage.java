@@ -5,12 +5,15 @@ package com.caij.emore.database.bean;
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
 
+import android.text.Spannable;
+
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Entity mapped to table "DIRECT_MESSAGE".
  */
-public class DirectMessage {
+public class DirectMessage implements Serializable {
 
     private Long id;
     private String idstr;
@@ -300,6 +303,7 @@ public class DirectMessage {
     private User recipient;
     private Geo geo;
     private LocakImage locakImage;
+    private transient Spannable textContentSpannable;
 
     public List<Long> getAtt_ids() {
         return att_ids;
@@ -339,6 +343,14 @@ public class DirectMessage {
 
     public void setLocakImage(LocakImage locakImage) {
         this.locakImage = locakImage;
+    }
+
+    public Spannable getTextContentSpannable() {
+        return textContentSpannable;
+    }
+
+    public void setTextContentSpannable(Spannable textContentSpannable) {
+        this.textContentSpannable = textContentSpannable;
     }
 
     @Override

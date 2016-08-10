@@ -2,10 +2,11 @@ package com.caij.emore.present.imp;
 
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 
 import com.caij.emore.Event;
-import com.caij.emore.Key;
 import com.caij.emore.bean.AccessToken;
+import com.caij.emore.bean.event.MessageResponseEvent;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.LocakImage;
@@ -19,9 +20,11 @@ import com.caij.emore.source.UserSource;
 import com.caij.emore.source.local.LocalImageSource;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.EventUtil;
+import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.LogUtil;
-import com.caij.emore.utils.UrlUtil;
+import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.io.File;
@@ -29,7 +32,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -59,7 +61,7 @@ public class ChatPresentImp implements ChatPresent {
     private List<DirectMessage> mDirectMessages;
     private DirectMessageView mDirectMessageView;
     private long mUserId;
-    private Observable<DirectMessage> mSendMessageObservable;
+    private Observable<MessageResponseEvent> mSendMessageObservable;
     private Timer mLoadMessageTimer;
     private TimerTask mLoadMessageTask;
 
@@ -106,6 +108,7 @@ public class ChatPresentImp implements ChatPresent {
                 .map(new Func1<DirectMessage, DirectMessage>() {
                     @Override
                     public DirectMessage call(DirectMessage message) {
+                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message.getText()));
                         if (message.getAtt_ids() != null && message.getAtt_ids().size() > 0) {
                             getMessageImageInfo(message);
                         }
@@ -148,14 +151,7 @@ public class ChatPresentImp implements ChatPresent {
 
     @Override
     public void onCreate() {
-        mSendMessageObservable = RxBus.get().register(Event.SEND_MESSAGE_RESULT_EVENT);
-        mSendMessageObservable.subscribe(new Action1<DirectMessage>() {
-            @Override
-            public void call(DirectMessage message) {
-                mDirectMessageView.notifyDataChange();
-                LogUtil.d(ChatPresentImp.this, "mSendMessageObservable subscribe call");
-            }
-        });
+        initEvent();
 
         Observable<UserMessageResponse> localObservable =  mLocalMessageSource.getUserMessage(mToken.getAccess_token(), mUserId, 0, 0, PAGE_COUNT, 1);
         localObservable.flatMap(new Func1<UserMessageResponse, Observable<DirectMessage>>() {
@@ -173,6 +169,7 @@ public class ChatPresentImp implements ChatPresent {
                 .map(new Func1<DirectMessage, DirectMessage>() {
                     @Override
                     public DirectMessage call(DirectMessage message) {
+                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message.getText()));
                         if (message.getAtt_ids() != null && message.getAtt_ids().size() > 0) {
                             getMessageImageInfo(message);
                         }
@@ -218,6 +215,53 @@ public class ChatPresentImp implements ChatPresent {
                 });
 
         initLooperLoadMessage();
+    }
+
+    private void initEvent() {
+        mSendMessageObservable = RxBus.getDefault().register(Event.EVENT_SEND_MESSAGE_RESULT);
+        mSendMessageObservable.map(new Func1<MessageResponseEvent, MessageResponseEvent>() {
+            @Override
+            public MessageResponseEvent call(MessageResponseEvent messageResponseEvent) {
+                        if (messageResponseEvent.message != null
+                                && messageResponseEvent.message.getAtt_ids() != null
+                                && messageResponseEvent.message.getAtt_ids().size() > 0) {
+                            getMessageImageInfo(messageResponseEvent.message);
+                        }
+                        messageResponseEvent.message.setTextContentSpannable(SpannableStringUtil.
+                                paraeSpannable(messageResponseEvent.message.getText()));
+                        return messageResponseEvent;
+                    }
+                })
+                .doOnNext(new Action1<MessageResponseEvent>() {
+                    @Override
+                    public void call(MessageResponseEvent messageResponseEvent) {
+                        if (messageResponseEvent.message == null) {
+                            for (int i = mDirectMessages.size() - 1; i >= 0; i --) {
+                                DirectMessage directMessage = mDirectMessages.get(i);
+                                if (directMessage.getId() == messageResponseEvent.localMessageId) {
+                                    directMessage.setLocal_status(DirectMessage.STATUS_FAIL);
+                                    break;
+                                }
+                            }
+                        }else {
+                            for (int i = mDirectMessages.size() - 1; i >= 0; i --) {
+                                DirectMessage directMessage = mDirectMessages.get(i);
+                                if (directMessage.getId() == messageResponseEvent.localMessageId) {
+                                    mDirectMessages.remove(directMessage);
+                                    mDirectMessages.add(i, messageResponseEvent.message);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                })
+                .compose(new SchedulerTransformer<MessageResponseEvent>())
+                .subscribe(new Action1<MessageResponseEvent>() {
+                    @Override
+                    public void call(MessageResponseEvent messageResponseEvent) {
+                        mDirectMessageView.notifyDataChange();
+                    }
+                });
     }
 
     private void initLooperLoadMessage() {
@@ -272,6 +316,7 @@ public class ChatPresentImp implements ChatPresent {
                     @Override
                     public DirectMessage call(DirectMessage message) {
                         mLocalMessageSource.saveMessage(message);
+                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message.getText()));
                         message.setCreated_at_long(DateUtil.parseCreateTime(message.getCreated_at()));
                         if (message.getAtt_ids() != null && message.getAtt_ids().size() > 0) {
                             getMessageImageInfo(message);
@@ -332,6 +377,7 @@ public class ChatPresentImp implements ChatPresent {
                     @Override
                     public void call(MessageImage messageImage) {
                         mLocalMessageSource.saveMessageImage(messageImage);
+                        LogUtil.d(ChatPresentImp.this, "get MessageImage from server");
                     }
                 });
         Observable.concat(localObservable, serverObservable)
@@ -386,24 +432,40 @@ public class ChatPresentImp implements ChatPresent {
     @Override
     public void onDestroy() {
         mCompositeSubscription.clear();
-        RxBus.get().unregister(Event.SEND_MESSAGE_RESULT_EVENT, mSendMessageObservable);
+        RxBus.getDefault().unregister(Event.EVENT_SEND_MESSAGE_RESULT, mSendMessageObservable);
         cancelLooperLoadMessage();
     }
 
     @Override
-    public void sendMessage(DirectMessage message) {
+    public void sendMessage(final DirectMessage message) {
         message.setLocal_status(DirectMessage.STATUS_SEND);
         message.setCreated_at(DateUtil.formatCreatetime(System.currentTimeMillis()));
-        EventUtil.sendMessage(message);
         mDirectMessages.remove(message);
         mDirectMessages.add(message);
         mDirectMessageView.notifyDataChange();
         mDirectMessageView.attemptSmoothScrollToBottom();
-        mLocalMessageSource.saveMessage(message);
+
+        ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
+            @Override
+            protected Object doInBackground(Object... params) {
+                mLocalMessageSource.saveMessage(message);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                super.onPostExecute(o);
+                MessageResponseEvent responseEvent = new MessageResponseEvent(message.getId(), message);
+                RxBus.getDefault().post(Event.SEND_MESSAGE_EVENT, responseEvent);
+            }
+        });
+
     }
 
     private void send(DirectMessage message) {
-        EventUtil.sendMessage(message);
+        MessageResponseEvent responseEvent = new MessageResponseEvent(message.getId(), message);
+        RxBus.getDefault().post(Event.SEND_MESSAGE_EVENT, responseEvent);
+
         mDirectMessages.add(message);
         mDirectMessageView.setEntities(mDirectMessages);
         mDirectMessageView.attemptSmoothScrollToBottom();
@@ -416,6 +478,12 @@ public class ChatPresentImp implements ChatPresent {
                     @Override
                     public Observable<DirectMessage> call(User user) {
                         return Observable.just(buildTextMessage(user, mUserId, message));
+                    }
+                })
+                .doOnNext(new Action1<DirectMessage>() {
+                    @Override
+                    public void call(DirectMessage message) {
+                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message.getText()));
                     }
                 })
                 .subscribeOn(Schedulers.io())

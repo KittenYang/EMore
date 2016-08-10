@@ -58,8 +58,13 @@ public class ServerMessageSource implements MessageSource {
     }
 
     @Override
-    public Observable<DirectMessage> createImageMessage(final String accessToken, final Map<String, Object> paramMap, final String text,
-                                                        final String imagePath, final long uid, final String screenName) {
+    public Observable<DirectMessage> createImageMessage(final String accessToken, final String text,
+                                                        final long uid, final String screenName,  String fids) {
+        return mWeiBoService.createMessage(accessToken, text, uid, screenName, fids);
+    }
+
+    @Override
+    public Observable<MessageImage> uploadMessageImage(final Map<String, Object> paramMap, final String accessToken, final long uid, String imagePath) {
         final File file = new File(imagePath);
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
@@ -82,15 +87,6 @@ public class ServerMessageSource implements MessageSource {
                         MultipartBody.Part.createFormData("file", file.getName(), requestFile);
                 return  mWeiBoService.uploadMessageImage(Key.UPLOAD_MESSAGE_IMAGE_URL, paramMap, accessToken, uid, body);
             }
-        })
-        .flatMap(new Func1<MessageImage, Observable<DirectMessage>>() {
-            @Override
-            public Observable<DirectMessage> call(MessageImage uploadMessageImageResponse) {
-                long vifid = uploadMessageImageResponse.getVfid();
-                long tofid = uploadMessageImageResponse.getTovfid();
-                StringBuilder fids = new StringBuilder().append(vifid).append(",").append(tofid);
-                return mWeiBoService.createMessage(accessToken, text, uid, screenName, fids.toString());
-            }
         });
     }
 
@@ -112,6 +108,16 @@ public class ServerMessageSource implements MessageSource {
     @Override
     public void removeMessage(DirectMessage bean) {
 
+    }
+
+    @Override
+    public void removeMessageById(long id) {
+
+    }
+
+    @Override
+    public DirectMessage getMessageById(long id) {
+        return null;
     }
 
     @Override

@@ -1,25 +1,29 @@
 package com.caij.emore.present.imp;
 
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
 import com.caij.emore.Event;
-import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Draft;
+import com.caij.emore.database.bean.LocakImage;
 import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.PublishWeiboManagerPresent;
 import com.caij.emore.present.view.PublishServiceView;
 import com.caij.emore.source.DraftSource;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.source.local.LocalImageSource;
 import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.ImageUtil;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,23 +35,33 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/19.
  */
-public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishServiceView> implements PublishWeiboManagerPresent {
+public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent {
 
+    LocalImageSource mLocalImageSouce;
     Observable<PublishBean> mPublishWeiboObservable;
     DraftSource mDraftSource;
-    private Account mAccount;
+    WeiboSource mServerWeiboSource;
+    Account mAccount;
+    WeiboSource mLocalWeiboSource;
+    CompositeSubscription mCompositeSubscription;
+    PublishServiceView mPublishServiceView;
 
     public PublishWeiboManagerPresentImp(Account account, WeiboSource serverWeiboSource,
                                          WeiboSource localWeiboSource,
                                          DraftSource localDraftSource,
                                          PublishServiceView view) {
-        super(account,
-                view, serverWeiboSource, localWeiboSource);
+        mAccount = account;
+        mServerWeiboSource = serverWeiboSource;
+        mLocalWeiboSource = localWeiboSource;
         mDraftSource = localDraftSource;
+        mPublishServiceView = view;
+        mLocalImageSouce = new LocalImageSource();
+        mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -75,8 +89,8 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
     }
 
     private void publishWeiboMuImage(final PublishBean publishBean) {
-        mView.onPublishStart(publishBean);
-//        final Account account = UserPrefs.get().getAccount();
+        mPublishServiceView.onPublishStart(publishBean);
+//        final Account account = UserPrefs.getDefault().getAccount();
         Subscription subscription = Observable.create(new Observable.OnSubscribe<List<String>>() {
                     @Override
                     public void call(Subscriber<? super List<String>> subscriber) {
@@ -84,7 +98,7 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
                             List<String> outPaths = new ArrayList<String>();
                             for (String source : publishBean.getPics()) {
                                 outPaths.add(ImageUtil.compressImage(source,
-                                        mView.getContent().getApplicationContext()));
+                                        mPublishServiceView.getContent().getApplicationContext()));
                             }
                             subscriber.onNext(outPaths);
                             subscriber.onCompleted();
@@ -146,8 +160,8 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
-                        doSpanNext(weibo);
                         mDraftSource.deleteDraftById(publishBean.getId());
+                        mLocalWeiboSource.saveWeibo(mAccount.getWeiyoToken().getAccess_token(), weibo);
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -157,14 +171,14 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
     }
 
     private void publishWeiboOneImage(final PublishBean publishBean) {
-        mView.onPublishStart(publishBean);
+        mPublishServiceView.onPublishStart(publishBean);
         final Account account = UserPrefs.get().getAccount();
         Subscription subscription = Observable.create(new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
                         try {
                             subscriber.onNext(ImageUtil.compressImage(publishBean.getPics().get(0),
-                                    mView.getContent().getApplicationContext()));
+                                    mPublishServiceView.getContent().getApplicationContext()));
                             subscriber.onCompleted();
                         } catch (Exception e) {
                             subscriber.onError(e);
@@ -187,9 +201,19 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
-                        toGetImageSize(weibo);
-                        doSpanNext(weibo);
                         mDraftSource.deleteDraftById(publishBean.getId());
+                        mLocalWeiboSource.saveWeibo(mAccount.getWeiyoToken().getAccess_token(), weibo);
+
+                        try {
+                            LocakImage locakImage = new LocakImage();
+                            locakImage.setUrl(weibo.getPic_urls().get(0).getThumbnail_pic());
+                            BitmapFactory.Options options = ImageUtil.getImageOptions(new File(publishBean.getPics().get(0)));
+                            locakImage.setHeight(options.outHeight);
+                            locakImage.setWidth(options.outWidth);
+                            mLocalImageSouce.save(locakImage);
+                        }catch (Exception e) {
+                            LogUtil.d(PublishWeiboManagerPresentImp.this, "publish one image save image size error");
+                        }
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -202,7 +226,7 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
         final Account account = UserPrefs.get().getAccount();
         Observable<Weibo> publishWeiboObservable = mServerWeiboSource.
                 publishWeiboOfText(account.getWeiyoToken().getAccess_token(), publishBean.getText());
-        mView.onPublishStart(publishBean);
+        mPublishServiceView.onPublishStart(publishBean);
         Subscription subscription = publishWeiboObservable.subscribeOn(Schedulers.io())
                 .doOnError(new Action1<Throwable>() {
                     @Override
@@ -213,8 +237,8 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
-                        doSpanNext(weibo);
                         mDraftSource.deleteDraftById(publishBean.getId());
+                        mLocalWeiboSource.saveWeibo(mAccount.getWeiyoToken().getAccess_token(), weibo);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -230,19 +254,20 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
 
             @Override
             public void onError(Throwable e) {
-                mView.onPublishFail();
+                LogUtil.d(PublishWeiboManagerPresentImp.this, "publish weibo error " + e.getMessage());
+                mPublishServiceView.onPublishFail();
             }
 
             @Override
             public void onNext(Weibo weibo) {
-                mView.onPublishSuccess(weibo);
+                mPublishServiceView.onPublishSuccess(weibo);
                 postPublishWeiboSuccessEvent(weibo);
             }
         };
     }
 
     private void postPublishWeiboSuccessEvent(Weibo weibo) {
-        RxBus.get().post(Event.EVENT_PUBLISH_WEIBO_SUCCESS, weibo);
+        RxBus.getDefault().post(Event.EVENT_PUBLISH_WEIBO_SUCCESS, weibo);
     }
 
     @Override
@@ -268,12 +293,12 @@ public class PublishWeiboManagerPresentImp extends AbsTimeLinePresent<PublishSer
         }
         draft.setImages(publishBean.getPics());
         mDraftSource.saveDraft(draft);
-        RxBus.get().post(Event.EVENT_DRAFT_UPDATE, draft);
+        RxBus.getDefault().post(Event.EVENT_DRAFT_UPDATE, draft);
     }
 
     @Override
     public void onDestroy() {
-        EventUtil.unregistPublishEvent(mPublishWeiboObservable);
+        RxBus.getDefault().unregister(Event.PUBLISH_WEIBO, mPublishWeiboObservable);
         mCompositeSubscription.clear();
     }
 }

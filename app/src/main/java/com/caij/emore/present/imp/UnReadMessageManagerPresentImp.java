@@ -1,11 +1,7 @@
 package com.caij.emore.present.imp;
 
-import android.os.AsyncTask;
-
 import com.caij.emore.AppApplication;
 import com.caij.emore.Event;
-import com.caij.emore.Key;
-import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.UnReadMessageManagerPresent;
@@ -13,7 +9,6 @@ import com.caij.emore.present.view.UnReadMessageManagerPresentView;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.utils.EventUtil;
-import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -23,7 +18,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -88,7 +82,7 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
                         @Override
                         public void onNext(UnReadMessage unreadMessage) {
                             notifyMessage(unreadMessage);
-                            RxBus.get().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unreadMessage);
+                            RxBus.getDefault().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unreadMessage);
                         }
                     });
         }
@@ -121,7 +115,7 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
 
                         if (localUnReadMessage == null ||
                                 (serverUnReadMessage.getDm_single() - localUnReadMessage.getDm_single() > 0)) {
-                            RxBus.get().post(Event.EVENT_HAS_NEW_DM, serverUnReadMessage);
+                            RxBus.getDefault().post(Event.EVENT_HAS_NEW_DM, serverUnReadMessage);
                         }
                     }
                 });

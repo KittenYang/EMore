@@ -61,8 +61,8 @@ public abstract class PublishActivity extends BaseToolBarActivity {
         ButterKnife.bind(this);
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.fl_emotion, new EmotionFragment()).commit();
-        mEmotionObservable = RxBus.get().register(Event.ON_EMOTION_CLICK);
-        mEmotionDeleteObservable = RxBus.get().register(Event.ON_EMOTION_DELETE_CLICK);
+        mEmotionObservable = RxBus.getDefault().register(Event.ON_EMOTION_CLICK);
+        mEmotionDeleteObservable = RxBus.getDefault().register(Event.ON_EMOTION_DELETE_CLICK);
 
         mEmotionObservable.subscribe(new Action1<Emotion>() {
             @Override
@@ -172,7 +172,7 @@ public abstract class PublishActivity extends BaseToolBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        RxBus.get().unregister(Event.ON_EMOTION_CLICK, mEmotionObservable);
-        RxBus.get().unregister(Event.ON_EMOTION_DELETE_CLICK, mEmotionDeleteObservable);
+        RxBus.getDefault().unregister(Event.ON_EMOTION_CLICK, mEmotionObservable);
+        RxBus.getDefault().unregister(Event.ON_EMOTION_DELETE_CLICK, mEmotionDeleteObservable);
     }
 }

@@ -5,12 +5,12 @@ package com.caij.emore.database.bean;
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
 
-import android.content.Intent;
+import java.io.Serializable;
 
 /**
  * Entity mapped to table "UN_READ_MESSAGE".
  */
-public class UnReadMessage {
+public class UnReadMessage implements Serializable {
 
     private Long uid;
     private Integer cmt;

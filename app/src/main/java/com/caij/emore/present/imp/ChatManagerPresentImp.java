@@ -1,14 +1,15 @@
 package com.caij.emore.present.imp;
 
+import android.text.TextUtils;
+
 import com.caij.emore.AppApplication;
 import com.caij.emore.Event;
 import com.caij.emore.Key;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.bean.event.MessageResponseEvent;
 import com.caij.emore.database.bean.DirectMessage;
+import com.caij.emore.database.bean.MessageImage;
 import com.caij.emore.present.ChatManagerPresent;
 import com.caij.emore.source.MessageSource;
-import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
@@ -37,7 +38,7 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
     private CompositeSubscription mCompositeSubscription;
     private MessageSource mServerMessageSource;
     private MessageSource mLocalMessageSource;
-    private Observable<DirectMessage> mMessageSendObservable;
+    private Observable<MessageResponseEvent> mMessageSendObservable;
     private String mToken;
 
     public ChatManagerPresentImp(String token, MessageSource serverMessageSource, MessageSource localMessageSource) {
@@ -45,27 +46,26 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
         mServerMessageSource = serverMessageSource;
         mLocalMessageSource = localMessageSource;
         mCompositeSubscription = new CompositeSubscription();
-        mMessageSendObservable = EventUtil.registSendMessageEvent();
-        mMessageSendObservable.subscribe(new Action1<DirectMessage>() {
+        mMessageSendObservable = RxBus.getDefault().register(Event.SEND_MESSAGE_EVENT);
+        mMessageSendObservable.subscribe(new Action1<MessageResponseEvent>() {
             @Override
-            public void call(DirectMessage bean) {
+            public void call(MessageResponseEvent bean) {
                 senMessage(bean);
             }
         });
     }
 
-    @Override
-    public void senMessage(final DirectMessage bean) {
-//        final AccessToken token = UserPrefs.get().getWeiCoToken();
+    private void senMessage(final MessageResponseEvent bean) {
+        LogUtil.d(this, "senMessage");
         Observable<DirectMessage> sendMessageObservable;
-        if (bean.getAtt_ids() == null || bean.getAtt_ids().size() == 0) { //文本
+        if (bean.message.getAtt_ids() == null || bean.message.getAtt_ids().size() == 0) { //文本
             sendMessageObservable = mServerMessageSource.createTextMessage(mToken,
-                    bean.getText(), bean.getRecipient_id());
+                    bean.message.getText(), bean.message.getRecipient_id());
         }else {
             final Map<String, Object> params = new HashMap<>();
             params.put("source", Key.WEICO_APP_ID);
             params.put("from", Key.WEICO_APP_FROM);
-            final File file = new File(URI.create(bean.getLocakImage().getUrl()));
+            final File file = new File(URI.create(bean.message.getLocakImage().getUrl()));
             sendMessageObservable = Observable.create(new Observable.OnSubscribe<String>() {
                 @Override
                 public void call(Subscriber<? super String> subscriber) {
@@ -77,20 +77,31 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
                         subscriber.onError(e);
                     }
                 }
-            }).flatMap(new Func1<String, Observable<DirectMessage>>() {
+            }).flatMap(new Func1<String, Observable<MessageImage>>() {
                 @Override
-                public Observable<DirectMessage> call(String path) {
-                    return mServerMessageSource.createImageMessage(mToken, params,
-                            "分享图片", path, bean.getRecipient_id(), bean.getRecipient_screen_name());
+                public Observable<MessageImage> call(String s) {
+                    return mServerMessageSource.uploadMessageImage(params, mToken,  bean.message.getRecipient_id(), s);
+                }
+            }).doOnNext(new Action1<MessageImage>() {
+                @Override
+                public void call(MessageImage messageImage) {
+                    mLocalMessageSource.saveMessageImage(messageImage);
+                }
+            }).flatMap(new Func1<MessageImage, Observable<DirectMessage>>() {
+                @Override
+                public Observable<DirectMessage> call(MessageImage messageImage) {
+                    long vifid = messageImage.getVfid();
+                    long tofid = messageImage.getTovfid();
+                    return mServerMessageSource.createImageMessage(mToken, "分享图片", bean.message.getRecipient_id(),
+                            bean.message.getRecipient_screen_name(), String.valueOf(vifid) + "," + tofid);
                 }
             });
         }
         Subscription subscription = sendMessageObservable
-                .subscribeOn(Schedulers.from(ExecutorServiceUtil.SEND_MESSAGE_SERVICE)) //这里单线程发送消息， 防止消息位置错乱
                 .doOnNext(new Action1<DirectMessage>() {
                     @Override
                     public void call(DirectMessage message) {
-                        mLocalMessageSource.removeMessage(bean);
+                        mLocalMessageSource.removeMessageById(bean.localMessageId);
                         message.setLocal_status(DirectMessage.STATUS_SUCCESS);
                         mLocalMessageSource.saveMessage(message);
                     }
@@ -98,10 +109,14 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        bean.setLocal_status(DirectMessage.STATUS_FAIL);
-                        mLocalMessageSource.saveMessage(bean);
+                        DirectMessage directMessage = mLocalMessageSource.getMessageById(bean.localMessageId);
+                        if (directMessage != null) {
+                            directMessage.setLocal_status(DirectMessage.STATUS_FAIL);
+                            mLocalMessageSource.saveMessage(directMessage);
+                        }
                     }
                 })
+                .subscribeOn(Schedulers.from(ExecutorServiceUtil.SEND_MESSAGE_SERVICE)) //这里单线程发送消息， 防止消息位置错乱
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<DirectMessage>() {
                     @Override
@@ -111,21 +126,15 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        bean.setLocal_status(DirectMessage.STATUS_FAIL);
-                        RxBus.get().post(Event.SEND_MESSAGE_RESULT_EVENT, bean);
+                        MessageResponseEvent responseEvent = new MessageResponseEvent(bean.localMessageId, null);
+                        RxBus.getDefault().post(Event.EVENT_SEND_MESSAGE_RESULT, responseEvent);
                         LogUtil.d(ChatManagerPresentImp.this, "message send error " + e.getMessage());
                     }
 
                     @Override
                     public void onNext(DirectMessage directMessage) {
-                        bean.setId(directMessage.getId());
-                        bean.setCreated_at(directMessage.getCreated_at());
-                        bean.setSender_id(directMessage.getSender_id());
-                        bean.setRecipient_id(directMessage.getRecipient_id());
-                        bean.setRecipient(directMessage.getRecipient());
-                        bean.setMedia_type(directMessage.getMedia_type());
-                        bean.setLocal_status(DirectMessage.STATUS_SUCCESS);
-                        RxBus.get().post(Event.SEND_MESSAGE_RESULT_EVENT, directMessage);
+                        MessageResponseEvent responseEvent = new MessageResponseEvent(bean.localMessageId, directMessage);
+                        RxBus.getDefault().post(Event.EVENT_SEND_MESSAGE_RESULT, responseEvent);
                         LogUtil.d(ChatManagerPresentImp.this, "message send success");
                     }
                 });
@@ -140,6 +149,6 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
     @Override
     public void onDestroy() {
         mCompositeSubscription.clear();
-        EventUtil.unregistSendMessageEvent(mMessageSendObservable);
+        RxBus.getDefault().unregister(Event.SEND_MESSAGE_EVENT, mMessageSendObservable);
     }
 }

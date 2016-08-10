@@ -75,7 +75,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         DirectMessage message = getItem(position);
         if (holder instanceof OtherMessageViewHolder) {
             OtherMessageViewHolder viewHolder = (OtherMessageViewHolder) holder;
-            viewHolder.tvMessage.setText(message.getText());
+            viewHolder.tvMessage.setText(message.getTextContentSpannable());
             ImageLoader.loadUrl(mContext, viewHolder.ivAvatar, message.getSender().getAvatar_large(),
                     R.drawable.circle_image_placeholder, mAvatarImageConfig);
 
@@ -92,7 +92,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
             }
         }else if (holder instanceof SelfMessageViewHolder) {
             SelfMessageViewHolder viewHolder = (SelfMessageViewHolder) holder;
-            viewHolder.tvMessage.setText(message.getText());
+            viewHolder.tvMessage.setText(message.getTextContentSpannable());
             ImageLoader.loadUrl(mContext, ((SelfMessageViewHolder) holder).ivAvatar, message.getSender().getAvatar_large(),
                     R.drawable.circle_image_placeholder, mAvatarImageConfig);
             if (message.getLocal_status() == DirectMessage.STATUS_SEND) {

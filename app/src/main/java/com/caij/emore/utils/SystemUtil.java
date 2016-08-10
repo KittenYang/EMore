@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Process;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -155,6 +156,23 @@ public class SystemUtil {
             }
         }
         return false;
+    }
+
+    public static boolean isMainProcess(Context context) {
+        return context.getPackageName().equals(getCurrentProcessName(context));
+    }
+
+    public static String getCurrentProcessName(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager == null) {
+            return null;
+        }
+        for (ActivityManager.RunningAppProcessInfo processInfo : activityManager.getRunningAppProcesses()) {
+            if (processInfo.pid == Process.myPid()) {
+                return processInfo.processName;
+            }
+        }
+        return null;
     }
 
 }

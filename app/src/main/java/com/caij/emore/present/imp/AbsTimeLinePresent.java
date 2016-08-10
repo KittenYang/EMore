@@ -12,7 +12,6 @@ import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.LocakImage;
 import com.caij.emore.database.bean.PicUrl;
-import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboActionPresent;
 import com.caij.emore.present.view.WeiboActionView;
@@ -36,11 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -218,7 +213,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     @Override
                     public void onNext(Attitude attitude) {
                         if (attitude != null) {
-                            RxBus.get().post(Event.EVENT_ATTITUDE_WEIBO_SUCCESS, attitude);
+                            RxBus.getDefault().post(Event.EVENT_ATTITUDE_WEIBO_SUCCESS, attitude);
                         }
                     }
                 });

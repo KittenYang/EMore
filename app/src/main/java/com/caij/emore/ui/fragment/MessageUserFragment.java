@@ -2,16 +2,13 @@ package com.caij.emore.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.caij.emore.Event;
-import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
@@ -113,7 +110,7 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
     }
 
     private void initEvent() {
-        mUnReadMessageObservable = RxBus.get().register(Event.EVENT_HAS_NEW_DM);
+        mUnReadMessageObservable = RxBus.getDefault().register(Event.EVENT_HAS_NEW_DM);
         mUnReadMessageObservable.subscribe(new Action1<UnReadMessage>() {
             @Override
             public void call(UnReadMessage o) {
@@ -206,6 +203,6 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        RxBus.get().unregister(Event.EVENT_HAS_NEW_DM, mUnReadMessageObservable);
+        RxBus.getDefault().unregister(Event.EVENT_HAS_NEW_DM, mUnReadMessageObservable);
     }
 }

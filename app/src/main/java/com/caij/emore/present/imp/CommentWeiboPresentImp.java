@@ -1,10 +1,8 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.Event;
-import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.response.Response;
 import com.caij.emore.present.CommentWeiboPresent;
 import com.caij.emore.present.view.CommentWeiboView;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
@@ -13,8 +11,6 @@ import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.DefaultTransformer;
 
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -58,7 +54,7 @@ public class CommentWeiboPresentImp implements CommentWeiboPresent {
                     public void onNext(Comment response) {
                         mCommentWeiboView.showDialogLoading(false, R.string.commenting);
                         mCommentWeiboView.onCommentSuccess(response);
-                        RxBus.get().post(Event.EVENT_COMMENT_WEIBO_SUCCESS, response);
+                        RxBus.getDefault().post(Event.EVENT_COMMENT_WEIBO_SUCCESS, response);
                     }
                 });
         mLoginCompositeSubscription.add(subscription);

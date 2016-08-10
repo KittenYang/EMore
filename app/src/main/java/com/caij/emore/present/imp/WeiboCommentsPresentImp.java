@@ -1,7 +1,6 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.Event;
-import com.caij.emore.Key;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
@@ -70,7 +69,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
      * 这里是在fist visible 后添加事件的  如果不可见  可见时会自动刷新
      */
     private void initEventListener() {
-        mCommentObservable = RxBus.get().register(Event.EVENT_COMMENT_WEIBO_SUCCESS);
+        mCommentObservable = RxBus.getDefault().register(Event.EVENT_COMMENT_WEIBO_SUCCESS);
         mCommentObservable
                 .filter(new Func1<Comment, Boolean>() {
                     @Override
@@ -97,7 +96,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                 });
 
 
-        mWeiboRefreshObservable = RxBus.get().register(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE);
+        mWeiboRefreshObservable = RxBus.getDefault().register(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE);
         mWeiboRefreshObservable.filter(new Func1<List<Comment>, Boolean>() {
                 @Override
                 public Boolean call(List<Comment> comments) {
@@ -245,8 +244,8 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
     @Override
     public void onDestroy() {
         mLoginCompositeSubscription.clear();
-        RxBus.get().unregister(Event.EVENT_COMMENT_WEIBO_SUCCESS, mCommentObservable);
-        RxBus.get().unregister(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE, mWeiboRefreshObservable);
+        RxBus.getDefault().unregister(Event.EVENT_COMMENT_WEIBO_SUCCESS, mCommentObservable);
+        RxBus.getDefault().unregister(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE, mWeiboRefreshObservable);
     }
 
 

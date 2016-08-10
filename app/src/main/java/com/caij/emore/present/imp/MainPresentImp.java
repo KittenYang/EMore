@@ -1,7 +1,6 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.Event;
-import com.caij.emore.Key;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
@@ -17,10 +16,8 @@ import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -77,7 +74,7 @@ public class MainPresentImp implements MainPresent {
                 });
         mCompositeSubscription.add(subscription);
 
-        mUnReadMessageObservable = RxBus.get().register(Event.EVENT_UNREAD_MESSAGE_COMPLETE);
+        mUnReadMessageObservable = RxBus.getDefault().register(Event.EVENT_UNREAD_MESSAGE_COMPLETE);
         mUnReadMessageObservable.subscribe(new Action1<UnReadMessage>() {
             @Override
             public void call(UnReadMessage unReadMessage) {
@@ -87,7 +84,7 @@ public class MainPresentImp implements MainPresent {
             }
         });
 
-        mDraftObservable = RxBus.get().register(Event.EVENT_DRAFT_UPDATE);
+        mDraftObservable = RxBus.getDefault().register(Event.EVENT_DRAFT_UPDATE);
         mDraftObservable.subscribe(new Action1<Draft>() {
             @Override
             public void call(Draft draft) {
@@ -122,8 +119,8 @@ public class MainPresentImp implements MainPresent {
     @Override
     public void onDestroy() {
         mCompositeSubscription.clear();
-        RxBus.get().unregister(Event.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
-        RxBus.get().unregister(Event.EVENT_DRAFT_UPDATE, mDraftObservable);
+        RxBus.getDefault().unregister(Event.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
+        RxBus.getDefault().unregister(Event.EVENT_DRAFT_UPDATE, mDraftObservable);
     }
 
     @Override

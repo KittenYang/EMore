@@ -28,7 +28,8 @@ public class ChatManager extends IManager {
 
     @Override
     protected void doOnCreate() {
-        mChatManagerPresent = new ChatManagerPresentImp(null, new ServerMessageSource(), new LocalMessageSource());
+        mChatManagerPresent = new ChatManagerPresentImp(UserPrefs.get().getWeiCoToken().getAccess_token(),
+                new ServerMessageSource(), new LocalMessageSource());
         mChatManagerPresent.onCreate();
     }
 

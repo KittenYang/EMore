@@ -104,13 +104,20 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
                 });
         mCompositeSubscription.add(subscription);
 
-        mPublishWeiboObservable = RxBus.get().register(Event.EVENT_PUBLISH_WEIBO_SUCCESS);
-        mPublishWeiboObservable.subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object weibo) {
-                        mView.onWeiboPublishSuccess((Weibo)weibo);
-                    }
-                });
+        mPublishWeiboObservable = RxBus.getDefault().register(Event.EVENT_PUBLISH_WEIBO_SUCCESS);
+        mPublishWeiboObservable.doOnNext(new Action1<Weibo>() {
+                @Override
+                public void call(Weibo weibo) {
+                    doSpanNext(weibo);
+                }
+            })
+            .compose(new SchedulerTransformer<Weibo>())
+            .subscribe(new Action1<Weibo>() {
+                @Override
+                public void call(Weibo weibo) {
+                    mView.onWeiboPublishSuccess(weibo);
+                }
+             });
     }
 
     @Override
@@ -216,7 +223,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
     @Override
     public void onDestroy() {
         mCompositeSubscription.clear();
-        RxBus.get().unregister(Event.EVENT_PUBLISH_WEIBO_SUCCESS, mPublishWeiboObservable);
+        RxBus.getDefault().unregister(Event.EVENT_PUBLISH_WEIBO_SUCCESS, mPublishWeiboObservable);
     }
 
 }

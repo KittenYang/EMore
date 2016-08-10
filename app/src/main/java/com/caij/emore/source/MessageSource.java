@@ -25,8 +25,10 @@ public interface MessageSource {
 
     Observable<DirectMessage> createTextMessage(String accessToken, String text, long uid);
 
-    Observable<DirectMessage> createImageMessage(String accessToken,Map<String, Object> paramMap,
-                                                 final String text,String imagePath, long uid, final String screenName);
+    Observable<DirectMessage> createImageMessage(String accessToken, final String text, long uid, final String screenName,
+                                                 String fids);
+
+    public Observable<MessageImage> uploadMessageImage(Map<String, Object> paramMap, String accessToken, long uid, String imagePath);
 
     void saveMessage(DirectMessage message);
 
@@ -35,6 +37,10 @@ public interface MessageSource {
     void saveMessageImage(MessageImage messageImage);
 
     void removeMessage(DirectMessage bean);
+
+    void removeMessageById(long id);
+
+    DirectMessage getMessageById(long id);
 
     void saveUnReadMessage(UnReadMessage serverUnReadMessage);
 

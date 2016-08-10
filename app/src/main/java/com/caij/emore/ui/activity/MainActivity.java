@@ -261,7 +261,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 break;
             }
             case R.id.toolbar:
-                RxBus.get().post(Event.EVENT_TOOL_BAR_DOUBLE_CLICK, mVisibleFragment);
+                RxBus.getDefault().post(Event.EVENT_TOOL_BAR_DOUBLE_CLICK, mVisibleFragment);
                 break;
 
             case R.id.rl_draft: {

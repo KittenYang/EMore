@@ -39,8 +39,8 @@ public class WeicoAuthUtil {
     private static boolean check() {
         if (UserPrefs.get().getWeiCoToken() == null
                 || UserPrefs.get().getWeiCoToken().getAccess_token() == null
-/*                || UserPrefs.get().getAccount().getWeiCoLoginResponse() == null
-                || UserPrefs.get().getAccount().getWeiCoLoginResponse().getGsid() == null*/) {
+/*                || UserPrefs.getDefault().getAccount().getWeiCoLoginResponse() == null
+                || UserPrefs.getDefault().getAccount().getWeiCoLoginResponse().getGsid() == null*/) {
             return false;
         }
         return true;

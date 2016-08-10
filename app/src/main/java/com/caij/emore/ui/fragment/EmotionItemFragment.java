@@ -145,7 +145,7 @@ public class EmotionItemFragment extends BaseFragment {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        RxBus.get().post(Event.ON_EMOTION_DELETE_CLICK, null);
+                        RxBus.getDefault().post(Event.ON_EMOTION_DELETE_CLICK, null);
                     }
                 });
             }else {
@@ -156,7 +156,7 @@ public class EmotionItemFragment extends BaseFragment {
                     holder.imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            RxBus.get().post(Event.ON_EMOTION_CLICK, emotion);
+                            RxBus.getDefault().post(Event.ON_EMOTION_CLICK, emotion);
                             LogUtil.d(emotion, "emotion click key " + emotion.key);
                         }
                     });

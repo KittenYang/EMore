@@ -252,14 +252,14 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     @Override
     public void onAttitudesSuccess(Weibo weibo) {
         mWeibo.setAttitudes(true);
-        RxBus.get().post(Event.EVENT_WEIBO_UPDATE, mWeibo);
+        RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, mWeibo);
         actionStar.setSelected(true);
     }
 
     @Override
     public void onDestoryAttitudesSuccess(Weibo weibo) {
         mWeibo.setAttitudes(false);
-        RxBus.get().post(Event.EVENT_WEIBO_UPDATE, mWeibo);
+        RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, mWeibo);
         actionStar.setSelected(false);
     }
 

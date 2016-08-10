@@ -142,7 +142,12 @@ public class LocalMessageSource implements MessageSource {
     }
 
     @Override
-    public Observable<DirectMessage> createImageMessage(String accessToken, Map<String, Object> paramMap, String text, String imagePath, long uid, String screenName) {
+    public Observable<DirectMessage> createImageMessage(String accessToken, String text, long uid, String screenName, String fids) {
+        return null;
+    }
+
+    @Override
+    public Observable<MessageImage> uploadMessageImage(Map<String, Object> paramMap, String accessToken, long uid, String imagePath) {
         return null;
     }
 
@@ -194,6 +199,16 @@ public class LocalMessageSource implements MessageSource {
     @Override
     public void removeMessage(DirectMessage bean) {
         mDirectMessageDao.deleteByKey(bean.getId());
+    }
+
+    @Override
+    public void removeMessageById(long id) {
+        mDirectMessageDao.deleteByKey(id);
+    }
+
+    @Override
+    public DirectMessage getMessageById(long id) {
+        return mDirectMessageDao.load(id);
     }
 
     @Override

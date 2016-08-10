@@ -19,6 +19,8 @@ public class DBManager {
     public static void initDB(Context content, String dbName, boolean isDebug) {
         DBHelp dbHelp = new DBHelp(content, dbName, null);
         DaoMaster daoMaster = new DaoMaster(dbHelp.getWritableDatabase());
+//        QueryBuilder.LOG_SQL = isDebug;
+//        QueryBuilder.LOG_VALUES = isDebug;
         //这里参数为None 意思是数据不缓存在内存中
         sDaoSession = daoMaster.newSession(IdentityScopeType.None);
     }

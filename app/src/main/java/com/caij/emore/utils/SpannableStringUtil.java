@@ -168,7 +168,7 @@ public class SpannableStringUtil {
         }
     }
 
-    public static String  parseFullText(String text) {
+    private static String  parseFullText(String text) {
 //        "...全文： http://m.weibo.cn/1815070622/3998176861989899"
         Matcher matcher = Pattern.compile("全文： (http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]").matcher(text);
         String str = text;

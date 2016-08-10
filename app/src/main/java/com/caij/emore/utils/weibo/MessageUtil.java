@@ -1,14 +1,11 @@
 package com.caij.emore.utils.weibo;
 
-import android.os.AsyncTask;
-
 import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.source.MessageSource;
-import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 
@@ -59,7 +56,7 @@ public class MessageUtil {
 
                     @Override
                     public void onNext(UnReadMessage unReadMessage) {
-                        RxBus.get().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
+                        RxBus.getDefault().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
                     }
                 });
     }
@@ -90,7 +87,7 @@ public class MessageUtil {
                     @Override
                     public void onNext(UnReadMessage unReadMessage) {
                         if (unReadMessage != null) {
-                            RxBus.get().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
+                            RxBus.getDefault().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
                         }
                     }
                 });
@@ -136,7 +133,7 @@ public class MessageUtil {
 
                     @Override
                     public void onNext(UnReadMessage unReadMessage) {
-                        RxBus.get().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
+                        RxBus.getDefault().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
                     }
                 });
     }

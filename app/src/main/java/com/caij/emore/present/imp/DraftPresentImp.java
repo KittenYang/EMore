@@ -104,7 +104,7 @@ public class DraftPresentImp implements DraftPresent {
 
         mCompositeSubscription.add(subscription);
 
-        mDraftObservable = RxBus.get().register(Event.EVENT_DRAFT_UPDATE);
+        mDraftObservable = RxBus.getDefault().register(Event.EVENT_DRAFT_UPDATE);
         mDraftObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Draft>() {
                     @Override
@@ -114,14 +114,11 @@ public class DraftPresentImp implements DraftPresent {
                                     draft.getStatus() == Draft.STATUS_SUCCESS) {
                                 mDrafts.remove(draft);
                             }else {
-                                for (Draft item : mDrafts) {
+                                for (int i = 0; i <= mDrafts.size(); i ++) {
+                                    Draft item = mDrafts.get(i);
                                     if (item.equals(draft)) {
-                                        item.setCreate_at(draft.getCreate_at());
-                                        item.setImage_paths(draft.getImage_paths());
-                                        item.setContent(draft.getContent());
-                                        item.setStatus(draft.getStatus());
-                                        item.setImages(draft.getImages());
-                                        item.setType(draft.getType());
+                                        mDrafts.remove(item);
+                                        mDrafts.add(i, draft);
                                         break;
                                     }
                                 }
@@ -166,7 +163,7 @@ public class DraftPresentImp implements DraftPresent {
     @Override
     public void onDestroy() {
         mCompositeSubscription.clear();
-        RxBus.get().unregister(Event.EVENT_DRAFT_UPDATE, mDraftObservable);
+        RxBus.getDefault().unregister(Event.EVENT_DRAFT_UPDATE, mDraftObservable);
     }
 
     @Override
@@ -177,7 +174,7 @@ public class DraftPresentImp implements DraftPresent {
                 publishBean.setText(draft.getContent());
                 publishBean.setPics(draft.getImages());
                 publishBean.setId(draft.getId());
-                RxBus.get().post(Event.PUBLISH_WEIBO, publishBean);
+                RxBus.getDefault().post(Event.PUBLISH_WEIBO, publishBean);
                 break;
         }
     }

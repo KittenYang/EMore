@@ -83,7 +83,8 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
         if (UserPrefs.get().getEMoreToken() == null || UserPrefs.get().getWeiCoToken() == null) {
             EMoreService.stop(ctx);
         }else {
-            scheduleHeartbeat(AppSettings.getMessageIntervalValue(ctx));
+//            scheduleHeartbeat(AppSettings.getMessageIntervalValue(ctx));
+            scheduleHeartbeat(10000);
         }
     }
 

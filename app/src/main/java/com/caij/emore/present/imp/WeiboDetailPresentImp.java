@@ -9,8 +9,6 @@ import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
-import com.caij.emore.bean.response.Response;
-import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboDetailPresent;
 import com.caij.emore.present.view.WeiboDetailView;
@@ -26,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -195,9 +192,9 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     @Override
                     public void onNext(Zip zip) {
                         mView.setWeibo(zip.weibo);
-                        RxBus.get().post(Event.EVENT_REPOST_WEIBO_REFRESH_COMPLETE, zip.weibos);
-                        RxBus.get().post(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE, zip.comments);
-                        RxBus.get().post(Event.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE, zip.attitudes);
+                        RxBus.getDefault().post(Event.EVENT_REPOST_WEIBO_REFRESH_COMPLETE, zip.weibos);
+                        RxBus.getDefault().post(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE, zip.comments);
+                        RxBus.getDefault().post(Event.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE, zip.attitudes);
                         mView.onRefreshComplete();
                     }
                 });

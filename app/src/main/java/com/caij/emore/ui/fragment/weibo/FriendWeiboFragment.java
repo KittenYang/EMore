@@ -2,7 +2,6 @@ package com.caij.emore.ui.fragment.weibo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.caij.emore.Event;
-import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.database.bean.Weibo;
@@ -43,7 +41,7 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-        Observable<Object> observable = RxBus.get().register(Event.EVENT_TOOL_BAR_DOUBLE_CLICK);
+        Observable<Object> observable = RxBus.getDefault().register(Event.EVENT_TOOL_BAR_DOUBLE_CLICK);
         observable.subscribe(new Action1<Object>() {
             @Override
             public void call(Object object) {

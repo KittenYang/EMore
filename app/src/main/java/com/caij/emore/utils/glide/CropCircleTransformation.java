@@ -31,6 +31,8 @@ import com.bumptech.glide.load.resource.bitmap.BitmapResource;
 
 public class CropCircleTransformation implements Transformation<Bitmap> {
 
+  private static Paint paint = new Paint();
+
   private BitmapPool mBitmapPool;
 
   public CropCircleTransformation(Context context) {
@@ -55,7 +57,7 @@ public class CropCircleTransformation implements Transformation<Bitmap> {
     }
 
     Canvas canvas = new Canvas(bitmap);
-    Paint paint = new Paint();
+
     BitmapShader shader =
         new BitmapShader(source, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP);
     if (width != 0 || height != 0) {

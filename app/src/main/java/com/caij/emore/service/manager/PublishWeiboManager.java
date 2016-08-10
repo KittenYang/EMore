@@ -129,31 +129,6 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
     }
 
     @Override
-    public void onDeleteWeiboSuccess(Weibo weibo, int position) {
-
-    }
-
-    @Override
-    public void onCollectSuccess(Weibo weibo) {
-
-    }
-
-    @Override
-    public void onUncollectSuccess(Weibo weibo) {
-
-    }
-
-    @Override
-    public void onAttitudesSuccess(Weibo weibo) {
-
-    }
-
-    @Override
-    public void onDestoryAttitudesSuccess(Weibo weibo) {
-
-    }
-
-    @Override
     public void onAuthenticationError() {
 
     }

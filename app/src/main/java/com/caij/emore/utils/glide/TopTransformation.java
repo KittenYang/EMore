@@ -14,6 +14,7 @@ import com.caij.emore.utils.LogUtil;
 //caij
 public class TopTransformation extends BitmapTransformation {
   public static final int PAINT_FLAGS = Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG;
+  public static final Paint paint = new Paint(PAINT_FLAGS);
 
   public TopTransformation(Context context) {
     super(context);
@@ -40,7 +41,7 @@ public class TopTransformation extends BitmapTransformation {
     TransformationUtils.setAlpha(toTransform, result);
 
     Canvas canvas = new Canvas(result);
-    Paint paint = new Paint(PAINT_FLAGS);
+
     canvas.drawBitmap(toTransform, m, paint);
     LogUtil.d(this, "width=%s height=%s", result.getWidth(), result.getHeight());
     return result;

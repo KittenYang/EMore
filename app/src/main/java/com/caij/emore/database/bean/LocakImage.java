@@ -4,10 +4,13 @@ package com.caij.emore.database.bean;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
+
+import java.io.Serializable;
+
 /**
  * Entity mapped to table "LOCAK_IMAGE".
  */
-public class LocakImage {
+public class LocakImage implements Serializable {
 
     private String url;
     private Integer width;

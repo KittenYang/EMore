@@ -19,7 +19,7 @@ public class MainMenuDrawable extends DrawerArrowDrawable implements ActionBarDr
     Paint p = new Paint();
 
     /**
-     * @param context used to get the configuration for the drawable from
+     * @param context used to getDefault the configuration for the drawable from
      */
     public MainMenuDrawable(Context context) {
         super(context);

@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.caij.emore.Event;
-import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.TimeLinePresent;
@@ -40,7 +39,7 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends S
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mWeiboUpdateObservable = RxBus.get().register(Event.EVENT_WEIBO_UPDATE);
+        mWeiboUpdateObservable = RxBus.getDefault().register(Event.EVENT_WEIBO_UPDATE);
         mWeiboUpdateObservable.subscribe(new Action1<Weibo>() {
             @Override
             public void call(Weibo weibo) {
@@ -166,6 +165,6 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends S
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        RxBus.get().unregister(Event.EVENT_WEIBO_UPDATE, mWeiboUpdateObservable);
+        RxBus.getDefault().unregister(Event.EVENT_WEIBO_UPDATE, mWeiboUpdateObservable);
     }
 }

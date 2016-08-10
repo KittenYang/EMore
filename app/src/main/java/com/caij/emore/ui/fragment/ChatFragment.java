@@ -112,8 +112,8 @@ public class ChatFragment extends BaseFragment implements
                 replace(R.id.fl_emotion, new EmotionFragment()).commit();
         initView();
 
-        mEmotionObservable = RxBus.get().register(Event.ON_EMOTION_CLICK);
-        mEmotionDeleteObservable = RxBus.get().register(Event.ON_EMOTION_DELETE_CLICK);
+        mEmotionObservable = RxBus.getDefault().register(Event.ON_EMOTION_CLICK);
+        mEmotionDeleteObservable = RxBus.getDefault().register(Event.ON_EMOTION_DELETE_CLICK);
         mEmotionObservable.subscribe(new Action1<Emotion>() {
             @Override
             public void call(Emotion emotion) {
@@ -235,8 +235,8 @@ public class ChatFragment extends BaseFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         mChatPresent.onDestroy();
-        RxBus.get().unregister(Event.ON_EMOTION_CLICK, mEmotionObservable);
-        RxBus.get().unregister(Event.ON_EMOTION_DELETE_CLICK, mEmotionDeleteObservable);
+        RxBus.getDefault().unregister(Event.ON_EMOTION_CLICK, mEmotionObservable);
+        RxBus.getDefault().unregister(Event.ON_EMOTION_DELETE_CLICK, mEmotionDeleteObservable);
     }
 
     @OnClick({R.id.et_content, R.id.iv_emotion, R.id.iv_add, R.id.tv_send})
@@ -272,6 +272,7 @@ public class ChatFragment extends BaseFragment implements
                 break;
             case R.id.tv_send:
                 mChatPresent.sendTextMessage(etContent.getText().toString());
+                etContent.setText("");
                 break;
         }
     }

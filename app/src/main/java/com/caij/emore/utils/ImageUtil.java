@@ -85,6 +85,13 @@ public class ImageUtil {
         return options;
     }
 
+    public static BitmapFactory.Options getImageOptions(File file) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+        return options;
+    }
+
     public static Bitmap zoomBitmap(Bitmap source, int width) {
         Matrix matrix = new Matrix();
         float scale = (float)width * 1.0F / (float)source.getWidth();
