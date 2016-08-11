@@ -1,5 +1,6 @@
 package com.caij.emore.ui.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -13,15 +14,16 @@ import com.caij.emore.R;
 import com.caij.emore.present.ImagePrePresent;
 import com.caij.emore.present.imp.ImagePrePresentImp;
 import com.caij.emore.present.view.ImagePreView;
+import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.view.subscaleview.ImageSource;
 import com.caij.emore.view.subscaleview.SubsamplingScaleImageView;
 
-import java.io.File;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 /**
  * Created by Caij on 2016/6/24.
@@ -62,16 +64,15 @@ public class ImagePrewFragment extends BaseFragment implements ImagePreView {
     }
 
     @Override
-    public void showWebImage(String picUrl) {
+    public void showGifImage(String picUrl) {
         sciv.setVisibility(View.GONE);
         mIvImage.setVisibility(View.VISIBLE);
 
         ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild()
-            .setScaleType(ImageLoader.ScaleType.FIT_CENTER)
-            .setSupportGif(true)
-//            .setCacheMemory(false)
-            .setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE)
-            .build();
+                .setScaleType(ImageLoader.ScaleType.FIT_CENTER)
+                .setSupportGif(true)
+                .setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE)
+                .build();
         ImageLoader.loadUrl(getActivity(), mIvImage, picUrl, android.R.color.black, config);
     }
 
@@ -80,7 +81,6 @@ public class ImagePrewFragment extends BaseFragment implements ImagePreView {
         LogUtil.d(this, "showBigImage %s", localFilePath);
         sciv.setVisibility(View.VISIBLE);
         mIvImage.setVisibility(View.GONE);
-
         sciv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_TOP_CROP);
         sciv.setImage(ImageSource.uri(localFilePath));
         sciv.setDebug(BuildConfig.DEBUG);
@@ -88,21 +88,52 @@ public class ImagePrewFragment extends BaseFragment implements ImagePreView {
 
     @Override
     public void showLocalImage(String localFilePath) {
-        sciv.setVisibility(View.GONE);
-        mIvImage.setVisibility(View.VISIBLE);
+        sciv.setVisibility(View.VISIBLE);
+        mIvImage.setVisibility(View.GONE);
 
-        ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild()
-                .setScaleType(ImageLoader.ScaleType.FIT_CENTER)
-                .setSupportGif(true)
-//                .setCacheMemory(false)
-                .setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE)
-                .build();
-        ImageLoader.loadFile(getActivity(), mIvImage, new File(localFilePath), android.R.color.black, config);
+        sciv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE);
+
+        sciv.setImage(ImageSource.uri(localFilePath));
+        sciv.setDebug(BuildConfig.DEBUG);
+    }
+
+    @Override
+    public void showSelectDialog(String[] items, DialogInterface.OnClickListener onClickListener) {
+        DialogUtil.showItemDialog(getActivity(), null, items, onClickListener);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mImagePrePresent.onDestroy();
+    }
+
+    @OnClick({R.id.sciv, R.id.iv_image})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.sciv:
+                getActivity().finish();
+                break;
+            case R.id.iv_image:
+                getActivity().finish();
+                break;
+        }
+    }
+
+    @OnLongClick({R.id.sciv, R.id.iv_image})
+    public boolean onLongClick(View view) {
+        switch (view.getId()) {
+            case R.id.sciv:
+                onViewLongClick();
+                break;
+            case R.id.iv_image:
+                onViewLongClick();
+                break;
+        }
+        return true;
+    }
+
+    private void onViewLongClick() {
+        mImagePrePresent.onViewLongClick();
     }
 }

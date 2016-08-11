@@ -5,4 +5,6 @@ package com.caij.emore.present;
  */
 public interface ImagePrePresent extends BasePresent {
     void loadImage();
+
+    void onViewLongClick();
 }

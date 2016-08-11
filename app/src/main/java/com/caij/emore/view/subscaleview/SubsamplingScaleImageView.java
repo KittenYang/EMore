@@ -1928,13 +1928,20 @@ public class SubsamplingScaleImageView extends View {
         int vPadding = getPaddingBottom() + getPaddingTop();
         int hPadding = getPaddingLeft() + getPaddingRight();
         if (minimumScaleType == SCALE_TYPE_CENTER_CROP) {
-            return Math.max((getWidth() - hPadding) / (float) sWidth(), (getHeight() - vPadding) / (float) sHeight());
+            float minScale = Math.max((getWidth() - hPadding) / (float) sWidth(), (getHeight() - vPadding) / (float) sHeight());
+            maxScale = minScale * 1.5f;
+            return minScale;
         } else if (minimumScaleType == SCALE_TYPE_TOP_CROP) {
-            return Math.max((getWidth() - hPadding) / (float) sWidth(), (getHeight() - vPadding) / (float) sHeight());
+            float minScale = Math.max((getWidth() - hPadding) / (float) sWidth(), (getHeight() - vPadding) / (float) sHeight());
+            maxScale = minScale * 1.5f;
+            return minScale;
         }else if (minimumScaleType == SCALE_TYPE_CUSTOM && minScale > 0) {
+            maxScale = minScale * 1.5f;
             return minScale;
         } else {
-            return Math.min((getWidth() - hPadding) / (float) sWidth(), (getHeight() - vPadding) / (float) sHeight());
+            float minScale = Math.min((getWidth() - hPadding) / (float) sWidth(), (getHeight() - vPadding) / (float) sHeight());
+            maxScale = minScale * 1.5f;
+            return minScale;
         }
     }
 

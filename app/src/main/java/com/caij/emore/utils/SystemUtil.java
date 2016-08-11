@@ -3,10 +3,12 @@ package com.caij.emore.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Process;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -173,6 +175,11 @@ public class SystemUtil {
             }
         }
         return null;
+    }
+
+    public static void notifyScanFile(Context context, String fileName) {
+        Uri data = Uri.parse("file://" + fileName);
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, data));
     }
 
 }

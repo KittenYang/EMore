@@ -127,20 +127,24 @@ public class ImageUtil {
     }
 
     public static String createCameraImagePath(Context context) {
-        String timeStamp = new SimpleDateFormat(PATTERN, Locale.CHINA).format(new Date());
-
+        String imageName = createImageName("jpg");
         String externalStorageState = Environment.getExternalStorageState();
 
         if (externalStorageState.equals(Environment.MEDIA_MOUNTED)) {
-            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera"
-                    + "IMG_" + timeStamp + ".jpg");
+            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera/"
+                    + imageName);
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
             return file.getAbsolutePath();
         } else {
-            return context.getFilesDir() + "IMG_" + timeStamp + ".jpg";
+            return context.getFilesDir() + "/" +imageName;
         }
+    }
+
+    public static String createImageName(String type) {
+        String timeStamp = new SimpleDateFormat(PATTERN, Locale.CHINA).format(new Date());
+        return "IMG_" + timeStamp + "." + type;
     }
 
     public static String compressImage(String sourcePath, Context context) {

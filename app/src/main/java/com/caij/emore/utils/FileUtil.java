@@ -90,6 +90,9 @@ public class FileUtil {
 
     public static void copy(File source, File target) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(source);
+        if (!target.getParentFile().exists()) {
+            target.getParentFile().mkdirs();
+        }
         FileOutputStream fileOutputStream = new FileOutputStream(target);
         byte[] buf = new byte[1024 * 8];
         int len;

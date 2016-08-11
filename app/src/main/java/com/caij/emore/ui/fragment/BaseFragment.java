@@ -44,7 +44,7 @@ public class BaseFragment extends Fragment implements BaseView{
 
     @Override
     public void showHint(String string) {
-        showHint(string);
+       ToastUtil.show(getActivity(), string);
     }
 
     @Override

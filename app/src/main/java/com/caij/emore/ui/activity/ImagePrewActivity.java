@@ -52,10 +52,6 @@ public class ImagePrewActivity extends FragmentActivity {
         final ArrayList<String> paths = getIntent().getStringArrayListExtra(Key.IMAGE_PATHS);
         final int position = getIntent().getIntExtra(Key.POSITION, 0);
         init(paths, position);
-
-//        ImageAdapter adapter = new ImageAdapter(paths, position);
-//        mVpImage.setAdapter(adapter);
-//        mVpImage.setCurrentItem(position);
     }
 
     private void init( ArrayList<String> paths, int position) {
