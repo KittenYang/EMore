@@ -9,10 +9,14 @@
 
     <style name="ImagePrewActivity" parent="AppTheme">
         <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/color_black</item>
+    </style>
+
+    <style name="VideoPlayActivity" parent="AppTheme">
+        <item name="android:statusBarColor">@color/color_black</item>
         <item name="android:windowNoTitle">true</item>
-        <!--<item name="android:windowIsTranslucent">true</item>-->
-        <!--<item name="android:windowBackground">@android:color/transparent</item>-->
-        <!--<item name="android:windowContentOverlay">@android:color/transparent</item>-->
+        <item name="android:windowBackground">@android:color/black</item>
     </style>
 
     <style name="SplashActivity" parent="AppTheme">

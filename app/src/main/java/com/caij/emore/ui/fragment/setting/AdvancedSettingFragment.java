@@ -12,7 +12,6 @@ import android.preference.PreferenceFragment;
 
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.service.EMoreService;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.ui.fragment.AppAboutFragment;
@@ -20,7 +19,6 @@ import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.AppUtil;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 
 

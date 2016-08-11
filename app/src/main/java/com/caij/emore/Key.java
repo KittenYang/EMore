@@ -6,7 +6,6 @@ package com.caij.emore;
 public interface Key {
 
     String DB_NAME  = "WeiBo";
-    long DB_VERSION  = 1;
     String UPLOAD_FILE_BASE_URL = "http://upload.api.weibo.com";
     String UPLOAD_MESSAGE_IMAGE_URL  = UPLOAD_FILE_BASE_URL + "/2/mss/upload.json";
     String QUERY_MESSAGE_IMAGE_URL  = UPLOAD_FILE_BASE_URL + "/2/mss/meta_query.json";
@@ -53,4 +52,6 @@ public interface Key {
 
     int REQUEST_CODE_SELECT_IMAGE = 1000;
 
+    String WIDTH = "width";
+    String HEIGHT = "height";
 }

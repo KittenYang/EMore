@@ -68,7 +68,8 @@ public class AppUtil {
                 @Override
                 public void onPost(Object tag, @NonNull Object content) {
                     if (tag.equals(Event.PUBLISH_WEIBO)
-                            || tag.equals(Event.SEND_MESSAGE_EVENT)) {
+                            || tag.equals(Event.SEND_MESSAGE_EVENT)
+                            || tag.equals(Event.INTERVAL_MILLIS_UPDATE)) {
                         LogUtil.d(PipeServiceConnection.this, "Client post event " + tag.toString() + " to other process");
                         PipeEvent pipeEvent = new PipeEvent(tag, content);
                         Message message = Message.obtain();

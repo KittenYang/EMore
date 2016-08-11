@@ -16,7 +16,6 @@ import com.caij.emore.present.view.PublishServiceView;
 import com.caij.emore.source.DraftSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.source.local.LocalImageSource;
-import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.ImageUtil;
@@ -272,7 +271,7 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
 
     @Override
     public void onCreate() {
-        mPublishWeiboObservable = EventUtil.registPublishEvent();
+        mPublishWeiboObservable = RxBus.getDefault().register(Event.PUBLISH_WEIBO);
         mPublishWeiboObservable.subscribe(new Action1<PublishBean>() {
             @Override
             public void call(PublishBean publishBean) {

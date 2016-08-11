@@ -8,6 +8,8 @@ import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.caij.emore.utils.glide.CropCircleTransformation;
 import com.caij.emore.utils.glide.TopTransformation;
 
@@ -48,6 +50,7 @@ public class ImageLoader {
         private boolean isCacheMemory;
         private boolean isSupportGif;
         private Transformation transformation;
+        private ImageLoadListener imageLoadListener;
 
         private ImageConfig(ImageConfigBuild build) {
             scaleType = build.scaleType;
@@ -59,6 +62,7 @@ public class ImageLoader {
             isCacheMemory = build.isCacheMemory;
             isSupportGif = build.isSupportGif;
             transformation = build.transformation;
+            imageLoadListener = build.imageLoadListener;
         }
     }
 
@@ -72,6 +76,7 @@ public class ImageLoader {
         private boolean isCacheMemory = true;
         private boolean isSupportGif = false;
         private Transformation transformation;
+        private ImageLoadListener imageLoadListener;
 
         public ImageConfigBuild(){
 
@@ -132,6 +137,11 @@ public class ImageLoader {
             return this;
         }
 
+        public ImageConfigBuild setImageLoadListener(ImageLoadListener imageLoadListener) {
+            this.imageLoadListener = imageLoadListener;
+            return this;
+        }
+
         public ImageConfig build() {
             return new ImageConfig(this);
         }
@@ -152,7 +162,7 @@ public class ImageLoader {
         loadImage(context, view, request, resourceId, imageConfig);
     }
 
-    private static void loadImage(Context context, ImageView view, DrawableTypeRequest request, int resourceId, ImageConfig imageConfig) {
+    private static void loadImage(Context context, ImageView view, DrawableTypeRequest request, int resourceId, final ImageConfig imageConfig) {
         if (!imageConfig.isSupportGif) {
             BitmapTypeRequest bitmapTypeRequest = request.asBitmap();
             if (imageConfig.transformation == null) {
@@ -215,6 +225,22 @@ public class ImageLoader {
                 bitmapTypeRequest.placeholder(resourceId);
             }
 
+            if (imageConfig.imageLoadListener != null) {
+                bitmapTypeRequest.listener(new RequestListener() {
+                    @Override
+                    public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+                        imageConfig.imageLoadListener.onFail(e);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        imageConfig.imageLoadListener.onSuccess();
+                        return false;
+                    }
+                });
+            }
+
             bitmapTypeRequest.into(view);
         }else {
             if (imageConfig.transformation == null) {
@@ -275,6 +301,22 @@ public class ImageLoader {
 
             if (resourceId > 0) {
                 request.placeholder(resourceId);
+            }
+
+            if (imageConfig.imageLoadListener != null) {
+                request.listener(new RequestListener() {
+                    @Override
+                    public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+                        imageConfig.imageLoadListener.onFail(e);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        imageConfig.imageLoadListener.onSuccess();
+                        return false;
+                    }
+                });
             }
 
             request.into(view);

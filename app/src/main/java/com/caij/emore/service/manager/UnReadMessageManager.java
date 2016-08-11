@@ -10,18 +10,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 
 import com.caij.emore.AppSettings;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.UnReadMessageManagerPresent;
 import com.caij.emore.present.imp.UnReadMessageManagerPresentImp;
 import com.caij.emore.present.view.UnReadMessageManagerPresentView;
 import com.caij.emore.service.EMoreService;
-import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.ui.activity.CommentsActivity;
@@ -29,20 +26,9 @@ import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.FriendshipActivity;
 import com.caij.emore.ui.activity.MainActivity;
 import com.caij.emore.ui.activity.MentionActivity;
-import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.fragment.AttitudesToMeFragment;
 import com.caij.emore.ui.fragment.MessageUserFragment;
-import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.LogUtil;
-import com.caij.emore.utils.EventUtil;
-import com.caij.emore.utils.SystemUtil;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/7.
@@ -83,8 +69,7 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
         if (UserPrefs.get().getEMoreToken() == null || UserPrefs.get().getWeiCoToken() == null) {
             EMoreService.stop(ctx);
         }else {
-//            scheduleHeartbeat(AppSettings.getMessageIntervalValue(ctx));
-            scheduleHeartbeat(10000);
+            scheduleHeartbeat(AppSettings.getMessageIntervalValue(ctx));
         }
     }
 
@@ -160,6 +145,8 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
     }
 
     private void scheduleHeartbeat(long seconds){
+        LogUtil.d(this, "scheduleHeartbeat intime %s", seconds);
+
         cancelHeartbeatTimer();
 
         if (pendingIntent == null) {

@@ -19,7 +19,6 @@ import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.source.local.LocalImageSource;
 import com.caij.emore.utils.DateUtil;
-import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;

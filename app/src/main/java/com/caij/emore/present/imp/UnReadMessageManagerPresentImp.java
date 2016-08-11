@@ -8,7 +8,6 @@ import com.caij.emore.present.UnReadMessageManagerPresent;
 import com.caij.emore.present.view.UnReadMessageManagerPresentView;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
-import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -43,7 +42,7 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
     @Override
     public void onCreate() {
         mCompositeSubscription = new CompositeSubscription();
-        mIntervalMillisUpdateObservable = EventUtil.registIntervalMillisUpdateEvent();
+        mIntervalMillisUpdateObservable = RxBus.getDefault().register(Event.INTERVAL_MILLIS_UPDATE);
         mServerMessageSource = new ServerMessageSource();
         mIntervalMillisUpdateObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
@@ -56,7 +55,7 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
 
     @Override
     public void onDestroy() {
-        EventUtil.unregistIntervalMillisUpdateEvent(mIntervalMillisUpdateObservable);
+        RxBus.getDefault().unregister(Event.INTERVAL_MILLIS_UPDATE, mIntervalMillisUpdateObservable);
         mCompositeSubscription.clear();
     }
 

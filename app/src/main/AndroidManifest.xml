@@ -128,7 +128,7 @@
 
         <activity android:name=".ui.activity.VideoViewPlayingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/ImagePrewActivity"/>
+            android:theme="@style/VideoPlayActivity"/>
 
         <activity android:name="com.caij.emore.ui.activity.MentionSelectActivity"
             android:screenOrientation="portrait"/>

@@ -9,7 +9,6 @@ import android.content.Intent;
 
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.Account;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.PublishWeiboManagerPresent;
@@ -21,22 +20,7 @@ import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.MainActivity;
 import com.caij.emore.ui.fragment.DraftFragment;
-import com.caij.emore.utils.CacheUtils;
-import com.caij.emore.utils.EventUtil;
-import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.ToastUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/7.

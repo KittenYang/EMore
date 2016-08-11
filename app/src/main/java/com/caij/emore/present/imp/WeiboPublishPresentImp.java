@@ -10,7 +10,6 @@ import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.WeiboPublishPresent;
 import com.caij.emore.present.view.WeiboPublishView;
 import com.caij.emore.source.DraftSource;
-import com.caij.emore.utils.EventUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.rxbus.RxBus;
