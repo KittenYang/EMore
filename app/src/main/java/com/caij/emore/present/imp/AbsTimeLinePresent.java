@@ -28,6 +28,7 @@ import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.DefaultTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 
 import java.io.IOException;
@@ -35,7 +36,9 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -53,6 +56,8 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
     protected UrlSource mLocalUrlSource;
     protected UrlSource mServerUrlSource;
 
+    private Observable<Weibo> mWeiboUpdateObservable;
+
     public AbsTimeLinePresent(Account account, V view, WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
         mView = view;
         mAccount = account;
@@ -63,6 +68,42 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         mServerWeiboSource = serverWeiboSource;
         mLocalWeiboSource = localWeiboSource;
         mCompositeSubscription = new CompositeSubscription();
+    }
+
+    @Override
+    public void onCreate() {
+        mWeiboUpdateObservable = RxBus.getDefault().register(Event.EVENT_WEIBO_UPDATE);
+        mWeiboUpdateObservable.doOnNext(new Action1<Weibo>() {
+                @Override
+                public void call(Weibo weibo) {
+                    toGetImageSize(weibo);
+                    weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
+                    doSpanNext(weibo);
+                }
+            })
+            .compose(new SchedulerTransformer<Weibo>())
+            .subscribe(new Subscriber<Weibo>() {
+                @Override
+                public void onCompleted() {
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                }
+
+                @Override
+                public void onNext(Weibo weibo) {
+                    onWeiboUpdate(weibo);
+                }
+            });
+    }
+
+    protected abstract void onWeiboUpdate(Weibo weibo);
+
+    @Override
+    public void onDestroy() {
+        mCompositeSubscription.clear();
+        RxBus.getDefault().unregister(Event.EVENT_WEIBO_UPDATE, mWeiboUpdateObservable);
     }
 
     @Override
@@ -198,6 +239,12 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         Observable<Attitude> localObservable = mLocalWeiboSource.attitudesWeibo(token, Key.WEICO_APP_ID,
                 "smile", weibo.getId());
         Subscription subscription = Observable.concat(serverObservable, localObservable)
+                .doOnNext(new Action1<Attitude>() {
+                    @Override
+                    public void call(Attitude attitude) {
+                        mLocalWeiboSource.saveWeibo(mAccount.getWeiyoToken().getAccess_token(), attitude.getStatus());
+                    }
+                })
                 .subscribe(new DefaultResponseSubscriber<Attitude>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -207,13 +254,13 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     @Override
                     public void onCompleted() {
                         mView.showDialogLoading(false, R.string.requesting);
-                        mView.onAttitudesSuccess(weibo);
                     }
 
                     @Override
                     public void onNext(Attitude attitude) {
                         if (attitude != null) {
                             RxBus.getDefault().post(Event.EVENT_ATTITUDE_WEIBO_SUCCESS, attitude);
+                            RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, attitude.getStatus());
                         }
                     }
                 });
@@ -241,7 +288,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     @Override
                     public void onCompleted() {
                         mView.showDialogLoading(false, R.string.requesting);
-                        mView.onDestoryAttitudesSuccess(weibo);
+                        RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
                     }
 
                     @Override

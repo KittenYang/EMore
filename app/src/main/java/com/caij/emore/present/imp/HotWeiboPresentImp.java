@@ -23,22 +23,15 @@ import rx.functions.Func1;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class HotWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> implements FriendWeiboPresent, HotWeiboPresent {
+public class HotWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> implements FriendWeiboPresent, HotWeiboPresent {
 
     private final static int PAGE_COUNT = 20;
 
-    private List<Weibo> mWeibos;
     private int page;
 
     public HotWeiboPresentImp(Account account, TimeLineWeiboView view, WeiboSource serverWeiboSource,
                               WeiboSource localWeiboSource) {
         super(account, view, serverWeiboSource, localWeiboSource);
-        mWeibos = new ArrayList<>();
-    }
-
-    @Override
-    public void onCreate() {
-
     }
 
     @Override
@@ -147,6 +140,7 @@ public class HotWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> im
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         mCompositeSubscription.clear();
     }
 

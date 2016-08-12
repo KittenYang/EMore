@@ -36,7 +36,6 @@
     <dimen name="image_item_space">1.5dp</dimen>
     <dimen name="fab_spacing">10dp</dimen>
 
-
     <dimen name="main_menu_red_size">6dp</dimen>
-
+    <dimen name="fab_scrollthreshold">4dip</dimen>
 </resources>

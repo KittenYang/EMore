@@ -6,20 +6,21 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.caij.emore.R;
+import com.caij.emore.view.DoubleClickToolBar;
 
 /**
  * Created by Caij on 2016/5/28.
  */
 public abstract class BaseToolBarActivity extends BaseActivity {
 
-    protected Toolbar mToolbar;
+    protected DoubleClickToolBar mToolbar;
     protected FrameLayout mAttachContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentLayoutId());
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = (DoubleClickToolBar) findViewById(R.id.toolbar);
         mAttachContainer = (FrameLayout) findViewById(R.id.attach_container);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

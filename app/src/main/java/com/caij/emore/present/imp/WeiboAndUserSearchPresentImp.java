@@ -29,13 +29,12 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Caij on 2016/7/26.
  */
-public class WeiboAndUserSearchPresentImp extends AbsTimeLinePresent<WeiboAndUserSearchView> implements WeiboAndUserSearchPresent {
+public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAndUserSearchView> implements WeiboAndUserSearchPresent {
 
     public static final int PAGE_COUNT = 20;
 
     private String mKey;
     private int mPage;
-    private List<Weibo> mWeibos;
     private UserSource mServerUserSource;
 
     public WeiboAndUserSearchPresentImp(Account account, String key, WeiboAndUserSearchView view,
@@ -45,7 +44,6 @@ public class WeiboAndUserSearchPresentImp extends AbsTimeLinePresent<WeiboAndUse
         super(account, view, serverWeiboSource, localWeiboSource);
         mKey = key;
         mServerUserSource = serverUserSource;
-        mWeibos = new ArrayList<>();
     }
 
     @Override
@@ -133,11 +131,6 @@ public class WeiboAndUserSearchPresentImp extends AbsTimeLinePresent<WeiboAndUse
         mCompositeSubscription.add(subscription);
     }
 
-    @Override
-    public void onCreate() {
-
-    }
-
     private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
         return mServerWeiboSource.getSearchWeibo(mAccount.getWeicoToken().getAccess_token(), mKey, page, PAGE_COUNT)
                 .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
@@ -178,6 +171,7 @@ public class WeiboAndUserSearchPresentImp extends AbsTimeLinePresent<WeiboAndUse
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         mCompositeSubscription.clear();
     }
 

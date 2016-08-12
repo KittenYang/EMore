@@ -126,7 +126,14 @@ public class MainPresentImp implements MainPresent {
     @Override
     public void getWeiboUserInfoByUid() {
         Observable<User> localObservable =  mLocalUserSource.getWeiboUserInfoByUid(mToken, mUid);
-        Observable<User> serverObservable =  mServerUserSource.getWeiboUserInfoByUid(mToken, mUid);
+        Observable<User> serverObservable =  mServerUserSource.getWeiboUserInfoByUid(mToken, mUid)
+                .doOnNext(new Action1<User>() {
+                    @Override
+                    public void call(User user) {
+                        mLocalUserSource.saveWeiboUser(user);
+                        LogUtil.d(MainPresentImp.this, "get user info form server");
+                    }
+                });
         Subscription subscription = Observable.concat(localObservable, serverObservable)
                 .first(new Func1<User, Boolean>() {
                     @Override
@@ -142,7 +149,7 @@ public class MainPresentImp implements MainPresent {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        LogUtil.d("getWeiboUserInfoByUid", e.getMessage());
                     }
 
                     @Override

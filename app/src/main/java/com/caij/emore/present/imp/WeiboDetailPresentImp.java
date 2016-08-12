@@ -13,6 +13,7 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboDetailPresent;
 import com.caij.emore.present.view.WeiboDetailView;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -56,8 +58,6 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
-                        weibo.transformPicUrlsByPicIds();
-                        weibo.transformText();
                         mLocalWeiboSource.saveWeibo(token, weibo);
                     }
                 });
@@ -67,8 +67,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     public Boolean call(Weibo weibo) {
                         return weibo != null
                                 && weibo.getUpdate_time() != null
-                                && System.currentTimeMillis() - weibo.getUpdate_time() < 2 * 60 * 60 * 1000
-                                && !weibo.getText().contains("全文： http");
+                                && System.currentTimeMillis() - weibo.getUpdate_time() < 2 * 60 * 60 * 1000;
                     }
                 })
                 .compose(new ErrorCheckerTransformer<Weibo>())
@@ -105,15 +104,11 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
     @Override
     public void refreshWeiboDetail() {
         final String token  = mAccount.getWeicoToken().getAccess_token();
-        Observable<Weibo> weiboObservable = mServerWeiboSource.getWeiboById(token,
-                Key.WEICO_APP_ID, 1, mWeiboId)
+        Observable<Weibo> weiboObservable = mServerWeiboSource.getWeiboById(token, mWeiboId)
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
-                        weibo.transformPicUrlsByPicIds();
-                        weibo.transformText();
                         mLocalWeiboSource.saveWeibo(token, weibo);
-
                         toGetImageSize(weibo);
                         weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
                         doSpanNext(weibo);
@@ -146,11 +141,8 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                 .doOnNext(new Action1<List<Comment>>() {
                     @Override
                     public void call(List<Comment> comments) {
-                        List<String> shortUrls  = SpannableStringUtil.getCommentTextHttpUrl(comments);
-                        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls,
-                                mServerUrlSource, mLocalUrlSource, token);
                         for (Comment comment : comments) {
-                            SpannableStringUtil.paraeSpannable(comment, shortLongLinkMap);
+                            SpannableStringUtil.paraeSpannable(comment);
                         }
                     }
                 });
@@ -202,12 +194,15 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
     }
 
     @Override
-    public void onCreate() {
-
+    protected void onWeiboUpdate(Weibo weibo) {
+        if (weibo.getId() == mWeiboId) {
+            mView.setWeibo(weibo);
+        }
     }
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         mCompositeSubscription.clear();
     }
 

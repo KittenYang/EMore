@@ -62,6 +62,10 @@ public class XRecyclerView extends RelativeLayout {
         setAdapter(headerAndFooterRecyclerViewAdapter);
     }
 
+    public void addOnScrollListener(RecyclerView.OnScrollListener onScrollListener) {
+        mRecyclerView.addOnScrollListener(onScrollListener);
+    }
+
     public void setAdapter(HeaderAndFooterRecyclerViewAdapter adapter)  {
         if (mRecyclerView.getAdapter() != null) {
             mRecyclerView.getAdapter().unregisterAdapterDataObserver(mDataObserver);

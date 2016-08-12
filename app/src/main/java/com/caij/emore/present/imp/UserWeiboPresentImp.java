@@ -21,11 +21,9 @@ import rx.functions.Func1;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> implements UserWeiboPresent {
+public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> implements UserWeiboPresent {
 
     private final static int PAGE_COUNT = 20;
-
-    private List<Weibo> mWeibos;
 
     private String mUsername;
     private int mFeature = 0;
@@ -33,16 +31,11 @@ public class UserWeiboPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> i
     public UserWeiboPresentImp(Account account, String name, TimeLineWeiboView view, WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
         super(account, view, serverWeiboSource, localWeiboSource);
         mUsername = name;
-        mWeibos = new ArrayList<>();
-    }
-
-    @Override
-    public void onCreate() {
-
     }
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         mCompositeSubscription.clear();
     }
 

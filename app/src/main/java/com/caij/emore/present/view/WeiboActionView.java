@@ -15,7 +15,4 @@ public interface WeiboActionView extends BaseView{
 
     void onUncollectSuccess(Weibo weibo);
 
-    void onAttitudesSuccess(Weibo weibo);
-
-    void onDestoryAttitudesSuccess(Weibo weibo);
 }

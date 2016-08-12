@@ -27,11 +27,10 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class TopicPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> implements WeiboMentionPresent {
+public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> implements WeiboMentionPresent {
 
     private static final int COUNT = 20;
 
-    private List<Weibo> mWeibos;
     private String mTopic;
     private int page;
 
@@ -39,7 +38,6 @@ public class TopicPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> imple
                            WeiboSource localWeiboSource,
                            TimeLineWeiboView timeLineWeiboView) {
         super(account, timeLineWeiboView, serverWeiboSource, localWeiboSource);
-        mWeibos = new ArrayList<>();
         mTopic = topic;
     }
 
@@ -136,13 +134,10 @@ public class TopicPresentImp extends AbsTimeLinePresent<TimeLineWeiboView> imple
                 .compose(new SchedulerTransformer<List<Weibo>>());
     }
 
-    @Override
-    public void onCreate() {
-
-    }
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         mCompositeSubscription.clear();
     }
 

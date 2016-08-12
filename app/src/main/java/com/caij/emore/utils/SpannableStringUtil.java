@@ -3,6 +3,7 @@ package com.caij.emore.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -83,7 +84,7 @@ public class SpannableStringUtil {
 
     private static String parseTextHttpUrl(String spannableString, Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap) {
         String str = spannableString;
-        Matcher matcher = Pattern.compile("(http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]").matcher(spannableString);
+        Matcher matcher = sHttpPattern.matcher(spannableString);
         while (matcher.find()) {
             String url  = matcher.group();
             ShortUrlInfo.UrlsBean shortLongLink = null;
@@ -180,8 +181,8 @@ public class SpannableStringUtil {
     }
 
     private static CharSequence createFullTextString(String url) {
-        String[] strs  = url.split("/");
-        return " <a href=\"" + SpannableStringUtil.FULL_TEXT_SCHEME + strs[strs.length - 1] +"\">全文</a>";
+        String path = Uri.parse(url).getPath();
+        return " <a href=\"" + SpannableStringUtil.FULL_TEXT_SCHEME + path +"\">全文</a>";
     }
 
     public static void praseDefaultEmotions(Spannable spannableString) {
@@ -260,8 +261,8 @@ public class SpannableStringUtil {
         }
     }
 
-    public static void paraeSpannable(Comment comment, Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap) {
-        SpannableStringBuilder contentSpannableString = praseHttpUrlText(comment.getText() + " ", shortLongLinkMap);
+    public static void paraeSpannable(Comment comment) {
+        SpannableStringBuilder contentSpannableString = praseHttpUrlText(comment.getText() + " ", null);
         SpannableStringUtil.praseName(contentSpannableString);
         SpannableStringUtil.praseTopic(contentSpannableString);
         SpannableStringUtil.praseDefaultEmotions(contentSpannableString);
@@ -301,23 +302,4 @@ public class SpannableStringUtil {
         return list;
     }
 
-    public static List<String> getCommentTextHttpUrl(List<Comment> comments) {
-        List<String> shortUrls = new ArrayList<>();
-        for (Comment comment : comments) {
-            getTextUrl(comment.getText(), shortUrls);
-        }
-        return shortUrls;
-    }
-
-    public static List<String> getCommentTextHttpUrl(Comment comment, List<String> shortUrls) {
-        return getTextUrl(comment.getText(), shortUrls);
-    }
-
-    public static List<String> getAttitudeTextHttpUrl(List<Attitude> attitudes) {
-        List<String> shortUrls = new ArrayList<>();
-        for (Attitude attitude : attitudes) {
-            getWeiboTextHttpUrl(attitude.getStatus(), shortUrls);
-        }
-        return shortUrls;
-    }
 }

@@ -4,6 +4,7 @@ import com.caij.emore.Event;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboCommentsPresent;
 import com.caij.emore.present.view.WeiboCommentsView;
 import com.caij.emore.source.UrlSource;
@@ -80,9 +81,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                 .doOnNext(new Action1<Comment>() {
                     @Override
                     public void call(Comment comment) {
-                        List<String> shortUrls  = SpannableStringUtil.getCommentTextHttpUrl(comment, null);
-                        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource, mLocalUrlSource, mToken);
-                        SpannableStringUtil.paraeSpannable(comment, shortLongLinkMap);
+                        SpannableStringUtil.paraeSpannable(comment);
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -146,7 +145,6 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
         mComments.addAll(comments);
         mWeiboCommentsView.setEntities(mComments);
 
-
         mWeiboCommentsView.onLoadComplete(comments.size() >= PAGE_COUNET - 5);
     }
 
@@ -199,12 +197,12 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                     @Override
                     public void call(List<Comment> comments) {
                         if (comments.size() > 0) {
-                            mLocalWeiboSource.saveWeibo(mToken, comments.get(0).getStatus());
+                            Weibo weibo = comments.get(0).getStatus();
+                            RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
+                            mLocalWeiboSource.saveWeibo(mToken, weibo);
                         }
-                        List<String> shortUrls  = SpannableStringUtil.getCommentTextHttpUrl(comments);
-                        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource, mLocalUrlSource, mToken);
                         for (Comment comment : comments) {
-                            SpannableStringUtil.paraeSpannable(comment, shortLongLinkMap);
+                            SpannableStringUtil.paraeSpannable(comment);
                         }
                     }
                 })
@@ -247,6 +245,5 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
         RxBus.getDefault().unregister(Event.EVENT_COMMENT_WEIBO_SUCCESS, mCommentObservable);
         RxBus.getDefault().unregister(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE, mWeiboRefreshObservable);
     }
-
 
 }

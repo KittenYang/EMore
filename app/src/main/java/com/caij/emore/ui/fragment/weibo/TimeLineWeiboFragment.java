@@ -34,27 +34,6 @@ import rx.functions.Action1;
 public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends SwipeRefreshRecyclerViewFragment<Weibo, P>
         implements TimeLineWeiboView, RecyclerViewOnItemClickListener, XRecyclerView.OnLoadMoreListener, WeiboAdapter.OnItemActionClickListener {
 
-    Observable<Weibo> mWeiboUpdateObservable;
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mWeiboUpdateObservable = RxBus.getDefault().register(Event.EVENT_WEIBO_UPDATE);
-        mWeiboUpdateObservable.subscribe(new Action1<Weibo>() {
-            @Override
-            public void call(Weibo weibo) {
-                for (int index = 0; index < mRecyclerViewAdapter.getEntities().size(); index++) {
-                    if (mRecyclerViewAdapter.getItem(index).equals(weibo)) {
-                        mRecyclerViewAdapter.removeEntity(weibo);
-                        mRecyclerViewAdapter.addEntity(index, weibo);
-                        mRecyclerViewAdapter.notifyDataSetChanged();
-                        break;
-                    }
-                }
-            }
-        });
-    }
-
     @Override
     protected BaseAdapter<Weibo, ? extends BaseViewHolder> createRecyclerViewAdapter() {
         return new WeiboAdapter(getActivity(), this, this);
@@ -132,20 +111,6 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends S
     }
 
     @Override
-    public void onAttitudesSuccess(Weibo weibo) {
-        weibo.setAttitudes(!weibo.isAttitudes());
-        weibo.setAttitudes_count(weibo.getAttitudes_count() + 1);
-        mRecyclerViewAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onDestoryAttitudesSuccess(Weibo weibo) {
-        weibo.setAttitudes(!weibo.isAttitudes());
-        weibo.setAttitudes_count(weibo.getAttitudes_count() - 1);
-        mRecyclerViewAdapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void onMenuClick(View v, int position) {
         onMenuClick(mRecyclerViewAdapter.getItem(position), position);
     }
@@ -162,9 +127,4 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends S
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        RxBus.getDefault().unregister(Event.EVENT_WEIBO_UPDATE, mWeiboUpdateObservable);
-    }
 }

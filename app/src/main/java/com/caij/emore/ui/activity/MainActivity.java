@@ -83,8 +83,6 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
 
     private Fragment mVisibleFragment;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

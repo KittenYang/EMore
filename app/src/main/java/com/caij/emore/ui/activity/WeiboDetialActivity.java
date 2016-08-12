@@ -1,5 +1,7 @@
 package com.caij.emore.ui.activity;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +9,11 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
 import com.caij.emore.Event;
@@ -28,8 +34,10 @@ import com.caij.emore.ui.fragment.WeiboCommentListFragment;
 import com.caij.emore.ui.fragment.WeiboLikerListFragment;
 import com.caij.emore.ui.fragment.WeiboRepostListFragment;
 import com.caij.emore.utils.DrawableUtil;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
+import com.caij.emore.view.recyclerview.OnScrollListener;
 import com.caij.emore.view.weibo.detail.WeiboDetailItemView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -44,7 +52,8 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/12.
  */
-public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDetailView, SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener {
+public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDetailView,
+        SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener, OnScrollListener, ViewPager.OnPageChangeListener {
 
     @BindView(R.id.weibo_item_view)
     WeiboDetailItemView weiboItemView;
@@ -71,6 +80,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     private Weibo mWeibo;
     private WeiboDetailPresent mWeiboDetailPresent;
     private List<String> mTabTitles;
+    private boolean isActionMenuVisible = true;
 
     public static Intent newIntent(Context context, long weiboId) {
         Intent intent = new Intent(context, WeiboDetialActivity.class);
@@ -118,6 +128,8 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
                 getResources().getColor(R.color.gplus_color_2),
                 getResources().getColor(R.color.gplus_color_3),
                 getResources().getColor(R.color.gplus_color_4));
+
+        viewPager.addOnPageChangeListener(this);
 
         actionStar.setIconDrawable(DrawableUtil.createSelectThemeDrawable(this, R.mipmap.ic_star, R.color.white, R.color.red_message_bg));
     }
@@ -250,20 +262,6 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     }
 
     @Override
-    public void onAttitudesSuccess(Weibo weibo) {
-        mWeibo.setAttitudes(true);
-        RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, mWeibo);
-        actionStar.setSelected(true);
-    }
-
-    @Override
-    public void onDestoryAttitudesSuccess(Weibo weibo) {
-        mWeibo.setAttitudes(false);
-        RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, mWeibo);
-        actionStar.setSelected(false);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mWeiboDetailPresent != null) {
@@ -279,5 +277,74 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         swipeRefreshLayout.setEnabled(verticalOffset == 0);
+    }
+
+    @Override
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+    }
+
+    @Override
+    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        boolean isSignificantDelta = Math.abs(dy) > getResources().getDimensionPixelOffset(R.dimen.fab_scrollthreshold);
+        if (isSignificantDelta) {
+            if (dy > 0) {
+                onScrollUp();
+            } else {
+                onScrollDown();
+            }
+        }
+    }
+
+    private void onScrollDown() {
+       showActionMenu();
+    }
+
+    private void onScrollUp() {
+        hideActionMenu();
+    }
+
+    private void showActionMenu() {
+        if (isActionMenuVisible) {
+            return;
+        }
+        isActionMenuVisible = true;
+        LogUtil.d(this, "onScrollDown");
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) actionMenu.getLayoutParams();
+        int translationY = layoutParams.bottomMargin + actionMenu.getHeight();
+        LogUtil.d("this", "translationY %s", translationY);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(actionMenu, "translationY", translationY, 0);
+        objectAnimator.setInterpolator(new DecelerateInterpolator());
+        objectAnimator.setDuration(300);
+        objectAnimator.start();
+    }
+
+    private void hideActionMenu() {
+        if (!isActionMenuVisible) {
+            return;
+        }
+        isActionMenuVisible = false;
+        LogUtil.d(this, "onScrollUp");
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) actionMenu.getLayoutParams();
+        int translationY = layoutParams.bottomMargin + actionMenu.getHeight();
+        LogUtil.d("this", "translationY %s", translationY);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(actionMenu, "translationY", 0, translationY);
+        objectAnimator.setDuration(300);
+        objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        objectAnimator.start();
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        showActionMenu();
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }

@@ -31,23 +31,22 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> implements FriendWeiboPresent {
+public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboView> implements FriendWeiboPresent {
 
     private final static int PAGE_COUNT = 20;
 
-    private List<Weibo> mWeibos;
     Observable<Weibo> mPublishWeiboObservable;
     MessageSource mLocalMessageSource;
 
     public FriendWeiboPresentImp(Account account, FriendWeiboView view, WeiboSource serverWeiboSource,
                                  WeiboSource localWeiboSource, MessageSource localMessageSource) {
         super(account, view, serverWeiboSource, localWeiboSource);
-        mWeibos = new ArrayList<>();
         mLocalMessageSource = localMessageSource;
     }
 
     @Override
     public void onCreate() {
+        super.onCreate();
         Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getWeiyoToken().getAccess_token(),
                 0, 0, PAGE_COUNT * 2, 1)
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
@@ -222,6 +221,7 @@ public class FriendWeiboPresentImp extends AbsTimeLinePresent<FriendWeiboView> i
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         mCompositeSubscription.clear();
         RxBus.getDefault().unregister(Event.EVENT_PUBLISH_WEIBO_SUCCESS, mPublishWeiboObservable);
     }

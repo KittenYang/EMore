@@ -192,7 +192,9 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                     @Override
                     public void call(List<Weibo> weibos) {
                         if (weibos.size() > 0) {
-                            mLocalWeiboSource.saveWeibo(mToken, weibos.get(0));
+                            Weibo weibo = weibos.get(0);
+                            mLocalWeiboSource.saveWeibo(mToken, weibo);
+                            RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
                         }
                         doSpanNext(weibos);
                     }

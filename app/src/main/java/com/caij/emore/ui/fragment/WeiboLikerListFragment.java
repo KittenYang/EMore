@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.adapter.AttitudeAdapter;
 import com.caij.emore.view.recyclerview.BaseAdapter;
 import com.caij.emore.view.recyclerview.BaseViewHolder;
+import com.caij.emore.view.recyclerview.OnScrollListener;
 import com.caij.emore.view.recyclerview.XRecyclerView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -45,6 +47,15 @@ public class WeiboLikerListFragment extends RecyclerViewFragment<Attitude, ListP
         xRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item))
                 .size(getResources().getDimensionPixelSize(R.dimen.divider)).build());
+        xRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (getActivity() instanceof OnScrollListener) {
+                    ((OnScrollListener) getActivity()).onScrolled(recyclerView, dx, dy);
+                }
+            }
+        });
     }
 
     @Override
