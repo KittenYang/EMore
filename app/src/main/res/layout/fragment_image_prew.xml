@@ -16,4 +16,10 @@
         android:layout_height="match_parent"
         android:scaleType="fitCenter"/>
 
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="gone"/>
+
 </FrameLayout>

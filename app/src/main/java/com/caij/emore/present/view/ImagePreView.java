@@ -13,4 +13,6 @@ public interface ImagePreView extends BaseView {
     void showLocalImage(String localFilePath);
 
     void showSelectDialog(String[] items, DialogInterface.OnClickListener onClickListener);
+
+    void showProgress(boolean isShow);
 }

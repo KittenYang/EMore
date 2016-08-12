@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.caij.emore.BuildConfig;
 import com.caij.emore.Key;
@@ -34,6 +35,8 @@ public class ImagePrewFragment extends BaseFragment implements ImagePreView {
     ImageView mIvImage;
     @BindView(R.id.sciv)
     SubsamplingScaleImageView sciv;
+    @BindView(R.id.pb_loading)
+    ProgressBar pbLoading;
 
     ImagePrePresent mImagePrePresent;
 
@@ -100,6 +103,15 @@ public class ImagePrewFragment extends BaseFragment implements ImagePreView {
     @Override
     public void showSelectDialog(String[] items, DialogInterface.OnClickListener onClickListener) {
         DialogUtil.showItemDialog(getActivity(), null, items, onClickListener);
+    }
+
+    @Override
+    public void showProgress(boolean isShow) {
+        if (isShow) {
+            pbLoading.setVisibility(View.VISIBLE);
+        }else {
+            pbLoading.setVisibility(View.GONE);
+        }
     }
 
     @Override

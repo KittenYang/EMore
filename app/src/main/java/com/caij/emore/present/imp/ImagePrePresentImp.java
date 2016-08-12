@@ -48,9 +48,11 @@ public class ImagePrePresentImp implements ImagePrePresent {
         if (mImageUrl.startsWith("/")) {
             showImage(mImageUrl);
         }else {
+            mImagePreView.showProgress(true);
             ExecutorServiceUtil.executeAsyncTask(mImageLoadAsyncTask = new AsyncTask<Object, Object, File>() {
                 @Override
                 protected File doInBackground(Object... params) {
+
                     File file = null;
                     try {
                         file = ImageLoader.getFile(mContent, url, Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
@@ -63,6 +65,7 @@ public class ImagePrePresentImp implements ImagePrePresent {
                 @Override
                 protected void onPostExecute(File file) {
                     super.onPostExecute(file);
+                    mImagePreView.showProgress(false);
                     if (file == null) {
                         mImagePreView.onDefaultLoadError();
                     }else {
