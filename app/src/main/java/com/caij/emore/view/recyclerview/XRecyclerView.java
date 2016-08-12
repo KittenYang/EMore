@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.baidu.cyberplayer.utils.G;
+import com.caij.emore.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 
@@ -46,6 +47,7 @@ public class XRecyclerView extends RelativeLayout {
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
         mRecyclerView = new RecyclerView(context, attrs, defStyle);
+        mRecyclerView.setId(R.id.recycler_view);
         addView(mRecyclerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         mRecyclerView.addOnScrollListener(mOpOnScrollChangeListener);

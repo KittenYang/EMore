@@ -29,10 +29,8 @@ import butterknife.ButterKnife;
  */
 public abstract class RecyclerViewFragment<E, P extends ListPresent> extends LazyFragment implements XRecyclerView.OnLoadMoreListener, BaseListView<E>,RecyclerViewOnItemClickListener {
 
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.xrecycler_view)
     protected XRecyclerView xRecyclerView;
-    @BindView(R.id.rl_root)
-    protected RelativeLayout mRlRoot;
     protected BaseAdapter<E, ? extends BaseViewHolder> mRecyclerViewAdapter;
     protected P mPresent;
     private View mErrorView;
@@ -75,7 +73,7 @@ public abstract class RecyclerViewFragment<E, P extends ListPresent> extends Laz
     protected abstract P createPresent();
 
     protected View createEmptyView() {
-        TextView emptyTextView = (TextView) getActivity().getLayoutInflater().inflate(R.layout.view_empty, mRlRoot, false);
+        TextView emptyTextView = (TextView) getActivity().getLayoutInflater().inflate(R.layout.view_empty, xRecyclerView, false);
         setEmptyText(emptyTextView);
         return emptyTextView;
     }

@@ -47,6 +47,12 @@ public class WebActivity extends BaseToolBarActivity {
         handlerIntent(getIntent());
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handlerIntent(intent);
+    }
+
     protected void handlerIntent(Intent intent) {
         String url = getIntent().getStringExtra(Key.URL);
         String action = intent.getAction();
@@ -92,7 +98,10 @@ public class WebActivity extends BaseToolBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mWebView.removeAllViews();
         mWebView.destroy();
+        mWebView.setWebViewClient(null);
+        mWebView.setWebChromeClient(null);
     }
 
     static protected class MyWebViewClient extends WebViewClient {

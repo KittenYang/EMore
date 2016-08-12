@@ -71,7 +71,6 @@
 
         <!--这里参考微信 网页浏览放到单独进程中-->
         <activity android:name="com.caij.emore.ui.activity.WebActivity"
-            android:process=":web"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -93,7 +92,7 @@
 
         <activity android:name="com.caij.emore.ui.activity.ImagePrewActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/ImagePrewActivity"/>
+            android:theme="@style/ImagePrewActivity" />
 
         <activity android:name="com.caij.emore.ui.activity.publish.CommentWeiboActivity"
             android:screenOrientation="portrait"

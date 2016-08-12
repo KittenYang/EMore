@@ -171,8 +171,6 @@ public abstract class AbsLoginActivity extends WebActivity {
         if (mHtmlAsyncTask != null && !mHtmlAsyncTask.isCancelled()) {
             mHtmlAsyncTask.cancel(true);
         }
-        mWebView.removeAllViews();
-        mWebView.destroy();
         super.onDestroy();
     }
 
