@@ -25,7 +25,7 @@
     <PreferenceCategory android:title="缓存">
 
         <Preference
-            android:key="clear_cache" android:title="清除缓存"/>
+            android:key="@string/setting_key_clear_cache" android:title="清除缓存"/>
 
     </PreferenceCategory>
 
@@ -42,7 +42,7 @@
             android:key="key_change_account" android:title="切换账号"/>
 
         <Preference
-            android:key="key_exit" android:title="退出"/>
+            android:key="@string/setting_key_exit" android:title="退出"/>
 
     </PreferenceCategory>
 

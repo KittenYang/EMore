@@ -1,29 +1,16 @@
 package com.caij.emore;
 
 import android.app.Application;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.AsyncTask;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.Process;
-import android.os.RemoteException;
 import android.text.TextUtils;
 
 import com.caij.emore.bean.AccessToken;
-import com.caij.emore.service.EMoreService;
-import com.caij.emore.utils.AppUtil;
+import com.caij.emore.utils.Init;
 import com.caij.emore.utils.ChannelUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
-import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SPUtil;
-import com.caij.emore.utils.rxbus.RxBus;
 import com.tencent.bugly.crashreport.CrashReport;
-
-import rx.functions.Action1;
 
 /**
  * Created by Caij on 2016/5/27.
@@ -39,7 +26,7 @@ public class AppApplication extends Application{
         initCrashReport();
         if (UserPrefs.get().getEMoreToken() != null && UserPrefs.get().getWeiCoToken() != null) {
             AccessToken accessToken = UserPrefs.get().getEMoreToken();
-            AppUtil.start(this, Long.parseLong(accessToken.getUid()));
+            Init.getInstance().reset(this, Long.parseLong(accessToken.getUid()));
         }
     }
 

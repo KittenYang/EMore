@@ -25,6 +25,12 @@ public class DBManager {
         sDaoSession = daoMaster.newSession(IdentityScopeType.None);
     }
 
+    public static void close() {
+        if (sDaoSession != null && sDaoSession.getDatabase().isOpen()) {
+            sDaoSession.getDatabase().close();
+        }
+    }
+
     public static DaoSession getDaoSession() {
         return sDaoSession;
     }

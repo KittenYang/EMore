@@ -16,7 +16,7 @@ import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.ui.fragment.AppAboutFragment;
 import com.caij.emore.utils.ActivityStack;
-import com.caij.emore.utils.AppUtil;
+import com.caij.emore.utils.Init;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
@@ -41,11 +41,11 @@ public class AdvancedSettingFragment extends PreferenceFragment
 		Preference pFlow = (Preference) findPreference("pFlow");
 		pFlow.setOnPreferenceClickListener(this);
 		CheckBoxPreference pInnerBrowser = (CheckBoxPreference) findPreference(getString(R.string.key_setting_browser));
-		cachePreference = findPreference("clear_cache");
+		cachePreference = findPreference(getString(R.string.setting_key_clear_cache));
 		cachePreference.setOnPreferenceClickListener(this);
 		Preference changeAccount = findPreference("key_change_account");
 		changeAccount.setOnPreferenceClickListener(this);
-		Preference exitPreference = findPreference("key_exit");
+		Preference exitPreference = findPreference(getString(R.string.setting_key_exit));
 		exitPreference.setOnPreferenceClickListener(this);
 		findPreference(getString(R.string.key_setting_about)).setOnPreferenceClickListener(this);
 		lodCacheSize();
@@ -84,7 +84,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					UserPrefs.get().clear();
-					AppUtil.stop(getActivity());
+					Init.getInstance().stop(getActivity());
 					ActivityStack.getInstance().remove(getActivity());
 					ActivityStack.getInstance().finishAllActivity();
 					Intent intent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(), null, null);
@@ -92,16 +92,16 @@ public class AdvancedSettingFragment extends PreferenceFragment
 					getActivity().finish();
 				}
 			},getString(R.string.cancel), null);
-		}else if ("key_exit".equals(preference.getKey())) {
+		}else if (getString(R.string.setting_key_exit).equals(preference.getKey())) {
 			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), getString(R.string.exit_hint), getString(R.string.ok), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					AppUtil.stop(getActivity());
+					Init.getInstance().stop(getActivity());
 					ActivityStack.getInstance().finishAllActivity();
 					Process.killProcess(Process.myPid());
 				}
 			}, getString(R.string.cancel), null);
-		}else if ("clear_cache".equals(preference.getKey())) {
+		}else if (getString(R.string.setting_key_clear_cache).equals(preference.getKey())) {
 			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), getString(R.string.clear_cache_hint), getString(R.string.ok), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {

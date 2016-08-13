@@ -191,5 +191,7 @@
     <string name="auth_invalid_hint">身份信息失效, 需要重新认证</string>
     <string name="save_image_error">保存图片失败，请检查内存是否足够</string>
     <string name="media_process_name">:media</string>
+    <string name="setting_key_exit">key_exit</string>
+    <string name="setting_key_clear_cache">clear_cache</string>
 
 </resources>

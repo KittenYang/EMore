@@ -56,16 +56,21 @@ public class EMoreService extends Service {
         context.bindService(intent, serviceConnection, BIND_AUTO_CREATE);
     }
 
+    public static void unbind(Context context,ServiceConnection serviceConnection) {
+        context.unbindService(serviceConnection);
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        LogUtil.d(this, "onBind");
         return mServerMessenger.getBinder();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-
+        LogUtil.d(this, "onCreate");
         if (Build.VERSION.SDK_INT < 18) {
             startForeground(SERVICE_ID, new Notification());//API < 18 ，此方法能有效隐藏Notification上的图标
         } else {
@@ -94,6 +99,7 @@ public class EMoreService extends Service {
 
     @Override
     public void onDestroy() {
+        LogUtil.d(this, "onDestroy");
         mServerMessenger = null;
         mPipeHandler.onDestroy();
         super.onDestroy();
@@ -159,10 +165,10 @@ public class EMoreService extends Service {
                             }
                         }
                     }catch (RemoteException re) {
-                        LogUtil.d(PipeHandler.this, "进程通讯异常:" + re.getMessage());
+                        LogUtil.d(PipeHandler.this, "进程通讯异常: RemoteException" + re.getMessage());
                         mClientMessenger = null;
                     } catch (Exception e) {
-                        LogUtil.d(PipeHandler.this, "进程通讯异常:" + e.getMessage());
+                        LogUtil.d(PipeHandler.this, "进程通讯异常: Exception" + e.getMessage());
                     }
                 }
             };
