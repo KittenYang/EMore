@@ -2,6 +2,7 @@ package com.caij.emore.api;
 
 import com.caij.emore.Key;
 import com.caij.emore.bean.AccessToken;
+import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.ShortUrlInfo;
@@ -12,6 +13,7 @@ import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.DirectMessage;
@@ -273,7 +275,7 @@ public interface WeiBoService {
 
     @GET("/2/statuses/show.json")
     Observable<Weibo> getWeiboById(@Query("access_token") String accessToken,
-                                   @Query("id") long id);
+                                   @Query("id") long id, @Query("isGetLongText") int isGetLongText);
 
 
     @GET("/2/short_url/info.json")
@@ -303,19 +305,19 @@ public interface WeiBoService {
                                                           @Query("key") String key);
 
 
-    //    @FormUrlEncoded
-//    @POST("2/attitudes/destroy.json")
-//    Observable<Response> destoryAttitudesWeibo(@Field("access_token")String token,  @Field("attitude")String attitude,
-//                                               @Field("id")long weiboId);
-//
+        @FormUrlEncoded
+    @POST("2/attitudes/destroy.json")
+    Observable<Response> destoryAttitudesWeibo(@Field("access_token")String token, @Field("attitude")String attitude,
+                                               @Field("id")long weiboId);
 
-    //    https://api.weibo.com/2/attitudes/create.json
+
+//        https://api.weibo.com/2/attitudes/create.json
 //        smile,naughty,surprise,sad,heart
-//    @FormUrlEncoded
-//    @POST("2/attitudes/create.json")
-//    Observable<Response> attitudeWeibo(@Field("access_token") String accessToken,
-//                                      @Field("id") long weiboId,
-//                                      @Field("attitude") String attitude);
+    @FormUrlEncoded
+    @POST("2/attitudes/create.json")
+    Observable<Attitude> attitudeWeibo(@Field("access_token") String accessToken,
+                                      @Field("id") long weiboId,
+                                      @Field("attitude") String attitude);
 
 //
 //    @GET

@@ -193,11 +193,13 @@ public class ServerWeiboSource implements WeiboSource{
     @Override
     public Observable<Attitude> attitudesWeibo(String token, String source, String attitude, long weiboId) {
         return mWeiCoService.attitudesWeibo(token, source, attitude, weiboId);
+//        return mWeiBoService.attitudeWeibo(token, weiboId, attitude);
     }
 
     @Override
     public Observable<Response> destoryAttitudesWeibo(String token, String source, String attitude, long weiboId) {
         return mWeiCoService.destoryAttitudesWeibo(token, source, attitude, weiboId);
+//        return mWeiBoService.destoryAttitudesWeibo(token, attitude, weiboId);
     }
 
     @Override
@@ -207,12 +209,13 @@ public class ServerWeiboSource implements WeiboSource{
 
     @Override
     public Observable<Weibo> getWeiboById(String token, String source, int isGetLongText, long id) {
-        return mWeiCoService.getWeiboById(token, isGetLongText, source, id);
+//        return mWeiCoService.getWeiboById(token, isGetLongText, source, id);
+        return mWeiBoService.getWeiboById(token, id, isGetLongText);
     }
 
     @Override
     public Observable<Weibo> getWeiboById(String token, long id) {
-        return mWeiBoService.getWeiboById(token, id);
+        return mWeiBoService.getWeiboById(token, id, 0);
     }
 
     @Override

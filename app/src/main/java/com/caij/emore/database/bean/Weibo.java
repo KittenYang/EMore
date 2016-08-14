@@ -291,8 +291,6 @@ public class Weibo extends Response implements Serializable {
     private User user;
     private Weibo retweeted_status;
     private transient Spanned contentSpannableString;
-    private List<String> pic_ids;
-    private Object pic_infos;
     private LongText longText;
 
     public Visible getVisible() {
@@ -343,58 +341,12 @@ public class Weibo extends Response implements Serializable {
         this.retweeted_status = retweeted_status;
     }
 
-    public List<String> getPic_ids() {
-        return pic_ids;
-    }
-
-    public void setPic_ids(List<String> pic_ids) {
-        this.pic_ids = pic_ids;
-    }
-
-    public Object getPic_infos() {
-        return pic_infos;
-    }
-
     public LongText getLongText() {
         return longText;
     }
 
     public void setLongText(LongText longText) {
         this.longText = longText;
-    }
-
-    public void transformPicUrlsByPicIds() {
-        if (!TextUtils.isEmpty(thumbnail_pic) && pic_ids != null && pic_ids.size() > 0) {
-            pic_urls = new ArrayList<PicUrl>(pic_ids.size());
-            for (String picid : pic_ids) {
-                try {
-                    JSONObject jsonObject = new JSONObject(GsonUtils.toJson(pic_infos));
-                    JSONObject picInfoJSONObject = jsonObject.getJSONObject(picid);
-                    JSONObject thumbnailpicInfoJSONObject = picInfoJSONObject.getJSONObject("thumbnail");
-                    String url  = thumbnailpicInfoJSONObject.getString("url");
-                    Uri uri = Uri.parse(url);
-                    String thumbnailpic_url  = uri.getScheme() + "://" + uri.getHost() + "/thumbnail/" + uri.getLastPathSegment();
-                    PicUrl picUrl = new PicUrl();
-                    picUrl.setThumbnail_pic(thumbnailpic_url);
-                    pic_urls.add(picUrl);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        if (retweeted_status != null) {
-            retweeted_status.transformPicUrlsByPicIds();
-        }
-    }
-
-    public void transformText() {
-        if (longText != null) {
-            text = longText.content;
-        }
-    }
-
-    public void setPic_infos(Object pic_infos) {
-        this.pic_infos = pic_infos;
     }
 
     public Spanned getContentSpannableString() {
@@ -412,14 +364,14 @@ public class Weibo extends Response implements Serializable {
     }
 
     public static class LongText implements Serializable {
-        private String content;
+        private String longTextContent;
 
-        public String getContent() {
-            return content;
+        public String getLongTextContent() {
+            return longTextContent;
         }
 
-        public void setContent(String content) {
-            this.content = content;
+        public void setLongTextContent(String longTextContent) {
+            this.longTextContent = longTextContent;
         }
     }
 

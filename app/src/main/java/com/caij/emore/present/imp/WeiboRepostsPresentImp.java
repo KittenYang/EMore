@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -178,6 +179,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                 .flatMap(new Func1<QueryRepostWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(QueryRepostWeiboResponse queryRepostWeiboResponse) {
+                        updateWeiboRepostCount(queryRepostWeiboResponse);
                         return Observable.from(queryRepostWeiboResponse.getReposts());
                     }
                 })
@@ -191,15 +193,42 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
-                        if (weibos.size() > 0) {
-                            Weibo weibo = weibos.get(0);
-                            mLocalWeiboSource.saveWeibo(mToken, weibo);
-                            RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
-                        }
                         doSpanNext(weibos);
                     }
                 })
                 .compose(new SchedulerTransformer<List<Weibo>>());
+    }
+
+    private void updateWeiboRepostCount(final QueryRepostWeiboResponse queryRepostWeiboResponse) {
+        mLocalWeiboSource.getWeiboById(mToken, mWeiboId)
+        .filter(new Func1<Weibo, Boolean>() {
+            @Override
+            public Boolean call(Weibo weibo) {
+                return weibo != null;
+            }
+        }).doOnNext(new Action1<Weibo>() {
+            @Override
+            public void call(Weibo weibo) {
+                weibo.setReposts_count(queryRepostWeiboResponse.getTotal_number());
+                weibo.setUpdate_time(System.currentTimeMillis());
+                mLocalWeiboSource.saveWeibo(mToken, weibo);
+            }
+        }).subscribe(new Subscriber<Weibo>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Weibo weibo) {
+                RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
+            }
+        });
     }
 
     @Override

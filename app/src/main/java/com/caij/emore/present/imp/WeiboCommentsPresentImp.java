@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -183,6 +184,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                 .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
                     @Override
                     public Observable<Comment> call(QueryWeiboCommentResponse response) {
+                        updateWeiboRepostCount(response);
                         return Observable.from(response.getComments());
                     }
                 })
@@ -196,11 +198,6 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                 .doOnNext(new Action1<List<Comment>>() {
                     @Override
                     public void call(List<Comment> comments) {
-                        if (comments.size() > 0) {
-                            Weibo weibo = comments.get(0).getStatus();
-                            RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
-                            mLocalWeiboSource.saveWeibo(mToken, weibo);
-                        }
                         for (Comment comment : comments) {
                             SpannableStringUtil.paraeSpannable(comment);
                         }
@@ -230,6 +227,39 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                         mWeiboCommentsView.onDeleteSuccess(comment);
                     }
                 });
+        mLoginCompositeSubscription.add(subscription);
+    }
+
+    private void updateWeiboRepostCount(final QueryWeiboCommentResponse queryWeiboCommentResponse) {
+        Subscription subscription = mLocalWeiboSource.getWeiboById(mToken, mWeiboId)
+                .filter(new Func1<Weibo, Boolean>() {
+                    @Override
+                    public Boolean call(Weibo weibo) {
+                        return weibo != null;
+                    }
+                }).doOnNext(new Action1<Weibo>() {
+            @Override
+            public void call(Weibo weibo) {
+                weibo.setComments_count(queryWeiboCommentResponse.getTotal_number());
+                weibo.setUpdate_time(System.currentTimeMillis());
+                mLocalWeiboSource.saveWeibo(mToken, weibo);
+            }
+        }).subscribe(new Subscriber<Weibo>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Weibo weibo) {
+                RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
+            }
+        });
         mLoginCompositeSubscription.add(subscription);
     }
 

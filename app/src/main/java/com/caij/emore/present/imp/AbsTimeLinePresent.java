@@ -39,6 +39,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -234,17 +235,17 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         final String token  = mAccount.getWeicoToken().getAccess_token();
         Observable<Attitude> serverObservable = mServerWeiboSource.attitudesWeibo(token, Key.WEICO_APP_ID,
                 "smile", weibo.getId())
-                .compose(new DefaultTransformer<Attitude>());
-
-        Observable<Attitude> localObservable = mLocalWeiboSource.attitudesWeibo(token, Key.WEICO_APP_ID,
-                "smile", weibo.getId());
-        Subscription subscription = Observable.concat(serverObservable, localObservable)
+                .compose(new DefaultTransformer<Attitude>())
                 .doOnNext(new Action1<Attitude>() {
                     @Override
                     public void call(Attitude attitude) {
-                        mLocalWeiboSource.saveWeibo(mAccount.getWeiyoToken().getAccess_token(), attitude.getStatus());
+                        mLocalWeiboSource.attitudesWeibo(token, Key.WEICO_APP_ID,
+                                "smile", weibo.getId());
+                        postAttitudeWeiboUpdate(attitude);
                     }
-                })
+                });
+
+        Subscription subscription = serverObservable
                 .subscribe(new DefaultResponseSubscriber<Attitude>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -260,11 +261,49 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     public void onNext(Attitude attitude) {
                         if (attitude != null) {
                             RxBus.getDefault().post(Event.EVENT_ATTITUDE_WEIBO_SUCCESS, attitude);
-                            RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, attitude.getStatus());
                         }
                     }
                 });
         mCompositeSubscription.add(subscription);
+    }
+
+    private void postAttitudeWeiboUpdate(Attitude attitude) {
+        final Weibo data = attitude.getStatus();
+        if (data != null) {
+            mLocalWeiboSource.getWeiboById(mAccount.getWeicoToken().getAccess_token(), data.getId())
+            .filter(new Func1<Weibo, Boolean>() {
+                @Override
+                public Boolean call(Weibo weibo) {
+                    return weibo != null;
+                }
+            })
+            .doOnNext(new Action1<Weibo>() {
+                @Override
+                public void call(Weibo weibo) {
+                    weibo.setAttitudes_count(data.getAttitudes_count());
+                    weibo.setReposts_count(data.getReposts_count());
+                    weibo.setComments_count(data.getComments_count());
+                    weibo.setUpdate_time(System.currentTimeMillis());
+                    mLocalWeiboSource.saveWeibo(mAccount.getWeiyoToken().getAccess_token(), weibo);
+                }
+            }).subscribe(new Subscriber<Weibo>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Weibo weibo) {
+                    RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
+                }
+            });
+
+        }
     }
 
     @Override
@@ -275,10 +314,14 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                 Key.WEICO_APP_ID, "smile", weibo.getId())
                 .compose(new DefaultTransformer<Response>());
 
-        Observable<Response> localObservable = mLocalWeiboSource.destoryAttitudesWeibo(token,
-                Key.WEICO_APP_ID, "smile", weibo.getId());
-
-        Subscription subscription = Observable.concat(serverObservable, localObservable)
+        Subscription subscription = serverObservable
+                .doOnNext(new Action1<Response>() {
+                    @Override
+                    public void call(Response response) {
+                        mLocalWeiboSource.destoryAttitudesWeibo(token,
+                                Key.WEICO_APP_ID, "smile", weibo.getId());
+                    }
+                })
                 .subscribe(new DefaultResponseSubscriber<Response>(mView) {
                     @Override
                     protected void onFail(Throwable e) {

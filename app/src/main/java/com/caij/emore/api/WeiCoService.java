@@ -70,10 +70,10 @@ public interface WeiCoService {
                                                       @Field("source") String source,
                                                @Field("attitude") String attitude, @Field("id") long weiboId);
 
-    @GET("/2/statuses/show")
-    public Observable<Weibo> getWeiboById(@Query("access_token") String access_token,
-                                          @Query("isGetLongText") int isGetLongText,
-                                          @Query("source") String source, @Query("id") long weiboId);
+//    @GET("/2/statuses/show")
+//    public Observable<Weibo> getWeiboById(@Query("access_token") String access_token,
+//                                          @Query("isGetLongText") int isGetLongText,
+//                                          @Query("source") String source, @Query("id") long weiboId);
 
     @FormUrlEncoded
     @POST("/2/like/update")
@@ -115,12 +115,6 @@ public interface WeiCoService {
     @GET
     public Observable<WeiboIds> getHotWeiboIds(@Url String url, @Query("a") String a, @Query("c") String c,
                                                @Query("catlog_id") String catlog_id, @Query("page") int page);
-
-    @GET("/2/search/statuses")
-    Observable<UnReadMessage> getTopics(@Query("access_token") String accessToken,
-                                                    @Query("source") String source,
-                                                    @Query("from") String from,
-                                                    @Query("uid") long uid);
 
     @GET("/2/search/statuses")
     public Observable<QueryWeiboResponse> searchStatus(@Query("access_token") String accessToken,

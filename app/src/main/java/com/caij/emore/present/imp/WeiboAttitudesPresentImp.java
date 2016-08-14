@@ -3,6 +3,7 @@ package com.caij.emore.present.imp;
 import com.caij.emore.Event;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
+import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.present.view.WeiboAttitudesView;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -157,6 +159,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
                 .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<Attitude>>() {
                     @Override
                     public Observable<Attitude> call(QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
+                        updateWeiboAttitudeCount(queryWeiboAttitudeResponse);
                         return Observable.from(queryWeiboAttitudeResponse.getAttitudes());
                     }
                 })
@@ -167,15 +170,40 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
                     }
                 })
                 .toList()
-                .doOnNext(new Action1<List<Attitude>>() {
-                    @Override
-                    public void call(List<Attitude> attitudes) {
-                        if (attitudes.size() > 0) {
-                            mLocalWeiboSource.saveWeibo(mToken, attitudes.get(0).getStatus());
-                        }
-                    }
-                })
                 .compose(new SchedulerTransformer<List<Attitude>>());
+    }
+
+    private void updateWeiboAttitudeCount(final QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
+        Subscription subscription = mLocalWeiboSource.getWeiboById(mToken, mWeiboId)
+                .filter(new Func1<Weibo, Boolean>() {
+                    @Override
+                    public Boolean call(Weibo weibo) {
+                        return weibo != null;
+                    }
+                }).doOnNext(new Action1<Weibo>() {
+                    @Override
+                    public void call(Weibo weibo) {
+                        weibo.setAttitudes_count(queryWeiboAttitudeResponse.getTotal_number());
+                        weibo.setUpdate_time(System.currentTimeMillis());
+                        mLocalWeiboSource.saveWeibo(mToken, weibo);
+                    }
+                }).subscribe(new Subscriber<Weibo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Weibo weibo) {
+                        RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
+                    }
+                });
+        mLoginCompositeSubscription.add(subscription);
     }
 
     @Override

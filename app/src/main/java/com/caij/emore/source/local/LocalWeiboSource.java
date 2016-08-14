@@ -3,6 +3,7 @@ package com.caij.emore.source.local;
 import android.database.Cursor;
 import android.text.TextUtils;
 
+import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
@@ -346,39 +347,18 @@ public class LocalWeiboSource implements WeiboSource {
 
     @Override
     public Observable<Attitude> attitudesWeibo(String token, String source, String attitude, final long weiboId) {
-        return Observable.create(new Observable.OnSubscribe<Attitude>() {
-            @Override
-            public void call(Subscriber<? super Attitude> subscriber) {
-                try {
-                    LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
-                    LikeBean likeBean = new LikeBean(weiboId, true);
-                    dao.insertOrReplace(likeBean);
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                }catch (Exception e) {
-                    subscriber.onError(e);
-                }
-            }
-        });
-
+        LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
+        LikeBean likeBean = new LikeBean(weiboId, true);
+        dao.insertOrReplace(likeBean);
+        return null;
     }
 
     @Override
     public Observable<Response> destoryAttitudesWeibo(String token, final String source, String attitude, final long weiboId) {
-        return Observable.create(new Observable.OnSubscribe<Response>() {
-            @Override
-            public void call(Subscriber<? super Response> subscriber) {
-                try {
-                    LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
-                    LikeBean likeBean = new LikeBean(weiboId, false);
-                    dao.insertOrReplace(likeBean);
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                }catch (Exception e){
-                    subscriber.onError(e);
-                }
-            }
-        });
+        LikeBeanDao dao = DBManager.getDaoSession().getLikeBeanDao();
+        LikeBean likeBean = new LikeBean(weiboId, false);
+        dao.insertOrReplace(likeBean);
+        return null;
     }
 
     @Override
