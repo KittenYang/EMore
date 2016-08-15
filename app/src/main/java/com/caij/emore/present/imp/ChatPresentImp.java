@@ -298,7 +298,7 @@ public class ChatPresentImp implements ChatPresent {
         if (isShowDialog) {
             mDirectMessageView.showDialogLoading(true);
         }
-        Subscription subscription = mServerMessageSource.getUserMessage(mToken.getAccess_token(), mUserId, sinceId, 0, 100, 1)
+        Subscription subscription = mServerMessageSource.getUserMessage(mToken.getAccess_token(), mUserId, sinceId, 0, 40, 1)
                 .flatMap(new Func1<UserMessageResponse, Observable<DirectMessage>>() {
                     @Override
                     public Observable<DirectMessage> call(UserMessageResponse userMessageResponse) {

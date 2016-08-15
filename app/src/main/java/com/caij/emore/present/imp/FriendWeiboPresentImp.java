@@ -185,7 +185,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getFriendWeibo(mAccount.getWeiyoToken().getAccess_token(), 0, maxId, PAGE_COUNT, 1)
+        return mServerWeiboSource.getFriendWeibo(mAccount.getWeicoToken().getAccess_token(), 0, maxId, PAGE_COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
