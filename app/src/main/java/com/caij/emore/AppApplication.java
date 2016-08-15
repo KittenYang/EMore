@@ -45,7 +45,6 @@ public class AppApplication extends Application{
                 if (TextUtils.isEmpty(channel)) {
                     channel = "default";
                 }
-                ToastUtil.show(getApplicationContext(), channel);
                 if (!BuildConfig.DEBUG) {
                     CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
 
