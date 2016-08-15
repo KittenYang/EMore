@@ -9,7 +9,9 @@ import com.caij.emore.bean.AccessToken;
 import com.caij.emore.utils.Init;
 import com.caij.emore.utils.ChannelUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SPUtil;
+import com.caij.emore.utils.ToastUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 
 /**
@@ -31,24 +33,27 @@ public class AppApplication extends Application{
     }
 
     private void initCrashReport(){
-        if (!BuildConfig.DEBUG) {
-            ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, String>() {
-                @Override
-                protected String doInBackground(Object... params) {
-                    return ChannelUtil.getChannel(getApplicationContext());
-                }
+        ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, String>() {
+            @Override
+            protected String doInBackground(Object... params) {
+                return ChannelUtil.getChannel(getApplicationContext());
+            }
 
-                @Override
-                protected void onPostExecute(String channel) {
+            @Override
+            protected void onPostExecute(String channel) {
+                LogUtil.d(AppApplication.this, "get channel : %s", channel);
+                if (TextUtils.isEmpty(channel)) {
+                    channel = "default";
+                }
+                ToastUtil.show(getApplicationContext(), channel);
+                if (!BuildConfig.DEBUG) {
                     CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
-                    if (TextUtils.isEmpty(channel)) {
-                        channel = "default";
-                    }
+
                     strategy.setAppChannel(channel);
                     CrashReport.initCrashReport(getApplicationContext(), Key.BUGLY_KEY, true, strategy);
                 }
-            });
-        }
+            }
+        });
     }
 
     public static Context getInstance() {

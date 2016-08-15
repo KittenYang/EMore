@@ -232,6 +232,11 @@ public class ChatFragment extends BaseFragment implements
     }
 
     @Override
+    public void updatePositionDate(int index) {
+        mMessageAdapter.notifyItemChanged(index);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mChatPresent.onDestroy();

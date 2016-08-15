@@ -133,6 +133,11 @@ public abstract class RecyclerViewFragment<E, P extends ListPresent> extends Laz
         mRecyclerViewAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void updatePositionDate(int index) {
+        mRecyclerViewAdapter.notifyItemChanged(index);
+    }
+
     protected void onReLoadBtnClick() {
 
     }

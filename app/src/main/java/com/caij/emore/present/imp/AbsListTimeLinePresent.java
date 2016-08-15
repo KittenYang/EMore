@@ -25,10 +25,13 @@ public abstract class AbsListTimeLinePresent<V extends WeiboActionView & BaseLis
     @Override
     protected void onWeiboUpdate(Weibo weibo) {
         for (int index = 0; index < mWeibos.size(); index++) {
-            if (mWeibos.get(index).equals(weibo)) {
-                mWeibos.remove(weibo);
-                mWeibos.add(index, weibo);
-                mView.setEntities(mWeibos);
+            Weibo weiboOnList = mWeibos.get(index);
+            if (weiboOnList.equals(weibo)) {
+                weiboOnList.setAttitudes_count(weibo.getAttitudes_count());
+                weiboOnList.setReposts_count(weibo.getReposts_count());
+                weiboOnList.setComments_count(weibo.getComments_count());
+                weiboOnList.setAttitudes(weibo.isAttitudes());
+                mView.updatePositionDate(index);
                 break;
             }
         }

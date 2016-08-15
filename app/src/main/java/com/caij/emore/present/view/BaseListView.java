@@ -12,4 +12,6 @@ public interface BaseListView<E> extends BaseView{
     void setEntities(List<E> entities);
 
     void showErrorView();
+
+    void updatePositionDate(int index);
 }

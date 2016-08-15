@@ -67,7 +67,8 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     public Boolean call(Weibo weibo) {
                         return weibo != null
                                 && weibo.getUpdate_time() != null
-                                && System.currentTimeMillis() - weibo.getUpdate_time() < 2 * 60 * 60 * 1000;
+                                && System.currentTimeMillis() - weibo.getUpdate_time() < 2 * 60 * 60 * 1000
+                                && (!weibo.getIsLongText() || weibo.getLongText() != null);
                     }
                 })
                 .compose(new ErrorCheckerTransformer<Weibo>())
@@ -76,7 +77,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     public void call(Weibo weibo) {
                         toGetImageSize(weibo);
                         weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        doSpanNext(weibo);
+                        doSpanNext(weibo, true);
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -112,7 +113,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                         mLocalWeiboSource.saveWeibo(token, weibo);
                         toGetImageSize(weibo);
                         weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        doSpanNext(weibo);
+                        doSpanNext(weibo, true);
                     }
                 });
 
@@ -195,9 +196,14 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
     }
 
     @Override
+    protected void doSpanNext(Weibo weibo) {
+        doSpanNext(weibo, true);
+    }
+
+    @Override
     protected void onWeiboUpdate(Weibo weibo) {
         if (weibo.getId() == mWeiboId) {
-            mView.setWeibo(weibo);
+            mView.onWeiboUpdate(weibo);
         }
     }
 

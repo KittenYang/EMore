@@ -224,14 +224,19 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     @Override
     public void setWeibo(Weibo weibo) {
         mAttachContainer.setVisibility(View.VISIBLE);
-        actionStar.setSelected(weibo.isAttitudes());
         weiboItemView.setWeibo(weibo);
-        mWeibo = weibo;
-        mTabTitles.clear();
 
-        mTabTitles.add(getString(R.string.comment) + " " + mWeibo.getComments_count());
-        mTabTitles.add(getString(R.string.repost) + " " + mWeibo.getReposts_count());
-        mTabTitles.add(getString(R.string.attitude) + " " + mWeibo.getAttitudes_count());
+        mWeibo = weibo;
+
+        setTabText(weibo);
+        setAttitudeStatus(weibo);
+    }
+
+    private void setTabText(Weibo weibo) {
+        mTabTitles.clear();
+        mTabTitles.add(getString(R.string.comment) + " " + weibo.getComments_count());
+        mTabTitles.add(getString(R.string.repost) + " " + weibo.getReposts_count());
+        mTabTitles.add(getString(R.string.attitude) + " " + weibo.getAttitudes_count());
         for (int i = 0; i < mTabTitles.size(); i ++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             if (tab != null) {
@@ -240,9 +245,21 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
         }
     }
 
+    private void setAttitudeStatus(Weibo weibo) {
+        actionStar.setSelected(weibo.isAttitudes());
+    }
+
     @Override
     public void onRefreshComplete() {
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onWeiboUpdate(Weibo weibo) {
+        mWeibo = weibo;
+
+        setTabText(weibo);
+        setAttitudeStatus(weibo);
     }
 
     @Override

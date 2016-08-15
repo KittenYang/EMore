@@ -43,7 +43,7 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
         public final static Property Mlevel = new Property(17, Integer.class, "mlevel", false, "MLEVEL");
         public final static Property Update_time = new Property(18, Long.class, "update_time", false, "UPDATE_TIME");
         public final static Property Create_at_long = new Property(19, Long.class, "create_at_long", false, "CREATE_AT_LONG");
-        public final static Property IsLongText = new Property(20, Long.class, "isLongText", false, "IS_LONG_TEXT");
+        public final static Property IsLongText = new Property(20, Boolean.class, "isLongText", false, "IS_LONG_TEXT");
         public final static Property Geo_id = new Property(21, String.class, "geo_id", false, "GEO_ID");
         public final static Property User_id = new Property(22, Long.class, "user_id", false, "USER_ID");
         public final static Property Visible_id = new Property(23, String.class, "visible_id", false, "VISIBLE_ID");
@@ -201,9 +201,9 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
             stmt.bindLong(20, create_at_long);
         }
  
-        Long isLongText = entity.getIsLongText();
+        Boolean isLongText = entity.getIsLongText();
         if (isLongText != null) {
-            stmt.bindLong(21, isLongText);
+            stmt.bindLong(21, isLongText ? 1L: 0L);
         }
  
         String geo_id = entity.getGeo_id();
@@ -257,7 +257,7 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
             cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17), // mlevel
             cursor.isNull(offset + 18) ? null : cursor.getLong(offset + 18), // update_time
             cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19), // create_at_long
-            cursor.isNull(offset + 20) ? null : cursor.getLong(offset + 20), // isLongText
+            cursor.isNull(offset + 20) ? null : cursor.getShort(offset + 20) != 0, // isLongText
             cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21), // geo_id
             cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22), // user_id
             cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23), // visible_id
@@ -289,7 +289,7 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
         entity.setMlevel(cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17));
         entity.setUpdate_time(cursor.isNull(offset + 18) ? null : cursor.getLong(offset + 18));
         entity.setCreate_at_long(cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19));
-        entity.setIsLongText(cursor.isNull(offset + 20) ? null : cursor.getLong(offset + 20));
+        entity.setIsLongText(cursor.isNull(offset + 20) ? null : cursor.getShort(offset + 20) != 0);
         entity.setGeo_id(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
         entity.setUser_id(cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22));
         entity.setVisible_id(cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23));

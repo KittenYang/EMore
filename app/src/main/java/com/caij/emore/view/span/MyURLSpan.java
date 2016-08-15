@@ -23,6 +23,7 @@ import com.caij.emore.ui.activity.ImagePrewActivity;
 import com.caij.emore.ui.activity.VideoViewPlayingActivity;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.utils.EmotionsUtil;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.SystemUtil;
 
@@ -97,7 +98,11 @@ public class MyURLSpan extends URLSpan implements ParcelableSpan {
         }else {
             //这里有两种情况 一种是网页 一种是全文
             if (getURL().startsWith(SpannableStringUtil.FULL_TEXT_SCHEME)) {
-                toWebActivity(context, getURL().replace(SpannableStringUtil.FULL_TEXT_SCHEME, "http://m.weibo.cn"));
+                LogUtil.d(this, "全文 ： %s", getURL());
+                Uri uri = Uri.parse(getURL());
+                String weiboId = uri.getLastPathSegment();
+                Intent intent = WeiboDetialActivity.newIntent(context, Long.parseLong(weiboId));
+                context.startActivity(intent);
             }else {
                 toWebActivity(context, getURL());
             }

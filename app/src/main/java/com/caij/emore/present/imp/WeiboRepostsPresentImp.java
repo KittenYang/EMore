@@ -254,7 +254,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
 
 
     protected void doSpanNext(Weibo weibo) {
-        List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, null);
+        List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, false, null);
         Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
                 mLocalUrlSource, mToken);
         SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);

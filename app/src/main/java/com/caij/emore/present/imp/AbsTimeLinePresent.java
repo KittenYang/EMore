@@ -77,9 +77,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         mWeiboUpdateObservable.doOnNext(new Action1<Weibo>() {
                 @Override
                 public void call(Weibo weibo) {
-                    toGetImageSize(weibo);
                     weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                    doSpanNext(weibo);
                 }
             })
             .compose(new SchedulerTransformer<Weibo>())
@@ -352,11 +350,15 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
     }
 
     protected void doSpanNext(Weibo weibo) {
-        List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, null);
-        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
-                mLocalUrlSource, mAccount.getWeiyoToken().getAccess_token());
-        SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
+        doSpanNext(weibo, false);
     }
 
+
+    protected void doSpanNext(Weibo weibo, boolean isLongText) {
+        List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, isLongText, null);
+        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
+                mLocalUrlSource, mAccount.getWeiyoToken().getAccess_token());
+        SpannableStringUtil.paraeSpannable(weibo, isLongText, shortLongLinkMap);
+    }
 
 }

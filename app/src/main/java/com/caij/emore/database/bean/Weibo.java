@@ -37,7 +37,7 @@ public class Weibo extends Response implements Serializable {
     private Integer mlevel;
     private Long update_time = System.currentTimeMillis();
     private Long create_at_long;
-    private Long isLongText;
+    private Boolean isLongText;
     private String geo_id;
     private Long user_id;
     private String visible_id;
@@ -53,7 +53,7 @@ public class Weibo extends Response implements Serializable {
         this.id = id;
     }
 
-    public Weibo(String created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, Long create_at_long, Long isLongText, String geo_id, Long user_id, String visible_id, Long retweeted_status_id) {
+    public Weibo(String created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, Long create_at_long, Boolean isLongText, String geo_id, Long user_id, String visible_id, Long retweeted_status_id) {
         this.created_at = created_at;
         this.id = id;
         this.mid = mid;
@@ -241,11 +241,11 @@ public class Weibo extends Response implements Serializable {
         this.create_at_long = create_at_long;
     }
 
-    public Long getIsLongText() {
+    public Boolean getIsLongText() {
         return isLongText;
     }
 
-    public void setIsLongText(Long isLongText) {
+    public void setIsLongText(Boolean isLongText) {
         this.isLongText = isLongText;
     }
 

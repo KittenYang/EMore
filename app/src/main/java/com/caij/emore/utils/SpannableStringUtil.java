@@ -18,6 +18,7 @@ import com.caij.emore.AppApplication;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.ShortUrlInfo;
+import com.caij.emore.database.bean.LongText;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
@@ -42,7 +43,10 @@ public class SpannableStringUtil {
     public static int color = AppApplication.getInstance().getResources().getColor(R.color.link_text_color);
     public static int pressColor = AppApplication.getInstance().getResources().getColor(R.color.link_text_press_color);
 
-    static Pattern sHttpPattern = Pattern.compile("(http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]");
+
+    static String httpRegular = "(http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]";
+    static String fullTextRegularHead = "全文： ";
+    static Pattern sHttpPattern = Pattern.compile(httpRegular);
 
     public static void praseName(Spannable spannableString) {
         // 用户名称
@@ -171,7 +175,7 @@ public class SpannableStringUtil {
 
     private static String  parseFullText(String text) {
 //        "...全文： http://m.weibo.cn/1815070622/3998176861989899"
-        Matcher matcher = Pattern.compile("全文： (http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]").matcher(text);
+        Matcher matcher = Pattern.compile(fullTextRegularHead + "(http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]").matcher(text);
         String str = text;
         while (matcher.find()) {
             String url  = matcher.group();
@@ -181,8 +185,9 @@ public class SpannableStringUtil {
     }
 
     private static CharSequence createFullTextString(String url) {
-        String path = Uri.parse(url).getPath();
-        return " <a href=\"" + SpannableStringUtil.FULL_TEXT_SCHEME + path +"\">全文</a>";
+        String path = url.replace(fullTextRegularHead, "").
+                replace("http://", FULL_TEXT_SCHEME).replace("https://", FULL_TEXT_SCHEME);
+        return " <a href=\"" + path + "\">全文</a>";
     }
 
     public static void praseDefaultEmotions(Spannable spannableString) {
@@ -236,31 +241,6 @@ public class SpannableStringUtil {
 
     /**---------------------------------------------------------------------------------------------------*/
 
-    public static void paraeSpannable(Weibo weibo, Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap) {
-        SpannableStringBuilder contentSpannableString = praseHttpUrlText(weibo.getText() + " ", shortLongLinkMap);
-        SpannableStringUtil.praseName(contentSpannableString);
-        SpannableStringUtil.praseTopic(contentSpannableString);
-        SpannableStringUtil.praseDefaultEmotions(contentSpannableString);
-        SpannableStringUtil.praseSoftEmotions(contentSpannableString);
-        weibo.setContentSpannableString(contentSpannableString);
-
-        Weibo reWeibo = weibo.getRetweeted_status();
-        if (reWeibo != null) {
-            String reUserName = "";
-            User reUser = reWeibo.getUser();
-            if (reUser != null && !TextUtils.isEmpty(reUser.getScreen_name())) {
-                reUserName = String.format("@%s :", reUser.getScreen_name());
-            }
-            SpannableStringBuilder reContentSpannableString = praseHttpUrlText(reUserName + reWeibo.getText() + " ", shortLongLinkMap);
-            SpannableStringUtil.praseName(reContentSpannableString);
-            SpannableStringUtil.praseTopic(reContentSpannableString);
-            SpannableStringUtil.praseDefaultEmotions(reContentSpannableString);
-            SpannableStringUtil.praseSoftEmotions(contentSpannableString);
-
-            reWeibo.setContentSpannableString(reContentSpannableString);
-        }
-    }
-
     public static void paraeSpannable(Comment comment) {
         SpannableStringBuilder contentSpannableString = praseHttpUrlText(comment.getText() + " ", null);
         SpannableStringUtil.praseName(contentSpannableString);
@@ -289,17 +269,61 @@ public class SpannableStringUtil {
     public static List<String> getWeiboTextHttpUrl(List<Weibo> weibos) {
         List<String> shortUrls = new ArrayList<>();
         for (Weibo weibo : weibos) {
-            getWeiboTextHttpUrl(weibo, shortUrls);
+            getWeiboTextHttpUrl(weibo, false, shortUrls);
         }
         return shortUrls;
     }
 
-    public static List<String> getWeiboTextHttpUrl(Weibo weibo, List<String> shortUrls) {
-        List<String> list = getTextUrl(weibo.getText(), shortUrls);
+    public static List<String> getWeiboTextHttpUrl(Weibo weibo, boolean isLongText, List<String> shortUrls) {
+        String text;
+        LongText longText = weibo.getLongText();
+        if (isLongText && longText != null && !TextUtils.isEmpty(longText.getLongTextContent())) {
+            text = longText.getLongTextContent();
+        }else {
+            text = weibo.getText();
+        }
+        List<String> list = getTextUrl(text, shortUrls);
         if (weibo.getRetweeted_status() != null) {
-            getWeiboTextHttpUrl(weibo.getRetweeted_status(), list);
+            getWeiboTextHttpUrl(weibo.getRetweeted_status(), isLongText, list);
         }
         return list;
     }
 
+
+    public static void paraeSpannable(Weibo weibo, Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap) {
+        paraeSpannable(weibo, false, shortLongLinkMap);
+    }
+
+
+    public static void paraeSpannable(Weibo weibo, boolean isLongText, Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap) {
+        String text;
+        if (isLongText && weibo.getIsLongText() && weibo.getLongText() != null
+                && !TextUtils.isEmpty(weibo.getLongText().getLongTextContent())) {
+            text = weibo.getLongText().getLongTextContent();
+        }else {
+            text = weibo.getText();
+        }
+        SpannableStringBuilder contentSpannableString = praseHttpUrlText(text + " ", shortLongLinkMap);
+        SpannableStringUtil.praseName(contentSpannableString);
+        SpannableStringUtil.praseTopic(contentSpannableString);
+        SpannableStringUtil.praseDefaultEmotions(contentSpannableString);
+        SpannableStringUtil.praseSoftEmotions(contentSpannableString);
+        weibo.setContentSpannableString(contentSpannableString);
+
+        Weibo reWeibo = weibo.getRetweeted_status();
+        if (reWeibo != null) {
+            String reUserName = "";
+            User reUser = reWeibo.getUser();
+            if (reUser != null && !TextUtils.isEmpty(reUser.getScreen_name())) {
+                reUserName = String.format("@%s :", reUser.getScreen_name());
+            }
+            SpannableStringBuilder reContentSpannableString = praseHttpUrlText(reUserName + reWeibo.getText() + " ", shortLongLinkMap);
+            SpannableStringUtil.praseName(reContentSpannableString);
+            SpannableStringUtil.praseTopic(reContentSpannableString);
+            SpannableStringUtil.praseDefaultEmotions(reContentSpannableString);
+            SpannableStringUtil.praseSoftEmotions(contentSpannableString);
+
+            reWeibo.setContentSpannableString(reContentSpannableString);
+        }
+    }
 }

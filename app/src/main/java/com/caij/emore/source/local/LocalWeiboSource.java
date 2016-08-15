@@ -17,6 +17,7 @@ import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Geo;
 import com.caij.emore.database.bean.LikeBean;
+import com.caij.emore.database.bean.LongText;
 import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.database.bean.User;
@@ -24,6 +25,7 @@ import com.caij.emore.database.bean.Visible;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.database.dao.GeoDao;
 import com.caij.emore.database.dao.LikeBeanDao;
+import com.caij.emore.database.dao.LongTextDao;
 import com.caij.emore.database.dao.PicUrlDao;
 import com.caij.emore.database.dao.UploadImageResponseDao;
 import com.caij.emore.database.dao.UserDao;
@@ -52,6 +54,7 @@ public class LocalWeiboSource implements WeiboSource {
     private final UserDao userDao;
     private final PicUrlDao picUrlDao;
     private final WeiboDao weiboDao;
+    private final LongTextDao longTextDao;
 
     public LocalWeiboSource() {
         geoDao = DBManager.getDaoSession().getGeoDao();
@@ -59,6 +62,7 @@ public class LocalWeiboSource implements WeiboSource {
         userDao = DBManager.getDaoSession().getUserDao();
         picUrlDao = DBManager.getDaoSession().getPicUrlDao();
         weiboDao = DBManager.getDaoSession().getWeiboDao();
+        longTextDao = DBManager.getDaoSession().getLongTextDao();
     }
 
     @Override
@@ -178,6 +182,13 @@ public class LocalWeiboSource implements WeiboSource {
             }
         }
 
+        LongText longText =  weibo.getLongText();
+        if (weibo.getIsLongText() != null && weibo.getIsLongText() && longText != null
+                && !TextUtils.isEmpty(longText.getLongTextContent())) {
+            longText.setWeiboId(weibo.getId());
+            longTextDao.insertOrReplace(weibo.getLongText());
+        }
+
         if (weibo.getRetweeted_status() != null) {
             weibo.setRetweeted_status_id(weibo.getRetweeted_status().getId());
             insertWeibo(weibo.getRetweeted_status());
@@ -200,6 +211,11 @@ public class LocalWeiboSource implements WeiboSource {
 
             List<PicUrl> picUrls = picUrlDao.queryBuilder().where(PicUrlDao.Properties.Weibo_id.eq(weibo.getId())).list();
             weibo.setPic_urls(picUrls);
+
+            if (weibo.getIsLongText() != null && weibo.getIsLongText()) {
+                LongText longText = longTextDao.load(weibo.getId());
+                weibo.setLongText(longText);
+            }
 
             if (weibo.getRetweeted_status_id() != null && weibo.getRetweeted_status_id() > 0) {
                 Weibo repostWeibo = weiboDao.load(weibo.getRetweeted_status_id());

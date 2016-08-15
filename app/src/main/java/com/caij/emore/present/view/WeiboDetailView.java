@@ -10,4 +10,6 @@ public interface WeiboDetailView extends WeiboActionView {
     void setWeibo(Weibo weibo);
 
     void onRefreshComplete();
+
+    void onWeiboUpdate(Weibo weibo);
 }

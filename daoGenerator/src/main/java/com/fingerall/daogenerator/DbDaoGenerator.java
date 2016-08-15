@@ -91,7 +91,7 @@ public class DbDaoGenerator {
         entity.addIntProperty("mlevel");
         entity.addLongProperty("update_time");
         entity.addLongProperty("create_at_long");
-        entity.addLongProperty("isLongText");
+        entity.addBooleanProperty("isLongText");
 
         entity.addStringProperty("geo_id");
         entity.addLongProperty("user_id");
