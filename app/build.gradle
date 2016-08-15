@@ -19,12 +19,6 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0-alpha"
-
-        ndk {
-            // 设置支持的SO库架构
-            abiFilters ("armeabi", "x86")
-        }
-
     }
 
     sourceSets.main {
@@ -62,6 +56,17 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        // CodeHub_v1.0_2015-01-15_wandoujia.apk
+                        def fileName = "emore_v${defaultConfig.versionName}.apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
         }
     }
 
