@@ -8,7 +8,7 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Draft;
-import com.caij.emore.database.bean.LocakImage;
+import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.PublishWeiboManagerPresent;
@@ -204,7 +204,7 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
                         mLocalWeiboSource.saveWeibo(mAccount.getWeiyoToken().getAccess_token(), weibo);
 
                         try {
-                            LocakImage locakImage = new LocakImage();
+                            ImageInfo locakImage = new ImageInfo();
                             locakImage.setUrl(weibo.getPic_urls().get(0).getThumbnail_pic());
                             BitmapFactory.Options options = ImageUtil.getImageOptions(new File(publishBean.getPics().get(0)));
                             locakImage.setHeight(options.outHeight);

@@ -1,6 +1,6 @@
 package com.caij.emore.source;
 
-import com.caij.emore.database.bean.LocakImage;
+import com.caij.emore.database.bean.ImageInfo;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import java.io.IOException;
  */
 public interface ImageSouce {
 
-    LocakImage get(String url) throws IOException;
-    void save(LocakImage locakImage);
+    ImageInfo get(String url) throws IOException;
+    void save(ImageInfo locakImage);
 
 }

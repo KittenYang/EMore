@@ -302,7 +302,7 @@ public class DirectMessage implements Serializable {
     private User sender;
     private User recipient;
     private Geo geo;
-    private LocakImage locakImage;
+    private ImageInfo imageInfo;
     private transient Spannable textContentSpannable;
 
     public List<Long> getAtt_ids() {
@@ -337,12 +337,12 @@ public class DirectMessage implements Serializable {
         this.geo = geo;
     }
 
-    public LocakImage getLocakImage() {
-        return locakImage;
+    public ImageInfo getImageInfo() {
+        return imageInfo;
     }
 
-    public void setLocakImage(LocakImage locakImage) {
-        this.locakImage = locakImage;
+    public void setImageInfo(ImageInfo imageInfo) {
+        this.imageInfo = imageInfo;
     }
 
     public Spannable getTextContentSpannable() {

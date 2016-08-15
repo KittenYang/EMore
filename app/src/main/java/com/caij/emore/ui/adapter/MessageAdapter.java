@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.database.bean.DirectMessage;
-import com.caij.emore.database.bean.LocakImage;
+import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.utils.ImageLoader;
@@ -124,7 +124,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
             ImageLoader.loadUrl(mContext, viewHolder.ivAvatar, message.getSender().getAvatar_large(),
                     R.drawable.circle_image_placeholder, mAvatarImageConfig);
 
-            LocakImage locakImage = message.getLocakImage();
+            ImageInfo locakImage = message.getImageInfo();
             ViewGroup.LayoutParams layoutParams = viewHolder.ivImage.getLayoutParams();
             calculateImageViewWidthAndHeight(locakImage, layoutParams);
             viewHolder.ivImage.setLayoutParams(layoutParams);
@@ -165,7 +165,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
             ImageLoader.loadUrl(mContext, viewHolder.ivAvatar, message.getSender().getAvatar_large(),
                     R.drawable.circle_image_placeholder, mAvatarImageConfig);
 
-            LocakImage locakImage = message.getLocakImage();
+            ImageInfo locakImage = message.getImageInfo();
             ViewGroup.LayoutParams layoutParams = viewHolder.ivImage.getLayoutParams();
             calculateImageViewWidthAndHeight(locakImage, layoutParams);
             viewHolder.ivImage.setLayoutParams(layoutParams);
@@ -192,7 +192,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         }
     }
 
-    private void calculateImageViewWidthAndHeight(LocakImage locakImage, ViewGroup.LayoutParams layoutParams) {
+    private void calculateImageViewWidthAndHeight(ImageInfo locakImage, ViewGroup.LayoutParams layoutParams) {
         int width = locakImage.getWidth();
         int height = locakImage.getHeight();
         if (width > height) {
@@ -227,13 +227,13 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
     public int getItemViewType(int position) {
         DirectMessage directMessage = getItem(position);
         if (directMessage.getSender_id() == Long.parseLong(UserPrefs.get().getEMoreToken().getUid())) {
-            if (directMessage.getAtt_ids() != null && directMessage.getAtt_ids().size() > 0 && directMessage.getLocakImage() != null) {
+            if (directMessage.getAtt_ids() != null && directMessage.getAtt_ids().size() > 0 && directMessage.getImageInfo() != null) {
                 return TYPE_SELT_IMAGE;
             }else {
                 return TYPE_SELT_TEXT;
             }
         } else {
-            if (directMessage.getAtt_ids() != null && directMessage.getAtt_ids().size() > 0 && directMessage.getLocakImage() != null) {
+            if (directMessage.getAtt_ids() != null && directMessage.getAtt_ids().size() > 0 && directMessage.getImageInfo() != null) {
                 return TYPE_OTHER_IMAGE;
             }else {
                 return TYPE_OTHER_TEXT;

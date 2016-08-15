@@ -1,7 +1,5 @@
 package com.caij.emore.present.imp;
 
-import android.text.TextUtils;
-
 import com.caij.emore.AppApplication;
 import com.caij.emore.Event;
 import com.caij.emore.Key;
@@ -65,7 +63,7 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
             final Map<String, Object> params = new HashMap<>();
             params.put("source", Key.WEICO_APP_ID);
             params.put("from", Key.WEICO_APP_FROM);
-            final File file = new File(URI.create(bean.message.getLocakImage().getUrl()));
+            final File file = new File(URI.create(bean.message.getImageInfo().getUrl()));
             sendMessageObservable = Observable.create(new Observable.OnSubscribe<String>() {
                 @Override
                 public void call(Subscriber<? super String> subscriber) {

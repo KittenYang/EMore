@@ -1,6 +1,6 @@
 package com.caij.emore.source.local;
 
-import com.caij.emore.database.bean.LocakImage;
+import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.source.ImageSouce;
 import com.caij.emore.utils.db.DBManager;
 
@@ -10,12 +10,12 @@ import com.caij.emore.utils.db.DBManager;
 public class LocalImageSource implements ImageSouce{
 
     @Override
-    public LocakImage get(String url) {
-        return DBManager.getDaoSession().getLocakImageDao().load(url);
+    public ImageInfo get(String url) {
+        return DBManager.getDaoSession().getImageInfoDao().load(url);
     }
 
     @Override
-    public void save(LocakImage image) {
-        DBManager.getDaoSession().getLocakImageDao().insertOrReplace(image);
+    public void save(ImageInfo image) {
+        DBManager.getDaoSession().getImageInfoDao().insertOrReplace(image);
     }
 }

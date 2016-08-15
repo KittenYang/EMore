@@ -5,7 +5,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class DbDaoGenerator {
 
-    private static final int VERSION = 3;
+    private static final int VERSION = 1;
 
     public static void main(String[] args) throws Exception {
         Schema sch = new Schema(VERSION, "com.caij.emore.database.bean");
@@ -25,6 +25,7 @@ public class DbDaoGenerator {
         createUploadImageResponse(sch);
         createDraft(sch);
         createUnReadMessage(sch);
+        createLongText(sch);
         new de.greenrobot.daogenerator.DaoGenerator().generateAll(sch, "./app/src/main/java");
     }
 
@@ -90,6 +91,7 @@ public class DbDaoGenerator {
         entity.addIntProperty("mlevel");
         entity.addLongProperty("update_time");
         entity.addLongProperty("create_at_long");
+        entity.addLongProperty("isLongText");
 
         entity.addStringProperty("geo_id");
         entity.addLongProperty("user_id");
@@ -127,7 +129,7 @@ public class DbDaoGenerator {
     }
 
     static void createImage(Schema sch) {
-        Entity image = sch.addEntity("LocakImage");
+        Entity image = sch.addEntity("ImageInfo");
         image.addStringProperty("url").primaryKey();
         image.addIntProperty("width");
         image.addIntProperty("height");
@@ -239,6 +241,12 @@ public class DbDaoGenerator {
         entity.addIntProperty("status");
         entity.addIntProperty("follower");
         entity.addIntProperty("dm_single");
+    }
+
+    static void createLongText(Schema sch) {
+        Entity entity = sch.addEntity("LongText");
+        entity.addLongProperty("weiboId").primaryKey();
+        entity.addStringProperty("longTextContent");
     }
 
 }

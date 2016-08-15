@@ -351,7 +351,7 @@ public class ChatFragment extends BaseFragment implements
         int type = mMessageAdapter.getItemViewType(position - 1);
         if (type == MessageAdapter.TYPE_OTHER_IMAGE || type == MessageAdapter.TYPE_SELT_IMAGE) {
             ArrayList<String> images = new ArrayList<>(1);
-            images.add(appImageUrl(directMessage.getLocakImage().getUrl()));
+            images.add(appImageUrl(directMessage.getImageInfo().getUrl()));
             Intent intent = ImagePrewActivity.newIntent(getActivity(), images, 0);
             startActivity(intent);
         }

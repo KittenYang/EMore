@@ -5,21 +5,11 @@ package com.caij.emore.database.bean;
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
 
-import android.net.Uri;
-import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextUtils;
 
 import com.caij.emore.bean.response.Response;
-import com.caij.emore.utils.GsonUtils;
-import com.caij.emore.utils.LogUtil;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,6 +37,7 @@ public class Weibo extends Response implements Serializable {
     private Integer mlevel;
     private Long update_time = System.currentTimeMillis();
     private Long create_at_long;
+    private Long isLongText;
     private String geo_id;
     private Long user_id;
     private String visible_id;
@@ -62,7 +53,7 @@ public class Weibo extends Response implements Serializable {
         this.id = id;
     }
 
-    public Weibo(String created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, Long create_at_long, String geo_id, Long user_id, String visible_id, Long retweeted_status_id) {
+    public Weibo(String created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, Long create_at_long, Long isLongText, String geo_id, Long user_id, String visible_id, Long retweeted_status_id) {
         this.created_at = created_at;
         this.id = id;
         this.mid = mid;
@@ -83,6 +74,7 @@ public class Weibo extends Response implements Serializable {
         this.mlevel = mlevel;
         this.update_time = update_time;
         this.create_at_long = create_at_long;
+        this.isLongText = isLongText;
         this.geo_id = geo_id;
         this.user_id = user_id;
         this.visible_id = visible_id;
@@ -249,6 +241,14 @@ public class Weibo extends Response implements Serializable {
         this.create_at_long = create_at_long;
     }
 
+    public Long getIsLongText() {
+        return isLongText;
+    }
+
+    public void setIsLongText(Long isLongText) {
+        this.isLongText = isLongText;
+    }
+
     public String getGeo_id() {
         return geo_id;
     }
@@ -363,16 +363,5 @@ public class Weibo extends Response implements Serializable {
         return weibo.id.equals(id);
     }
 
-    public static class LongText implements Serializable {
-        private String longTextContent;
-
-        public String getLongTextContent() {
-            return longTextContent;
-        }
-
-        public void setLongTextContent(String longTextContent) {
-            this.longTextContent = longTextContent;
-        }
-    }
 
 }

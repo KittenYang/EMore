@@ -10,7 +10,7 @@ import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.Response;
-import com.caij.emore.database.bean.LocakImage;
+import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboActionPresent;
@@ -208,7 +208,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         if (realWeibo.getPic_urls() != null && realWeibo.getPic_urls().size() == 1) {
             PicUrl picUrl = realWeibo.getPic_urls().get(0);
             try {
-                LocakImage image = mLocalImageSouce.get(picUrl.getThumbnail_pic());
+                ImageInfo image = mLocalImageSouce.get(picUrl.getThumbnail_pic());
                 if (image == null) {
                     image = mServerImageSouce.get(picUrl.getThumbnail_pic());
                     mLocalImageSouce.save(image);

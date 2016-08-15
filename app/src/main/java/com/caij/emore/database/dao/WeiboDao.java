@@ -43,10 +43,11 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
         public final static Property Mlevel = new Property(17, Integer.class, "mlevel", false, "MLEVEL");
         public final static Property Update_time = new Property(18, Long.class, "update_time", false, "UPDATE_TIME");
         public final static Property Create_at_long = new Property(19, Long.class, "create_at_long", false, "CREATE_AT_LONG");
-        public final static Property Geo_id = new Property(20, String.class, "geo_id", false, "GEO_ID");
-        public final static Property User_id = new Property(21, Long.class, "user_id", false, "USER_ID");
-        public final static Property Visible_id = new Property(22, String.class, "visible_id", false, "VISIBLE_ID");
-        public final static Property Retweeted_status_id = new Property(23, Long.class, "retweeted_status_id", false, "RETWEETED_STATUS_ID");
+        public final static Property IsLongText = new Property(20, Long.class, "isLongText", false, "IS_LONG_TEXT");
+        public final static Property Geo_id = new Property(21, String.class, "geo_id", false, "GEO_ID");
+        public final static Property User_id = new Property(22, Long.class, "user_id", false, "USER_ID");
+        public final static Property Visible_id = new Property(23, String.class, "visible_id", false, "VISIBLE_ID");
+        public final static Property Retweeted_status_id = new Property(24, Long.class, "retweeted_status_id", false, "RETWEETED_STATUS_ID");
     };
 
 
@@ -82,10 +83,11 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
                 "\"MLEVEL\" INTEGER," + // 17: mlevel
                 "\"UPDATE_TIME\" INTEGER," + // 18: update_time
                 "\"CREATE_AT_LONG\" INTEGER," + // 19: create_at_long
-                "\"GEO_ID\" TEXT," + // 20: geo_id
-                "\"USER_ID\" INTEGER," + // 21: user_id
-                "\"VISIBLE_ID\" TEXT," + // 22: visible_id
-                "\"RETWEETED_STATUS_ID\" INTEGER);"); // 23: retweeted_status_id
+                "\"IS_LONG_TEXT\" INTEGER," + // 20: isLongText
+                "\"GEO_ID\" TEXT," + // 21: geo_id
+                "\"USER_ID\" INTEGER," + // 22: user_id
+                "\"VISIBLE_ID\" TEXT," + // 23: visible_id
+                "\"RETWEETED_STATUS_ID\" INTEGER);"); // 24: retweeted_status_id
     }
 
     /** Drops the underlying database table. */
@@ -199,24 +201,29 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
             stmt.bindLong(20, create_at_long);
         }
  
+        Long isLongText = entity.getIsLongText();
+        if (isLongText != null) {
+            stmt.bindLong(21, isLongText);
+        }
+ 
         String geo_id = entity.getGeo_id();
         if (geo_id != null) {
-            stmt.bindString(21, geo_id);
+            stmt.bindString(22, geo_id);
         }
  
         Long user_id = entity.getUser_id();
         if (user_id != null) {
-            stmt.bindLong(22, user_id);
+            stmt.bindLong(23, user_id);
         }
  
         String visible_id = entity.getVisible_id();
         if (visible_id != null) {
-            stmt.bindString(23, visible_id);
+            stmt.bindString(24, visible_id);
         }
  
         Long retweeted_status_id = entity.getRetweeted_status_id();
         if (retweeted_status_id != null) {
-            stmt.bindLong(24, retweeted_status_id);
+            stmt.bindLong(25, retweeted_status_id);
         }
     }
 
@@ -250,10 +257,11 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
             cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17), // mlevel
             cursor.isNull(offset + 18) ? null : cursor.getLong(offset + 18), // update_time
             cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19), // create_at_long
-            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20), // geo_id
-            cursor.isNull(offset + 21) ? null : cursor.getLong(offset + 21), // user_id
-            cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22), // visible_id
-            cursor.isNull(offset + 23) ? null : cursor.getLong(offset + 23) // retweeted_status_id
+            cursor.isNull(offset + 20) ? null : cursor.getLong(offset + 20), // isLongText
+            cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21), // geo_id
+            cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22), // user_id
+            cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23), // visible_id
+            cursor.isNull(offset + 24) ? null : cursor.getLong(offset + 24) // retweeted_status_id
         );
         return entity;
     }
@@ -281,10 +289,11 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
         entity.setMlevel(cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17));
         entity.setUpdate_time(cursor.isNull(offset + 18) ? null : cursor.getLong(offset + 18));
         entity.setCreate_at_long(cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19));
-        entity.setGeo_id(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
-        entity.setUser_id(cursor.isNull(offset + 21) ? null : cursor.getLong(offset + 21));
-        entity.setVisible_id(cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22));
-        entity.setRetweeted_status_id(cursor.isNull(offset + 23) ? null : cursor.getLong(offset + 23));
+        entity.setIsLongText(cursor.isNull(offset + 20) ? null : cursor.getLong(offset + 20));
+        entity.setGeo_id(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
+        entity.setUser_id(cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22));
+        entity.setVisible_id(cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23));
+        entity.setRetweeted_status_id(cursor.isNull(offset + 24) ? null : cursor.getLong(offset + 24));
      }
     
     /** @inheritdoc */

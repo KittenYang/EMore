@@ -9,7 +9,7 @@ import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.event.MessageResponseEvent;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.database.bean.DirectMessage;
-import com.caij.emore.database.bean.LocakImage;
+import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.database.bean.MessageImage;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
@@ -386,12 +386,12 @@ public class ChatPresentImp implements ChatPresent {
                         return messageImage != null;
                     }
                 })
-                .flatMap(new Func1<MessageImage, Observable<LocakImage>>() {
+                .flatMap(new Func1<MessageImage, Observable<ImageInfo>>() {
                     @Override
-                    public Observable<LocakImage> call(MessageImage messageImage) {
+                    public Observable<ImageInfo> call(MessageImage messageImage) {
                         return Observable.just(praseLocakImage(messageImage));
                     }
-                }).subscribe(new Subscriber<LocakImage>() {
+                }).subscribe(new Subscriber<ImageInfo>() {
                     @Override
                     public void onCompleted() {
 
@@ -403,14 +403,14 @@ public class ChatPresentImp implements ChatPresent {
                     }
 
                     @Override
-                    public void onNext(LocakImage locakImage) {
-                        directMessage.setLocakImage(locakImage);
+                    public void onNext(ImageInfo locakImage) {
+                        directMessage.setImageInfo(locakImage);
                     }
                 });
     }
 
-    private LocakImage praseLocakImage(MessageImage messageImage) {
-        LocakImage locakImage =  new LocakImage();
+    private ImageInfo praseLocakImage(MessageImage messageImage) {
+        ImageInfo locakImage =  new ImageInfo();
         locakImage.setUrl(messageImage.getThumbnail_600());
         if (messageImage.getThumbnail_600().startsWith("http")) {
             String size  = Uri.parse(messageImage.getThumbnail_600()).getQueryParameter("size");
@@ -559,8 +559,8 @@ public class ChatPresentImp implements ChatPresent {
         fids.add(directMessage.getId());
         directMessage.setAtt_ids(fids);
         MessageImage messageImage = createMessageImage(directMessage.getId(), path);
-        LocakImage locakImage = praseLocakImage(messageImage);
-        directMessage.setLocakImage(locakImage);
+        ImageInfo imageInfo = praseLocakImage(messageImage);
+        directMessage.setImageInfo(imageInfo);
         return directMessage;
     }
 
