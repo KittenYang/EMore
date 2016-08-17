@@ -5,7 +5,7 @@ import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
-import com.caij.emore.present.view.WeiboAttitudesView;
+import com.caij.emore.ui.view.WeiboAttitudesView;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.LogUtil;
@@ -144,7 +144,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
                     @Override
                     public void onNext(List<Attitude> attitudes) {
                         mAttitudes.addAll(attitudes);
-                        mView.setEntities(mAttitudes);
+                        mView.notifyItemRangeInserted(mAttitudes, mAttitudes.size() - attitudes.size(), attitudes.size());
                         mView.onLoadComplete(attitudes.size() >= 15);
                         mPage ++;
                     }

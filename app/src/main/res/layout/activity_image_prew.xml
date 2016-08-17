@@ -3,12 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.caij.emore.view.HackyViewPager
+    <com.caij.emore.widget.HackyViewPager
         android:id="@+id/vp_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </com.caij.emore.view.HackyViewPager>
+    </com.caij.emore.widget.HackyViewPager>
 
     <TextView
         android:id="@+id/tv_image_count"

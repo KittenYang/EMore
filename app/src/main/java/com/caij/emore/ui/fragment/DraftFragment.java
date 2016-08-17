@@ -9,12 +9,12 @@ import com.caij.emore.R;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.DraftPresent;
 import com.caij.emore.present.imp.DraftPresentImp;
-import com.caij.emore.present.view.DraftListView;
+import com.caij.emore.ui.view.DraftListView;
 import com.caij.emore.source.local.LocalDraftSource;
 import com.caij.emore.ui.activity.publish.PublishWeiboActivity;
 import com.caij.emore.ui.adapter.DraftAdapter;
-import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.BaseViewHolder;
+import com.caij.emore.widget.recyclerview.BaseAdapter;
+import com.caij.emore.widget.recyclerview.BaseViewHolder;
 
 /**
  * Created by Caij on 2016/7/20.

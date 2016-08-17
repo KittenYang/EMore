@@ -7,16 +7,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.present.ListPresent;
-import com.caij.emore.present.view.BaseListView;
-import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.XRecyclerView;
-import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.ui.view.ListView;
+import com.caij.emore.widget.recyclerview.BaseAdapter;
+import com.caij.emore.widget.recyclerview.BaseViewHolder;
+import com.caij.emore.widget.recyclerview.XRecyclerView;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2015/9/23.
  */
-public abstract class RecyclerViewFragment<E, P extends ListPresent> extends LazyFragment implements XRecyclerView.OnLoadMoreListener, BaseListView<E>,RecyclerViewOnItemClickListener {
+public abstract class RecyclerViewFragment<E, P extends ListPresent> extends LazyFragment implements XRecyclerView.OnLoadMoreListener, ListView<E>,RecyclerViewOnItemClickListener {
 
     @BindView(R.id.xrecycler_view)
     protected XRecyclerView xRecyclerView;
@@ -134,8 +133,15 @@ public abstract class RecyclerViewFragment<E, P extends ListPresent> extends Laz
     }
 
     @Override
-    public void updatePositionDate(int index) {
+    public void notifyItemChanged(List<E> entities, int index) {
+        mRecyclerViewAdapter.setEntities(entities);
         mRecyclerViewAdapter.notifyItemChanged(index);
+    }
+
+    @Override
+    public void notifyItemRangeInserted(List<E> entities, int position, int count) {
+        mRecyclerViewAdapter.setEntities(entities);
+        mRecyclerViewAdapter.notifyItemRangeInserted(position, count);
     }
 
     protected void onReLoadBtnClick() {

@@ -2,27 +2,20 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.response.QueryWeiboResponse;
-import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboMentionPresent;
-import com.caij.emore.present.view.TimeLineWeiboView;
-import com.caij.emore.source.MessageSource;
+import com.caij.emore.ui.view.TimeLineWeiboView;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
-import com.caij.emore.utils.weibo.MessageUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Caij on 2016/7/4.
@@ -90,7 +83,7 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
-                        mView.setEntities(mWeibos);
+                        mView.notifyItemRangeInserted(mWeibos, mWeibos.size() - weibos.size(), weibos.size());
 
                         mView.onLoadComplete(weibos.size() > COUNT - 1);
 

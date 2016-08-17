@@ -2,7 +2,7 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.bean.VideoInfo;
 import com.caij.emore.present.VideoPlayPresent;
-import com.caij.emore.present.view.VideoPlayView;
+import com.caij.emore.ui.view.VideoPlayView;
 import com.caij.emore.source.VideoSource;
 
 import rx.Subscriber;

@@ -18,13 +18,12 @@ import com.caij.emore.bean.Emotion;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.RepostWeiboPresent;
 import com.caij.emore.present.imp.RepostWeiboPresentImp;
-import com.caij.emore.present.view.RepostWeiboView;
+import com.caij.emore.ui.view.RepostWeiboView;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.ToastUtil;
-import com.caij.emore.view.emotion.EmotionEditText;
-import com.caij.emore.view.emotion.EmotionTextView;
+import com.caij.emore.widget.emotion.EmotionEditText;
 
 import java.util.ArrayList;
 

@@ -9,7 +9,7 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.imp.LoginPresentImp;
-import com.caij.emore.present.view.LoginView;
+import com.caij.emore.ui.view.LoginView;
 import com.caij.emore.source.server.LoginSourceImp;
 
 /**

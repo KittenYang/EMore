@@ -1,7 +1,6 @@
 package com.caij.emore.ui.fragment.mention;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
@@ -14,8 +13,8 @@ import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.fragment.weibo.TimeLineWeiboFragment;
-import com.caij.emore.view.recyclerview.XRecyclerView;
-import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.recyclerview.XRecyclerView;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 /**
  * Created by Caij on 2016/6/4.

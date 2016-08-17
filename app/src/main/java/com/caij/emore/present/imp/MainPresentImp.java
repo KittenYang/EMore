@@ -5,7 +5,7 @@ import com.caij.emore.database.bean.Draft;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.MainPresent;
-import com.caij.emore.present.view.MainView;
+import com.caij.emore.ui.view.MainView;
 import com.caij.emore.source.DraftSource;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.UserSource;

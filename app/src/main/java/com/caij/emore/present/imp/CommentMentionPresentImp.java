@@ -4,7 +4,7 @@ import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.RefreshListPresent;
-import com.caij.emore.present.view.RefreshListView;
+import com.caij.emore.ui.view.RefreshListView;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
@@ -16,11 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -116,7 +113,8 @@ public class CommentMentionPresentImp implements RefreshListPresent {
                     @Override
                     public void onNext(List<Comment> comments) {
                         mComments.addAll(comments);
-                        mMentionView.setEntities(mComments);
+                        mMentionView.notifyItemRangeInserted(mComments, mComments.size() - comments.size(),
+                                comments.size());
 
                         mMentionView.onLoadComplete(comments.size() > COUNT - 1);
                     }

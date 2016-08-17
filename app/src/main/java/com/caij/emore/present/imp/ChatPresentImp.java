@@ -14,7 +14,7 @@ import com.caij.emore.database.bean.MessageImage;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.ChatPresent;
-import com.caij.emore.present.view.DirectMessageView;
+import com.caij.emore.ui.view.DirectMessageView;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.source.local.LocalImageSource;
@@ -50,6 +50,8 @@ public class ChatPresentImp implements ChatPresent {
 
     private static final int PAGE_COUNT = 20;
     private static final long MESSAGE_INTERVAL_TIME = 10 * 1000;
+
+    private static final int MAX_NEW_MESSAGE_PAGE_COUNT = 40;
 
     private CompositeSubscription mCompositeSubscription;
     private AccessToken mToken;
@@ -135,7 +137,7 @@ public class ChatPresentImp implements ChatPresent {
                         mDirectMessages.addAll(0, directMessages);
 
                         if (directMessages.size() > 0) {
-                            mDirectMessageView.addMore(mDirectMessages, directMessages.size());
+                            mDirectMessageView.notifyItemRangeInserted(mDirectMessages, 0, directMessages.size());
                         }
 
                         if (directMessages.size() >= PAGE_COUNT - 1) {
@@ -182,8 +184,7 @@ public class ChatPresentImp implements ChatPresent {
                         Collections.reverse(directMessages);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new SchedulerTransformer<List<DirectMessage>>())
                 .subscribe(new Subscriber<List<DirectMessage>>() {
                     @Override
                     public void onCompleted() {
@@ -231,14 +232,17 @@ public class ChatPresentImp implements ChatPresent {
                         return messageResponseEvent;
                     }
                 })
-                .doOnNext(new Action1<MessageResponseEvent>() {
+                .compose(new SchedulerTransformer<MessageResponseEvent>())
+                .subscribe(new Action1<MessageResponseEvent>() {
                     @Override
                     public void call(MessageResponseEvent messageResponseEvent) {
+                        int updatePosition = -1;
                         if (messageResponseEvent.message == null) {
                             for (int i = mDirectMessages.size() - 1; i >= 0; i --) {
                                 DirectMessage directMessage = mDirectMessages.get(i);
                                 if (directMessage.getId() == messageResponseEvent.localMessageId) {
                                     directMessage.setLocal_status(DirectMessage.STATUS_FAIL);
+                                    updatePosition = i;
                                     break;
                                 }
                             }
@@ -248,17 +252,14 @@ public class ChatPresentImp implements ChatPresent {
                                 if (directMessage.getId() == messageResponseEvent.localMessageId) {
                                     mDirectMessages.remove(directMessage);
                                     mDirectMessages.add(i, messageResponseEvent.message);
+                                    updatePosition = i;
                                     break;
                                 }
                             }
                         }
-                    }
-                })
-                .compose(new SchedulerTransformer<MessageResponseEvent>())
-                .subscribe(new Action1<MessageResponseEvent>() {
-                    @Override
-                    public void call(MessageResponseEvent messageResponseEvent) {
-                        mDirectMessageView.notifyDataChange();
+                        if (updatePosition > 0) {
+                            mDirectMessageView.notifyItemChanged(mDirectMessages, updatePosition);
+                        }
                     }
                 });
     }
@@ -298,7 +299,7 @@ public class ChatPresentImp implements ChatPresent {
         if (isShowDialog) {
             mDirectMessageView.showDialogLoading(true);
         }
-        Subscription subscription = mServerMessageSource.getUserMessage(mToken.getAccess_token(), mUserId, sinceId, 0, 40, 1)
+        Subscription subscription = mServerMessageSource.getUserMessage(mToken.getAccess_token(), mUserId, sinceId, 0, MAX_NEW_MESSAGE_PAGE_COUNT, 1)
                 .flatMap(new Func1<UserMessageResponse, Observable<DirectMessage>>() {
                     @Override
                     public Observable<DirectMessage> call(UserMessageResponse userMessageResponse) {
@@ -330,8 +331,7 @@ public class ChatPresentImp implements ChatPresent {
                         Collections.reverse(directMessages);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new SchedulerTransformer<List<DirectMessage>>())
                 .subscribe(new Subscriber<List<DirectMessage>>() {
                     @Override
                     public void onCompleted() {
@@ -437,11 +437,11 @@ public class ChatPresentImp implements ChatPresent {
 
     @Override
     public void sendMessage(final DirectMessage message) {
+        mDirectMessages.remove(message);
         message.setLocal_status(DirectMessage.STATUS_SEND);
         message.setCreated_at(DateUtil.formatCreatetime(System.currentTimeMillis()));
-        mDirectMessages.remove(message);
         mDirectMessages.add(message);
-        mDirectMessageView.notifyDataChange();
+        mDirectMessageView.setEntities(mDirectMessages);
         mDirectMessageView.attemptSmoothScrollToBottom();
 
         ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
@@ -466,7 +466,7 @@ public class ChatPresentImp implements ChatPresent {
         RxBus.getDefault().post(Event.SEND_MESSAGE_EVENT, responseEvent);
 
         mDirectMessages.add(message);
-        mDirectMessageView.setEntities(mDirectMessages);
+        mDirectMessageView.notifyItemRangeInserted(mDirectMessages, mDirectMessages.size() - 1, 1);
         mDirectMessageView.attemptSmoothScrollToBottom();
     }
 

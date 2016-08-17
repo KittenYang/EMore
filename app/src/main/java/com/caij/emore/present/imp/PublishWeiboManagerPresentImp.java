@@ -12,7 +12,7 @@ import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.PublishWeiboManagerPresent;
-import com.caij.emore.present.view.PublishServiceView;
+import com.caij.emore.ui.view.PublishServiceView;
 import com.caij.emore.source.DraftSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.source.local.LocalImageSource;

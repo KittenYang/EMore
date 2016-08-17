@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <com.caij.emore.view.DoubleClickToolBar
+            <com.caij.emore.widget.DoubleClickToolBar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"

@@ -3,9 +3,8 @@ package com.caij.emore.present.imp;
 import com.caij.emore.R;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
-import com.caij.emore.bean.response.Response;
 import com.caij.emore.present.PublishCommentsPresent;
-import com.caij.emore.present.view.MyPublishComentsView;
+import com.caij.emore.ui.view.MyPublishComentsView;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.DefaultTransformer;
@@ -16,11 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -130,7 +126,8 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
                     @Override
                     public void onNext(List<Comment> comments) {
                         mComments.addAll(comments);
-                        mMentionView.setEntities(mComments);
+                        mMentionView.notifyItemRangeInserted(mComments, mComments.size() - comments.size(),
+                                comments.size());
 
                         mMentionView.onLoadComplete(comments.size() > COUNT - 1);
                     }

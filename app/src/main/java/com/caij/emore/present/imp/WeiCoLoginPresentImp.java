@@ -1,21 +1,16 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.present.LoginPresent;
-import com.caij.emore.present.view.WeiCoLoginView;
+import com.caij.emore.ui.view.WeiCoLoginView;
 import com.caij.emore.source.LoginSource;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**

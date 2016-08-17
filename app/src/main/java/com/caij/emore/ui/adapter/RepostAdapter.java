@@ -8,7 +8,7 @@ import com.caij.emore.R;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.view.recyclerview.BaseAdapter;
+import com.caij.emore.widget.recyclerview.BaseAdapter;
 
 /**
  * Created by Caij on 2016/6/16.

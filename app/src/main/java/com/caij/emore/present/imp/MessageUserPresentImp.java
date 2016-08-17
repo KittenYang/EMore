@@ -5,7 +5,7 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.MessageUserPresent;
-import com.caij.emore.present.view.MessageUserView;
+import com.caij.emore.ui.view.MessageUserView;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -99,7 +99,8 @@ public class MessageUserPresentImp implements MessageUserPresent {
                     @Override
                     public void onNext(List<MessageUser.UserListBean> userListBeen) {
                         mUserListBeens.addAll(userListBeen);
-                        mMessageUserView.setEntities(mUserListBeens);
+                        mMessageUserView.notifyItemRangeInserted(mUserListBeens,
+                                mUserListBeens.size() -  userListBeen.size(), userListBeen.size());
                         mMessageUserView.onLoadComplete(userListBeen.size() >= PAGE_COUNT - 1);
                     }
                 });

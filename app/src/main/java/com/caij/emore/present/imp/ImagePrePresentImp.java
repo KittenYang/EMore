@@ -6,10 +6,9 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
 import com.bumptech.glide.request.target.Target;
-import com.caij.emore.AppApplication;
 import com.caij.emore.R;
 import com.caij.emore.present.ImagePrePresent;
-import com.caij.emore.present.view.ImagePreView;
+import com.caij.emore.ui.view.ImagePreView;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.FileUtil;

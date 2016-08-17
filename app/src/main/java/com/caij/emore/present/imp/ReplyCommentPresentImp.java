@@ -1,16 +1,13 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.response.Response;
 import com.caij.emore.present.ReplyCommentWeiboPresent;
-import com.caij.emore.present.view.CommentWeiboView;
+import com.caij.emore.ui.view.CommentWeiboView;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultTransformer;
 
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**

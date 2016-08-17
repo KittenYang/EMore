@@ -1,6 +1,5 @@
 package com.caij.emore.ui.activity.login;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +10,7 @@ import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.imp.WeiCoLoginPresentImp;
-import com.caij.emore.present.view.WeiCoLoginView;
+import com.caij.emore.ui.view.WeiCoLoginView;
 import com.caij.emore.source.server.LoginSourceImp;
 import com.caij.emore.ui.activity.MainActivity;
 import com.caij.emore.utils.ActivityStack;

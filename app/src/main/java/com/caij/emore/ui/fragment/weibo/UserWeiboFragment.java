@@ -14,8 +14,8 @@ import com.caij.emore.present.imp.UserWeiboPresentImp;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.view.recyclerview.HeaderAndFooterRecyclerViewAdapter;
-import com.caij.emore.view.recyclerview.XRecyclerView;
+import com.caij.emore.widget.recyclerview.HeaderAndFooterRecyclerViewAdapter;
+import com.caij.emore.widget.recyclerview.XRecyclerView;
 
 /**
  * Created by Caij on 2016/6/29.

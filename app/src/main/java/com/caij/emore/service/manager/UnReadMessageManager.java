@@ -17,7 +17,7 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.UnReadMessageManagerPresent;
 import com.caij.emore.present.imp.UnReadMessageManagerPresentImp;
-import com.caij.emore.present.view.UnReadMessageManagerPresentView;
+import com.caij.emore.ui.view.UnReadMessageManagerPresentView;
 import com.caij.emore.service.EMoreService;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.server.ServerMessageSource;

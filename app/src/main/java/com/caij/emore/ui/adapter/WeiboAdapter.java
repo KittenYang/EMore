@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 
 import com.caij.emore.R;
 import com.caij.emore.database.bean.Weibo;
-import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
-import com.caij.emore.view.weibo.list.RepostWeiboListItemView;
-import com.caij.emore.view.weibo.list.WeiboListItemView;
+import com.caij.emore.widget.recyclerview.BaseAdapter;
+import com.caij.emore.widget.recyclerview.BaseViewHolder;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.weibo.list.RepostWeiboListItemView;
+import com.caij.emore.widget.weibo.list.WeiboListItemView;
 
 import java.util.List;
 

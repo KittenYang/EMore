@@ -7,8 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
-import com.caij.emore.present.view.BaseView;
-import com.caij.emore.ui.activity.login.AbsLoginActivity;
+import com.caij.emore.ui.view.BaseView;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.DialogUtil;

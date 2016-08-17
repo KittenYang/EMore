@@ -2,7 +2,6 @@ package com.caij.emore.ui.fragment.mention;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Handler;
 import android.view.View;
 
 import com.caij.emore.UserPrefs;
@@ -10,7 +9,7 @@ import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.present.imp.AcceptCommentsPresentImp;
-import com.caij.emore.present.view.RefreshListView;
+import com.caij.emore.ui.view.RefreshListView;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.source.server.ServerWeiboSource;
@@ -19,9 +18,9 @@ import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
 import com.caij.emore.ui.adapter.MessageCommentAdapter;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.XRecyclerView;
-import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.recyclerview.BaseAdapter;
+import com.caij.emore.widget.recyclerview.XRecyclerView;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 
 /**

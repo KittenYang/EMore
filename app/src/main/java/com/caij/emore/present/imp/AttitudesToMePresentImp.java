@@ -2,37 +2,23 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.Key;
 import com.caij.emore.bean.Attitude;
-import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
-import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.database.bean.UnReadMessage;
-import com.caij.emore.database.bean.UrlInfo;
-import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.RefreshListPresent;
-import com.caij.emore.present.view.RefreshListView;
+import com.caij.emore.ui.view.RefreshListView;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
-import com.caij.emore.source.local.LocalUrlSource;
-import com.caij.emore.source.server.ServerUrlSource;
-import com.caij.emore.utils.SpannableStringUtil;
-import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.utils.rxjava.DefaultTransformer;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -118,7 +104,8 @@ public class AttitudesToMePresentImp implements RefreshListPresent {
                     @Override
                     public void onNext(List<Attitude> attitudes) {
                         mAttitudes.addAll(attitudes);
-                        mView.setEntities(mAttitudes);
+                        mView.notifyItemRangeInserted(mAttitudes, mAttitudes.size() - attitudes.size(),
+                                attitudes.size());
 
                         mView.onLoadComplete(attitudes.size() > COUNT - 1);
                     }

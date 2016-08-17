@@ -5,11 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.caij.emore.Key;
@@ -17,8 +14,7 @@ import com.caij.emore.R;
 import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
 import com.caij.emore.ui.fragment.ImagePrewFragment;
-import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.view.HackyViewPager;
+import com.caij.emore.widget.HackyViewPager;
 
 import java.util.ArrayList;
 import java.util.List;

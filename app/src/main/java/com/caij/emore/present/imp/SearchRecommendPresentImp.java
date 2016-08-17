@@ -1,16 +1,13 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.bean.SinaSearchRecommend;
-import com.caij.emore.present.ListPresent;
 import com.caij.emore.present.SearchRecommendPresent;
-import com.caij.emore.present.view.SearchRecommendView;
+import com.caij.emore.ui.view.SearchRecommendView;
 import com.caij.emore.source.SearchSource;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**

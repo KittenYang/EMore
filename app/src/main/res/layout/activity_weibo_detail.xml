@@ -27,12 +27,12 @@
                     android:orientation="vertical"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                    <com.caij.emore.view.weibo.detail.WeiboDetailItemView
+                    <com.caij.emore.widget.weibo.detail.WeiboDetailItemView
                         android:id="@+id/weibo_item_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                    </com.caij.emore.view.weibo.detail.WeiboDetailItemView>
+                    </com.caij.emore.widget.weibo.detail.WeiboDetailItemView>
 
                     <!--<View-->
                         <!--android:layout_width="match_parent"-->
@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.caij.emore.view.WeiboDetailTabLayout
+                    <com.caij.emore.widget.WeiboDetailTabLayout
                         android:id="@+id/tabLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

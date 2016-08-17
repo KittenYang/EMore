@@ -24,7 +24,7 @@ import com.caij.emore.bean.AccessToken;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
 import com.caij.emore.present.imp.UserInfoDetailPresentImp;
-import com.caij.emore.present.view.DetailUserView;
+import com.caij.emore.ui.view.DetailUserView;
 import com.caij.emore.source.local.LocalUserSource;
 import com.caij.emore.source.server.ServerUserSource;
 import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;

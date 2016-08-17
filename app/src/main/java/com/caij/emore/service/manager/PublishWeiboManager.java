@@ -13,7 +13,7 @@ import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.PublishWeiboManagerPresent;
 import com.caij.emore.present.imp.PublishWeiboManagerPresentImp;
-import com.caij.emore.present.view.PublishServiceView;
+import com.caij.emore.ui.view.PublishServiceView;
 import com.caij.emore.source.local.LocalDraftSource;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;

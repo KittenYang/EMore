@@ -9,9 +9,9 @@ import android.widget.TextView;
 import com.caij.emore.R;
 import com.caij.emore.bean.SinaSearchRecommend;
 import com.caij.emore.utils.CountUtil;
-import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.recyclerview.BaseAdapter;
+import com.caij.emore.widget.recyclerview.BaseViewHolder;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

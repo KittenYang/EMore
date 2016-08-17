@@ -2,7 +2,6 @@ package com.caij.emore.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 
@@ -16,8 +15,6 @@ import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.adapter.ToMeAttitudeAdapter;
-import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.XRecyclerView;
 
 
 /**

@@ -4,14 +4,14 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.caij.emore.view.RatioImageView
+    <com.caij.emore.widget.RatioImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foreground="@color/image_item_shaw"
         app:ratio="1"/>
 
-    <com.caij.emore.view.RatioImageView
+    <com.caij.emore.widget.RatioImageView
         android:id="@+id/view_shaw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import com.caij.emore.R;
 import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.view.RatioImageView;
-import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.RatioImageView;
+import com.caij.emore.widget.recyclerview.BaseAdapter;
+import com.caij.emore.widget.recyclerview.BaseViewHolder;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 /**
  * Created by Caij on 2016/6/23.

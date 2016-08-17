@@ -4,13 +4,12 @@ import com.caij.emore.bean.Account;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.UserWeiboPresent;
-import com.caij.emore.present.view.TimeLineWeiboView;
+import com.caij.emore.ui.view.TimeLineWeiboView;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -103,7 +102,7 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
-                        mView.setEntities(mWeibos);
+                        mView.notifyItemRangeInserted(mWeibos, mWeibos.size() - weibos.size(), weibos.size());
                         mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
                     }
                 });

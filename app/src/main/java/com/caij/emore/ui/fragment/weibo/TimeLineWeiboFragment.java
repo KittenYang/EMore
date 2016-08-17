@@ -2,31 +2,24 @@ package com.caij.emore.ui.fragment.weibo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.caij.emore.Event;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.TimeLinePresent;
-import com.caij.emore.present.view.TimeLineWeiboView;
+import com.caij.emore.ui.view.TimeLineWeiboView;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.adapter.WeiboAdapter;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
-import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.XRecyclerView;
-import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.recyclerview.BaseAdapter;
+import com.caij.emore.widget.recyclerview.BaseViewHolder;
+import com.caij.emore.widget.recyclerview.XRecyclerView;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * Created by Caij on 2016/6/4.

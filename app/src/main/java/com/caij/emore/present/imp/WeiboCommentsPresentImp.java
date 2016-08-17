@@ -2,18 +2,16 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.Event;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboCommentsPresent;
-import com.caij.emore.present.view.WeiboCommentsView;
+import com.caij.emore.ui.view.WeiboCommentsView;
 import com.caij.emore.source.UrlSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.source.local.LocalUrlSource;
 import com.caij.emore.source.server.ServerUrlSource;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
-import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.DefaultTransformer;
@@ -22,7 +20,6 @@ import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -170,7 +167,8 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                     @Override
                     public void onNext(List<Comment> comments) {
                         mComments.addAll(comments);
-                        mWeiboCommentsView.setEntities(mComments);
+                        mWeiboCommentsView.notifyItemRangeInserted(mComments, mComments.size() - comments.size(),
+                                comments.size());
                         mWeiboCommentsView.onLoadComplete(comments.size() > PAGE_COUNET - 5);
                     }
                 });

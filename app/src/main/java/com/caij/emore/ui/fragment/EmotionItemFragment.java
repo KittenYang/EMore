@@ -17,11 +17,11 @@ import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.Emotion;
-import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.BaseViewHolder;
+import com.caij.emore.widget.recyclerview.BaseAdapter;
+import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,7 +3,7 @@ package com.caij.emore.present.imp;
 import com.caij.emore.Event;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.RepostWeiboPresent;
-import com.caij.emore.present.view.RepostWeiboView;
+import com.caij.emore.ui.view.RepostWeiboView;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.DefaultTransformer;

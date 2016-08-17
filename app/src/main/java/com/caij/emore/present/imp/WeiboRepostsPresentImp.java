@@ -5,7 +5,7 @@ import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
-import com.caij.emore.present.view.WeiboRepostsView;
+import com.caij.emore.ui.view.WeiboRepostsView;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.UrlSource;
 import com.caij.emore.source.WeiboSource;
@@ -165,7 +165,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeobos.addAll(weibos);
-                        mWeiboRepostsView.setEntities(mWeobos);
+                        mWeiboRepostsView.notifyItemRangeInserted(mWeobos, mWeobos.size() - weibos.size(), weibos.size());
                         mWeiboRepostsView.onLoadComplete(weibos.size() >= 15);
                     }
                 });

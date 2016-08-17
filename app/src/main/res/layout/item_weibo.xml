@@ -14,12 +14,12 @@
     app:cardCornerRadius="3dip"
     app:cardElevation="1.5dip">
 
-    <com.caij.emore.view.weibo.list.WeiboListItemView
+    <com.caij.emore.widget.weibo.list.WeiboListItemView
         android:id="@+id/weibo_item_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </com.caij.emore.view.weibo.list.WeiboListItemView>
+    </com.caij.emore.widget.weibo.list.WeiboListItemView>
 
 
 </android.support.v7.widget.CardView>

@@ -2,24 +2,20 @@ package com.caij.emore.ui.fragment.friendship;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.caij.emore.R;
 import com.caij.emore.database.bean.User;
-import com.caij.emore.present.ListPresent;
 import com.caij.emore.present.RefreshListPresent;
-import com.caij.emore.present.view.FriendshipView;
+import com.caij.emore.ui.view.FriendshipView;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.adapter.UserAdapter;
-import com.caij.emore.ui.fragment.RecyclerViewFragment;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DensityUtil;
-import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.XRecyclerView;
-import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.recyclerview.BaseAdapter;
+import com.caij.emore.widget.recyclerview.BaseViewHolder;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 /**

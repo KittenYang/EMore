@@ -2,7 +2,6 @@ package com.caij.emore.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,7 +14,7 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.WeiboAndUserSearchPresent;
 import com.caij.emore.present.imp.WeiboAndUserSearchPresentImp;
-import com.caij.emore.present.view.WeiboAndUserSearchView;
+import com.caij.emore.ui.view.WeiboAndUserSearchView;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerUserSource;
 import com.caij.emore.source.server.ServerWeiboSource;

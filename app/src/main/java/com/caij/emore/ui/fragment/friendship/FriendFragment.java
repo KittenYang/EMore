@@ -8,7 +8,6 @@ import com.caij.emore.bean.AccessToken;
 import com.caij.emore.present.FriendshipPresent;
 import com.caij.emore.present.imp.FriendPresentImp;
 import com.caij.emore.source.server.ServerUserSource;
-import com.caij.emore.view.recyclerview.XRecyclerView;
 
 /**
  * Created by Caij on 2016/7/3.

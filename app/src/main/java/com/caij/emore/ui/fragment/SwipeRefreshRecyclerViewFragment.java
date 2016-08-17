@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.caij.emore.R;
 import com.caij.emore.present.RefreshListPresent;
-import com.caij.emore.present.view.RefreshListView;
+import com.caij.emore.ui.view.RefreshListView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

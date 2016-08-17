@@ -6,7 +6,7 @@ import com.caij.emore.Event;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.DraftPresent;
-import com.caij.emore.present.view.DraftListView;
+import com.caij.emore.ui.view.DraftListView;
 import com.caij.emore.source.DraftSource;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
@@ -71,8 +71,7 @@ public class DraftPresentImp implements DraftPresent {
                     @Override
                     public void onNext(List<Draft> drafts) {
                         mDrafts.addAll(drafts);
-                        mView.setEntities(mDrafts);
-
+                        mView.notifyItemRangeInserted(mDrafts, mDrafts.size() - drafts.size(), drafts.size());
                         mView.onLoadComplete(drafts.size() >= PAGE_COUNT - 1);
                     }
                 });

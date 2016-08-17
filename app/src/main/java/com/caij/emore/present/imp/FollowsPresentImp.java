@@ -5,7 +5,7 @@ import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.FriendshipPresent;
-import com.caij.emore.present.view.FriendshipView;
+import com.caij.emore.ui.view.FriendshipView;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
@@ -17,11 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -87,7 +84,7 @@ public class FollowsPresentImp implements FriendshipPresent {
                     @Override
                     public void onNext(List<User> users) {
                         mUsers.addAll(users);
-                        mFriendshipView.setEntities(mUsers);
+                        mFriendshipView.notifyItemRangeInserted(mUsers, mUsers.size() - users.size(), users.size());
                         mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
                     }
                 });

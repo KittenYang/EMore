@@ -14,7 +14,7 @@ import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboActionPresent;
-import com.caij.emore.present.view.WeiboActionView;
+import com.caij.emore.ui.view.WeiboActionView;
 import com.caij.emore.source.ImageSouce;
 import com.caij.emore.source.UrlSource;
 import com.caij.emore.source.WeiboSource;

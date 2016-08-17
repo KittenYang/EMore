@@ -1,12 +1,11 @@
 package com.caij.emore.ui.activity;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.caij.emore.R;
-import com.caij.emore.view.DoubleClickToolBar;
+import com.caij.emore.widget.DoubleClickToolBar;
 
 /**
  * Created by Caij on 2016/5/28.

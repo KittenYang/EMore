@@ -30,7 +30,7 @@ import com.caij.emore.R;
 import com.caij.emore.bean.VideoInfo;
 import com.caij.emore.present.VideoPlayPresent;
 import com.caij.emore.present.imp.VideoPlayPresentImp;
-import com.caij.emore.present.view.VideoPlayView;
+import com.caij.emore.ui.view.VideoPlayView;
 import com.caij.emore.source.server.ServerVideoInfoSource;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.LogUtil;

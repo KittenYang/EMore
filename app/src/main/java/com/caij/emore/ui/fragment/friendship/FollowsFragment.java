@@ -10,7 +10,6 @@ import com.caij.emore.present.imp.FollowsPresentImp;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.source.server.ServerUserSource;
-import com.caij.emore.view.recyclerview.XRecyclerView;
 
 /**
  * Created by Caij on 2016/7/3.

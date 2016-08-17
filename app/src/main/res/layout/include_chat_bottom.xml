@@ -25,7 +25,7 @@
             android:paddingBottom="@dimen/spacing_medium"
             android:paddingTop="@dimen/spacing_medium">
 
-            <com.caij.emore.view.emotion.EmotionEditText
+            <com.caij.emore.widget.emotion.EmotionEditText
                 android:id="@+id/et_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

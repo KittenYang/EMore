@@ -1,8 +1,7 @@
 package com.caij.emore.utils.rxjava;
 
-import com.caij.emore.BuildConfig;
 import com.caij.emore.R;
-import com.caij.emore.present.view.BaseView;
+import com.caij.emore.ui.view.BaseView;
 import com.caij.emore.utils.LogUtil;
 
 import java.io.IOException;

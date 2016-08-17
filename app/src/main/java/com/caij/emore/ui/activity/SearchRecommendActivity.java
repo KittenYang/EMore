@@ -12,11 +12,11 @@ import com.caij.emore.R;
 import com.caij.emore.bean.SinaSearchRecommend;
 import com.caij.emore.present.SearchRecommendPresent;
 import com.caij.emore.present.imp.SearchRecommendPresentImp;
-import com.caij.emore.present.view.SearchRecommendView;
+import com.caij.emore.ui.view.SearchRecommendView;
 import com.caij.emore.source.server.ServerSearchSource;
 import com.caij.emore.ui.adapter.SearchAdapter;
 import com.caij.emore.ui.fragment.WeiboAndUserSearchFragment;
-import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 import com.lapism.searchview.SearchView;
 
 import java.util.List;

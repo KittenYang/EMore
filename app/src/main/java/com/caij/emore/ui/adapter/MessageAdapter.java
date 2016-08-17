@@ -15,9 +15,9 @@ import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.glide.MaskTransformation;
-import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.recyclerview.BaseAdapter;
+import com.caij.emore.widget.recyclerview.BaseViewHolder;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

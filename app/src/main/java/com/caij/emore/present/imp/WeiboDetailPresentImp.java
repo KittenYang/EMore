@@ -5,27 +5,22 @@ import com.caij.emore.Key;
 import com.caij.emore.bean.Account;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboDetailPresent;
-import com.caij.emore.present.view.WeiboDetailView;
+import com.caij.emore.ui.view.WeiboDetailView;
 import com.caij.emore.source.WeiboSource;
-import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
-import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;

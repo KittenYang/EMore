@@ -1,10 +1,9 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
-import com.caij.emore.present.view.DetailUserView;
+import com.caij.emore.ui.view.DetailUserView;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.utils.rxjava.DefaultTransformer;
@@ -13,12 +12,9 @@ import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**

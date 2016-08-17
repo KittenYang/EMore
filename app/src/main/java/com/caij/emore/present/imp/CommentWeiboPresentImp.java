@@ -4,7 +4,7 @@ import com.caij.emore.Event;
 import com.caij.emore.R;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.present.CommentWeiboPresent;
-import com.caij.emore.present.view.CommentWeiboView;
+import com.caij.emore.ui.view.CommentWeiboView;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxbus.RxBus;

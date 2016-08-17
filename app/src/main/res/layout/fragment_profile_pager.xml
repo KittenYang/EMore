@@ -15,7 +15,7 @@
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <com.caij.emore.view.UserInfoCollapsingToolbarLayout
+        <com.caij.emore.widget.UserInfoCollapsingToolbarLayout
             android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
                 android:title="Caij"
                 app:layout_collapseMode="pin"/>
 
-        </com.caij.emore.view.UserInfoCollapsingToolbarLayout>
+        </com.caij.emore.widget.UserInfoCollapsingToolbarLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

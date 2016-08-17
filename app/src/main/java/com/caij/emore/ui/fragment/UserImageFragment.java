@@ -15,12 +15,12 @@ import com.caij.emore.bean.AccessToken;
 import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.present.imp.UserImagePresentImp;
-import com.caij.emore.present.view.TimeLineWeiboImageView;
+import com.caij.emore.ui.view.TimeLineWeiboImageView;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.adapter.UserGridImageAdapter;
-import com.caij.emore.view.recyclerview.BaseAdapter;
-import com.caij.emore.view.recyclerview.BaseViewHolder;
-import com.caij.emore.view.recyclerview.XRecyclerView;
+import com.caij.emore.widget.recyclerview.BaseAdapter;
+import com.caij.emore.widget.recyclerview.BaseViewHolder;
+import com.caij.emore.widget.recyclerview.XRecyclerView;
 
 /**
  * Created by Caij on 2016/6/29.

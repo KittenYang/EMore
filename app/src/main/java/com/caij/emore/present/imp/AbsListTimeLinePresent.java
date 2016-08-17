@@ -3,8 +3,8 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.bean.Account;
 import com.caij.emore.database.bean.Weibo;
-import com.caij.emore.present.view.BaseListView;
-import com.caij.emore.present.view.WeiboActionView;
+import com.caij.emore.ui.view.ListView;
+import com.caij.emore.ui.view.WeiboActionView;
 import com.caij.emore.source.WeiboSource;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/8/12.
  */
-public abstract class AbsListTimeLinePresent<V extends WeiboActionView & BaseListView<Weibo>> extends AbsTimeLinePresent<V> {
+public abstract class AbsListTimeLinePresent<V extends WeiboActionView & ListView<Weibo>> extends AbsTimeLinePresent<V> {
 
     protected List<Weibo> mWeibos;
 
@@ -31,7 +31,7 @@ public abstract class AbsListTimeLinePresent<V extends WeiboActionView & BaseLis
                 weiboOnList.setReposts_count(weibo.getReposts_count());
                 weiboOnList.setComments_count(weibo.getComments_count());
                 weiboOnList.setAttitudes(weibo.isAttitudes());
-                mView.updatePositionDate(index);
+                mView.notifyItemChanged(mWeibos, index);
                 break;
             }
         }

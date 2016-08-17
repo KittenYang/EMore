@@ -1,24 +1,20 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.bean.Account;
-import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
-import com.caij.emore.present.TimeLinePresent;
 import com.caij.emore.present.WeiboAndUserSearchPresent;
-import com.caij.emore.present.view.WeiboAndUserSearchView;
+import com.caij.emore.ui.view.WeiboAndUserSearchView;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -117,7 +113,7 @@ public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAn
                     @Override
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
-                        mView.setEntities(weibos);
+                        mView.notifyItemRangeInserted(mWeibos, mWeibos.size() - weibos.size(), weibos.size());
 
                         if (weibos.size() > PAGE_COUNT - 3) {
                             mView.onLoadComplete(true);
@@ -166,8 +162,6 @@ public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAn
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
-
-
 
     @Override
     public void onDestroy() {

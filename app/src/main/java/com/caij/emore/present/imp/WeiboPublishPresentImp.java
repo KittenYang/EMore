@@ -8,7 +8,7 @@ import com.caij.emore.bean.Account;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.WeiboPublishPresent;
-import com.caij.emore.present.view.WeiboPublishView;
+import com.caij.emore.ui.view.WeiboPublishView;
 import com.caij.emore.source.DraftSource;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;

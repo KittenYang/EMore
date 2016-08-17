@@ -14,12 +14,12 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.present.ImagePrePresent;
 import com.caij.emore.present.imp.ImagePrePresentImp;
-import com.caij.emore.present.view.ImagePreView;
+import com.caij.emore.ui.view.ImagePreView;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.LogUtil;
-import com.caij.emore.view.subscaleview.ImageSource;
-import com.caij.emore.view.subscaleview.SubsamplingScaleImageView;
+import com.caij.emore.widget.subscaleview.ImageSource;
+import com.caij.emore.widget.subscaleview.SubsamplingScaleImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

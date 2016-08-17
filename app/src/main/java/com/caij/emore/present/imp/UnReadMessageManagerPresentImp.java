@@ -5,7 +5,7 @@ import com.caij.emore.Event;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.UnReadMessageManagerPresent;
-import com.caij.emore.present.view.UnReadMessageManagerPresentView;
+import com.caij.emore.ui.view.UnReadMessageManagerPresentView;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.utils.LogUtil;

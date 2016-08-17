@@ -1,7 +1,6 @@
 package com.caij.emore.ui.activity;
 
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,14 +15,13 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
-import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboDetailPresent;
 import com.caij.emore.present.imp.WeiboDetailPresentImp;
-import com.caij.emore.present.view.WeiboDetailView;
+import com.caij.emore.ui.view.WeiboDetailView;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.publish.CommentWeiboActivity;
@@ -35,10 +33,9 @@ import com.caij.emore.ui.fragment.WeiboLikerListFragment;
 import com.caij.emore.ui.fragment.WeiboRepostListFragment;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.LogUtil;
-import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
-import com.caij.emore.view.recyclerview.OnScrollListener;
-import com.caij.emore.view.weibo.detail.WeiboDetailItemView;
+import com.caij.emore.widget.recyclerview.OnScrollListener;
+import com.caij.emore.widget.weibo.detail.WeiboDetailItemView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 

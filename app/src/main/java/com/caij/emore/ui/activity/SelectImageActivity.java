@@ -37,7 +37,7 @@ import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.ToastUtil;
-import com.caij.emore.view.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.io.File;
 import java.util.ArrayList;

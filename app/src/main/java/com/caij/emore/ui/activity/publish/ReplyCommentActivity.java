@@ -16,7 +16,7 @@ import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.Emotion;
 import com.caij.emore.present.ReplyCommentWeiboPresent;
 import com.caij.emore.present.imp.ReplyCommentPresentImp;
-import com.caij.emore.present.view.CommentWeiboView;
+import com.caij.emore.ui.view.CommentWeiboView;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ToastUtil;
