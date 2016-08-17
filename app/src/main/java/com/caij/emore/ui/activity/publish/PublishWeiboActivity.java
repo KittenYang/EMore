@@ -7,7 +7,9 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +38,7 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/6/22.
  */
-public class PublishWeiboActivity extends PublishActivity implements RecyclerViewOnItemClickListener, WeiboPublishView {
+public class PublishWeiboActivity extends PublishActivity implements RecyclerViewOnItemClickListener, WeiboPublishView, TextWatcher {
 
 
     @BindView(R.id.et_content)
@@ -75,12 +77,26 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
         mRecyclerView.setAdapter(mPublishImageAdapter);
         mPublishImageAdapter.setOnItemClickListener(this);
 
+        etContent.addTextChangedListener(this);
+
         mWeiboPublishPresent.onCreate();
 
         Draft draft = (Draft) getIntent().getSerializableExtra(Key.OBJ);
         mDraft = draft;
         if (draft != null) {
             fillData(draft);
+        }
+
+        if (savedInstanceState != null) {
+            String text = savedInstanceState.getString(Key.TEXT);
+            ArrayList<String> images = savedInstanceState.getStringArrayList(Key.IMAGE_PATHS);
+            if (!TextUtils.isEmpty(text)) {
+                etContent.setText(text);
+            }
+
+            if (images != null && images.size() > 0) {
+                onSelectImageSuccess(images);
+            }
         }
     }
 
@@ -91,6 +107,19 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
             images.addAll(draft.getImages());
             onSelectImageSuccess((ArrayList<String>) images);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (!TextUtils.isEmpty(etContent.getText())) {
+            outState.putString(Key.TEXT, etContent.getText().toString());
+        }
+
+        if (mPublishImageAdapter.getEntities() != null && mPublishImageAdapter.getEntities().size() > 0) {
+            outState.putStringArrayList(Key.IMAGE_PATHS, (ArrayList<String>) mPublishImageAdapter.getEntities());
+        }
+
+        super.onSaveInstanceState(outState);
     }
 
     private void initPresent() {
@@ -231,5 +260,22 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
                 initPresent();
             }
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        if (count >= 140) {
+            showHint(R.string.text_full_hint);
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 }

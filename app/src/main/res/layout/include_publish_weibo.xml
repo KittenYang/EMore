@@ -19,7 +19,8 @@
             android:padding="@dimen/spacing_medium"
             android:textColor="@color/text_80"
             android:textSize="@dimen/text_size_medium"
-            android:minLines="3"/>
+            android:minLines="3"
+            android:maxLength="140"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"

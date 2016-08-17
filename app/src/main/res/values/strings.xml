@@ -193,5 +193,6 @@
     <string name="media_process_name">:media</string>
     <string name="setting_key_exit">key_exit</string>
     <string name="setting_key_clear_cache">clear_cache</string>
+    <string name="text_full_hint">最多只能写这么多东西啦。</string>
 
 </resources>

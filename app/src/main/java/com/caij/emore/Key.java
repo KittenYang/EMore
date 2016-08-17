@@ -54,4 +54,5 @@ public interface Key {
 
     String WIDTH = "width";
     String HEIGHT = "height";
+    String TEXT = "text";
 }

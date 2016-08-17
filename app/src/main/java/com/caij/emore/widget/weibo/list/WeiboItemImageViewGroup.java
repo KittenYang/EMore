@@ -3,6 +3,7 @@ package com.caij.emore.widget.weibo.list;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
 
     protected int mSpaceWidth;
     protected List<PicUrl> mPicUrls;
+
+    private Handler mHandler;
 
     public WeiboItemImageViewGroup(Context context) {
         super(context);
@@ -63,6 +66,8 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
 
         addItemViews();
         mSpaceWidth = getResources().getDimensionPixelSize(R.dimen.weibo_image_space);
+
+        mHandler = new Handler();
     }
 
     protected void addItemViews() {
@@ -211,7 +216,7 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
             this.mPicUrls = picUrls;
 
             //因为请求重新绘制requestLayout是通过主线程handler发送消息， 这个再通过handler发送消息展示图片就会在绘制以后
-            post(this);
+            mHandler.post(this);
         }
     }
 
