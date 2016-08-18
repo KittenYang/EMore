@@ -60,8 +60,13 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
 
     @Override
     public void toRefresh() {
-        mSwipeRefreshLayout.setRefreshing(true);
-        mPresent.refresh();
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                mPresent.refresh();
+            }
+        });
     }
 
     @Override

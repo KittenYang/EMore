@@ -8,6 +8,7 @@ import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.ui.view.FriendWeiboView;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
@@ -17,6 +18,7 @@ import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -97,7 +99,6 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                         if (weibos.size() > 5){
                             mView.onLoadComplete(true);
                         }
-
                     }
                 });
         mCompositeSubscription.add(subscription);
@@ -134,11 +135,11 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
 
                     @Override
                     public void onNext(List<Weibo> weibos) {
-                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1);
-
                         mWeibos.clear();
                         mWeibos.addAll(weibos);
                         mView.setEntities(mWeibos);
+
+                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1);
 
                         MessageUtil.resetLocalUnReadMessage(mAccount.getWeicoToken().getAccess_token(),
                                 UnReadMessage.TYPE_STATUS, 0, mLocalMessageSource);
