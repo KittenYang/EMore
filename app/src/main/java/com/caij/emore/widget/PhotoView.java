@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.caij.emore.utils.LogUtil;
@@ -52,11 +53,6 @@ public class PhotoView extends ImageView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mAttacher.getImageView() == null) {
-            mAttacher.cleanup();
-            mAttacher = new PhotoViewAttacher(this);
-            LogUtil.d(this, "onAttachedToWindow mAttacher");
-        }
     }
 
     @Override
@@ -64,5 +60,20 @@ public class PhotoView extends ImageView {
         super.onDetachedFromWindow();
         mAttacher.cleanup();
         LogUtil.d(this, "onDetachedFromWindow mAttacher.cleanup()");
+    }
+
+    @Override
+    public void setOnClickListener(final OnClickListener l) {
+        mAttacher.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+            @Override
+            public void onPhotoTap(View view, float v, float v1) {
+                l.onClick(view);
+            }
+
+            @Override
+            public void onOutsidePhotoTap() {
+
+            }
+        });
     }
 }
