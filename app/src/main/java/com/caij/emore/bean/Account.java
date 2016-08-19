@@ -1,7 +1,5 @@
 package com.caij.emore.bean;
 
-import com.caij.emore.bean.response.WeiCoLoginResponse;
-
 import java.io.Serializable;
 
 /**
@@ -11,9 +9,8 @@ public class Account implements Serializable {
 
     private String username;
     private String pwd;
-    private AccessToken weiyoToken;
+    private AccessToken emoreToken;
     private AccessToken weicoToken;
-    private WeiCoLoginResponse weiCoLoginResponse;
 
     public String getUsername() {
         return username;
@@ -31,12 +28,12 @@ public class Account implements Serializable {
         this.pwd = pwd;
     }
 
-    public AccessToken getWeiyoToken() {
-        return weiyoToken;
+    public AccessToken getEmoreToken() {
+        return emoreToken;
     }
 
-    public void setWeiyoToken(AccessToken weiyoToken) {
-        this.weiyoToken = weiyoToken;
+    public void setEmoreToken(AccessToken emoreToken) {
+        this.emoreToken = emoreToken;
     }
 
     public AccessToken getWeicoToken() {
@@ -47,11 +44,4 @@ public class Account implements Serializable {
         this.weicoToken = weicoToken;
     }
 
-    public WeiCoLoginResponse getWeiCoLoginResponse() {
-        return weiCoLoginResponse;
-    }
-
-    public void setWeiCoLoginResponse(WeiCoLoginResponse weiCoLoginResponse) {
-        this.weiCoLoginResponse = weiCoLoginResponse;
-    }
 }

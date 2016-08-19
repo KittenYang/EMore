@@ -105,19 +105,4 @@ public class WeicoAuthUtil {
         return toAuthWeico(fragment, true);
     }
 
-    public static void appendAuthSina(Map<String, Object> paramMap)
-    {
-        Account localAccount = UserPrefs.get().getAccount();
-        paramMap.put("c", "weicoandroid");
-        paramMap.put("s", localAccount.getWeiCoLoginResponse().getsValue());
-        paramMap.put("gsid", localAccount.getWeiCoLoginResponse().getGsid());
-        paramMap.put("from", Key.WEICO_APP_FROM);
-        paramMap.put("source", Key.WEICO_APP_ID);
-    }
-
-    public static void appendAuth(Map<String, Object> paramMap)
-    {
-        paramMap.put("from", Key.WEICO_APP_FROM);
-        paramMap.put("source", Key.WEICO_APP_ID);
-    }
 }

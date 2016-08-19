@@ -15,6 +15,11 @@ public class Response {
     private int error_code;
     private String request;
 
+    ///---------------下面是cn 域名返回的错误码， 新浪设计的太烂
+
+    private int errno;
+    private String errmsg;
+
     public String getError() {
         return error;
     }
@@ -39,7 +44,24 @@ public class Response {
         this.request = request;
     }
 
+    public int getErrno() {
+        return errno;
+    }
+
+    public void setErrno(int errno) {
+        this.errno = errno;
+    }
+
+    public String getErrmsg() {
+        return errmsg;
+    }
+
+    public void setErrmsg(String errmsg) {
+        this.errmsg = errmsg;
+    }
+
     public boolean isSuccessful() {
-        return error_code == 0 && TextUtils.isEmpty(error);
+        return error_code == 0 && TextUtils.isEmpty(error)
+                && errno == 0 && TextUtils.isEmpty(errmsg);
     }
 }

@@ -147,7 +147,7 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
                         for (UploadImageResponse uploadImageResponse : uploadImageResponses) {
                             sb.append(uploadImageResponse.getPic_id()).append(",");
                         }
-                        return mServerWeiboSource.publishWeiboOfMultiImage(mAccount.getWeiyoToken().getAccess_token(), publishBean.getText(), sb.toString());
+                        return mServerWeiboSource.publishWeiboOfMultiImage(mAccount.getEmoreToken().getAccess_token(), publishBean.getText(), sb.toString());
                     }
                 })
                 .doOnError(new Action1<Throwable>() {
@@ -160,7 +160,7 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
                     @Override
                     public void call(Weibo weibo) {
                         mDraftSource.deleteDraftById(publishBean.getId());
-                        mLocalWeiboSource.saveWeibo(mAccount.getWeiyoToken().getAccess_token(), weibo);
+                        mLocalWeiboSource.saveWeibo(mAccount.getEmoreToken().getAccess_token(), weibo);
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -187,7 +187,7 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
                 .flatMap(new Func1<String, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(String path) {
-                        return mServerWeiboSource.publishWeiboOfOneImage(account.getWeiyoToken().getAccess_token(),
+                        return mServerWeiboSource.publishWeiboOfOneImage(account.getEmoreToken().getAccess_token(),
                                 publishBean.getText(), path);
                     }
                 })
@@ -201,7 +201,7 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
                     @Override
                     public void call(Weibo weibo) {
                         mDraftSource.deleteDraftById(publishBean.getId());
-                        mLocalWeiboSource.saveWeibo(mAccount.getWeiyoToken().getAccess_token(), weibo);
+                        mLocalWeiboSource.saveWeibo(mAccount.getEmoreToken().getAccess_token(), weibo);
 
                         try {
                             ImageInfo locakImage = new ImageInfo();
@@ -224,7 +224,7 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
     private void publishText(final PublishBean publishBean) {
         final Account account = UserPrefs.get().getAccount();
         Observable<Weibo> publishWeiboObservable = mServerWeiboSource.
-                publishWeiboOfText(account.getWeiyoToken().getAccess_token(), publishBean.getText());
+                publishWeiboOfText(account.getEmoreToken().getAccess_token(), publishBean.getText());
         mPublishServiceView.onPublishStart(publishBean);
         Subscription subscription = publishWeiboObservable.subscribeOn(Schedulers.io())
                 .doOnError(new Action1<Throwable>() {
@@ -237,7 +237,7 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
                     @Override
                     public void call(Weibo weibo) {
                         mDraftSource.deleteDraftById(publishBean.getId());
-                        mLocalWeiboSource.saveWeibo(mAccount.getWeiyoToken().getAccess_token(), weibo);
+                        mLocalWeiboSource.saveWeibo(mAccount.getEmoreToken().getAccess_token(), weibo);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

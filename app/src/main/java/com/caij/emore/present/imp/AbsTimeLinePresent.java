@@ -108,11 +108,11 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
     @Override
     public void deleteWeibo(final Weibo weibo, final int position) {
         mView.showDialogLoading(true, R.string.deleting);
-        Observable<Weibo> serverObservable = mServerWeiboSource.deleteWeibo(mAccount.getWeiyoToken().getAccess_token(),
+        Observable<Weibo> serverObservable = mServerWeiboSource.deleteWeibo(mAccount.getEmoreToken().getAccess_token(),
                 weibo.getId())
                 .compose(new DefaultTransformer<Weibo>());
 
-        Observable<Weibo> localObservable = mLocalWeiboSource.deleteWeibo(mAccount.getWeiyoToken().getAccess_token(),
+        Observable<Weibo> localObservable = mLocalWeiboSource.deleteWeibo(mAccount.getEmoreToken().getAccess_token(),
                 weibo.getId());
         Subscription subscription = Observable.concat(serverObservable, localObservable)
                 .subscribe(new DefaultResponseSubscriber<Weibo>(mView) {
@@ -144,11 +144,11 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
             return;
         }
         mView.showDialogLoading(true, R.string.collecting);
-        Observable<FavoritesCreateResponse> serverObservable = mServerWeiboSource.collectWeibo(mAccount.getWeiyoToken().getAccess_token(),
+        Observable<FavoritesCreateResponse> serverObservable = mServerWeiboSource.collectWeibo(mAccount.getEmoreToken().getAccess_token(),
                 weibo.getId())
                 .compose(new DefaultTransformer<FavoritesCreateResponse>());
 
-        Observable<FavoritesCreateResponse> localObservable = mLocalWeiboSource.collectWeibo(mAccount.getWeiyoToken().getAccess_token(),
+        Observable<FavoritesCreateResponse> localObservable = mLocalWeiboSource.collectWeibo(mAccount.getEmoreToken().getAccess_token(),
                 weibo.getId());
         Subscription subscription = Observable.concat(serverObservable, localObservable)
                 .subscribe(new DefaultResponseSubscriber<FavoritesCreateResponse>(mView) {
@@ -174,11 +174,11 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
     @Override
     public void uncollectWeibo(final Weibo weibo) {
         mView.showDialogLoading(true, R.string.uncollecting);
-        Observable<FavoritesCreateResponse> serverObservable = mServerWeiboSource.uncollectWeibo(mAccount.getWeiyoToken().getAccess_token(),
+        Observable<FavoritesCreateResponse> serverObservable = mServerWeiboSource.uncollectWeibo(mAccount.getEmoreToken().getAccess_token(),
                 weibo.getId())
                 .compose(new DefaultTransformer<FavoritesCreateResponse>());
 
-        Observable<FavoritesCreateResponse> localObservable = mLocalWeiboSource.uncollectWeibo(mAccount.getWeiyoToken().getAccess_token(),
+        Observable<FavoritesCreateResponse> localObservable = mLocalWeiboSource.uncollectWeibo(mAccount.getEmoreToken().getAccess_token(),
                 weibo.getId());
         Subscription subscription = Observable.concat(serverObservable, localObservable)
                 .subscribe(new DefaultResponseSubscriber<FavoritesCreateResponse>(mView) {
@@ -282,7 +282,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                     weibo.setReposts_count(data.getReposts_count());
                     weibo.setComments_count(data.getComments_count());
                     weibo.setUpdate_time(System.currentTimeMillis());
-                    mLocalWeiboSource.saveWeibo(mAccount.getWeiyoToken().getAccess_token(), weibo);
+                    mLocalWeiboSource.saveWeibo(mAccount.getEmoreToken().getAccess_token(), weibo);
                 }
             }).subscribe(new Subscriber<Weibo>() {
                 @Override
@@ -343,7 +343,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
     protected void doSpanNext(List<Weibo> weibos) {
         List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibos);
         Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
-                mLocalUrlSource, mAccount.getWeiyoToken().getAccess_token());
+                mLocalUrlSource, mAccount.getEmoreToken().getAccess_token());
         for (Weibo weibo : weibos) {
             SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
         }
@@ -357,7 +357,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
     protected void doSpanNext(Weibo weibo, boolean isLongText) {
         List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, isLongText, null);
         Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
-                mLocalUrlSource, mAccount.getWeiyoToken().getAccess_token());
+                mLocalUrlSource, mAccount.getEmoreToken().getAccess_token());
         SpannableStringUtil.paraeSpannable(weibo, isLongText, shortLongLinkMap);
     }
 

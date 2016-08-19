@@ -8,7 +8,6 @@ import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.ui.view.FriendWeiboView;
-import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
@@ -18,7 +17,6 @@ import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -48,7 +46,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     @Override
     public void onCreate() {
         super.onCreate();
-        Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getWeiyoToken().getAccess_token(),
+        Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getEmoreToken().getAccess_token(),
                 0, 0, PAGE_COUNT * 2, 1)
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
@@ -91,7 +89,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                         mView.setEntities(mWeibos);
 
                         if (System.currentTimeMillis() -
-                                SPUtil.getLong(Key.FRIEND_WEIBO_UPDATE_TIME, -1) > 10 * 60 * 1000 ||
+                                SPUtil.getLong(Key.FRIEND_WEIBO_UPDATE_TIME + mAccount.getUsername(), -1) > 10 * 60 * 1000 ||
                                 weibos.size() <= 0) {
                             mView.toRefresh();
                         }
@@ -144,7 +142,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                         MessageUtil.resetLocalUnReadMessage(mAccount.getWeicoToken().getAccess_token(),
                                 UnReadMessage.TYPE_STATUS, 0, mLocalMessageSource);
 
-                        SPUtil.saveLong(Key.FRIEND_WEIBO_UPDATE_TIME, System.currentTimeMillis());
+                        SPUtil.saveLong(Key.FRIEND_WEIBO_UPDATE_TIME + mAccount.getUsername(), System.currentTimeMillis());
                     }
                 });
         mCompositeSubscription.add(subscription);
@@ -212,7 +210,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
-                        mLocalWeiboSource.saveWeibos(mAccount.getWeiyoToken().getAccess_token(), weibos);
+                        mLocalWeiboSource.saveWeibos(mAccount.getEmoreToken().getAccess_token(), weibos);
                         doSpanNext(weibos);
                     }
                 })

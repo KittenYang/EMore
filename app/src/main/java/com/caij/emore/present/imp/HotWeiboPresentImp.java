@@ -130,7 +130,7 @@ public class HotWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
-                        mLocalWeiboSource.saveWeibos(mAccount.getWeiyoToken().getAccess_token(), weibos);
+                        mLocalWeiboSource.saveWeibos(mAccount.getEmoreToken().getAccess_token(), weibos);
                         doSpanNext(weibos);
                     }
                 })

@@ -1,5 +1,7 @@
 package com.caij.emore.utils.rxjava;
 
+import android.text.TextUtils;
+
 import com.caij.emore.R;
 import com.caij.emore.ui.view.BaseView;
 import com.caij.emore.utils.LogUtil;
@@ -36,7 +38,12 @@ public abstract class DefaultResponseSubscriber<T> extends Subscriber<T> {
                 mBaseView.showHint(R.string.server_error);
             }
         }else if (e instanceof ErrorResponseException) {
-            mBaseView.showHint(((ErrorResponseException) e).mResponse.getError());
+            ErrorResponseException errorResponseException = (ErrorResponseException) e;
+            if (TextUtils.isEmpty(errorResponseException.mResponse.getError())) {
+                mBaseView.showHint(errorResponseException.mResponse.getErrmsg());
+            }else {
+                mBaseView.showHint(errorResponseException.mResponse.getError());
+            }
         }else {
             mBaseView.showHint(R.string.net_request_error);
         }

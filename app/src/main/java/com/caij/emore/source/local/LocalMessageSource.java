@@ -16,15 +16,12 @@ import com.caij.emore.database.dao.GeoDao;
 import com.caij.emore.database.dao.MessageImageDao;
 import com.caij.emore.database.dao.UnReadMessageDao;
 import com.caij.emore.database.dao.UserDao;
-import com.caij.emore.database.dao.WeiboDao;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.db.DBManager;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -99,7 +96,7 @@ public class LocalMessageSource implements MessageSource {
                     }else if (sinceCreateTime != 0) {
                         queryBuilder.where(DirectMessageDao.Properties.Created_at_long.ge(sinceCreateTime));
                     }
-                    long selfUid  = Long.parseLong(UserPrefs.get().getAccount().getWeiyoToken().getUid());
+                    long selfUid  = Long.parseLong(UserPrefs.get().getAccount().getEmoreToken().getUid());
                     queryBuilder.where(queryBuilder.or(queryBuilder.and(DirectMessageDao.Properties.Recipient_id.eq(selfUid),
                             DirectMessageDao.Properties.Sender_id.eq(uid)),
                             queryBuilder.and(DirectMessageDao.Properties.Sender_id.eq(selfUid),

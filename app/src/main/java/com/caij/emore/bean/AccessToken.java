@@ -57,8 +57,9 @@ public class AccessToken  {
 
     public boolean isExpired() {
 		long time  = expires_in * 1000 - (System.currentTimeMillis() - create_at);
-		String days = String.valueOf(TimeUnit.SECONDS.toDays(time));
-        LogUtil.d(this, "%s还有%s天失效", uid, days);
+		String days = String.valueOf(TimeUnit.MILLISECONDS.toDays(time));
+		LogUtil.d(this, "expires_in : %s", expires_in);
+        LogUtil.d(this, "%s 还有 %s天失效", uid, days);
 
         return time <= 0;
     }

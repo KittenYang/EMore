@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Account;
-import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SPUtil;
@@ -40,7 +39,7 @@ public class UserPrefs {
 
     public AccessToken getEMoreToken(){
         if (mAccount != null) {
-            return mAccount.getWeiyoToken();
+            return mAccount.getEmoreToken();
         }
         return null;
     }
@@ -80,7 +79,7 @@ public class UserPrefs {
         if (mAccount == null) {
             mAccount = new Account();
         }
-        mAccount.setWeiyoToken(token);
+        mAccount.setEmoreToken(token);
         saveAccount(mAccount);
     }
 
@@ -89,14 +88,6 @@ public class UserPrefs {
             mAccount = new Account();
         }
         mAccount.setWeicoToken(token);
-        saveAccount(mAccount);
-    }
-
-    public void setWeiCoLoginInfo(WeiCoLoginResponse response) {
-        if (mAccount == null) {
-            mAccount = new Account();
-        }
-        mAccount.setWeiCoLoginResponse(response);
         saveAccount(mAccount);
     }
 
