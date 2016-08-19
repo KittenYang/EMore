@@ -23,11 +23,10 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class AcceptCommentsPresentImp implements RefreshListPresent {
+public class AcceptCommentsPresentImp extends AbsBasePresent implements RefreshListPresent {
 
     private static final int PAGE_COUNT = 20;
 
-    private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private WeiboSource mWeiboSource;
     private RefreshListView<Comment> mMentionView;
@@ -39,13 +38,13 @@ public class AcceptCommentsPresentImp implements RefreshListPresent {
                                     MessageSource serverMessageSource,
                                     MessageSource localMessageSource,
                                     RefreshListView<Comment> mentionView) {
+        super();
         mToken = token;
         mWeiboSource = weiboSource;
         mMentionView = mentionView;
         mServerMessageSource = serverMessageSource;
         mLocalMessageSource = localMessageSource;
         mComments = new ArrayList<>();
-        mLoginCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -79,7 +78,7 @@ public class AcceptCommentsPresentImp implements RefreshListPresent {
                                 UnReadMessage.TYPE_CMT, mServerMessageSource, mLocalMessageSource);
                     }
                 });
-        mLoginCompositeSubscription.add(su);
+        addSubscription(su);
     }
 
     @Override
@@ -109,7 +108,7 @@ public class AcceptCommentsPresentImp implements RefreshListPresent {
                         mMentionView.onLoadComplete(comments.size() > PAGE_COUNT - 1);
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private Observable<List<Comment>> creategetCommentObservable(long maxId, final boolean isRefresh) {
@@ -135,11 +134,5 @@ public class AcceptCommentsPresentImp implements RefreshListPresent {
     public void onCreate() {
 
     }
-
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
-    }
-
 
 }

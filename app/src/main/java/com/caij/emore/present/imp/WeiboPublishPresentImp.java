@@ -21,9 +21,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/6/24.
  */
-public class WeiboPublishPresentImp implements WeiboPublishPresent {
-
-    private final CompositeSubscription mLoginCompositeSubscription;
+public class WeiboPublishPresentImp extends AbsBasePresent implements WeiboPublishPresent {
 
     private WeiboPublishView mWeiboPublishView;
     private Account mAccount;
@@ -33,17 +31,11 @@ public class WeiboPublishPresentImp implements WeiboPublishPresent {
         mAccount = account;
         mWeiboPublishView = weiboPublishView;
         mDraftSource = draftSource;
-        mLoginCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void onCreate() {
 
-    }
-
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
     }
 
     @Override

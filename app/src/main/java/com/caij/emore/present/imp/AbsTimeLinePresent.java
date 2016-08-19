@@ -45,7 +45,8 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/2.
  */
-public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements WeiboActionPresent {
+public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsBasePresent
+        implements WeiboActionPresent {
 
     protected V mView;
     protected ImageSouce mServerImageSouce;
@@ -53,13 +54,13 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
     protected WeiboSource mServerWeiboSource;
     protected Account mAccount;
     protected WeiboSource mLocalWeiboSource;
-    protected CompositeSubscription mCompositeSubscription;
     protected UrlSource mLocalUrlSource;
     protected UrlSource mServerUrlSource;
 
     private Observable<Weibo> mWeiboUpdateObservable;
 
     public AbsTimeLinePresent(Account account, V view, WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
+        super();
         mView = view;
         mAccount = account;
         mLocalImageSouce = new LocalImageSource();
@@ -68,7 +69,6 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
         mServerUrlSource = new ServerUrlSource();
         mServerWeiboSource = serverWeiboSource;
         mLocalWeiboSource = localWeiboSource;
-        mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -101,7 +101,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
 
     @Override
     public void onDestroy() {
-        mCompositeSubscription.clear();
+        super.onDestroy();
         RxBus.getDefault().unregister(Event.EVENT_WEIBO_UPDATE, mWeiboUpdateObservable);
     }
 
@@ -132,7 +132,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
 
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -168,7 +168,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
 
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -198,7 +198,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
 
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     protected void toGetImageSize(Weibo weibo) {
@@ -262,7 +262,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
                         }
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private void postAttitudeWeiboUpdate(Attitude attitude) {
@@ -337,7 +337,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> implements W
 
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     protected void doSpanNext(List<Weibo> weibos) {

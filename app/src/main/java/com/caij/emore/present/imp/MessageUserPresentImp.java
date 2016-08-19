@@ -27,11 +27,10 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/10.
  */
-public class MessageUserPresentImp implements MessageUserPresent {
+public class MessageUserPresentImp extends AbsBasePresent implements MessageUserPresent {
 
     private final static int PAGE_COUNT = 20;
 
-    private CompositeSubscription mCompositeSubscription;
     private String mToken;
     private MessageSource mServerMessageSource;
     private MessageSource mLocalMessageSource;
@@ -47,7 +46,6 @@ public class MessageUserPresentImp implements MessageUserPresent {
         mLocalMessageSource = localMessageSource;
         mMessageUserView = view;
         mUserListBeens = new ArrayList<>();
-        mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -73,7 +71,7 @@ public class MessageUserPresentImp implements MessageUserPresent {
                         mMessageUserView.onRefreshComplete();
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -104,7 +102,7 @@ public class MessageUserPresentImp implements MessageUserPresent {
                         mMessageUserView.onLoadComplete(userListBeen.size() >= PAGE_COUNT - 1);
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -161,7 +159,7 @@ public class MessageUserPresentImp implements MessageUserPresent {
 
     @Override
     public void onDestroy() {
-        mCompositeSubscription.clear();
+        super.onDestroy();
         RxBus.getDefault().unregister(Event.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
     }
 }

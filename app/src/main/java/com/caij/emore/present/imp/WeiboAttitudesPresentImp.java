@@ -27,11 +27,10 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/6/28.
  */
-public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
+public class WeiboAttitudesPresentImp extends AbsBasePresent implements WeiboRepostsPresent {
 
     private static final int PAGE_COUNET = 20;
 
-    private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private long mWeiboId;
     WeiboSource mServerWeiboSource;
@@ -51,7 +50,6 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
         mLocalWeiboSource = localWeiboSource;
         mView = view;
         mWeiboId = weiboId;
-        mLoginCompositeSubscription = new CompositeSubscription();
         mAttitudes = new ArrayList<>();
     }
 
@@ -115,7 +113,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
                     }
                 });
 
-        mLoginCompositeSubscription.add(subscription);
+
     }
 
     private void addRefreshDate(List<Attitude> attitudes) {
@@ -150,7 +148,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
                     }
                 });
 
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private  Observable<List<Attitude>> createObservable(int page, final boolean isRefresh) {
@@ -203,7 +201,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
                         RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -212,7 +210,7 @@ public class WeiboAttitudesPresentImp implements WeiboRepostsPresent {
 
     @Override
     public void onDestroy() {
-        mLoginCompositeSubscription.clear();
+        super.onDestroy();
         RxBus.getDefault().unregister(Event.EVENT_ATTITUDE_WEIBO_SUCCESS, mAttitudeObservable);
         RxBus.getDefault().unregister(Event.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE, mWeiboRefreshObservable);
     }

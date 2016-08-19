@@ -22,11 +22,10 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class PublishCommentsPresentImp implements PublishCommentsPresent {
+public class PublishCommentsPresentImp extends AbsBasePresent implements PublishCommentsPresent {
 
     private static final int COUNT = 20;
 
-    private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private WeiboSource mWeiboSource;
     private MyPublishComentsView mMentionView;
@@ -37,17 +36,11 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
         mWeiboSource = weiboSource;
         mMentionView = mentionView;
         mComments = new ArrayList<>();
-        mLoginCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void onCreate() {
 
-    }
-
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
     }
 
     @Override
@@ -71,7 +64,7 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
                         mMentionView.onDeleteCommentSuccess(comment, position);
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -97,7 +90,7 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
                         mMentionView.onLoadComplete(comments.size() > COUNT - 1);
                     }
                 });
-        mLoginCompositeSubscription.add(su);
+        addSubscription(su);
     }
 
     @Override
@@ -132,7 +125,7 @@ public class PublishCommentsPresentImp implements PublishCommentsPresent {
                         mMentionView.onLoadComplete(comments.size() > COUNT - 1);
                     }
                 });
-        mLoginCompositeSubscription.add(su);
+        addSubscription(su);
     }
 
     private Observable<List<Comment>> createCommentsObservable(long maxId, final boolean isRefresh) {

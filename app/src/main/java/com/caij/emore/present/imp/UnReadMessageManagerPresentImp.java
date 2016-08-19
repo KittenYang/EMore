@@ -15,6 +15,7 @@ import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
@@ -22,12 +23,11 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/23.
  */
-public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPresent {
+public class UnReadMessageManagerPresentImp extends AbsBasePresent implements UnReadMessageManagerPresent {
 
     private Observable<Object> mIntervalMillisUpdateObservable;
     private MessageSource mServerMessageSource;
     private MessageSource mLocalMessageSource;
-    private CompositeSubscription mCompositeSubscription;
     private UnReadMessageManagerPresentView mView;
     private AccessToken mToken;
 
@@ -41,7 +41,6 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
 
     @Override
     public void onCreate() {
-        mCompositeSubscription = new CompositeSubscription();
         mIntervalMillisUpdateObservable = RxBus.getDefault().register(Event.INTERVAL_MILLIS_UPDATE);
         mServerMessageSource = new ServerMessageSource();
         mIntervalMillisUpdateObservable.observeOn(AndroidSchedulers.mainThread())
@@ -55,8 +54,8 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         RxBus.getDefault().unregister(Event.INTERVAL_MILLIS_UPDATE, mIntervalMillisUpdateObservable);
-        mCompositeSubscription.clear();
     }
 
     @Override
@@ -65,7 +64,7 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
             return;
         }
         if (mToken != null) {
-            mServerMessageSource.getUnReadMessage(mToken.getAccess_token(), Long.parseLong(mToken.getUid()))
+            Subscription subscription = mServerMessageSource.getUnReadMessage(mToken.getAccess_token(), Long.parseLong(mToken.getUid()))
                     .compose(new SchedulerTransformer<UnReadMessage>())
                     .subscribe(new Subscriber<UnReadMessage>() {
                         @Override
@@ -84,6 +83,7 @@ public class UnReadMessageManagerPresentImp implements UnReadMessageManagerPrese
                             RxBus.getDefault().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unreadMessage);
                         }
                     });
+            addSubscription(subscription);
         }
     }
 

@@ -63,7 +63,7 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
                         page = 2;
                     }
                 });
-        mCompositeSubscription.add(su);
+        addSubscription(su);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
                         page++;
                     }
                 });
-        mCompositeSubscription.add(su);
+        addSubscription(su);
     }
 
     private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
@@ -131,7 +131,6 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mCompositeSubscription.clear();
     }
 
 

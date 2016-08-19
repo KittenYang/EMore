@@ -23,14 +23,13 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class UserImagePresentImp implements UserWeiboPresent {
+public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPresent {
 
     private final static int PAGE_COUNT = 20;
 
     private String mToken;
     private TimeLineWeiboImageView mView;
     private WeiboSource mServerWeiboSource;
-    private CompositeSubscription mLoginCompositeSubscription;
     private List<Weibo> mWeibos;
     private String mUsername;
     private List<PicUrl> mPicUrl;
@@ -40,7 +39,6 @@ public class UserImagePresentImp implements UserWeiboPresent {
         mView = view;
         mUsername = name;
         mServerWeiboSource = serverWeiboSource;
-        mLoginCompositeSubscription = new CompositeSubscription();
         mWeibos = new ArrayList<>();
         mPicUrl = new ArrayList<>();
     }
@@ -73,11 +71,6 @@ public class UserImagePresentImp implements UserWeiboPresent {
     @Override
     public void destoryAttitudesWeibo(Weibo weibo) {
 
-    }
-
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
     }
 
     @Override
@@ -124,7 +117,7 @@ public class UserImagePresentImp implements UserWeiboPresent {
                         mView.onLoadComplete(weibos.size() >= PAGE_COUNT);
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -179,6 +172,6 @@ public class UserImagePresentImp implements UserWeiboPresent {
                         mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 }

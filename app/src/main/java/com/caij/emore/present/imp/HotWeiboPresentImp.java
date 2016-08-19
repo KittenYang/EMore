@@ -58,7 +58,7 @@ public class HotWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView
                         page = 2;
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class HotWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView
                             mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 2); //这里有一条重复的 所以需要-1
                         }
                     });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
@@ -135,12 +135,6 @@ public class HotWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView
                     }
                 })
                 .compose(new SchedulerTransformer<List<Weibo>>());
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mCompositeSubscription.clear();
     }
 
 }

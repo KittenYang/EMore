@@ -23,11 +23,10 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class CommentMentionPresentImp implements RefreshListPresent {
+public class CommentMentionPresentImp extends AbsBasePresent implements RefreshListPresent {
 
     private static final int COUNT = 20;
 
-    private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private WeiboSource mWeiboSource;
     private RefreshListView<Comment> mMentionView;
@@ -39,23 +38,18 @@ public class CommentMentionPresentImp implements RefreshListPresent {
                                     MessageSource serverMessageSource,
                                     MessageSource localMessageSource,
                                     RefreshListView<Comment> mentionView) {
+        super();
         mToken = token;
         mWeiboSource = weiboSource;
         mMentionView = mentionView;
         mServerMessageSource = serverMessageSource;
         mLocalMessageSource = localMessageSource;
         mComments = new ArrayList<>();
-        mLoginCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void onCreate() {
 
-    }
-
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
     }
 
     @Override
@@ -84,7 +78,7 @@ public class CommentMentionPresentImp implements RefreshListPresent {
                                 UnReadMessage.TYPE_MENTION_CMT, mServerMessageSource, mLocalMessageSource);
                     }
                 });
-        mLoginCompositeSubscription.add(su);
+        addSubscription(su);
     }
 
     @Override
@@ -119,7 +113,7 @@ public class CommentMentionPresentImp implements RefreshListPresent {
                         mMentionView.onLoadComplete(comments.size() > COUNT - 1);
                     }
                 });
-        mLoginCompositeSubscription.add(su);
+        addSubscription(su);
     }
 
     private Observable<List<Comment>> createGetCommentObservable(long maxId, final boolean isRefresh) {

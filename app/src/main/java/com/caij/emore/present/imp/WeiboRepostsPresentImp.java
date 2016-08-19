@@ -32,11 +32,10 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/6/28.
  */
-public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
+public class WeiboRepostsPresentImp extends AbsBasePresent implements WeiboRepostsPresent {
 
     private static final int PAGE_COUNET = 20;
 
-    private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private long mWeiboId;
     WeiboSource mServerRepostSource;
@@ -60,7 +59,6 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
         mServerUrlSource = servreUrlSource;
         mWeiboRepostsView = repostsView;
         mWeiboId = weiboId;
-        mLoginCompositeSubscription = new CompositeSubscription();
         mWeobos = new ArrayList<>();
     }
 
@@ -88,7 +86,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                     }
                 });
 
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     /**
@@ -170,7 +168,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
                     }
                 });
 
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private  Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
@@ -238,7 +236,7 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
 
     @Override
     public void onDestroy() {
-        mLoginCompositeSubscription.clear();
+        super.onDestroy();
         RxBus.getDefault().unregister(Event.EVENT_REPOST_WEIBO_SUCCESS, mWeiboObservable);
         RxBus.getDefault().unregister(Event.EVENT_REPOST_WEIBO_REFRESH_COMPLETE, mWeiboRefreshObservable);
     }
@@ -251,7 +249,6 @@ public class WeiboRepostsPresentImp implements WeiboRepostsPresent {
             SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
         }
     }
-
 
     protected void doSpanNext(Weibo weibo) {
         List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, false, null);

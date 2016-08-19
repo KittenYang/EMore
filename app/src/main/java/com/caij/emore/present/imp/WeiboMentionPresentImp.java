@@ -71,7 +71,7 @@ public class WeiboMentionPresentImp extends AbsListTimeLinePresent<TimeLineWeibo
                                 UnReadMessage.TYPE_MENTION_STATUS, mServerMessageSource, mLocalMessageSource);
                     }
                 });
-        mCompositeSubscription.add(su);
+        addSubscription(su);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class WeiboMentionPresentImp extends AbsListTimeLinePresent<TimeLineWeibo
                         mView.onLoadComplete(weibos.size() > COUNT - 1);
                     }
                 });
-        mCompositeSubscription.add(su);
+        addSubscription(su);
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
@@ -136,12 +136,5 @@ public class WeiboMentionPresentImp extends AbsListTimeLinePresent<TimeLineWeibo
                 })
                 .compose(new SchedulerTransformer<List<Weibo>>());
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mCompositeSubscription.clear();
-    }
-
 
 }

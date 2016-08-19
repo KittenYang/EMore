@@ -13,9 +13,8 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/6/27.
  */
-public class ReplyCommentPresentImp implements ReplyCommentWeiboPresent {
+public class ReplyCommentPresentImp extends AbsBasePresent implements ReplyCommentWeiboPresent {
 
-    private CompositeSubscription mLoginCompositeSubscription;
     private WeiboSource mCommentSource;
     private CommentWeiboView mCommentWeiboView;
 
@@ -30,17 +29,11 @@ public class ReplyCommentPresentImp implements ReplyCommentWeiboPresent {
         mCid = cid;
         mWeiboId = weiboId;
         mCommentWeiboView = commentWeiboView;
-        mLoginCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void onCreate() {
 
-    }
-
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
     }
 
     @Override
@@ -65,6 +58,6 @@ public class ReplyCommentPresentImp implements ReplyCommentWeiboPresent {
                         mCommentWeiboView.onCommentSuccess(response);
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 }

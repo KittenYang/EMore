@@ -46,19 +46,17 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/10.
  */
-public class ChatPresentImp implements ChatPresent {
+public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
 
     private static final int PAGE_COUNT = 20;
     private static final long MESSAGE_INTERVAL_TIME = 10 * 1000;
 
     private static final int MAX_NEW_MESSAGE_PAGE_COUNT = 40;
 
-    private CompositeSubscription mCompositeSubscription;
     private AccessToken mToken;
     private MessageSource mServerMessageSource;
     private MessageSource mLocalMessageSource;
     private UserSource mLocalUserSource;
-    private LocalImageSource localImageSource;
     private List<DirectMessage> mDirectMessages;
     private DirectMessageView mDirectMessageView;
     private long mUserId;
@@ -71,14 +69,13 @@ public class ChatPresentImp implements ChatPresent {
                           MessageSource localMessageSource,
                           UserSource localUserSource,
                           DirectMessageView directMessageView) {
+        super();
         mToken = token;
         mServerMessageSource = serverMessageSource;
         mLocalMessageSource = localMessageSource;
         mLocalUserSource = localUserSource;
         mDirectMessages = new ArrayList<>();
         mDirectMessageView = directMessageView;
-        mCompositeSubscription = new CompositeSubscription();
-        localImageSource = new LocalImageSource();
         mUserId = uid;
     }
 
@@ -147,7 +144,7 @@ public class ChatPresentImp implements ChatPresent {
                         }
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -364,7 +361,7 @@ public class ChatPresentImp implements ChatPresent {
                         }
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private void getMessageImageInfo(final DirectMessage directMessage) {
@@ -430,7 +427,7 @@ public class ChatPresentImp implements ChatPresent {
 
     @Override
     public void onDestroy() {
-        mCompositeSubscription.clear();
+        super.onDestroy();
         RxBus.getDefault().unregister(Event.EVENT_SEND_MESSAGE_RESULT, mSendMessageObservable);
         cancelLooperLoadMessage();
     }

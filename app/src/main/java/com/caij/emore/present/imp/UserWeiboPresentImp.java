@@ -33,12 +33,6 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mCompositeSubscription.clear();
-    }
-
-    @Override
     public void filter(int feature) {
         if (mFeature != feature) {
             mFeature = feature;
@@ -73,7 +67,7 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
                         mView.onLoadComplete(weibos.size() >= PAGE_COUNT);
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -106,7 +100,7 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
                         mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {

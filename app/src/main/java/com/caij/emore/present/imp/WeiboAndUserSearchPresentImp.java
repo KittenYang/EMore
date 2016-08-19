@@ -88,7 +88,7 @@ public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAn
                     }
                 });
 
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAn
                         mPage ++;
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
@@ -161,12 +161,6 @@ public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAn
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mCompositeSubscription.clear();
     }
 
     private static class Zip{

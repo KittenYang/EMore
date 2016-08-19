@@ -6,6 +6,8 @@ import com.caij.emore.ui.view.SearchRecommendView;
 import com.caij.emore.source.SearchSource;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
+import java.util.ArrayList;
+
 import rx.Subscriber;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -13,16 +15,16 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/26.
  */
-public class SearchRecommendPresentImp implements SearchRecommendPresent {
+public class SearchRecommendPresentImp extends AbsBasePresent implements SearchRecommendPresent {
 
     SearchSource mServerSearchSource;
-    protected CompositeSubscription mCompositeSubscription;
     private SearchRecommendView mSearchRecommendView;
+    private CompositeSubscription mCompositeSubscription;
 
     public SearchRecommendPresentImp(SearchSource serverSearchSource, SearchRecommendView view) {
         mServerSearchSource = serverSearchSource;
-        mCompositeSubscription = new CompositeSubscription();
         mSearchRecommendView = view;
+        mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -32,6 +34,7 @@ public class SearchRecommendPresentImp implements SearchRecommendPresent {
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         mCompositeSubscription.clear();
     }
 

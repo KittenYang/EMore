@@ -16,15 +16,14 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/8.
  */
-public class WeiCoLoginPresentImp implements LoginPresent {
+public class WeiCoLoginPresentImp extends AbsBasePresent implements LoginPresent {
+
     private LoginSource mLoginSource;
     private WeiCoLoginView mLoginView;
-    private CompositeSubscription mLoginCompositeSubscription;
 
     public WeiCoLoginPresentImp(LoginSource loginSource, WeiCoLoginView loginView) {
         mLoginSource = loginSource;
         mLoginView = loginView;
-        mLoginCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -55,7 +54,7 @@ public class WeiCoLoginPresentImp implements LoginPresent {
                         mLoginView.onLoginSuccess(accessToken);
                     }
                 });
-        mLoginCompositeSubscription.add(loginSubscription);
+        addSubscription(loginSubscription);
     }
 
     @Override
@@ -63,9 +62,4 @@ public class WeiCoLoginPresentImp implements LoginPresent {
 
     }
 
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
-        mLoginView = null;
-    }
 }

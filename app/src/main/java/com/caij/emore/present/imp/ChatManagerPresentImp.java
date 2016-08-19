@@ -30,20 +30,19 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/15.
  */
-public class ChatManagerPresentImp implements ChatManagerPresent {
+public class ChatManagerPresentImp extends AbsBasePresent implements ChatManagerPresent {
 
-//    private String mToken;
-    private CompositeSubscription mCompositeSubscription;
     private MessageSource mServerMessageSource;
     private MessageSource mLocalMessageSource;
     private Observable<MessageResponseEvent> mMessageSendObservable;
     private String mToken;
 
-    public ChatManagerPresentImp(String token, MessageSource serverMessageSource, MessageSource localMessageSource) {
+    public ChatManagerPresentImp(String token, MessageSource serverMessageSource,
+                                 MessageSource localMessageSource) {
+        super();
         mToken = token;
         mServerMessageSource = serverMessageSource;
         mLocalMessageSource = localMessageSource;
-        mCompositeSubscription = new CompositeSubscription();
         mMessageSendObservable = RxBus.getDefault().register(Event.SEND_MESSAGE_EVENT);
         mMessageSendObservable.subscribe(new Action1<MessageResponseEvent>() {
             @Override
@@ -136,7 +135,7 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
                         LogUtil.d(ChatManagerPresentImp.this, "message send success");
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -146,7 +145,7 @@ public class ChatManagerPresentImp implements ChatManagerPresent {
 
     @Override
     public void onDestroy() {
-        mCompositeSubscription.clear();
+        super.onDestroy();
         RxBus.getDefault().unregister(Event.SEND_MESSAGE_EVENT, mMessageSendObservable);
     }
 }

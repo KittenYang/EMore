@@ -24,11 +24,10 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class AttitudesToMePresentImp implements RefreshListPresent {
+public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshListPresent {
 
     private static final int COUNT = 20;
 
-    private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private WeiboSource mWeiboSource;
     private RefreshListView<Attitude> mView;
@@ -40,13 +39,13 @@ public class AttitudesToMePresentImp implements RefreshListPresent {
                                    MessageSource serverMessageSource,
                                    MessageSource localMessageSource,
                                    RefreshListView<Attitude> view) {
+        super();
         mToken = token;
         mWeiboSource = weiboSource;
         mView = view;
         mServerMessageSource = serverMessageSource;
         mLocalMessageSource = localMessageSource;
         mAttitudes = new ArrayList<>();
-        mLoginCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -80,7 +79,7 @@ public class AttitudesToMePresentImp implements RefreshListPresent {
                                 mServerMessageSource, mLocalMessageSource);
                     }
                 });
-        mLoginCompositeSubscription.add(su);
+        addSubscription(su);
     }
 
     @Override
@@ -110,7 +109,7 @@ public class AttitudesToMePresentImp implements RefreshListPresent {
                         mView.onLoadComplete(attitudes.size() > COUNT - 1);
                     }
                 });
-        mLoginCompositeSubscription.add(su);
+        addSubscription(su);
     }
 
     private Observable<List<Attitude>> createGetAttitudeObservable(long maxId, final boolean isRefresh) {
@@ -136,11 +135,5 @@ public class AttitudesToMePresentImp implements RefreshListPresent {
     public void onCreate() {
         refresh();
     }
-
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
-    }
-
 
 }

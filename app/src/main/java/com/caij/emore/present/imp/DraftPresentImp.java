@@ -28,7 +28,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/20.
  */
-public class DraftPresentImp implements DraftPresent {
+public class DraftPresentImp extends AbsBasePresent implements DraftPresent {
 
     private static final int PAGE_COUNT = 20;
 
@@ -36,13 +36,11 @@ public class DraftPresentImp implements DraftPresent {
     private List<Draft> mDrafts;
     private DraftListView mView;
     private Observable<Draft> mDraftObservable;
-    private CompositeSubscription mCompositeSubscription;
 
     public DraftPresentImp(DraftSource draftSource, DraftListView view) {
         mDraftSource = draftSource;
         mDrafts = new ArrayList<>();
         mView = view;
-        mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -75,7 +73,7 @@ public class DraftPresentImp implements DraftPresent {
                         mView.onLoadComplete(drafts.size() >= PAGE_COUNT - 1);
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -101,7 +99,7 @@ public class DraftPresentImp implements DraftPresent {
                     }
                 });
 
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
 
         mDraftObservable = RxBus.getDefault().register(Event.EVENT_DRAFT_UPDATE);
         mDraftObservable.observeOn(AndroidSchedulers.mainThread())
@@ -161,7 +159,7 @@ public class DraftPresentImp implements DraftPresent {
 
     @Override
     public void onDestroy() {
-        mCompositeSubscription.clear();
+        super.onDestroy();
         RxBus.getDefault().unregister(Event.EVENT_DRAFT_UPDATE, mDraftObservable);
     }
 

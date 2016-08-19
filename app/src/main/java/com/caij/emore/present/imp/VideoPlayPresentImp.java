@@ -14,18 +14,16 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/28.
  */
-public class VideoPlayPresentImp implements VideoPlayPresent {
+public class VideoPlayPresentImp extends AbsBasePresent implements VideoPlayPresent {
 
     private VideoPlayView mVideoPlayView;
     private long mWeiboId;
     private VideoSource mServerVideoSource;
-    private final CompositeSubscription mCompositeSubscription;
 
     public VideoPlayPresentImp(long weiboId, VideoSource serverVideoSource,VideoPlayView videoPlayView) {
         mWeiboId = weiboId;
         mVideoPlayView = videoPlayView;
         mServerVideoSource = serverVideoSource;
-        mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -49,11 +47,7 @@ public class VideoPlayPresentImp implements VideoPlayPresent {
                         mVideoPlayView.onGetVideoInfoSuccess(videoInfo);
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
-    @Override
-    public void onDestroy() {
-        mCompositeSubscription.clear();
-    }
 }

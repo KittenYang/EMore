@@ -33,11 +33,10 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/6/16.
  */
-public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
+public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboCommentsPresent {
 
     private static final int PAGE_COUNET = 20;
 
-    private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private long mWeiboId;
     WeiboSource mServerCommentSource;
@@ -60,7 +59,6 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
         mWeiboId = weiboId;
         mLocalUrlSource = new LocalUrlSource();
         mServerUrlSource = new ServerUrlSource();
-        mLoginCompositeSubscription = new CompositeSubscription();
         mComments = new ArrayList<>();
     }
 
@@ -135,7 +133,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                     }
                 });
 
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private void addRefreshDate(List<Comment> comments) {
@@ -173,7 +171,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                     }
                 });
 
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private Observable<List<Comment>> createObservable(long maxId, final boolean isRefresh) {
@@ -225,7 +223,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                         mWeiboCommentsView.onDeleteSuccess(comment);
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private void updateWeiboRepostCount(final QueryWeiboCommentResponse queryWeiboCommentResponse) {
@@ -258,7 +256,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
                 RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
             }
         });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
 
@@ -269,7 +267,7 @@ public class WeiboCommentsPresentImp implements WeiboCommentsPresent {
 
     @Override
     public void onDestroy() {
-        mLoginCompositeSubscription.clear();
+        super.onDestroy();
         RxBus.getDefault().unregister(Event.EVENT_COMMENT_WEIBO_SUCCESS, mCommentObservable);
         RxBus.getDefault().unregister(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE, mWeiboRefreshObservable);
     }

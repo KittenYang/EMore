@@ -94,7 +94,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                         mView.showDialogLoading(false);
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -187,7 +187,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                         mView.onRefreshComplete();
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -200,12 +200,6 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
         if (weibo.getId() == mWeiboId) {
             mView.onWeiboUpdate(weibo);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mCompositeSubscription.clear();
     }
 
     private static class Zip {

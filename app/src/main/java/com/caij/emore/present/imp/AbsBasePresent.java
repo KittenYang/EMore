@@ -8,17 +8,12 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/8/17.
  */
-public class AbsBasePresent implements BasePresent {
+public abstract class AbsBasePresent implements BasePresent {
 
-    protected CompositeSubscription mCompositeSubscription;
+    private CompositeSubscription mCompositeSubscription;
 
     public AbsBasePresent() {
         mCompositeSubscription = new CompositeSubscription();
-    }
-
-    @Override
-    public void onCreate() {
-
     }
 
     @Override
@@ -27,6 +22,9 @@ public class AbsBasePresent implements BasePresent {
     }
 
     protected void addSubscription(Subscription s) {
+        if (mCompositeSubscription == null) {
+            mCompositeSubscription = new CompositeSubscription();
+        }
         mCompositeSubscription.add(s);
     }
 }

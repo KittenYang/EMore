@@ -24,11 +24,10 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/3.
  */
-public class FollowsPresentImp implements FriendshipPresent {
+public class FollowsPresentImp extends AbsBasePresent implements FriendshipPresent {
 
     private static final int PAGE_SIZE = 20;
 
-    private final CompositeSubscription mLoginCompositeSubscription;
     private String mToken;
     private long mUid;
     private UserSource mUserSource;
@@ -49,17 +48,11 @@ public class FollowsPresentImp implements FriendshipPresent {
         mLocalMessageSource = localMessageSource;
         mFriendshipView = friendshipView;
         mUsers = new ArrayList<>();
-        mLoginCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void onCreate() {
 
-    }
-
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
     }
 
     @Override
@@ -88,7 +81,7 @@ public class FollowsPresentImp implements FriendshipPresent {
                         mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     public Observable<List<User>> createUsersObservable(long next_cursor, final boolean isRefresh) {
@@ -139,6 +132,6 @@ public class FollowsPresentImp implements FriendshipPresent {
                         }
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 }

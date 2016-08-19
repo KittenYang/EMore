@@ -20,9 +20,8 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/6/30.
  */
-public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
+public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfoDetailPresent {
 
-    private final CompositeSubscription mLoginCompositeSubscription;
     private DetailUserView mUserView;
     private UserSource mServerUserSource;
     private UserSource mLocalUserSource;
@@ -36,7 +35,6 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
         mLocalUserSource = localUserSource;
         mToken = token;
         mName = name;
-        mLoginCompositeSubscription = new CompositeSubscription();
     }
 
 
@@ -68,7 +66,7 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                         mUserView.onFollowSuccess();
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -99,7 +97,7 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                         mUserView.onUnfollowSuccess();
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -146,7 +144,7 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                         mUserView.setUser(user);
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
@@ -184,15 +182,11 @@ public class UserInfoDetailPresentImp implements UserInfoDetailPresent {
                         mUserView.setUser(user);
                     }
                 });
-        mLoginCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     @Override
     public void onCreate() {
     }
 
-    @Override
-    public void onDestroy() {
-        mLoginCompositeSubscription.clear();
-    }
 }

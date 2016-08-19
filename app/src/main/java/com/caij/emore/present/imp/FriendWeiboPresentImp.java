@@ -99,7 +99,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                         }
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
 
         mPublishWeiboObservable = RxBus.getDefault().register(Event.EVENT_PUBLISH_WEIBO_SUCCESS);
         mPublishWeiboObservable.doOnNext(new Action1<Weibo>() {
@@ -145,7 +145,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                         SPUtil.saveLong(Key.FRIEND_WEIBO_UPDATE_TIME + mAccount.getUsername(), System.currentTimeMillis());
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
 
@@ -179,7 +179,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                             mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 2); //这里有一条重复的 所以需要-1
                         }
                     });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
@@ -220,7 +220,6 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mCompositeSubscription.clear();
         RxBus.getDefault().unregister(Event.EVENT_PUBLISH_WEIBO_SUCCESS, mPublishWeiboObservable);
     }
 

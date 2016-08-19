@@ -39,7 +39,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/7/19.
  */
-public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent {
+public class PublishWeiboManagerPresentImp extends AbsBasePresent implements PublishWeiboManagerPresent {
 
     LocalImageSource mLocalImageSouce;
     Observable<PublishBean> mPublishWeiboObservable;
@@ -47,7 +47,6 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
     WeiboSource mServerWeiboSource;
     Account mAccount;
     WeiboSource mLocalWeiboSource;
-    CompositeSubscription mCompositeSubscription;
     PublishServiceView mPublishServiceView;
 
     public PublishWeiboManagerPresentImp(Account account, WeiboSource serverWeiboSource,
@@ -60,7 +59,6 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
         mDraftSource = localDraftSource;
         mPublishServiceView = view;
         mLocalImageSouce = new LocalImageSource();
-        mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -166,7 +164,7 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createWeiboSubscriber());
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private void publishWeiboOneImage(final PublishBean publishBean) {
@@ -218,7 +216,7 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createWeiboSubscriber());
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private void publishText(final PublishBean publishBean) {
@@ -242,7 +240,7 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createWeiboSubscriber());
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 
     private Subscriber<Weibo> createWeiboSubscriber() {
@@ -297,7 +295,7 @@ public class PublishWeiboManagerPresentImp implements PublishWeiboManagerPresent
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         RxBus.getDefault().unregister(Event.PUBLISH_WEIBO, mPublishWeiboObservable);
-        mCompositeSubscription.clear();
     }
 }

@@ -23,9 +23,8 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Caij on 2016/6/3.
  */
-public class MainPresentImp implements MainPresent {
+public class MainPresentImp extends AbsBasePresent implements MainPresent {
 
-    private final CompositeSubscription mCompositeSubscription;
     private MainView mUserView;
     private UserSource mServerUserSource;
     private UserSource mLocalUserSource;
@@ -47,7 +46,6 @@ public class MainPresentImp implements MainPresent {
         mUid = uid;
         mLocalMessageSource = localMessageSource;
         mDraftSource = draftSource;
-        mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -72,7 +70,7 @@ public class MainPresentImp implements MainPresent {
                         }
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
 
         mUnReadMessageObservable = RxBus.getDefault().register(Event.EVENT_UNREAD_MESSAGE_COMPLETE);
         mUnReadMessageObservable.subscribe(new Action1<UnReadMessage>() {
@@ -118,7 +116,7 @@ public class MainPresentImp implements MainPresent {
 
     @Override
     public void onDestroy() {
-        mCompositeSubscription.clear();
+        super.onDestroy();
         RxBus.getDefault().unregister(Event.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
         RxBus.getDefault().unregister(Event.EVENT_DRAFT_UPDATE, mDraftObservable);
     }
@@ -157,6 +155,6 @@ public class MainPresentImp implements MainPresent {
                         mUserView.setUser(user);
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        addSubscription(subscription);
     }
 }
