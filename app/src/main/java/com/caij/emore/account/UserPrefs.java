@@ -108,7 +108,7 @@ public class UserPrefs {
             mAccount = new Account();
         }
         token.setKey(token.getUid() + "_emore");
-        mAccount.setUid(token.getUid());
+        mAccount.setUid(Long.parseLong(token.getUid()));
         mAccount.setEmoreToken(token);
     }
 
@@ -117,7 +117,7 @@ public class UserPrefs {
             mAccount = new Account();
         }
         token.setKey(token.getUid() + "_weico");
-        mAccount.setUid(token.getUid());
+        mAccount.setUid(Long.parseLong(token.getUid()));
         mAccount.setWeiCoToken(token);
     }
 

@@ -24,7 +24,7 @@ public class TokenDao extends AbstractDao<Token, String> {
     */
     public static class Properties {
         public final static Property Key = new Property(0, String.class, "key", true, "KEY");
-        public final static Property Uid = new Property(1, Long.class, "uid", false, "UID");
+        public final static Property Uid = new Property(1, String.class, "uid", false, "UID");
         public final static Property Access_token = new Property(2, String.class, "access_token", false, "ACCESS_TOKEN");
         public final static Property Expires_in = new Property(3, Long.class, "expires_in", false, "EXPIRES_IN");
         public final static Property Create_at = new Property(4, Long.class, "create_at", false, "CREATE_AT");
@@ -44,7 +44,7 @@ public class TokenDao extends AbstractDao<Token, String> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"TOKEN\" (" + //
                 "\"KEY\" TEXT PRIMARY KEY NOT NULL ," + // 0: key
-                "\"UID\" INTEGER," + // 1: uid
+                "\"UID\" TEXT," + // 1: uid
                 "\"ACCESS_TOKEN\" TEXT," + // 2: access_token
                 "\"EXPIRES_IN\" INTEGER," + // 3: expires_in
                 "\"CREATE_AT\" INTEGER);"); // 4: create_at
@@ -66,9 +66,9 @@ public class TokenDao extends AbstractDao<Token, String> {
             stmt.bindString(1, key);
         }
  
-        Long uid = entity.getUid();
+        String uid = entity.getUid();
         if (uid != null) {
-            stmt.bindLong(2, uid);
+            stmt.bindString(2, uid);
         }
  
         String access_token = entity.getAccess_token();
@@ -98,7 +98,7 @@ public class TokenDao extends AbstractDao<Token, String> {
     public Token readEntity(Cursor cursor, int offset) {
         Token entity = new Token( //
             cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // key
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // uid
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // uid
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // access_token
             cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // expires_in
             cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4) // create_at
@@ -110,7 +110,7 @@ public class TokenDao extends AbstractDao<Token, String> {
     @Override
     public void readEntity(Cursor cursor, Token entity, int offset) {
         entity.setKey(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setUid(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setUid(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setAccess_token(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setExpires_in(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
         entity.setCreate_at(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));

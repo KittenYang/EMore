@@ -4,13 +4,18 @@ package com.caij.emore.account;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
+
+import com.caij.emore.utils.LogUtil;
+
+import java.util.concurrent.TimeUnit;
+
 /**
  * Entity mapped to table "TOKEN".
  */
 public class Token {
 
     private String key;
-    private Long uid;
+    private String uid;
     private String access_token;
     private Long expires_in;
     private Long create_at = System.currentTimeMillis();
@@ -25,7 +30,7 @@ public class Token {
         this.key = key;
     }
 
-    public Token(String key, Long uid, String access_token, Long expires_in, Long create_at) {
+    public Token(String key, String uid, String access_token, Long expires_in, Long create_at) {
         this.key = key;
         this.uid = uid;
         this.access_token = access_token;
@@ -41,11 +46,11 @@ public class Token {
         this.key = key;
     }
 
-    public Long getUid() {
+    public String getUid() {
         return uid;
     }
 
-    public void setUid(Long uid) {
+    public void setUid(String uid) {
         this.uid = uid;
     }
 
@@ -76,4 +81,12 @@ public class Token {
     // KEEP METHODS - put your custom methods here
     // KEEP METHODS END
 
+    public boolean isExpired() {
+        long time  = expires_in * 1000 - (System.currentTimeMillis() - create_at);
+        String days = String.valueOf(TimeUnit.MILLISECONDS.toDays(time));
+        LogUtil.d(this, "expires_in : %s", expires_in);
+        LogUtil.d(this, "%s 还有 %s天失效", uid, days);
+
+        return time <= 0;
+    }
 }
