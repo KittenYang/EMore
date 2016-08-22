@@ -14,6 +14,7 @@ import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.Emotion;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.present.CommentWeiboPresent;
 import com.caij.emore.present.imp.CommentWeiboPresentImp;
 import com.caij.emore.ui.view.CommentWeiboView;
@@ -28,12 +29,11 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/6/27.
  */
-public class CommentWeiboActivity extends PublishActivity implements CommentWeiboView {
+public class CommentWeiboActivity extends PublishActivity<CommentWeiboPresent> implements CommentWeiboView {
 
     @BindView(R.id.et_content)
     EditText etContent;
 
-    private CommentWeiboPresent mCommentWeiboPresent;
     private Dialog mCommentDialog;
 
     public static Intent newIntent(Context context, long weiboId) {
@@ -47,11 +47,14 @@ public class CommentWeiboActivity extends PublishActivity implements CommentWeib
         super.onCreate(savedInstanceState);
         setTitle(R.string.comment);
         btnCamera.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected CommentWeiboPresent createPresent() {
         AccessToken token = UserPrefs.get().getEMoreToken();
         long weiboId = getIntent().getLongExtra(Key.ID, -1);
-        mCommentWeiboPresent = new CommentWeiboPresentImp(token.getAccess_token(),
+        return new CommentWeiboPresentImp(token.getAccess_token(),
                 weiboId ,new ServerWeiboSource(), this);
-        mCommentWeiboPresent.onCreate();
     }
 
     @Override
@@ -72,7 +75,7 @@ public class CommentWeiboActivity extends PublishActivity implements CommentWeib
 
     @Override
     protected void onSendClick() {
-        mCommentWeiboPresent.toCommentWeibo(etContent.getText().toString());
+        mPresent.toCommentWeibo(etContent.getText().toString());
     }
 
     @Override
@@ -106,9 +109,4 @@ public class CommentWeiboActivity extends PublishActivity implements CommentWeib
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mCommentWeiboPresent.onDestroy();
-    }
 }

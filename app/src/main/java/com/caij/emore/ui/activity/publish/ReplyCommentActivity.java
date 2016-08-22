@@ -28,11 +28,10 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/7/2.
  */
-public class ReplyCommentActivity extends PublishActivity implements CommentWeiboView {
+public class ReplyCommentActivity extends PublishActivity<ReplyCommentWeiboPresent> implements CommentWeiboView {
 
     @BindView(R.id.et_content)
     EditText etContent;
-    private ReplyCommentWeiboPresent mCommentWeiboPresent;
     private Dialog mCommentDialog;
 
     public static Intent newIntent(Context context, long weibiId, long cid) {
@@ -47,12 +46,15 @@ public class ReplyCommentActivity extends PublishActivity implements CommentWeib
         super.onCreate(savedInstanceState);
         setTitle("回复评论");
         btnCamera.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected ReplyCommentWeiboPresent createPresent() {
         AccessToken token = UserPrefs.get().getEMoreToken();
         long weiboId = getIntent().getLongExtra(Key.ID, -1);
         long cid = getIntent().getLongExtra(Key.CID, -1);
-        mCommentWeiboPresent = new ReplyCommentPresentImp(token.getAccess_token(),
+        return new ReplyCommentPresentImp(token.getAccess_token(),
                 weiboId , cid, new ServerWeiboSource(), this);
-        mCommentWeiboPresent.onCreate();
     }
 
     @Override
@@ -73,7 +75,7 @@ public class ReplyCommentActivity extends PublishActivity implements CommentWeib
 
     @Override
     protected void onSendClick() {
-        mCommentWeiboPresent.toReplyComment(etContent.getText().toString());
+        mPresent.toReplyComment(etContent.getText().toString());
     }
 
     @Override

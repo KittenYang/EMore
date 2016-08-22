@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
+import com.caij.emore.present.BasePresent;
+import com.caij.emore.present.imp.AbsBasePresent;
 import com.caij.emore.ui.view.BaseView;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.utils.ActivityStack;
@@ -16,37 +18,31 @@ import com.caij.emore.utils.ToastUtil;
 /**
  * Created by Caij on 2016/5/27.
  */
-public class BaseActivity extends AppCompatActivity implements BaseView{
+public abstract class BaseActivity<P extends BasePresent> extends AppCompatActivity implements BaseView{
 
     private Dialog mLoadingDialog;
+    protected P mPresent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityStack.getInstance().push(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ActivityStack.getInstance().remove(this);
-        if (mLoadingDialog != null) {
-            mLoadingDialog.dismiss();
+        mPresent = createPresent();
+        if (mPresent != null) {
+            mPresent.onCreate();
         }
     }
 
-    protected void showToast(String msg) {
-        ToastUtil.show(this, msg);
-    }
+    protected abstract P createPresent();
 
-    protected void showToast(int msgId) {
-        ToastUtil.show(this, msgId);
+    protected P getPresent() {
+        return mPresent;
     }
 
     @Override
     public void onAuthenticationError() {
         UserPrefs userPrefs = UserPrefs.get();
-        showToast("身份信息失效, 需要重新认证");
+        showHint(R.string.auth_invalid_hint);
         ActivityStack.getInstance().remove(this);
         ActivityStack.getInstance().finishAllActivity();
         Intent intent = EMoreLoginActivity.newEMoreLoginIntent(this, userPrefs.getAccount().getUsername(),
@@ -58,17 +54,17 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
 
     @Override
     public void onDefaultLoadError() {
-        showToast(R.string.net_request_error);
+        showHint(R.string.net_request_error);
     }
 
     @Override
     public void showHint(int stringId) {
-        showToast(stringId);
+        showHint(getString(stringId));
     }
 
     @Override
     public void showHint(String string) {
-        showToast(string);
+        ToastUtil.show(this, string);
     }
 
     @Override
@@ -85,5 +81,17 @@ public class BaseActivity extends AppCompatActivity implements BaseView{
     @Override
     public void showDialogLoading(boolean isShow) {
         showDialogLoading(isShow, R.string.loading);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityStack.getInstance().remove(this);
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
+        if (mPresent != null) {
+            mPresent.onDestroy();
+        }
     }
 }

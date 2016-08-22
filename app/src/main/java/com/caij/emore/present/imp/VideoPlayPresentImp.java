@@ -28,6 +28,11 @@ public class VideoPlayPresentImp extends AbsBasePresent implements VideoPlayPres
 
     @Override
     public void onCreate() {
+
+    }
+
+    @Override
+    public void getVideoInfo() {
         Subscription subscription = mServerVideoSource.getVideoInfo(mWeiboId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -49,5 +54,4 @@ public class VideoPlayPresentImp extends AbsBasePresent implements VideoPlayPres
                 });
         addSubscription(subscription);
     }
-
 }

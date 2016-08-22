@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.caij.emore.R;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.utils.EmotionsUtil;
 
 import java.util.ArrayList;
@@ -55,6 +56,11 @@ public class EmotionFragment extends BaseFragment implements RadioGroup.OnChecke
         viewPager.setAdapter(new EmotionPageAdapter(getChildFragmentManager(), fragments));
         rgEmotion.setOnCheckedChangeListener(this);
         viewPager.addOnPageChangeListener(this);
+    }
+
+    @Override
+    protected BasePresent createPresent() {
+        return null;
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.fragment.MentionSelectFragment;
 
 /**
@@ -22,6 +23,11 @@ public class MentionSelectActivity extends BaseToolBarActivity {
         fragment.setArguments(bundle);
         fragment.setUserVisibleHint(true);
         getSupportFragmentManager().beginTransaction().replace(R.id.attach_container, fragment).commit();
+    }
+
+    @Override
+    protected BasePresent createPresent() {
+        return null;
     }
 
     @Override

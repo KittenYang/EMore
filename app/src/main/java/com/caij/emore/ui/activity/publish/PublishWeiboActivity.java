@@ -38,7 +38,7 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/6/22.
  */
-public class PublishWeiboActivity extends PublishActivity implements RecyclerViewOnItemClickListener, WeiboPublishView, TextWatcher {
+public class PublishWeiboActivity extends PublishActivity<WeiboPublishPresent> implements RecyclerViewOnItemClickListener, WeiboPublishView, TextWatcher {
 
 
     @BindView(R.id.et_content)
@@ -47,7 +47,6 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
     RecyclerView mRecyclerView;
 
     private PublishImageAdapter mPublishImageAdapter;
-    private WeiboPublishPresent mWeiboPublishPresent;
 
     private Draft mDraft;
 
@@ -60,7 +59,6 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initPresent();
         setTitle(R.string.publish_weibo);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -79,8 +77,6 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
 
         etContent.addTextChangedListener(this);
 
-        mWeiboPublishPresent.onCreate();
-
         Draft draft = (Draft) getIntent().getSerializableExtra(Key.OBJ);
         mDraft = draft;
         if (draft != null) {
@@ -98,6 +94,11 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
                 onSelectImageSuccess(images);
             }
         }
+    }
+
+    @Override
+    protected WeiboPublishPresent createPresent() {
+        return  new WeiboPublishPresentImp(UserPrefs.get().getAccount(), this, new LocalDraftSource());
     }
 
     private void fillData(Draft draft) {
@@ -122,10 +123,6 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
         super.onSaveInstanceState(outState);
     }
 
-    private void initPresent() {
-        mWeiboPublishPresent = new WeiboPublishPresentImp(UserPrefs.get().getAccount(), this, new LocalDraftSource());
-    }
-
     @Override
     protected void onEmotionDeleteClick() {
         KeyEvent event = new KeyEvent(0, 0, 0, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0, KeyEvent.KEYCODE_ENDCALL);
@@ -145,7 +142,7 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
     @Override
     protected void onSendClick() {
         long id = mDraft != null ? mDraft.getId() : System.currentTimeMillis();
-        mWeiboPublishPresent.publishWeibo(id, etContent.getText().toString(), (ArrayList<String>) mPublishImageAdapter.getEntities());
+        mPresent.publishWeibo(id, etContent.getText().toString(), (ArrayList<String>) mPublishImageAdapter.getEntities());
     }
 
     @Override
@@ -183,12 +180,6 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mWeiboPublishPresent.onDestroy();
-    }
-
-    @Override
     public void toAuthWeico() {
         WeicoAuthUtil.toAuthWeico(this, false);
     }
@@ -202,7 +193,7 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 long id = mDraft != null ? mDraft.getId() : System.currentTimeMillis();
-                                mWeiboPublishPresent.saveToDraft(id, etContent.getText().toString(),
+                                mPresent.saveToDraft(id, etContent.getText().toString(),
                                         (ArrayList<String>) mPublishImageAdapter.getEntities());
                                 PublishWeiboActivity.super.onBackPressed();
                             }
@@ -233,7 +224,7 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     long id = mDraft != null ? mDraft.getId() : System.currentTimeMillis();
-                                    mWeiboPublishPresent.saveToDraft(id, etContent.getText().toString(),
+                                    mPresent.saveToDraft(id, etContent.getText().toString(),
                                             (ArrayList<String>) mPublishImageAdapter.getEntities());
                                     finish();
                                 }
@@ -250,16 +241,6 @@ public class PublishWeiboActivity extends PublishActivity implements RecyclerVie
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == Key.AUTH) {
-                initPresent();
-            }
-        }
     }
 
     @Override

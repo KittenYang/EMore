@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
+import com.caij.emore.present.imp.AbsBasePresent;
 
 import java.util.List;
 
@@ -62,6 +63,11 @@ public class DefaultFragmentActivity extends BaseToolBarActivity {
             attachFragment(intent);
         }
 
+    }
+
+    @Override
+    protected AbsBasePresent createPresent() {
+        return null;
     }
 
     private void attachFragment(Intent intent) {

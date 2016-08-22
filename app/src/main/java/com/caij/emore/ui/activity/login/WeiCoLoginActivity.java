@@ -8,6 +8,7 @@ import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.imp.WeiCoLoginPresentImp;
 import com.caij.emore.ui.view.WeiCoLoginView;
@@ -21,7 +22,6 @@ import com.caij.emore.utils.Init;
  */
 public class WeiCoLoginActivity extends AbsLoginActivity implements WeiCoLoginView {
 
-    private LoginPresent mLoginPresent;
 
     public static Intent newWeiCoLoginIntent(Context context, String userName, String pwd) {
         Intent intent = new Intent(context, WeiCoLoginActivity.class);
@@ -33,14 +33,17 @@ public class WeiCoLoginActivity extends AbsLoginActivity implements WeiCoLoginVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLoginPresent = new WeiCoLoginPresentImp(new LoginSourceImp(), this);
-        mLoginPresent.onCreate();
         setTitle("高级认证");
     }
 
     @Override
+    protected LoginPresent createPresent() {
+        return new WeiCoLoginPresentImp(new LoginSourceImp(), this);
+    }
+
+    @Override
     protected void getAccessToken(String code) {
-        mLoginPresent.getAccessToken(getAppId(), getAppSecret(), code, getRedirectUrL());
+        ((LoginPresent)mPresent).getAccessToken(getAppId(), getAppSecret(), code, getRedirectUrL());
     }
 
     protected String getLoginUrl() {
@@ -88,9 +91,4 @@ public class WeiCoLoginActivity extends AbsLoginActivity implements WeiCoLoginVi
         Init.getInstance().reset(getApplicationContext(), Long.parseLong(uid));
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mLoginPresent.onDestroy();
-    }
 }

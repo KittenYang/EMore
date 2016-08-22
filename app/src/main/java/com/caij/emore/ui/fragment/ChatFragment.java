@@ -61,7 +61,7 @@ import static android.support.v7.widget.RecyclerView.*;
 /**
  * Created by Caij on 2016/7/10.
  */
-public class ChatFragment extends BaseFragment implements
+public class ChatFragment extends BaseFragment<ChatPresent> implements
         DefaultFragmentActivity.OnBackPressedListener, DirectMessageView, TextWatcher, RecyclerViewOnItemClickListener {
 
     @BindView(R.id.recycler_view)
@@ -78,7 +78,6 @@ public class ChatFragment extends BaseFragment implements
     EditText etContent;
 
     private MessageAdapter mMessageAdapter;
-    private ChatPresent mChatPresent;
     private LoadMoreView mLoadMoreView;
     Observable<Emotion> mEmotionObservable;
     Observable<Object> mEmotionDeleteObservable;
@@ -127,8 +126,6 @@ public class ChatFragment extends BaseFragment implements
             }
         });
 
-        mChatPresent = createPresent();
-        mChatPresent.onCreate();
     }
 
     private void initView() {
@@ -169,7 +166,7 @@ public class ChatFragment extends BaseFragment implements
                             getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    mChatPresent.sendMessage(directMessage);
+                                    mPresent.sendMessage(directMessage);
                                 }
                             }, getString(R.string.cancel), null);
                 }
@@ -189,7 +186,7 @@ public class ChatFragment extends BaseFragment implements
     }
 
     private void loadMore() {
-        mChatPresent.loadMore();
+        mPresent.loadMore();
     }
 
     private void initImage() {
@@ -204,6 +201,7 @@ public class ChatFragment extends BaseFragment implements
         ivAdd.setImageDrawable(addDrawable);
     }
 
+    @Override
     protected ChatPresent createPresent() {
         AccessToken accessToken = UserPrefs.get().getWeiCoToken();
         return new ChatPresentImp(accessToken, mRecipientId, new ServerMessageSource(),
@@ -246,7 +244,6 @@ public class ChatFragment extends BaseFragment implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mChatPresent.onDestroy();
         RxBus.getDefault().unregister(Event.ON_EMOTION_CLICK, mEmotionObservable);
         RxBus.getDefault().unregister(Event.ON_EMOTION_DELETE_CLICK, mEmotionDeleteObservable);
     }
@@ -283,7 +280,7 @@ public class ChatFragment extends BaseFragment implements
                 startActivityForResult(intent, Key.REQUEST_CODE_SELECT_IMAGE);
                 break;
             case R.id.tv_send:
-                mChatPresent.sendTextMessage(etContent.getText().toString());
+                mPresent.sendTextMessage(etContent.getText().toString());
                 etContent.setText("");
                 break;
         }
@@ -343,7 +340,7 @@ public class ChatFragment extends BaseFragment implements
     }
 
     private void onSelectSuccess(ArrayList<String> paths) {
-        mChatPresent.sendImageMessage(paths);
+        mPresent.sendImageMessage(paths);
     }
 
     @Override

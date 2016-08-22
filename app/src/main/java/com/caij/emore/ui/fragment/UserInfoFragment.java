@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.database.bean.User;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.utils.DateUtil;
 
 import java.util.Date;
@@ -83,5 +84,10 @@ public class UserInfoFragment extends LazyFragment {
 
     private void setItemBody(View view, String text) {
         ((TextView) view.findViewById(R.id.txtBody)).setText(text);
+    }
+
+    @Override
+    protected BasePresent createPresent() {
+        return null;
     }
 }

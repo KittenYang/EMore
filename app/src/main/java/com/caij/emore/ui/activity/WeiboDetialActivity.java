@@ -49,7 +49,7 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/12.
  */
-public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDetailView,
+public class WeiboDetialActivity extends BaseToolBarActivity<WeiboDetailPresent> implements WeiboDetailView,
         SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener, OnScrollListener, ViewPager.OnPageChangeListener {
 
     @BindView(R.id.weibo_item_view)
@@ -75,7 +75,6 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
 
     private long mWeiboId;
     private Weibo mWeibo;
-    private WeiboDetailPresent mWeiboDetailPresent;
     private List<String> mTabTitles;
     private boolean isActionMenuVisible = true;
 
@@ -89,18 +88,20 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getString(R.string.weibo_detail_title));
-        mWeiboId = getIntent().getLongExtra(Key.ID, -1);
         ButterKnife.bind(this);
 
         initView();
 
-        mWeiboDetailPresent = new WeiboDetailPresentImp(UserPrefs.get().getAccount(), mWeiboId,
-                this, new ServerWeiboSource(), new LocalWeiboSource());
-        mWeiboDetailPresent.onCreate();
-
         if (WeicoAuthUtil.checkWeicoLogin(this, true)) {
             doNext();
         }
+    }
+
+    @Override
+    protected WeiboDetailPresent createPresent() {
+        mWeiboId = getIntent().getLongExtra(Key.ID, -1);
+        return new WeiboDetailPresentImp(UserPrefs.get().getAccount(), mWeiboId,
+                this, new ServerWeiboSource(), new LocalWeiboSource());
     }
 
     private void initView(){
@@ -157,7 +158,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
         tabLayout.setTabTextColors(getResources().getColor(R.color.text_54),
                 getResources().getColor(R.color.text_80));
 
-        mWeiboDetailPresent.loadWeiboDetail();
+        mPresent.loadWeiboDetail();
     }
 
     @Override
@@ -170,9 +171,9 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
         switch (view.getId()) {
             case R.id.action_star:
                 if (mWeibo.isAttitudes()) {
-                    mWeiboDetailPresent.destoryAttitudesWeibo(mWeibo);
+                    mPresent.destoryAttitudesWeibo(mWeibo);
                 }else {
-                    mWeiboDetailPresent.attitudesWeibo(mWeibo);
+                    mPresent.attitudesWeibo(mWeibo);
                 }
                 actionMenu.collapse();
                 break;
@@ -261,7 +262,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
 
     @Override
     public void onDeleteWeiboSuccess(Weibo weibo, int position) {
-        showToast(R.string.delete_success);
+        showHint(R.string.delete_success);
         finish();
     }
 
@@ -276,16 +277,8 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mWeiboDetailPresent != null) {
-            mWeiboDetailPresent.onDestroy();
-        }
-    }
-
-    @Override
     public void onRefresh() {
-        mWeiboDetailPresent.refreshWeiboDetail();
+        mPresent.refreshWeiboDetail();
     }
 
     @Override
@@ -322,7 +315,6 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
             return;
         }
         isActionMenuVisible = true;
-        LogUtil.d(this, "onScrollDown");
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) actionMenu.getLayoutParams();
         int translationY = layoutParams.bottomMargin + actionMenu.getHeight();
         LogUtil.d("this", "translationY %s", translationY);
@@ -337,7 +329,6 @@ public class WeiboDetialActivity extends BaseToolBarActivity implements WeiboDet
             return;
         }
         isActionMenuVisible = false;
-        LogUtil.d(this, "onScrollUp");
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) actionMenu.getLayoutParams();
         int translationY = layoutParams.bottomMargin + actionMenu.getHeight();
         LogUtil.d("this", "translationY %s", translationY);

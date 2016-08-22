@@ -28,9 +28,6 @@ import org.jsoup.nodes.Element;
  */
 public abstract class AbsLoginActivity extends WebActivity {
 
-    private final static int TYPE_WEIYO = 1;
-    private final static int TYPE_WEICO = 2;
-
     private static final String TAG = "AbsLoginActivity";
     private Dialog mLoginDialog;
 
@@ -176,7 +173,7 @@ public abstract class AbsLoginActivity extends WebActivity {
 
     @Override
     public void onAuthenticationError() {
-        showToast(R.string.username_or_pwd_error);
+        showHint(R.string.username_or_pwd_error);
     }
 
     class LoginWebViewClient extends MyWebViewClient {

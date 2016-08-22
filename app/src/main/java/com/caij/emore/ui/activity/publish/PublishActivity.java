@@ -10,6 +10,7 @@ import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.Emotion;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.activity.BaseToolBarActivity;
 import com.caij.emore.ui.activity.MentionSelectActivity;
 import com.caij.emore.ui.fragment.EmotionFragment;
@@ -28,7 +29,7 @@ import rx.functions.Action1;
 /**
  * Created by Caij on 2016/6/21.
  */
-public abstract class PublishActivity extends BaseToolBarActivity {
+public abstract class PublishActivity<P extends BasePresent> extends BaseToolBarActivity<P> {
 
     public static final int REQUEST_CODE_SELECT_IMAGES = 10;
     public static final int REQUEST_CODE_SELECT_MENTION = 11;

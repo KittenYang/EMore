@@ -48,9 +48,8 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/8.
  */
-public class UserInfoActivity extends BaseActivity implements DetailUserView, AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
-
-    UserInfoDetailPresent mUserInfoDetailPresent;
+public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implements
+        DetailUserView, AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.imgCover)
     ImageView imgCover;
@@ -140,13 +139,16 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView, Ap
         }
     }
 
-    private void doNext() {
+    @Override
+    protected UserInfoDetailPresent createPresent() {
         AccessToken token = UserPrefs.get().getWeiCoToken();
-
-        mUserInfoDetailPresent = new UserInfoDetailPresentImp(token.getAccess_token(), mUserName, this,
+        String username = getIntent().getStringExtra(Key.USERNAME);
+        return new UserInfoDetailPresentImp(token.getAccess_token(), username, this,
                 new ServerUserSource(), new LocalUserSource());
+    }
 
-        mUserInfoDetailPresent.getWeiboUserInfoByName();
+    private void doNext() {
+        mPresent.getWeiboUserInfoByName();
     }
 
     private void initContent(User user) {
@@ -230,9 +232,9 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView, Ap
             case R.id.follow:
                 if (mUser != null) {
                     if (mUser.getFollowing()) {
-                        mUserInfoDetailPresent.unFollow();
+                        mPresent.unFollow();
                     } else {
-                        mUserInfoDetailPresent.follow();
+                        mPresent.follow();
                     }
                 }
                 return true;
@@ -295,14 +297,6 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView, Ap
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mUserInfoDetailPresent != null) {
-            mUserInfoDetailPresent.onDestroy();
-        }
-    }
-
-    @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         swipeRefreshLayout.setEnabled(verticalOffset == 0);
         int maxScroll = appBarLayout.getTotalScrollRange();
@@ -315,6 +309,6 @@ public class UserInfoActivity extends BaseActivity implements DetailUserView, Ap
 
     @Override
     public void onRefresh() {
-        mUserInfoDetailPresent.onRefresh();
+        mPresent.onRefresh();
     }
 }

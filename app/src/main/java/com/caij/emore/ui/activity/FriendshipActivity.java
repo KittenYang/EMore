@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
+import com.caij.emore.present.imp.AbsBasePresent;
 import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
 import com.caij.emore.ui.fragment.friendship.FollowsFragment;
@@ -53,6 +54,11 @@ public class FriendshipActivity extends BaseToolBarActivity {
                 getSupportFragmentManager(), fragments, titles);
         viewPager.setAdapter(friendshipPageAdapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    @Override
+    protected AbsBasePresent createPresent() {
+        return null;
     }
 
     @Override

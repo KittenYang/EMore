@@ -5,12 +5,14 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.caij.emore.R;
+import com.caij.emore.present.BasePresent;
+import com.caij.emore.present.imp.AbsBasePresent;
 import com.caij.emore.widget.DoubleClickToolBar;
 
 /**
  * Created by Caij on 2016/5/28.
  */
-public abstract class BaseToolBarActivity extends BaseActivity {
+public abstract class BaseToolBarActivity<P extends BasePresent> extends BaseActivity<P> {
 
     protected DoubleClickToolBar mToolbar;
     protected FrameLayout mAttachContainer;

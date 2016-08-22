@@ -44,7 +44,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity implements MainView, View.OnClickListener {
+public class MainActivity extends BaseActivity<MainPresent> implements MainView, View.OnClickListener {
 
     private static final String FRIEND_WEIBO_FRAGMENT_TAG = "friend_weibo_fragment_tag";
     private static final String MESSAGE_FRAGMENT_TAG = "message_fragment_tag";
@@ -95,12 +95,6 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.app_name, R.string.app_name);
         mActionBarDrawerToggle.syncState();
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
-
-        AccessToken token = UserPrefs.get().getEMoreToken();
-        MainPresent simpleUserPresent = new MainPresentImp(token.getAccess_token(), Long.parseLong(token.getUid()),
-                this, new ServerUserSource(), new LocalUserSource(), new LocalMessageSource(), new LocalDraftSource());
-        simpleUserPresent.onCreate();
-        simpleUserPresent.getWeiboUserInfoByUid();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // fitsSystemWindows
             int statusBarHeight = SystemUtil.getStatusBarHeight(this);
@@ -155,6 +149,16 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
             tvMessage.setSelected(true);
             tvWeibo.setSelected(false);
         }
+
+        mPresent.getWeiboUserInfoByUid();
+    }
+
+    @Override
+    protected MainPresent createPresent() {
+        AccessToken token = UserPrefs.get().getEMoreToken();
+        MainPresent simpleUserPresent = new MainPresentImp(token.getAccess_token(), Long.parseLong(token.getUid()),
+                this, new ServerUserSource(), new LocalUserSource(), new LocalMessageSource(), new LocalDraftSource());
+        return simpleUserPresent;
     }
 
 

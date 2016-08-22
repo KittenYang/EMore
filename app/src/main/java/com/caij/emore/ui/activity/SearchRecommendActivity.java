@@ -28,7 +28,8 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2016/7/25.
  */
-public class SearchRecommendActivity extends BaseActivity implements SearchRecommendView, RecyclerViewOnItemClickListener {
+public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent> implements
+        SearchRecommendView, RecyclerViewOnItemClickListener {
 
     public static final int TEXT_CHANGE_QUERY_WHAT = 100;
 
@@ -38,7 +39,6 @@ public class SearchRecommendActivity extends BaseActivity implements SearchRecom
     View rootView;
 
     SearchAdapter mSearchAdapter;
-    SearchRecommendPresent mSearchRecommendPresent;
     private Handler mHandler;
 
     @Override
@@ -46,7 +46,7 @@ public class SearchRecommendActivity extends BaseActivity implements SearchRecom
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
-        mSearchRecommendPresent = new SearchRecommendPresentImp(new ServerSearchSource(), this);
+
         mSearchView.setVersion(SearchView.VERSION_MENU_ITEM);
         mSearchView.setTheme(SearchView.THEME_LIGHT, true);
         mSearchView.setDivider(false);
@@ -107,6 +107,11 @@ public class SearchRecommendActivity extends BaseActivity implements SearchRecom
         }, 200);
     }
 
+    @Override
+    protected SearchRecommendPresent createPresent() {
+        return new SearchRecommendPresentImp(new ServerSearchSource(), this);
+    }
+
     private void searchTextChange(String newText) {
         mHandler.removeMessages(TEXT_CHANGE_QUERY_WHAT);
         if (TextUtils.isEmpty(newText)) {
@@ -131,7 +136,7 @@ public class SearchRecommendActivity extends BaseActivity implements SearchRecom
         mSearchAdapter.clearEntities();
         mSearchAdapter.notifyDataSetChanged();
 
-        mSearchRecommendPresent.search(newText);
+        mPresent.search(newText);
     }
 
     @Override

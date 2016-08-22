@@ -17,6 +17,7 @@ import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.Emotion;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.utils.LogUtil;
@@ -63,6 +64,11 @@ public class EmotionItemFragment extends BaseFragment {
             page ++;
         }
         viewPager.setAdapter(new MyPageAdapter(page, emotions));
+    }
+
+    @Override
+    protected BasePresent createPresent() {
+        return null;
     }
 
     private class MyPageAdapter extends PagerAdapter {

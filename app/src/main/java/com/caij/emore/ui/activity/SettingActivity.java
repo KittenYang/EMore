@@ -3,6 +3,7 @@ package com.caij.emore.ui.activity;
 import android.os.Bundle;
 
 import com.caij.emore.R;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.fragment.setting.AdvancedSettingFragment;
 
 /**
@@ -19,5 +20,10 @@ public class SettingActivity extends BaseToolBarActivity {
         super.onCreate(savedInstanceState);
         getFragmentManager().beginTransaction().
                 replace(R.id.attach_container, new AdvancedSettingFragment()).commit();
+    }
+
+    @Override
+    protected BasePresent createPresent() {
+        return null;
     }
 }

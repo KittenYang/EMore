@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.caij.emore.Key;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.imp.LoginPresentImp;
 import com.caij.emore.ui.view.LoginView;
@@ -16,8 +17,6 @@ import com.caij.emore.source.server.LoginSourceImp;
  * Created by Caij on 2016/7/8.
  */
 public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
-
-    private LoginPresent mEMoreLoginPresent;
 
     public static Intent newEMoreLoginIntent(Context context, String userName, String pwd) {
         Intent intent = new Intent(context, EMoreLoginActivity.class);
@@ -29,14 +28,17 @@ public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEMoreLoginPresent = new LoginPresentImp(new LoginSourceImp(), this);
-        mEMoreLoginPresent.onCreate();
         setTitle("登录");
     }
 
     @Override
+    protected LoginPresent createPresent() {
+        return new LoginPresentImp(new LoginSourceImp(), this);
+    }
+
+    @Override
     protected void getAccessToken(String code) {
-        mEMoreLoginPresent.getAccessToken(getAppId(), getAppSecret(), code, getRedirectUrL());
+        ((LoginPresent)mPresent).getAccessToken(getAppId(), getAppSecret(), code, getRedirectUrL());
     }
 
     protected String getLoginUrl() {
@@ -70,9 +72,4 @@ public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
         finish();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mEMoreLoginPresent.onDestroy();
-    }
 }

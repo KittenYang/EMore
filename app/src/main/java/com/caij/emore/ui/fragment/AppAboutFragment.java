@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.caij.emore.R;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.activity.UserInfoActivity;
 
 import butterknife.BindView;
@@ -46,6 +47,11 @@ public class AppAboutFragment extends BaseFragment {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected BasePresent createPresent() {
+        return null;
     }
 
     @OnClick(R.id.tvHelp)

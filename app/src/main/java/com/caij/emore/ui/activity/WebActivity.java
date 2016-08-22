@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 
@@ -45,6 +46,11 @@ public class WebActivity extends BaseToolBarActivity {
         setTitle(R.string.web_page);
         initView();
         handlerIntent(getIntent());
+    }
+
+    @Override
+    protected BasePresent createPresent() {
+        return null;
     }
 
     @Override

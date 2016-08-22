@@ -32,7 +32,7 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/6/27.
  */
-public class RepostWeiboActivity extends PublishActivity implements RepostWeiboView {
+public class RepostWeiboActivity extends PublishActivity<RepostWeiboPresent> implements RepostWeiboView {
 
     @BindView(R.id.et_content)
     EmotionEditText etContent;
@@ -43,7 +43,6 @@ public class RepostWeiboActivity extends PublishActivity implements RepostWeiboV
     @BindView(R.id.tv_weibo)
     TextView tvDesc;
 
-    private RepostWeiboPresent mRepostWeiboPresent;
     private Dialog mRepostDialog;
 
     public static Intent newIntent(Context context, Weibo weibo) {
@@ -63,13 +62,17 @@ public class RepostWeiboActivity extends PublishActivity implements RepostWeiboV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.repost);
-        AccessToken accessToken = UserPrefs.get().getEMoreToken();
         Weibo weibo = (Weibo) getIntent().getSerializableExtra(Key.OBJ);
         Comment comment = (Comment) getIntent().getSerializableExtra(Key.COMMENT);
-        mRepostWeiboPresent = new RepostWeiboPresentImp(accessToken.getAccess_token(), weibo.getId(),
-                new ServerWeiboSource(), this);
-
         setWeibo(weibo, comment);
+    }
+
+    @Override
+    protected RepostWeiboPresent createPresent() {
+        AccessToken accessToken = UserPrefs.get().getEMoreToken();
+        Weibo weibo = (Weibo) getIntent().getSerializableExtra(Key.OBJ);
+        return new RepostWeiboPresentImp(accessToken.getAccess_token(), weibo.getId(),
+                new ServerWeiboSource(), this);
     }
 
     @Override
@@ -90,7 +93,7 @@ public class RepostWeiboActivity extends PublishActivity implements RepostWeiboV
 
     @Override
     protected void onSendClick() {
-        mRepostWeiboPresent.repostWeibo(etContent.getText().toString());
+        mPresent.repostWeibo(etContent.getText().toString());
     }
 
     @Override

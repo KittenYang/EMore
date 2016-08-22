@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 
@@ -40,6 +41,11 @@ public class SplashActivity extends BaseActivity{
             mToIntent = new Intent(this, MainActivity.class);
         }
         mToAppObservable = Observable.timer(3, TimeUnit.SECONDS);
+    }
+
+    @Override
+    protected BasePresent createPresent() {
+        return null;
     }
 
     @Override

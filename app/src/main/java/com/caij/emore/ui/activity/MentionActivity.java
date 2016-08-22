@@ -13,6 +13,7 @@ import com.caij.emore.R;
 import com.caij.emore.UserPrefs;
 import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.Account;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
@@ -60,6 +61,11 @@ public class MentionActivity extends BaseToolBarActivity {
         } else {
             doNext();
         }
+    }
+
+    @Override
+    protected BasePresent createPresent() {
+        return null;
     }
 
     private void doNext() {

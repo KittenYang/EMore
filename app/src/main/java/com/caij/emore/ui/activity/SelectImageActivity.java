@@ -31,6 +31,7 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.Image;
 import com.caij.emore.bean.ImageFolder;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.adapter.FolderAdapter;
 import com.caij.emore.ui.adapter.GridImageAdapter;
 import com.caij.emore.utils.ExecutorServiceUtil;
@@ -107,6 +108,11 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
         }else {
             initDate();
         }
+    }
+
+    @Override
+    protected BasePresent createPresent() {
+        return null;
     }
 
     @Override

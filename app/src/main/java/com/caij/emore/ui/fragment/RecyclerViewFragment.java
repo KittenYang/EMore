@@ -26,12 +26,12 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2015/9/23.
  */
-public abstract class RecyclerViewFragment<E, P extends ListPresent> extends LazyFragment implements XRecyclerView.OnLoadMoreListener, ListView<E>,RecyclerViewOnItemClickListener {
+public abstract class RecyclerViewFragment<E, P extends ListPresent> extends LazyFragment<P> implements XRecyclerView.OnLoadMoreListener, ListView<E>,RecyclerViewOnItemClickListener {
 
     @BindView(R.id.xrecycler_view)
     protected XRecyclerView xRecyclerView;
+
     protected BaseAdapter<E, ? extends BaseViewHolder> mRecyclerViewAdapter;
-    protected P mPresent;
     private View mErrorView;
 
     @Nullable
@@ -52,14 +52,10 @@ public abstract class RecyclerViewFragment<E, P extends ListPresent> extends Laz
         mRecyclerViewAdapter = createRecyclerViewAdapter();
         xRecyclerView.setLayoutManager(createRecyclerLayoutManager());
 
-        mPresent = createPresent();
         xRecyclerView.setOnLoadMoreListener(this);
         if (mRecyclerViewAdapter != null) {
             xRecyclerView.setAdapter(mRecyclerViewAdapter);
             mRecyclerViewAdapter.setOnItemClickListener(this);
-        }
-        if (mPresent != null) {
-            mPresent.onCreate();
         }
     }
 
@@ -68,8 +64,6 @@ public abstract class RecyclerViewFragment<E, P extends ListPresent> extends Laz
     protected RecyclerView.LayoutManager createRecyclerLayoutManager() {
         return new LinearLayoutManager(getActivity());
     }
-
-    protected abstract P createPresent();
 
     protected View createEmptyView() {
         TextView emptyTextView = (TextView) getActivity().getLayoutInflater().inflate(R.layout.view_empty, xRecyclerView, false);
@@ -106,14 +100,6 @@ public abstract class RecyclerViewFragment<E, P extends ListPresent> extends Laz
     public void onLoadMore() {
         if (mPresent != null) {
             mPresent.loadMore();
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (mPresent != null) {
-            mPresent.onDestroy();
         }
     }
 

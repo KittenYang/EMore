@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
+import com.caij.emore.present.imp.AbsBasePresent;
 import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
 import com.caij.emore.ui.fragment.ImagePrewFragment;
@@ -25,7 +26,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2016/6/24.
  */
-public class ImagePrewActivity extends FragmentActivity {
+public class ImagePrewActivity extends BaseActivity {
 
     @BindView(R.id.vp_image)
     HackyViewPager mVpImage;
@@ -48,6 +49,11 @@ public class ImagePrewActivity extends FragmentActivity {
         final ArrayList<String> paths = getIntent().getStringArrayListExtra(Key.IMAGE_PATHS);
         final int position = getIntent().getIntExtra(Key.POSITION, 0);
         init(paths, position);
+    }
+
+    @Override
+    protected AbsBasePresent createPresent() {
+        return null;
     }
 
     private void init( ArrayList<String> paths, int position) {

@@ -38,7 +38,7 @@ import com.caij.emore.utils.LogUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class VideoViewPlayingActivity extends BaseActivity implements OnPreparedListener,
+public class VideoViewPlayingActivity extends BaseActivity<VideoPlayPresent> implements OnPreparedListener,
         OnCompletionListener,
         OnErrorListener,
         OnInfoListener,
@@ -77,8 +77,6 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
     private EventHandler mEventHandler;
     private HandlerThread mHandlerThread;
     private MainHandler mMainHandler;
-
-    private VideoPlayPresent mVideoPlayPresent;
 
     private final Object SYNC_Playing = new Object();
 
@@ -176,7 +174,7 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
                 pause.setImageResource(R.drawable.video_play_btn_play2);
             }else if (msg.what == EVENT_VIDEO_ERROR) {
                 pause.setImageResource(R.drawable.video_play_btn_play2);
-                showToast(getString(R.string.video_load_error));
+                showHint(getString(R.string.video_load_error));
             }
         }
     }
@@ -203,14 +201,17 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
         mEventHandler = new EventHandler(mHandlerThread.getLooper());
 
         mMainHandler = new MainHandler();
-        long weibiId = getIntent().getLongExtra(Key.ID, -1);
+
         mVideoSource = getIntent().getStringExtra(Key.PATH);
         if (TextUtils.isEmpty(mVideoSource)) {
-            mVideoPlayPresent = new VideoPlayPresentImp(weibiId, new ServerVideoInfoSource(), this);
-
-            mVideoPlayPresent.onCreate();
+            mPresent.getVideoInfo();
         }
+    }
 
+    @Override
+    protected VideoPlayPresent createPresent() {
+        long weibiId = getIntent().getLongExtra(Key.ID, -1);
+        return new VideoPlayPresentImp(weibiId, new ServerVideoInfoSource(), this);
     }
 
     /**
@@ -310,9 +311,6 @@ public class VideoViewPlayingActivity extends BaseActivity implements OnPrepared
         mHandlerThread.quit();
 
         mMainHandler.removeCallbacksAndMessages(null);
-        if (mVideoPlayPresent != null) {
-            mVideoPlayPresent.onDestroy();
-        }
     }
 
     @Override

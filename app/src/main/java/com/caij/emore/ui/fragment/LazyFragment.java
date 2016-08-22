@@ -3,10 +3,12 @@ package com.caij.emore.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.caij.emore.present.BasePresent;
+
 /**
  * Created by Caij on 2015/9/18.
  */
-public abstract class LazyFragment extends BaseFragment{
+public abstract class LazyFragment<P extends BasePresent> extends BaseFragment<P>{
 
     private boolean isFirstVisible = true;
     private boolean isPrepared = false;
