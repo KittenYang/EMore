@@ -5,13 +5,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.utils.Init;
 import com.caij.emore.utils.ChannelUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SPUtil;
-import com.caij.emore.utils.ToastUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 
 /**
@@ -26,8 +26,8 @@ public class AppApplication extends Application{
         mApplication = this;
         SPUtil.init(this, Key.SP_CONFIG);
         initCrashReport();
-        if (UserPrefs.get().getEMoreToken() != null && UserPrefs.get().getWeiCoToken() != null) {
-            AccessToken accessToken = UserPrefs.get().getEMoreToken();
+        if (UserPrefs.get(this).getEMoreToken() != null && UserPrefs.get(this).getWeiCoToken() != null) {
+            Token accessToken = UserPrefs.get(this).getEMoreToken();
             Init.getInstance().reset(this, Long.parseLong(accessToken.getUid()));
         }
     }

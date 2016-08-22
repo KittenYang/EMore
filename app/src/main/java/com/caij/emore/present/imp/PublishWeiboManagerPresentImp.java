@@ -4,8 +4,8 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
 import com.caij.emore.Event;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.Account;
+import com.caij.emore.account.Account;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.database.bean.ImageInfo;
@@ -34,7 +34,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/19.
@@ -115,7 +114,7 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
                     public Observable<UploadImageResponse> call(final String imagePath) {
                         try {
                             Observable<UploadImageResponse> serverObservable = mServerWeiboSource.
-                                    uploadWeiboOfOneImage(mAccount.getWeicoToken().getAccess_token(), imagePath)
+                                    uploadWeiboOfOneImage(mAccount.getWeiCoToken().getAccess_token(), imagePath)
                                     .doOnNext(new Action1<UploadImageResponse>() {
                                         @Override
                                         public void call(UploadImageResponse uploadImageResponse) {
@@ -124,7 +123,7 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
                                         }
                                     });
                             Observable<UploadImageResponse> localObservable = mLocalWeiboSource.
-                                    uploadWeiboOfOneImage(mAccount.getWeicoToken().getAccess_token(), imagePath);
+                                    uploadWeiboOfOneImage(mAccount.getWeiCoToken().getAccess_token(), imagePath);
                             return Observable.concat(localObservable, serverObservable)
                                     .first(new Func1<UploadImageResponse, Boolean>() {
                                         @Override
@@ -169,7 +168,6 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
 
     private void publishWeiboOneImage(final PublishBean publishBean) {
         mPublishServiceView.onPublishStart(publishBean);
-        final Account account = UserPrefs.get().getAccount();
         Subscription subscription = Observable.create(new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
@@ -185,7 +183,7 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
                 .flatMap(new Func1<String, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(String path) {
-                        return mServerWeiboSource.publishWeiboOfOneImage(account.getEmoreToken().getAccess_token(),
+                        return mServerWeiboSource.publishWeiboOfOneImage(mAccount.getEmoreToken().getAccess_token(),
                                 publishBean.getText(), path);
                     }
                 })
@@ -220,9 +218,8 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
     }
 
     private void publishText(final PublishBean publishBean) {
-        final Account account = UserPrefs.get().getAccount();
         Observable<Weibo> publishWeiboObservable = mServerWeiboSource.
-                publishWeiboOfText(account.getEmoreToken().getAccess_token(), publishBean.getText());
+                publishWeiboOfText(mAccount.getEmoreToken().getAccess_token(), publishBean.getText());
         mPublishServiceView.onPublishStart(publishBean);
         Subscription subscription = publishWeiboObservable.subscribeOn(Schedulers.io())
                 .doOnError(new Action1<Throwable>() {

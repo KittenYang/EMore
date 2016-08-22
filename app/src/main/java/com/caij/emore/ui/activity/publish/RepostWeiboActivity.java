@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.Emotion;
 import com.caij.emore.database.bean.Weibo;
@@ -69,7 +69,7 @@ public class RepostWeiboActivity extends PublishActivity<RepostWeiboPresent> imp
 
     @Override
     protected RepostWeiboPresent createPresent() {
-        AccessToken accessToken = UserPrefs.get().getEMoreToken();
+        Token accessToken = UserPrefs.get(this).getEMoreToken();
         Weibo weibo = (Weibo) getIntent().getSerializableExtra(Key.OBJ);
         return new RepostWeiboPresentImp(accessToken.getAccess_token(), weibo.getId(),
                 new ServerWeiboSource(), this);

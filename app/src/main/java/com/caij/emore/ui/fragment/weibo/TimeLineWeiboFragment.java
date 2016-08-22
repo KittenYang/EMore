@@ -4,7 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.TimeLinePresent;
 import com.caij.emore.ui.view.TimeLineWeiboView;
@@ -50,7 +50,7 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends S
         }else {
             items.add("收藏");
         }
-        long uid = Long.parseLong(UserPrefs.get().getEMoreToken().getUid());
+        long uid = Long.parseLong(UserPrefs.get(getActivity()).getEMoreToken().getUid());
         if (weibo.getUser().getId() == uid) {
             items.add("删除");
         }

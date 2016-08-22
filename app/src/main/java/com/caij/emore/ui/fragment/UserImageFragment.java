@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.present.imp.UserImagePresentImp;
@@ -71,7 +71,7 @@ public class UserImageFragment extends RecyclerViewFragment<PicUrl, UserWeiboPre
 
     @Override
     protected UserWeiboPresent createPresent() {
-        AccessToken accessToken = UserPrefs.get().getWeiCoToken();
+        Token accessToken = UserPrefs.get(getActivity()).getWeiCoToken();
         String username = getArguments().getString(Key.USERNAME);
         return new UserImagePresentImp(accessToken.getAccess_token(), username, this, new ServerWeiboSource());
     }

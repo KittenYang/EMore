@@ -1,6 +1,6 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.bean.Account;
+import com.caij.emore.account.Account;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
@@ -45,7 +45,7 @@ public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAn
     @Override
     public void refresh() {
         Observable<List<Weibo>> weiboObservable = createObservable(1, true);
-        Observable<List<User>> userObservable = mServerUserSource.getSearchUser(mAccount.getWeicoToken().getAccess_token(),
+        Observable<List<User>> userObservable = mServerUserSource.getSearchUser(mAccount.getWeiCoToken().getAccess_token(),
                 mKey, 1, PAGE_COUNT);
 
         Subscription subscription = Observable.zip(weiboObservable, userObservable, new Func2<List<Weibo>, List<User>, Zip>() {
@@ -128,7 +128,7 @@ public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAn
     }
 
     private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
-        return mServerWeiboSource.getSearchWeibo(mAccount.getWeicoToken().getAccess_token(), mKey, page, PAGE_COUNT)
+        return mServerWeiboSource.getSearchWeibo(mAccount.getWeiCoToken().getAccess_token(), mKey, page, PAGE_COUNT)
                 .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override

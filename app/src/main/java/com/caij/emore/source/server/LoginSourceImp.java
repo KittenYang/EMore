@@ -1,8 +1,8 @@
 package com.caij.emore.source.server;
 
+import com.caij.emore.account.Token;
 import com.caij.emore.api.WeiBoService;
 import com.caij.emore.api.WeiCoService;
-import com.caij.emore.bean.AccessToken;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.source.LoginSource;
 
@@ -14,8 +14,8 @@ import rx.Observable;
 public class LoginSourceImp implements LoginSource{
 
     @Override
-    public Observable<AccessToken> getAccessToken(String clientId, String clientSecret,
-                                                  String code, String redirectUrL) {
+    public Observable<Token> getAccessToken(String clientId, String clientSecret,
+                                            String code, String redirectUrL) {
         WeiBoService service = WeiBoService.Factory.create();
         return service.getAccessToken(clientId, clientSecret, "authorization_code", code, redirectUrL);
     }

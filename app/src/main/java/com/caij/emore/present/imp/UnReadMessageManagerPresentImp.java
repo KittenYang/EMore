@@ -2,7 +2,7 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.AppApplication;
 import com.caij.emore.Event;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.UnReadMessageManagerPresent;
 import com.caij.emore.ui.view.UnReadMessageManagerPresentView;
@@ -18,7 +18,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/23.
@@ -29,9 +28,9 @@ public class UnReadMessageManagerPresentImp extends AbsBasePresent implements Un
     private MessageSource mServerMessageSource;
     private MessageSource mLocalMessageSource;
     private UnReadMessageManagerPresentView mView;
-    private AccessToken mToken;
+    private Token mToken;
 
-    public UnReadMessageManagerPresentImp(AccessToken token, MessageSource serverMessageSource,
+    public UnReadMessageManagerPresentImp(Token token, MessageSource serverMessageSource,
                                           MessageSource localMessageSource, UnReadMessageManagerPresentView view) {
         mToken = token;
         mServerMessageSource = serverMessageSource;

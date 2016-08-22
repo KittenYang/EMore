@@ -2,7 +2,8 @@ package com.caij.emore.source.local;
 
 import android.text.TextUtils;
 
-import com.caij.emore.UserPrefs;
+import com.caij.emore.AppApplication;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserMessageResponse;
@@ -96,7 +97,7 @@ public class LocalMessageSource implements MessageSource {
                     }else if (sinceCreateTime != 0) {
                         queryBuilder.where(DirectMessageDao.Properties.Created_at_long.ge(sinceCreateTime));
                     }
-                    long selfUid  = Long.parseLong(UserPrefs.get().getAccount().getEmoreToken().getUid());
+                    long selfUid  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getAccount().getEmoreToken().getUid());
                     queryBuilder.where(queryBuilder.or(queryBuilder.and(DirectMessageDao.Properties.Recipient_id.eq(selfUid),
                             DirectMessageDao.Properties.Sender_id.eq(uid)),
                             queryBuilder.and(DirectMessageDao.Properties.Sender_id.eq(selfUid),
@@ -219,7 +220,7 @@ public class LocalMessageSource implements MessageSource {
             @Override
             public void call(Subscriber<? super Response> subscriber) {
                 try {
-                    long id  = Long.parseLong(UserPrefs.get().getEMoreToken().getUid());
+                    long id  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid());
                     UnReadMessage unReadMessage = mUnReadMessageDao.load(id);
                     if (unReadMessage != null) {
                         if (type.equals(UnReadMessage.TYPE_MENTION_STATUS)) {

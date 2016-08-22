@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.present.imp.UserWeiboPresentImp;
 import com.caij.emore.source.local.LocalWeiboSource;
@@ -46,7 +46,7 @@ public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> i
     @Override
     protected UserWeiboPresent createPresent() {
         String username = getArguments().getString(Key.USERNAME);
-        return new UserWeiboPresentImp(UserPrefs.get().getAccount(), username, this, new ServerWeiboSource(), new LocalWeiboSource());
+        return new UserWeiboPresentImp(UserPrefs.get(getActivity()).getAccount(), username, this, new ServerWeiboSource(), new LocalWeiboSource());
     }
 
     @Override

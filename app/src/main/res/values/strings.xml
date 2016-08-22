@@ -194,5 +194,10 @@
     <string name="setting_key_exit">key_exit</string>
     <string name="setting_key_clear_cache">clear_cache</string>
     <string name="text_full_hint">最多只能写这么多东西啦。</string>
+    <string name="settings_account">账号管理</string>
+    <string name="key_setting_notify">key_setting_notify</string>
+    <string name="key_setting_account" >key_setting_account</string>
+    <string name="menu_add_account">添加账号</string>
+    <string name="is_current_account">当前的账户已经是您选择的账号啦</string>
 
 </resources>

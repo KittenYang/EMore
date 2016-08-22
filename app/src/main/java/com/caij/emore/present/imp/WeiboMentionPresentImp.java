@@ -1,6 +1,6 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.bean.Account;
+import com.caij.emore.account.Account;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
@@ -67,7 +67,7 @@ public class WeiboMentionPresentImp extends AbsListTimeLinePresent<TimeLineWeibo
                         mView.onRefreshComplete();
                         mView.onLoadComplete(weibos.size() > COUNT - 2);
 
-                        MessageUtil.resetUnReadMessage(mAccount.getWeicoToken().getAccess_token(),
+                        MessageUtil.resetUnReadMessage(mAccount.getWeiCoToken().getAccess_token(),
                                 UnReadMessage.TYPE_MENTION_STATUS, mServerMessageSource, mLocalMessageSource);
                     }
                 });
@@ -104,7 +104,7 @@ public class WeiboMentionPresentImp extends AbsListTimeLinePresent<TimeLineWeibo
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getWeiboMentions(mAccount.getWeicoToken().getAccess_token(), 0, maxId, COUNT, 1)
+        return mServerWeiboSource.getWeiboMentions(mAccount.getWeiCoToken().getAccess_token(), 0, maxId, COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override

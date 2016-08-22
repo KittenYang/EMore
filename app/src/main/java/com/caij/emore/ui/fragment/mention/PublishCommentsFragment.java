@@ -4,8 +4,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.present.PublishCommentsPresent;
 import com.caij.emore.present.imp.PublishCommentsPresentImp;
@@ -31,7 +31,7 @@ public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment<Co
 
     @Override
     protected PublishCommentsPresent createPresent() {
-        AccessToken accessToken = UserPrefs.get().getEMoreToken();
+        Token accessToken = UserPrefs.get(getActivity()).getEMoreToken();
         return new PublishCommentsPresentImp(accessToken.getAccess_token(), new ServerWeiboSource(), this);
     }
 

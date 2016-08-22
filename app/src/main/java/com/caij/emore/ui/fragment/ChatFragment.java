@@ -24,8 +24,8 @@ import android.widget.TextView;
 import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Emotion;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.present.ChatPresent;
@@ -83,8 +83,6 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     Observable<Object> mEmotionDeleteObservable;
     private LinearLayoutManager mLinearLayoutManager;
 
-    private long mRecipientId;
-
     public static ChatFragment newInstance(String name, long uid) {
         Bundle args = new Bundle();
         args.putLong(Key.ID, uid);
@@ -105,7 +103,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRecipientId = getArguments().getLong(Key.ID);
+
         initImage();
         getChildFragmentManager().beginTransaction().
                 replace(R.id.fl_emotion, new EmotionFragment()).commit();
@@ -203,8 +201,9 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
 
     @Override
     protected ChatPresent createPresent() {
-        AccessToken accessToken = UserPrefs.get().getWeiCoToken();
-        return new ChatPresentImp(accessToken, mRecipientId, new ServerMessageSource(),
+        Token accessToken = UserPrefs.get(getActivity()).getWeiCoToken();
+        long recipientId = getArguments().getLong(Key.ID);
+        return new ChatPresentImp(accessToken, recipientId, new ServerMessageSource(),
                 new LocalMessageSource(), new LocalUserSource(), this);
     }
 
@@ -357,7 +356,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
 
     private String appImageUrl(String url) {
         if (url.startsWith("http")) {
-            return url + "&access_token=" + UserPrefs.get().getWeiCoToken().getAccess_token();
+            return url + "&access_token=" + UserPrefs.get(getActivity()).getWeiCoToken().getAccess_token();
         }
         return url;
     }

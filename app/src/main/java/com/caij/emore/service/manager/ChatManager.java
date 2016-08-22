@@ -1,15 +1,8 @@
 package com.caij.emore.service.manager;
 
-import android.text.TextUtils;
-
-import com.caij.emore.Key;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
-import com.caij.emore.database.bean.DirectMessage;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.ChatManagerPresent;
-import com.caij.emore.present.ChatPresent;
 import com.caij.emore.present.imp.ChatManagerPresentImp;
-import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.server.ServerMessageSource;
 
@@ -28,7 +21,7 @@ public class ChatManager extends IManager {
 
     @Override
     protected void doOnCreate() {
-        mChatManagerPresent = new ChatManagerPresentImp(UserPrefs.get().getWeiCoToken().getAccess_token(),
+        mChatManagerPresent = new ChatManagerPresentImp(UserPrefs.get(ctx).getWeiCoToken().getAccess_token(),
                 new ServerMessageSource(), new LocalMessageSource());
         mChatManagerPresent.onCreate();
     }

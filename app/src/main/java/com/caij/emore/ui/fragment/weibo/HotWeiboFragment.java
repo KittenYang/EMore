@@ -1,11 +1,10 @@
 package com.caij.emore.ui.fragment.weibo;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.HotWeiboPresent;
 import com.caij.emore.present.imp.HotWeiboPresentImp;
 import com.caij.emore.source.local.LocalWeiboSource;
@@ -31,7 +30,7 @@ public class HotWeiboFragment extends TimeLineWeiboFragment<HotWeiboPresent> {
 
     @Override
     protected HotWeiboPresent createPresent() {
-        return new HotWeiboPresentImp(UserPrefs.get().getAccount(), this,
+        return new HotWeiboPresentImp(UserPrefs.get(getActivity()).getAccount(), this,
                 new ServerWeiboSource(), new LocalWeiboSource());
     }
 

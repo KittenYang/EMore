@@ -4,8 +4,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.present.imp.AcceptCommentsPresentImp;
@@ -46,7 +46,7 @@ public class AcceptCommentsFragment extends SwipeRefreshRecyclerViewFragment<Com
     }
 
     protected RefreshListPresent createPresent() {
-        AccessToken accessToken = UserPrefs.get().getWeiCoToken();
+        Token accessToken = UserPrefs.get(getActivity()).getWeiCoToken();
         return new AcceptCommentsPresentImp(accessToken.getAccess_token(), new ServerWeiboSource(),
                 new ServerMessageSource(), new LocalMessageSource(), this);
     }

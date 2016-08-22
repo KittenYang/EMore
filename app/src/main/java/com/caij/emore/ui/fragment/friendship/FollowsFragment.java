@@ -3,8 +3,8 @@ package com.caij.emore.ui.fragment.friendship;
 import android.os.Bundle;
 
 import com.caij.emore.Key;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.FriendshipPresent;
 import com.caij.emore.present.imp.FollowsPresentImp;
 import com.caij.emore.source.local.LocalMessageSource;
@@ -26,7 +26,7 @@ public class FollowsFragment extends FriendshipFragment<FriendshipPresent> {
 
     @Override
     protected FriendshipPresent createPresent() {
-        AccessToken accessToken = UserPrefs.get().getWeiCoToken();
+        Token accessToken = UserPrefs.get(getActivity()).getWeiCoToken();
         long uid = getArguments().getLong(Key.ID);
         return new FollowsPresentImp(accessToken.getAccess_token(), uid, new ServerUserSource(),
                 new ServerMessageSource(), new LocalMessageSource(), this);

@@ -1,6 +1,6 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.bean.Account;
+import com.caij.emore.account.Account;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.UserWeiboPresent;
@@ -104,7 +104,7 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getUseWeibo(mAccount.getWeicoToken().getAccess_token(), mUsername, mFeature, 0, maxId, PAGE_COUNT, 1)
+        return mServerWeiboSource.getUseWeibo(mAccount.getWeiCoToken().getAccess_token(), mUsername, mFeature, 0, maxId, PAGE_COUNT, 1)
                 .compose(new ErrorCheckerTransformer<UserWeiboResponse>())
                 .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
                     @Override

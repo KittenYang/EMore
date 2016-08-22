@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.present.ListPresent;
 import com.caij.emore.present.imp.WeiboAttitudesPresentImp;
@@ -65,7 +65,7 @@ public class WeiboLikerListFragment extends RecyclerViewFragment<Attitude, ListP
 
     @Override
     protected ListPresent createPresent() {
-        AccessToken token = UserPrefs.get().getWeiCoToken();
+        Token token = UserPrefs.get(getActivity()).getWeiCoToken();
         long weiId = getArguments().getLong(Key.ID);
         return  new WeiboAttitudesPresentImp(token.getAccess_token(), weiId,
                 new ServerWeiboSource(), new LocalWeiboSource(), this);

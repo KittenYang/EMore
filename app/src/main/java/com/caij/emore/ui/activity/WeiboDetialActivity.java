@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboDetailPresent;
 import com.caij.emore.present.imp.WeiboDetailPresentImp;
@@ -100,7 +100,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity<WeiboDetailPresent>
     @Override
     protected WeiboDetailPresent createPresent() {
         mWeiboId = getIntent().getLongExtra(Key.ID, -1);
-        return new WeiboDetailPresentImp(UserPrefs.get().getAccount(), mWeiboId,
+        return new WeiboDetailPresentImp(UserPrefs.get(this).getAccount(), mWeiboId,
                 this, new ServerWeiboSource(), new LocalWeiboSource());
     }
 

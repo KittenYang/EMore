@@ -7,7 +7,7 @@
             android:key="@string/key_setting_theme" android:title="@string/settings_md_colors"/>
 
         <Preference
-            android:key="pNotification"
+            android:key="@string/key_setting_notify"
             android:title="@string/settings_notify" />
 
         <Preference
@@ -39,7 +39,8 @@
     <PreferenceCategory android:title="账号">
 
         <Preference
-            android:key="key_change_account" android:title="切换账号"/>
+            android:key="@string/key_setting_account"
+            android:title="@string/settings_account" />
 
         <Preference
             android:key="@string/setting_key_exit" android:title="退出"/>

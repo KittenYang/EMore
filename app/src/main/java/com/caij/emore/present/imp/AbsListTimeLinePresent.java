@@ -1,7 +1,7 @@
 package com.caij.emore.present.imp;
 
 
-import com.caij.emore.bean.Account;
+import com.caij.emore.account.Account;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.view.ListView;
 import com.caij.emore.ui.view.WeiboActionView;

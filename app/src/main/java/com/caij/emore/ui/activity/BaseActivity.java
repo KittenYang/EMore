@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.BasePresent;
-import com.caij.emore.present.imp.AbsBasePresent;
 import com.caij.emore.ui.view.BaseView;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.DialogUtil;
+import com.caij.emore.utils.Init;
 import com.caij.emore.utils.ToastUtil;
 
 /**
@@ -41,15 +41,18 @@ public abstract class BaseActivity<P extends BasePresent> extends AppCompatActiv
 
     @Override
     public void onAuthenticationError() {
-        UserPrefs userPrefs = UserPrefs.get();
+        UserPrefs userPrefs = UserPrefs.get(this);
         showHint(R.string.auth_invalid_hint);
         ActivityStack.getInstance().remove(this);
         ActivityStack.getInstance().finishAllActivity();
         Intent intent = EMoreLoginActivity.newEMoreLoginIntent(this, userPrefs.getAccount().getUsername(),
                 userPrefs.getAccount().getPwd());
         startActivity(intent);
+
+        Init.getInstance().stop(this);
+        UserPrefs.get(this).deleteAccount(userPrefs.getAccount());
+
         finish();
-        UserPrefs.get().clear();
     }
 
     @Override

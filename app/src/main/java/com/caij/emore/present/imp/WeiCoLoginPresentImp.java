@@ -1,8 +1,10 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.AppApplication;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Account;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.ui.view.WeiCoLoginView;
 import com.caij.emore.source.LoginSource;
@@ -11,7 +13,6 @@ import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/8.
@@ -27,17 +28,22 @@ public class WeiCoLoginPresentImp extends AbsBasePresent implements LoginPresent
     }
 
     @Override
-    public void getAccessToken(String clientId, String clientSecret, String grantType, final String redirectUrL) {
+    public void getAccessToken(String clientId, String clientSecret, String grantType, final String redirectUrL, String username, String pwd) {
         mLoginView.showDialogLoading(true, R.string.logining);
         Subscription loginSubscription = mLoginSource.getAccessToken(clientId, clientSecret, grantType, redirectUrL)
-                .doOnNext(new Action1<AccessToken>() {
+                .doOnNext(new Action1<Token>() {
                     @Override
-                    public void call(AccessToken accessToken) {
-                        UserPrefs.get().setWeiCoToken(accessToken);
+                    public void call(Token accessToken) {
+                        UserPrefs userPrefs = UserPrefs.get(AppApplication.getInstance());
+                        Account account = userPrefs.getAccount();
+                        accessToken.setKey(accessToken.getUid() + "_weico");
+                        account.setStatus(Account.STATUS_USING);
+                        account.setWeiCoToken(accessToken);
+                        userPrefs.commit(account);
                     }
                 })
-                .compose(new SchedulerTransformer<AccessToken>())
-                .subscribe(new Subscriber<AccessToken>() {
+                .compose(new SchedulerTransformer<Token>())
+                .subscribe(new Subscriber<Token>() {
                     @Override
                     public void onCompleted() {
                         mLoginView.showDialogLoading(false, R.string.logining);
@@ -50,7 +56,7 @@ public class WeiCoLoginPresentImp extends AbsBasePresent implements LoginPresent
                     }
 
                     @Override
-                    public void onNext(AccessToken accessToken) {
+                    public void onNext(Token accessToken) {
                         mLoginView.onLoginSuccess(accessToken);
                     }
                 });

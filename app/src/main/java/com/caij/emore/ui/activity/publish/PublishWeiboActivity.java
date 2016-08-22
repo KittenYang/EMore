@@ -17,7 +17,7 @@ import android.widget.EditText;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Emotion;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.WeiboPublishPresent;
@@ -98,7 +98,7 @@ public class PublishWeiboActivity extends PublishActivity<WeiboPublishPresent> i
 
     @Override
     protected WeiboPublishPresent createPresent() {
-        return  new WeiboPublishPresentImp(UserPrefs.get().getAccount(), this, new LocalDraftSource());
+        return  new WeiboPublishPresentImp(UserPrefs.get(this).getAccount(), this, new LocalDraftSource());
     }
 
     private void fillData(Draft draft) {

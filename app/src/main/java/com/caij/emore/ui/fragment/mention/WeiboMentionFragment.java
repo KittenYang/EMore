@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.WeiboMentionPresent;
 import com.caij.emore.present.imp.WeiboMentionPresentImp;
 import com.caij.emore.source.local.LocalMessageSource;
@@ -29,7 +29,7 @@ public class WeiboMentionFragment extends TimeLineWeiboFragment<WeiboMentionPres
 
     @Override
     protected WeiboMentionPresent createPresent() {
-       return new WeiboMentionPresentImp(UserPrefs.get().getAccount(), new ServerWeiboSource(), new LocalWeiboSource(),
+       return new WeiboMentionPresentImp(UserPrefs.get(getActivity()).getAccount(), new ServerWeiboSource(), new LocalWeiboSource(),
                new ServerMessageSource(), new LocalMessageSource(), this);
     }
 

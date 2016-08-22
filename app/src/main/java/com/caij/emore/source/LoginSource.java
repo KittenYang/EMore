@@ -1,6 +1,6 @@
 package com.caij.emore.source;
 
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
 
 import rx.Observable;
@@ -10,7 +10,7 @@ import rx.Observable;
  */
 public interface LoginSource {
 
-    public Observable<AccessToken> getAccessToken(String clientId, String clientSecret, String grantType, String redirectUrL);
+    public Observable<Token> getAccessToken(String clientId, String clientSecret, String grantType, String redirectUrL);
 
     public Observable<WeiCoLoginResponse> weicoLogin(String access_token,String source, String i, String getcookie);
 

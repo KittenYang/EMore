@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.caij.emore.Event;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.MessageUserPresent;
@@ -132,7 +132,7 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
     @Override
     protected MessageUserPresent createPresent() {
         if (WeicoAuthUtil.checkWeicoLogin(this, false)) {
-            AccessToken accessToken = UserPrefs.get().getWeiCoToken();
+            Token accessToken = UserPrefs.get(getActivity()).getWeiCoToken();
             return new MessageUserPresentImp(accessToken.getAccess_token(), new ServerMessageSource(),
                     new LocalMessageSource(), this);
         }

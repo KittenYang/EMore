@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.present.WeiboCommentsPresent;
 import com.caij.emore.present.imp.WeiboCommentsPresentImp;
@@ -78,7 +78,7 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
 
     @Override
     protected WeiboCommentsPresent createPresent() {
-        AccessToken token = UserPrefs.get().getEMoreToken();
+        Token token = UserPrefs.get(getActivity()).getEMoreToken();
         long weibiId  = getArguments().getLong(Key.ID);
         return new WeiboCommentsPresentImp(token.getAccess_token(), weibiId,
                 new ServerWeiboSource(), new LocalWeiboSource(), this);
@@ -124,7 +124,7 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
             Intent intent = UserInfoActivity.newIntent(getActivity(), comment.getUser().getScreen_name());
             startActivity(intent);
         }else {
-            if (comment.getUser().getId() == Long.parseLong(UserPrefs.get().getEMoreToken().getUid())) {
+            if (comment.getUser().getId() == Long.parseLong(UserPrefs.get(getActivity()).getEMoreToken().getUid())) {
                 String[] array = new String[]{"删除", "复制"};
                 DialogUtil.showItemDialog(getActivity(), null, array, new DialogInterface.OnClickListener() {
                     @Override

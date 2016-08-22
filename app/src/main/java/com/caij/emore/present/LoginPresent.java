@@ -5,5 +5,5 @@ package com.caij.emore.present;
  */
 public interface LoginPresent extends BasePresent{
 
-    public void getAccessToken(String clientId, String clientSecret, String grantType, String redirectUrL );
+    public void getAccessToken(String clientId, String clientSecret, String grantType, String redirectUrL, String username, String pwd);
 }

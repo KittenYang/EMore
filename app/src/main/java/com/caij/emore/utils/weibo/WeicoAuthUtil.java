@@ -1,19 +1,17 @@
 package com.caij.emore.utils.weibo;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.caij.emore.AppApplication;
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.Account;
+import com.caij.emore.account.Account;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.utils.DialogUtil;
-
-import java.util.Map;
 
 /**
  * Created by Caij on 2016/7/10.
@@ -37,8 +35,8 @@ public class WeicoAuthUtil {
     }
 
     private static boolean check() {
-        if (UserPrefs.get().getWeiCoToken() == null
-                || UserPrefs.get().getWeiCoToken().getAccess_token() == null
+        if (UserPrefs.get(AppApplication.getInstance()).getWeiCoToken() == null
+                || UserPrefs.get(AppApplication.getInstance()).getWeiCoToken().getAccess_token() == null
 /*                || UserPrefs.getDefault().getAccount().getWeiCoLoginResponse() == null
                 || UserPrefs.getDefault().getAccount().getWeiCoLoginResponse().getGsid() == null*/) {
             return false;
@@ -57,7 +55,7 @@ public class WeicoAuthUtil {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Account account = UserPrefs.get().getAccount();
+                        Account account = UserPrefs.get(AppApplication.getInstance()).getAccount();
                         Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(activity,
                                 account.getUsername(), account.getPwd());
                         activity.startActivityForResult(intent, Key.AUTH);
@@ -81,7 +79,7 @@ public class WeicoAuthUtil {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Account account = UserPrefs.get().getAccount();
+                        Account account = UserPrefs.get(AppApplication.getInstance()).getAccount();
                         Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(activity,
                                 account.getUsername(), account.getPwd());
                         fragment.startActivityForResult(intent, Key.AUTH);

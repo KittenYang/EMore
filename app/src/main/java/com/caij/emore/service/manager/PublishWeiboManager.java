@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.PublishWeiboManagerPresent;
@@ -44,7 +44,7 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
 
     @Override
     protected void doOnCreate() {
-        mPublishWeiboManagerPresent = new PublishWeiboManagerPresentImp(UserPrefs.get().getAccount(),
+        mPublishWeiboManagerPresent = new PublishWeiboManagerPresentImp(UserPrefs.get(ctx).getAccount(),
                 new ServerWeiboSource(),
                 new LocalWeiboSource(), new LocalDraftSource(), this);
         mPublishWeiboManagerPresent.onCreate();

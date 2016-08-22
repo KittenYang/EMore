@@ -1,7 +1,7 @@
 package com.caij.emore.api;
 
 import com.caij.emore.Key;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.MessageUser;
@@ -74,10 +74,10 @@ public interface WeiBoService {
     //    https://api.weibo.com/oauth2/access_token
     @FormUrlEncoded
     @POST("oauth2/access_token")
-    Observable<AccessToken> getAccessToken(@Field("client_id") String clientId, @Field("client_secret") String clientSecret,
-                                           @Field("grant_type") String grantType,
-                                           @Field("code") String code,
-                                           @Field("redirect_uri") String redirectUrL);
+    Observable<Token> getAccessToken(@Field("client_id") String clientId, @Field("client_secret") String clientSecret,
+                                     @Field("grant_type") String grantType,
+                                     @Field("code") String code,
+                                     @Field("redirect_uri") String redirectUrL);
 
     @GET("2/users/show.json")
     Observable<User> getWeiBoUserInfoByName(@Query("access_token") String accessToken, @Query("screen_name") String name);

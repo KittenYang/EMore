@@ -1,4 +1,4 @@
-package com.fingerall.daogenerator;
+package com.emore.daogenerator;
 
 import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Schema;

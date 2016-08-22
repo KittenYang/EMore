@@ -10,11 +10,10 @@ import android.widget.EditText;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.Emotion;
-import com.caij.emore.present.BasePresent;
 import com.caij.emore.present.CommentWeiboPresent;
 import com.caij.emore.present.imp.CommentWeiboPresentImp;
 import com.caij.emore.ui.view.CommentWeiboView;
@@ -51,7 +50,7 @@ public class CommentWeiboActivity extends PublishActivity<CommentWeiboPresent> i
 
     @Override
     protected CommentWeiboPresent createPresent() {
-        AccessToken token = UserPrefs.get().getEMoreToken();
+        Token token = UserPrefs.get(this).getEMoreToken();
         long weiboId = getIntent().getLongExtra(Key.ID, -1);
         return new CommentWeiboPresentImp(token.getAccess_token(),
                 weiboId ,new ServerWeiboSource(), this);

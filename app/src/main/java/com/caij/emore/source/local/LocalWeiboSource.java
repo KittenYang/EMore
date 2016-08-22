@@ -3,8 +3,8 @@ package com.caij.emore.source.local;
 import android.database.Cursor;
 import android.text.TextUtils;
 
-import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.AppApplication;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.WeiboIds;
@@ -89,7 +89,7 @@ public class LocalWeiboSource implements WeiboSource {
                     }
 
                     // TODO: 2016/7/13  bad
-                    long selfUid  = Long.parseLong(UserPrefs.get().getEMoreToken().getUid());
+                    long selfUid  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid());
                     followerUserIds.add(selfUid);
 
                     Weibo sinceWeibo = weiboDao.load(since_id);

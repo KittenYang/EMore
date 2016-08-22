@@ -1,6 +1,7 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.UserPrefs;
+import com.caij.emore.AppApplication;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
@@ -19,7 +20,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/3.
@@ -126,7 +126,7 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
                         mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
                         mFriendshipView.onRefreshComplete();
 
-                        if (mUid == Long.parseLong(UserPrefs.get().getEMoreToken().getUid())) {
+                        if (mUid == Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid())) {
                             MessageUtil.resetUnReadMessage(mToken, UnReadMessage.TYPE_FOLLOWER,
                                     mServerMessageSource, mLocalMessageSource);
                         }

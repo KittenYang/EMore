@@ -4,7 +4,7 @@ package com.caij.emore.present.imp;
 import android.os.AsyncTask;
 
 import com.caij.emore.Event;
-import com.caij.emore.bean.Account;
+import com.caij.emore.account.Account;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.WeiboPublishPresent;
@@ -41,7 +41,7 @@ public class WeiboPublishPresentImp extends AbsBasePresent implements WeiboPubli
     @Override
     public void publishWeibo(long id, String content, ArrayList<String> imagePaths) {
         if (imagePaths != null && imagePaths.size() > 1) {
-            if (mAccount.getWeicoToken() == null || mAccount.getWeicoToken().isExpired()) {
+            if (mAccount.getWeiCoToken() == null || mAccount.getWeiCoToken().isExpired()) {
                 mWeiboPublishView.toAuthWeico();
                 return;
             }

@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.caij.emore.Event;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.imp.FriendWeiboPresentImp;
@@ -54,7 +54,7 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
 
     @Override
     protected FriendWeiboPresent createPresent() {
-       return new FriendWeiboPresentImp( UserPrefs.get().getAccount(), this,
+       return new FriendWeiboPresentImp(UserPrefs.get(getActivity()).getAccount(), this,
                 new ServerWeiboSource(), new LocalWeiboSource(), new LocalMessageSource());
     }
 

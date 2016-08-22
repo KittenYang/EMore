@@ -18,8 +18,8 @@ import android.widget.TextView;
 import com.caij.emore.Event;
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.MainPresent;
@@ -155,7 +155,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
     @Override
     protected MainPresent createPresent() {
-        AccessToken token = UserPrefs.get().getEMoreToken();
+        Token token = UserPrefs.get(this).getEMoreToken();
         MainPresent simpleUserPresent = new MainPresentImp(token.getAccess_token(), Long.parseLong(token.getUid()),
                 this, new ServerUserSource(), new LocalUserSource(), new LocalMessageSource(), new LocalDraftSource());
         return simpleUserPresent;

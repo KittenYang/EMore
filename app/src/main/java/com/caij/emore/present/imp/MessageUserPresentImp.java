@@ -1,7 +1,8 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.AppApplication;
 import com.caij.emore.Event;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.MessageUserPresent;
@@ -22,7 +23,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/10.
@@ -107,7 +107,7 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
 
     @Override
     public void onCreate() {
-        final String uid  = UserPrefs.get().getWeiCoToken().getUid();
+        final String uid  = UserPrefs.get(AppApplication.getInstance()).getWeiCoToken().getUid();
         mLocalMessageSource.getUnReadMessage(mToken, Long.parseLong(uid))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

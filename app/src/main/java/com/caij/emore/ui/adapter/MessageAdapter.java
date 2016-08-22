@@ -7,8 +7,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.caij.emore.AppApplication;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.utils.DateUtil;
@@ -218,7 +219,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
 
     private String appImageUrl(String url) {
         if (url.startsWith("http")) {
-            return url + "&access_token=" + UserPrefs.get().getWeiCoToken().getAccess_token();
+            return url + "&access_token=" + UserPrefs.get(AppApplication.getInstance()).getWeiCoToken().getAccess_token();
         }
         return url;
     }
@@ -226,7 +227,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
     @Override
     public int getItemViewType(int position) {
         DirectMessage directMessage = getItem(position);
-        if (directMessage.getSender_id() == Long.parseLong(UserPrefs.get().getEMoreToken().getUid())) {
+        if (directMessage.getSender_id() == Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid())) {
             if (directMessage.getAtt_ids() != null && directMessage.getAtt_ids().size() > 0 && directMessage.getImageInfo() != null) {
                 return TYPE_SELT_IMAGE;
             }else {

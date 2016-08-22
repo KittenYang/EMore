@@ -1,8 +1,9 @@
 package com.caij.emore.utils.weibo;
 
+import com.caij.emore.AppApplication;
 import com.caij.emore.Event;
 import com.caij.emore.Key;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.source.MessageSource;
@@ -27,7 +28,7 @@ public class MessageUtil {
                 Key.WEICO_APP_ID, Key.WEICO_APP_FROM, type, 0);
         Observable<Response> localObservable = localMessageSource.resetUnReadMessage(token,
                 Key.WEICO_APP_ID, Key.WEICO_APP_FROM, type, 0);
-        final long uid = Long.parseLong(UserPrefs.get().getEMoreToken().getUid());
+        final long uid = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid());
         Observable.concat(serverObservable, localObservable)
                 .filter(new Func1<Response, Boolean>() {
                     @Override
@@ -64,7 +65,7 @@ public class MessageUtil {
     public static void resetLocalUnReadMessage(final String token, String type, int value, final MessageSource localMessageSource) {
         Observable<Response> localObservable = localMessageSource.resetUnReadMessage(token,
                 Key.WEICO_APP_ID, Key.WEICO_APP_FROM, type, value);
-        final long uid = Long.parseLong(UserPrefs.get().getEMoreToken().getUid());
+        final long uid = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid());
         localObservable.flatMap(new Func1<Response, Observable<UnReadMessage>>() {
                     @Override
                     public Observable<UnReadMessage> call(Response response) {
@@ -94,7 +95,7 @@ public class MessageUtil {
     }
 
     public static void resetLocalUnReadMessageDisValue(final String token, final String type, final int disValue, final MessageSource localMessageSource) {
-        long uid  = Long.parseLong(UserPrefs.get().getEMoreToken().getUid());
+        long uid  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid());
         localMessageSource.getUnReadMessage(token, uid)
                 .doOnNext(new Action1<UnReadMessage>() {
                     @Override

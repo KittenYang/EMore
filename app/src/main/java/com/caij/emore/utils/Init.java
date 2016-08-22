@@ -59,7 +59,7 @@ public class Init {
     }
 
     private void start(Context context, long uid) {
-        DBManager.initDB(context, Key.DB_NAME + uid, BuildConfig.DEBUG);
+        DBManager.initDB(context, uid, BuildConfig.DEBUG);
         if (SystemUtil.isMainProcess(context)) {
             initOtherForMainProcess(context);
         }

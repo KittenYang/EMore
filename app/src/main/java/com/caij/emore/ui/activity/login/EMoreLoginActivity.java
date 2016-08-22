@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.caij.emore.Key;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
-import com.caij.emore.present.BasePresent;
+import com.caij.emore.account.Token;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.imp.LoginPresentImp;
 import com.caij.emore.ui.view.LoginView;
@@ -38,7 +36,8 @@ public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
 
     @Override
     protected void getAccessToken(String code) {
-        ((LoginPresent)mPresent).getAccessToken(getAppId(), getAppSecret(), code, getRedirectUrL());
+        ((LoginPresent)mPresent).getAccessToken(getAppId(), getAppSecret(), code, getRedirectUrL(),
+                mUsername, mPassword);
     }
 
     protected String getLoginUrl() {
@@ -64,9 +63,7 @@ public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
 
 
     @Override
-    public void onLoginSuccess(AccessToken accessToken) {
-        UserPrefs.get().setUsername(mUsername);
-        UserPrefs.get().setPwd(mPassword);
+    public void onLoginSuccess(Token accessToken) {
         Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(this, mUsername, mPassword);
         startActivity(intent);
         finish();

@@ -87,4 +87,10 @@ public class Account {
     public void setWeiCoToken(Token weiCoToken) {
         this.weiCoToken = weiCoToken;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        Account account = (Account) o;
+        return account.uid.equals(uid);
+    }
 }

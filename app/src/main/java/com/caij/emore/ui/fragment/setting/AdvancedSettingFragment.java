@@ -11,9 +11,10 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
+import com.caij.emore.ui.fragment.AccountsFragment;
 import com.caij.emore.ui.fragment.AppAboutFragment;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.Init;
@@ -36,15 +37,14 @@ public class AdvancedSettingFragment extends PreferenceFragment
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		addPreferencesFromResource(R.xml.fragment_advanced_item);
-		Preference pNotification = (Preference) findPreference("pNotification");
+		Preference pNotification =  findPreference(getString(R.string.key_setting_notify));
 		pNotification.setOnPreferenceClickListener(this);
-		Preference pFlow = (Preference) findPreference("pFlow");
+		Preference pFlow = findPreference("pFlow");
 		pFlow.setOnPreferenceClickListener(this);
-		CheckBoxPreference pInnerBrowser = (CheckBoxPreference) findPreference(getString(R.string.key_setting_browser));
 		cachePreference = findPreference(getString(R.string.setting_key_clear_cache));
 		cachePreference.setOnPreferenceClickListener(this);
-		Preference changeAccount = findPreference("key_change_account");
-		changeAccount.setOnPreferenceClickListener(this);
+		Preference accountPf = findPreference(getString(R.string.key_setting_account));
+		accountPf.setOnPreferenceClickListener(this);
 		Preference exitPreference = findPreference(getString(R.string.setting_key_exit));
 		exitPreference.setOnPreferenceClickListener(this);
 		findPreference(getString(R.string.key_setting_about)).setOnPreferenceClickListener(this);
@@ -68,7 +68,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
-		if ("pNotification".equals(preference.getKey())) {
+		if (getString(R.string.key_setting_notify).equals(preference.getKey())) {
 			Intent intent = DefaultFragmentActivity.starFragment(getActivity(), getString(R.string.title_notification),
 					NotificationSettingsFragment.class, null);
 			startActivity(intent);
@@ -79,20 +79,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 		}
         else if ("pOffline".equals(preference.getKey())) {
 
-        }else if ("key_change_account".equals(preference.getKey())) {
-			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), getString(R.string.change_account_hint), getString(R.string.ok), new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					UserPrefs.get().clear();
-					Init.getInstance().stop(getActivity());
-					ActivityStack.getInstance().remove(getActivity());
-					ActivityStack.getInstance().finishAllActivity();
-					Intent intent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(), null, null);
-					startActivity(intent);
-					getActivity().finish();
-				}
-			},getString(R.string.cancel), null);
-		}else if (getString(R.string.setting_key_exit).equals(preference.getKey())) {
+        }else if (getString(R.string.setting_key_exit).equals(preference.getKey())) {
 			DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), getString(R.string.exit_hint), getString(R.string.ok), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -110,6 +97,9 @@ public class AdvancedSettingFragment extends PreferenceFragment
 			}, getString(R.string.cancel), null);
 		}else if (getString(R.string.key_setting_about).equals(preference.getKey())) {
 			Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), "关于", AppAboutFragment.class, null);
+			startActivity(intent);
+		}else if (getString(R.string.key_setting_account).equals(preference.getKey())) {
+			Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), getString(R.string.settings_account), AccountsFragment.class, null);
 			startActivity(intent);
 		}
 		return true;

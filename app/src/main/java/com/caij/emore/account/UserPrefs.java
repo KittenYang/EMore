@@ -3,6 +3,8 @@ package com.caij.emore.account;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.caij.emore.utils.LogUtil;
+
 import java.util.List;
 
 import de.greenrobot.dao.identityscope.IdentityScopeType;
@@ -76,66 +78,93 @@ public class UserPrefs {
         return null;
     }
 
-    public void save() {
-        if (mAccount != null) {
-            mAccountDao.insertOrReplace(mAccount);
-            if (mAccount.getEmoreToken() != null) {
-                mTokenDao.insertOrReplace(mAccount.getEmoreToken());
+    public void commit(Account account) {
+        this.mAccount = account;
+        if (account != null) {
+            for (Account account1 : getAccounts()) {
+                account1.setStatus(Account.STATUS_BACKGROUND);
+                save(account1);
             }
 
-            if (mAccount.getWeiCoToken() != null) {
-                mTokenDao.insertOrReplace(mAccount.getWeiCoToken());
-            }
+            account.setStatus(Account.STATUS_USING);
+            save(account);
         }
     }
 
-    public void setUsername(String name) {
-        if (mAccount == null) {
-            mAccount = new Account();
+    private void save(Account account) {
+        mAccountDao.insertOrReplace(account);
+        if (account.getEmoreToken() != null) {
+            mTokenDao.insertOrReplace(account.getEmoreToken());
         }
-        mAccount.setUsername(name);
+
+        if (account.getWeiCoToken() != null) {
+            mTokenDao.insertOrReplace(account.getWeiCoToken());
+        }
     }
 
-    public void setPwd(String pwd) {
-        if (mAccount == null) {
-            mAccount = new Account();
-        }
-        mAccount.setPwd(pwd);
-    }
-
-    public void setEMoreToken(Token token) {
-        if (mAccount == null) {
-            mAccount = new Account();
-        }
-        token.setKey(token.getUid() + "_emore");
-        mAccount.setUid(Long.parseLong(token.getUid()));
-        mAccount.setEmoreToken(token);
-    }
-
-    public void setWeiCoToken(Token token) {
-        if (mAccount == null) {
-            mAccount = new Account();
-        }
-        token.setKey(token.getUid() + "_weico");
-        mAccount.setUid(Long.parseLong(token.getUid()));
-        mAccount.setWeiCoToken(token);
-    }
+//    public void setEMoreToken(Token token) {
+//        if (mAccount == null) {
+//            mAccount = new Account();
+//        }
+//        token.setKey(token.getUid() + "_emore");
+//        mAccount.setUid(Long.parseLong(token.getUid()));
+//        mAccount.setEmoreToken(token);
+//    }
+//
+//    public void setWeiCoToken(Token token) {
+//        if (mAccount == null) {
+//            mAccount = new Account();
+//        }
+//        token.setKey(token.getUid() + "_weico");
+//        mAccount.setUid(Long.parseLong(token.getUid()));
+//        mAccount.setWeiCoToken(token);
+//    }
 
     public Account getAccount() {
         return mAccount;
     }
 
-    public void clear() {
-        mAccountDao.delete(mAccount);
+//    public void clear() {
+//        mAccountDao.delete(mAccount);
+//        if (mAccount.getEmoreToken() != null) {
+//            mTokenDao.delete(mAccount.getEmoreToken());
+//        }
+//
+//        if (mAccount.getWeiCoToken() != null) {
+//            mTokenDao.delete(mAccount.getWeiCoToken());
+//        }
+//
+//        mAccount = null;
+//    }
+
+    public List<Account> getAccounts() {
+        List<Account> accounts = mAccountDao.queryBuilder().orderDesc(AccountDao.Properties.Status).list();
+        for (Account account : accounts) {
+            Token emoreToken = mTokenDao.load(account.getUid() + "_emore");
+            Token weicoToken = mTokenDao.load(account.getUid() + "_weico");
+            account.setEmoreToken(emoreToken);
+            account.setWeiCoToken(weicoToken);
+        }
+        return accounts;
+    }
+
+    public void changeAccount(Account account) {
+        commit(account);
+    }
+
+    public void deleteAccount(Account account) {
+        mAccountDao.delete(account);
         if (mAccount.getEmoreToken() != null) {
-            mTokenDao.delete(mAccount.getEmoreToken());
+            mTokenDao.delete(account.getEmoreToken());
         }
 
         if (mAccount.getWeiCoToken() != null) {
-            mTokenDao.delete(mAccount.getWeiCoToken());
+            mTokenDao.delete(account.getWeiCoToken());
         }
 
-        mAccount = null;
+        if (account.equals(mAccount)) {
+            mAccount = null;
+        }
     }
 
     public static class DBHelp extends DaoMaster.OpenHelper {

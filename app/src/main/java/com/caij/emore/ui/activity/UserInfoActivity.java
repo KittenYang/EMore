@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
 import com.caij.emore.present.imp.UserInfoDetailPresentImp;
@@ -141,7 +141,7 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
 
     @Override
     protected UserInfoDetailPresent createPresent() {
-        AccessToken token = UserPrefs.get().getWeiCoToken();
+        Token token = UserPrefs.get(this).getWeiCoToken();
         String username = getIntent().getStringExtra(Key.USERNAME);
         return new UserInfoDetailPresentImp(token.getAccess_token(), username, this,
                 new ServerUserSource(), new LocalUserSource());

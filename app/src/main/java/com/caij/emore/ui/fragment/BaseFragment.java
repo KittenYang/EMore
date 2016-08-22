@@ -8,12 +8,13 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.view.BaseView;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.DialogUtil;
+import com.caij.emore.utils.Init;
 import com.caij.emore.utils.ToastUtil;
 
 /**
@@ -41,7 +42,7 @@ public abstract class BaseFragment<P extends BasePresent> extends Fragment imple
 
     @Override
     public void onAuthenticationError() {
-        UserPrefs userPrefs = UserPrefs.get();
+        UserPrefs userPrefs = UserPrefs.get(getActivity());
         showHint(getString(R.string.auth_invalid_hint));
         ActivityStack.getInstance().remove(getActivity());
         ActivityStack.getInstance().finishAllActivity();
@@ -49,8 +50,11 @@ public abstract class BaseFragment<P extends BasePresent> extends Fragment imple
                 userPrefs.getAccount().getUsername(),
                 userPrefs.getAccount().getPwd());
         startActivity(intent);
+
+        Init.getInstance().stop(getActivity());
+        UserPrefs.get(getActivity()).deleteAccount(userPrefs.getAccount());
+
         getActivity().finish();
-        UserPrefs.get().clear();
     }
 
     @Override

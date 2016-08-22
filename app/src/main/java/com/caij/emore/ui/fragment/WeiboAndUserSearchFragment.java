@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.WeiboAndUserSearchPresent;
 import com.caij.emore.present.imp.WeiboAndUserSearchPresentImp;
@@ -59,7 +59,7 @@ public class WeiboAndUserSearchFragment extends TimeLineWeiboFragment<WeiboAndUs
     @Override
     protected WeiboAndUserSearchPresent createPresent() {
         String key = getArguments().getString(Key.ID);
-        return new WeiboAndUserSearchPresentImp(UserPrefs.get().getAccount(), key, this,
+        return new WeiboAndUserSearchPresentImp(UserPrefs.get(getActivity()).getAccount(), key, this,
                 new ServerWeiboSource(), new LocalWeiboSource(), new ServerUserSource());
     }
 

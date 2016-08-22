@@ -10,8 +10,8 @@ import android.widget.EditText;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.Emotion;
 import com.caij.emore.present.ReplyCommentWeiboPresent;
@@ -50,7 +50,7 @@ public class ReplyCommentActivity extends PublishActivity<ReplyCommentWeiboPrese
 
     @Override
     protected ReplyCommentWeiboPresent createPresent() {
-        AccessToken token = UserPrefs.get().getEMoreToken();
+        Token token = UserPrefs.get(this).getEMoreToken();
         long weiboId = getIntent().getLongExtra(Key.ID, -1);
         long cid = getIntent().getLongExtra(Key.CID, -1);
         return new ReplyCommentPresentImp(token.getAccess_token(),

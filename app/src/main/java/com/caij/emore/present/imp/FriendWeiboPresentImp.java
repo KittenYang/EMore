@@ -2,7 +2,7 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.Event;
 import com.caij.emore.Key;
-import com.caij.emore.bean.Account;
+import com.caij.emore.account.Account;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
@@ -139,7 +139,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
 
                         mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1);
 
-                        MessageUtil.resetLocalUnReadMessage(mAccount.getWeicoToken().getAccess_token(),
+                        MessageUtil.resetLocalUnReadMessage(mAccount.getWeiCoToken().getAccess_token(),
                                 UnReadMessage.TYPE_STATUS, 0, mLocalMessageSource);
 
                         SPUtil.saveLong(Key.FRIEND_WEIBO_UPDATE_TIME + mAccount.getUsername(), System.currentTimeMillis());
@@ -183,7 +183,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getFriendWeibo(mAccount.getWeicoToken().getAccess_token(), 0, maxId, PAGE_COUNT, 1)
+        return mServerWeiboSource.getFriendWeibo(mAccount.getWeiCoToken().getAccess_token(), 0, maxId, PAGE_COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override

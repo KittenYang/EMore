@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
@@ -29,14 +29,14 @@ public class SplashActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        AccessToken eMoreAccessToken = UserPrefs.get().getEMoreToken();
-        AccessToken weicoAccessToken = UserPrefs.get().getWeiCoToken();
+        Token eMoreAccessToken = UserPrefs.get(this).getEMoreToken();
+        Token weicoAccessToken = UserPrefs.get(this).getWeiCoToken();
         if (eMoreAccessToken == null || eMoreAccessToken.isExpired()) {
             mToIntent = EMoreLoginActivity.newEMoreLoginIntent(this, null, null);
         }else if (weicoAccessToken == null || weicoAccessToken.isExpired()){
             mToIntent = WeiCoLoginActivity.newWeiCoLoginIntent(this,
-                    UserPrefs.get().getAccount().getUsername(),
-                    UserPrefs.get().getAccount().getPwd());
+                    UserPrefs.get(this).getAccount().getUsername(),
+                    UserPrefs.get(this).getAccount().getPwd());
         }else {
             mToIntent = new Intent(this, MainActivity.class);
         }

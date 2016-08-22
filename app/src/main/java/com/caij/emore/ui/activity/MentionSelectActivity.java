@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.UserPrefs;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.fragment.MentionSelectFragment;
 
@@ -19,7 +19,7 @@ public class MentionSelectActivity extends BaseToolBarActivity {
         setTitle(getString(R.string.mention_friend));
         MentionSelectFragment fragment = new MentionSelectFragment();
         Bundle bundle = new Bundle();
-        bundle.putLong(Key.ID, Long.parseLong(UserPrefs.get().getEMoreToken().getUid()));
+        bundle.putLong(Key.ID, Long.parseLong(UserPrefs.get(this).getEMoreToken().getUid()));
         fragment.setArguments(bundle);
         fragment.setUserVisibleHint(true);
         getSupportFragmentManager().beginTransaction().replace(R.id.attach_container, fragment).commit();

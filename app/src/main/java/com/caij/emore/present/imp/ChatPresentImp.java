@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import com.caij.emore.Event;
-import com.caij.emore.bean.AccessToken;
+import com.caij.emore.account.Token;
 import com.caij.emore.bean.event.MessageResponseEvent;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.database.bean.DirectMessage;
@@ -53,7 +53,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
 
     private static final int MAX_NEW_MESSAGE_PAGE_COUNT = 40;
 
-    private AccessToken mToken;
+    private Token mToken;
     private MessageSource mServerMessageSource;
     private MessageSource mLocalMessageSource;
     private UserSource mLocalUserSource;
@@ -64,7 +64,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
     private Timer mLoadMessageTimer;
     private TimerTask mLoadMessageTask;
 
-    public ChatPresentImp(AccessToken token, long uid,
+    public ChatPresentImp(Token token, long uid,
                           MessageSource serverMessageSource,
                           MessageSource localMessageSource,
                           UserSource localUserSource,
