@@ -24,7 +24,6 @@ public class AppApplication extends Application{
     public void onCreate() {
         super.onCreate();
         mApplication = this;
-        SPUtil.init(this, Key.SP_CONFIG);
         initCrashReport();
         if (UserPrefs.get(this).getEMoreToken() != null && UserPrefs.get(this).getWeiCoToken() != null) {
             Token accessToken = UserPrefs.get(this).getEMoreToken();

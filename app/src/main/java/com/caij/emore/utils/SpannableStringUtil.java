@@ -14,6 +14,7 @@ import com.caij.emore.R;
 import com.caij.emore.AppApplication;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.ShortUrlInfo;
+import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.LongText;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
@@ -320,5 +321,14 @@ public class SpannableStringUtil {
 
             reWeibo.setContentSpannableString(reContentSpannableString);
         }
+    }
+
+    public static Spannable paraeSpannable(DirectMessage directMessage) {
+        SpannableStringBuilder contentSpannableString = SpannableStringBuilder.valueOf(directMessage.getText());
+        SpannableStringUtil.praseName(contentSpannableString);
+        SpannableStringUtil.praseTopic(contentSpannableString);
+        SpannableStringUtil.praseDefaultEmotions(contentSpannableString);
+        SpannableStringUtil.praseSoftEmotions(contentSpannableString);
+        return contentSpannableString;
     }
 }

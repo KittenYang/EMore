@@ -107,7 +107,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                 .map(new Func1<DirectMessage, DirectMessage>() {
                     @Override
                     public DirectMessage call(DirectMessage message) {
-                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message.getText()));
+                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
                         if (message.getAtt_ids() != null && message.getAtt_ids().size() > 0) {
                             getMessageImageInfo(message);
                         }
@@ -169,7 +169,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                 .map(new Func1<DirectMessage, DirectMessage>() {
                     @Override
                     public DirectMessage call(DirectMessage message) {
-                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message.getText()));
+                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
                         if (message.getAtt_ids() != null && message.getAtt_ids().size() > 0) {
                             getMessageImageInfo(message);
                         }
@@ -227,7 +227,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                             getMessageImageInfo(messageResponseEvent.message);
                         }
                         messageResponseEvent.message.setTextContentSpannable(SpannableStringUtil.
-                                paraeSpannable(messageResponseEvent.message.getText()));
+                                paraeSpannable(messageResponseEvent.message));
                         return messageResponseEvent;
                     }
                 })
@@ -316,7 +316,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                     @Override
                     public DirectMessage call(DirectMessage message) {
                         mLocalMessageSource.saveMessage(message);
-                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message.getText()));
+                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
                         message.setCreated_at_long(DateUtil.parseCreateTime(message.getCreated_at()));
                         if (message.getAtt_ids() != null && message.getAtt_ids().size() > 0) {
                             getMessageImageInfo(message);
@@ -482,7 +482,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                 .doOnNext(new Action1<DirectMessage>() {
                     @Override
                     public void call(DirectMessage message) {
-                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message.getText()));
+                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
                     }
                 })
                 .subscribeOn(Schedulers.io())
