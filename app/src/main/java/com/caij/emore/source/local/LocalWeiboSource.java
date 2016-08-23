@@ -66,8 +66,8 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<QueryWeiboResponse> getFriendWeibo(String accessToken, final long since_id, final long max_id,
-                                                  final int count, final int page) {
+    public Observable<QueryWeiboResponse> getFriendWeibo(String accessToken, final long uid, final long since_id, final long max_id,
+                                                         final int count, final int page) {
         return Observable.create(new Observable.OnSubscribe<QueryWeiboResponse>() {
 
             @Override
@@ -88,9 +88,8 @@ public class LocalWeiboSource implements WeiboSource {
                         }
                     }
 
-                    // TODO: 2016/7/13  bad
-                    long selfUid  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid());
-                    followerUserIds.add(selfUid);
+                    //添加自己
+                    followerUserIds.add(uid);
 
                     Weibo sinceWeibo = weiboDao.load(since_id);
                     long sinceCreateTime = 0;

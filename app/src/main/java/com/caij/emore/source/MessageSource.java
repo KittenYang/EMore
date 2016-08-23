@@ -20,7 +20,7 @@ public interface MessageSource {
 
     Observable<MessageUser> getMessageUserList(String accessToken, int count, long cursor) ;
 
-    Observable<UserMessageResponse> getUserMessage(String accessToken, long uid, long since_id, long max_id,
+    Observable<UserMessageResponse> getUserMessage(String accessToken, long toUid, long selfUid, long since_id, long max_id,
                                                    int count, int page);
 
     Observable<DirectMessage> createTextMessage(String accessToken, String text, long uid);
@@ -44,5 +44,5 @@ public interface MessageSource {
 
     void saveUnReadMessage(UnReadMessage serverUnReadMessage);
 
-    Observable<Response> resetUnReadMessage(String token, String source, String from, String type, int value);
+    Observable<Response> resetUnReadMessage(String token, long uid, String source, String from, String type, int value);
 }

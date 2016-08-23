@@ -203,8 +203,8 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     protected ChatPresent createPresent() {
         Token accessToken = UserPrefs.get(getActivity()).getWeiCoToken();
         long recipientId = getArguments().getLong(Key.ID);
-        return new ChatPresentImp(accessToken, recipientId, new ServerMessageSource(),
-                new LocalMessageSource(), new LocalUserSource(), this);
+        return new ChatPresentImp(accessToken, recipientId, Long.parseLong(accessToken.getUid()),
+                new ServerMessageSource(), new LocalMessageSource(), new LocalUserSource(), this);
     }
 
 

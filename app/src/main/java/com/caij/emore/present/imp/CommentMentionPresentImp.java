@@ -1,5 +1,6 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.account.Account;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.database.bean.UnReadMessage;
@@ -27,19 +28,19 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
 
     private static final int COUNT = 20;
 
-    private String mToken;
+    private Account mAccount;
     private WeiboSource mWeiboSource;
     private RefreshListView<Comment> mMentionView;
     private List<Comment> mComments;
     MessageSource mServerMessageSource;
     MessageSource mLocalMessageSource;
 
-    public CommentMentionPresentImp(String token, WeiboSource weiboSource,
+    public CommentMentionPresentImp(Account account, WeiboSource weiboSource,
                                     MessageSource serverMessageSource,
                                     MessageSource localMessageSource,
                                     RefreshListView<Comment> mentionView) {
         super();
-        mToken = token;
+        mAccount = account;
         mWeiboSource = weiboSource;
         mMentionView = mentionView;
         mServerMessageSource = serverMessageSource;
@@ -74,8 +75,8 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
                         mMentionView.onRefreshComplete();
                         mMentionView.onLoadComplete(comments.size() > COUNT - 1);
 
-                        MessageUtil.resetUnReadMessage(mToken,
-                                UnReadMessage.TYPE_MENTION_CMT, mServerMessageSource, mLocalMessageSource);
+                        MessageUtil.resetUnReadMessage(mAccount.getWeiCoToken().getAccess_token(),UnReadMessage.TYPE_MENTION_CMT,
+                                mAccount.getUid(), mServerMessageSource, mLocalMessageSource);
                     }
                 });
         addSubscription(su);
@@ -117,7 +118,7 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
     }
 
     private Observable<List<Comment>> createGetCommentObservable(long maxId, final boolean isRefresh) {
-        return mWeiboSource.getCommentsMentions(mToken, 0, maxId, COUNT, 1)
+        return mWeiboSource.getCommentsMentions(mAccount.getWeiCoToken().getAccess_token(), 0, maxId, COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
                 .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
                     @Override

@@ -11,7 +11,6 @@ import com.caij.emore.database.bean.MessageImage;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.utils.ImageUtil;
-import com.caij.emore.utils.LogUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,8 +47,9 @@ public class ServerMessageSource implements MessageSource {
     }
 
     @Override
-    public Observable<UserMessageResponse> getUserMessage(String accessToken, long uid, long since_id, long max_id, int count, int page) {
-        return mWeiBoService.getUserMessage(accessToken, uid, since_id, max_id, count, page);
+    public Observable<UserMessageResponse> getUserMessage(String accessToken, long toUid, long selfUid,
+                                                          long since_id, long max_id, int count, int page) {
+        return mWeiBoService.getUserMessage(accessToken, toUid, since_id, max_id, count, page);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class ServerMessageSource implements MessageSource {
     }
 
     @Override
-    public Observable<Response> resetUnReadMessage(String token, String source, String from, String type, int value) {
+    public Observable<Response> resetUnReadMessage(String token, long uid, String source, String from, String type, int value) {
         return mWeiCoService.resetUnReadMsg(token, source, from, type, value);
     }
 

@@ -46,7 +46,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     @Override
     public void onCreate() {
         super.onCreate();
-        Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getEmoreToken().getAccess_token(),
+        Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getEmoreToken().getAccess_token(), mAccount.getUid(),
                 0, 0, PAGE_COUNT * 2, 1)
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
@@ -140,7 +140,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                         mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1);
 
                         MessageUtil.resetLocalUnReadMessage(mAccount.getWeiCoToken().getAccess_token(),
-                                UnReadMessage.TYPE_STATUS, 0, mLocalMessageSource);
+                                UnReadMessage.TYPE_STATUS, 0, mAccount.getUid(), mLocalMessageSource);
 
                         SPUtil.saveLong(Key.FRIEND_WEIBO_UPDATE_TIME + mAccount.getUsername(), System.currentTimeMillis());
                     }
@@ -183,7 +183,8 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getFriendWeibo(mAccount.getWeiCoToken().getAccess_token(), 0, maxId, PAGE_COUNT, 1)
+        return mServerWeiboSource.getFriendWeibo(mAccount.getWeiCoToken().getAccess_token(), mAccount.getUid(),
+                0, maxId, PAGE_COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override

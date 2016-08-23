@@ -38,11 +38,13 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
     private MessageUserView mMessageUserView;
     private MessageUser mMessageUser;
     private Observable<UnReadMessage> mUnReadMessageObservable;
+    private long mUid;
 
-    public MessageUserPresentImp(String token, MessageSource serverMessageSource,
+    public MessageUserPresentImp(String token, long uid, MessageSource serverMessageSource,
                                  MessageSource localMessageSource, MessageUserView view) {
         mServerMessageSource = serverMessageSource;
         mToken = token;
+        mUid = uid;
         mLocalMessageSource = localMessageSource;
         mMessageUserView = view;
         mUserListBeens = new ArrayList<>();
@@ -107,8 +109,7 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
 
     @Override
     public void onCreate() {
-        final String uid  = UserPrefs.get(AppApplication.getInstance()).getWeiCoToken().getUid();
-        mLocalMessageSource.getUnReadMessage(mToken, Long.parseLong(uid))
+        mLocalMessageSource.getUnReadMessage(mToken, mUid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<UnReadMessage>() {

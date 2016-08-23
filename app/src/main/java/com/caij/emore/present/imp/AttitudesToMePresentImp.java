@@ -1,6 +1,7 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.Key;
+import com.caij.emore.account.Account;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.database.bean.UnReadMessage;
@@ -28,19 +29,19 @@ public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshLi
 
     private static final int COUNT = 20;
 
-    private String mToken;
+    private Account mAccount;
     private WeiboSource mWeiboSource;
     private RefreshListView<Attitude> mView;
     private List<Attitude> mAttitudes;
     MessageSource mServerMessageSource;
     MessageSource mLocalMessageSource;
 
-    public AttitudesToMePresentImp(String token, WeiboSource weiboSource,
+    public AttitudesToMePresentImp(Account account, WeiboSource weiboSource,
                                    MessageSource serverMessageSource,
                                    MessageSource localMessageSource,
                                    RefreshListView<Attitude> view) {
         super();
-        mToken = token;
+        mAccount = account;
         mWeiboSource = weiboSource;
         mView = view;
         mServerMessageSource = serverMessageSource;
@@ -75,8 +76,8 @@ public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshLi
                         mView.onRefreshComplete();
                         mView.onLoadComplete(attitudes.size() > COUNT - 1);
 
-                        MessageUtil.resetUnReadMessage(mToken, UnReadMessage.TYPE_ATTITUDE,
-                                mServerMessageSource, mLocalMessageSource);
+                        MessageUtil.resetUnReadMessage(mAccount.getWeiCoToken().getAccess_token(), UnReadMessage.TYPE_ATTITUDE,
+                                mAccount.getUid(), mServerMessageSource, mLocalMessageSource);
                     }
                 });
         addSubscription(su);
@@ -113,7 +114,7 @@ public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshLi
     }
 
     private Observable<List<Attitude>> createGetAttitudeObservable(long maxId, final boolean isRefresh) {
-        return mWeiboSource.getToMeAttiyudes(mToken, maxId, 0, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, 1, COUNT)
+        return mWeiboSource.getToMeAttiyudes(mAccount.getWeiCoToken().getAccess_token(), maxId, 0, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, 1, COUNT)
                 .compose(new ErrorCheckerTransformer<QueryWeiboAttitudeResponse>())
                 .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<Attitude>>() {
                     @Override

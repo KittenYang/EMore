@@ -25,8 +25,8 @@ import rx.Observable;
  */
 public interface WeiboSource {
 
-    public Observable<QueryWeiboResponse> getFriendWeibo(String accessToken, long since_id, long max_id,
-                                                  int count, int page);
+    public Observable<QueryWeiboResponse> getFriendWeibo(String accessToken, long uid, long since_id, long max_id,
+                                                         int count, int page);
 
     public void saveWeibos(String accessToken, List<Weibo> weibos);
 

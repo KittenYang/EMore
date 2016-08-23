@@ -7,7 +7,6 @@ import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
-import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
@@ -15,7 +14,6 @@ import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.UploadImageResponse;
-import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.ImageUtil;
@@ -46,8 +44,8 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<QueryWeiboResponse> getFriendWeibo(String accessToken, long sinceId, long maxId,
-                                                  int count, int page) {
+    public Observable<QueryWeiboResponse> getFriendWeibo(String accessToken, long uid, long sinceId, long maxId,
+                                                         int count, int page) {
         return mWeiBoService.getFriendsWeibo(accessToken, sinceId, maxId, count, page);
     }
 

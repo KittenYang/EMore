@@ -17,7 +17,6 @@ import com.caij.emore.present.ChatPresent;
 import com.caij.emore.ui.view.DirectMessageView;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.UserSource;
-import com.caij.emore.source.local.LocalImageSource;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.LogUtil;
@@ -41,7 +40,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/10.
@@ -59,12 +57,13 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
     private UserSource mLocalUserSource;
     private List<DirectMessage> mDirectMessages;
     private DirectMessageView mDirectMessageView;
-    private long mUserId;
+    private long mToUserId;
+    private long mSelfUserId;
     private Observable<MessageResponseEvent> mSendMessageObservable;
     private Timer mLoadMessageTimer;
     private TimerTask mLoadMessageTask;
 
-    public ChatPresentImp(Token token, long uid,
+    public ChatPresentImp(Token token, long toUid, long selfUid,
                           MessageSource serverMessageSource,
                           MessageSource localMessageSource,
                           UserSource localUserSource,
@@ -76,7 +75,8 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         mLocalUserSource = localUserSource;
         mDirectMessages = new ArrayList<>();
         mDirectMessageView = directMessageView;
-        mUserId = uid;
+        mToUserId = toUid;
+        mSelfUserId = selfUid;
     }
 
     @Override
@@ -90,7 +90,8 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         if (mDirectMessages.size() > 1) {
             maxId = mDirectMessages.get(0).getId();
         }
-        Subscription subscription = mLocalMessageSource.getUserMessage(mToken.getAccess_token(), mUserId, 0, maxId, PAGE_COUNT, 1)
+        Subscription subscription = mLocalMessageSource.getUserMessage(mToken.getAccess_token(), mToUserId, mSelfUserId,
+                0, maxId, PAGE_COUNT, 1)
                 .flatMap(new Func1<UserMessageResponse, Observable<DirectMessage>>() {
                     @Override
                     public Observable<DirectMessage> call(UserMessageResponse userMessageResponse) {
@@ -151,7 +152,8 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
     public void onCreate() {
         initEvent();
 
-        Observable<UserMessageResponse> localObservable =  mLocalMessageSource.getUserMessage(mToken.getAccess_token(), mUserId, 0, 0, PAGE_COUNT, 1);
+        Observable<UserMessageResponse> localObservable =  mLocalMessageSource.getUserMessage(mToken.getAccess_token(), mToUserId,
+                mSelfUserId, 0, 0, PAGE_COUNT, 1);
         localObservable.flatMap(new Func1<UserMessageResponse, Observable<DirectMessage>>() {
                     @Override
                     public Observable<DirectMessage> call(UserMessageResponse userMessageResponse) {
@@ -296,7 +298,8 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         if (isShowDialog) {
             mDirectMessageView.showDialogLoading(true);
         }
-        Subscription subscription = mServerMessageSource.getUserMessage(mToken.getAccess_token(), mUserId, sinceId, 0, MAX_NEW_MESSAGE_PAGE_COUNT, 1)
+        Subscription subscription = mServerMessageSource.getUserMessage(mToken.getAccess_token(), mToUserId,
+                mSelfUserId, sinceId, 0, MAX_NEW_MESSAGE_PAGE_COUNT, 1)
                 .flatMap(new Func1<UserMessageResponse, Observable<DirectMessage>>() {
                     @Override
                     public Observable<DirectMessage> call(UserMessageResponse userMessageResponse) {
@@ -473,7 +476,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                 .flatMap(new Func1<User, Observable<DirectMessage>>() {
                     @Override
                     public Observable<DirectMessage> call(User user) {
-                        return Observable.just(buildTextMessage(user, mUserId, message));
+                        return Observable.just(buildTextMessage(user, mToUserId, message));
                     }
                 })
                 .doOnNext(new Action1<DirectMessage>() {
@@ -508,7 +511,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                 .flatMap(new Func1<User, Observable<DirectMessage>>() {
                     @Override
                     public Observable<DirectMessage> call(User user) {
-                        return Observable.from(buildImagesMessage(user, mUserId, paths));
+                        return Observable.from(buildImagesMessage(user, mToUserId, paths));
                     }
                 })
                 .subscribeOn(Schedulers.io())

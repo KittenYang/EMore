@@ -70,7 +70,7 @@ public class LocalMessageSource implements MessageSource {
     }
 
     @Override
-    public Observable<UserMessageResponse> getUserMessage(String accessToken, final long uid,
+    public Observable<UserMessageResponse> getUserMessage(String accessToken, final long toUid, final long selfUid,
                                                           final long since_id, final long max_id,
                                                           final int count, final int page) {
         return Observable.create(new Observable.OnSubscribe<UserMessageResponse>() {
@@ -97,11 +97,10 @@ public class LocalMessageSource implements MessageSource {
                     }else if (sinceCreateTime != 0) {
                         queryBuilder.where(DirectMessageDao.Properties.Created_at_long.ge(sinceCreateTime));
                     }
-                    long selfUid  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getAccount().getEmoreToken().getUid());
                     queryBuilder.where(queryBuilder.or(queryBuilder.and(DirectMessageDao.Properties.Recipient_id.eq(selfUid),
-                            DirectMessageDao.Properties.Sender_id.eq(uid)),
+                            DirectMessageDao.Properties.Sender_id.eq(toUid)),
                             queryBuilder.and(DirectMessageDao.Properties.Sender_id.eq(selfUid),
-                            DirectMessageDao.Properties.Recipient_id.eq(uid))));
+                            DirectMessageDao.Properties.Recipient_id.eq(toUid))));
 
                     List<DirectMessage> messages = queryBuilder.limit(count).offset(page - 1)
                             .orderDesc(DirectMessageDao.Properties.Created_at_long).list();
@@ -215,13 +214,12 @@ public class LocalMessageSource implements MessageSource {
     }
 
     @Override
-    public Observable<Response> resetUnReadMessage(String token, String source, String from, final String type, final int value) {
+    public Observable<Response> resetUnReadMessage(String token, final long uid, String source, String from, final String type, final int value) {
         return Observable.create(new Observable.OnSubscribe<Response>() {
             @Override
             public void call(Subscriber<? super Response> subscriber) {
                 try {
-                    long id  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid());
-                    UnReadMessage unReadMessage = mUnReadMessageDao.load(id);
+                    UnReadMessage unReadMessage = mUnReadMessageDao.load(uid);
                     if (unReadMessage != null) {
                         if (type.equals(UnReadMessage.TYPE_MENTION_STATUS)) {
                             unReadMessage.setMention_status(value);

@@ -68,7 +68,8 @@ public class WeiboMentionPresentImp extends AbsListTimeLinePresent<TimeLineWeibo
                         mView.onLoadComplete(weibos.size() > COUNT - 2);
 
                         MessageUtil.resetUnReadMessage(mAccount.getWeiCoToken().getAccess_token(),
-                                UnReadMessage.TYPE_MENTION_STATUS, mServerMessageSource, mLocalMessageSource);
+                                UnReadMessage.TYPE_MENTION_STATUS, mAccount.getUid(),
+                                mServerMessageSource, mLocalMessageSource);
                     }
                 });
         addSubscription(su);

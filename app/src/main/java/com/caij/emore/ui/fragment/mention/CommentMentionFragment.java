@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 
+import com.caij.emore.account.Account;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Comment;
@@ -46,8 +47,8 @@ public class CommentMentionFragment extends SwipeRefreshRecyclerViewFragment<Com
     }
 
     protected RefreshListPresent createPresent() {
-        Token accessToken = UserPrefs.get(getActivity()).getWeiCoToken();
-        return new CommentMentionPresentImp(accessToken.getAccess_token(), new ServerWeiboSource(),
+        Account account = UserPrefs.get(getActivity()).getAccount();
+        return new CommentMentionPresentImp(account, new ServerWeiboSource(),
                 new ServerMessageSource(), new LocalMessageSource(), this);
     }
 

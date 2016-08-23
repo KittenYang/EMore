@@ -1,6 +1,7 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.AppApplication;
+import com.caij.emore.account.Account;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.database.bean.UnReadMessage;
@@ -28,7 +29,7 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
 
     private static final int PAGE_SIZE = 20;
 
-    private String mToken;
+    private Account mAccount;
     private long mUid;
     private UserSource mUserSource;
     private FriendshipView mFriendshipView;
@@ -37,11 +38,11 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
     MessageSource mServerMessageSource;
     MessageSource mLocalMessageSource;
 
-    public FollowsPresentImp(String token, long uid, UserSource userSource,
+    public FollowsPresentImp(Account account, long uid, UserSource userSource,
                              MessageSource serverMessageSource,
                              MessageSource localMessageSource,
                              FriendshipView friendshipView) {
-        mToken = token;
+        mAccount = account;
         mUid = uid;
         mUserSource = userSource;
         mServerMessageSource = serverMessageSource;
@@ -85,7 +86,8 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
     }
 
     public Observable<List<User>> createUsersObservable(long next_cursor, final boolean isRefresh) {
-        return mUserSource.getFollowers(mToken, mUid, PAGE_SIZE, 0, next_cursor)
+        return mUserSource.getFollowers(mAccount.getWeiCoToken().getAccess_token(),
+                mUid, PAGE_SIZE, 0, next_cursor)
                 .compose(new ErrorCheckerTransformer<FriendshipResponse>())
                 .flatMap(new Func1<FriendshipResponse, Observable<User>>() {
                     @Override
@@ -126,8 +128,9 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
                         mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
                         mFriendshipView.onRefreshComplete();
 
-                        if (mUid == Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid())) {
-                            MessageUtil.resetUnReadMessage(mToken, UnReadMessage.TYPE_FOLLOWER,
+                        if (mUid == Long.parseLong(mAccount.getEmoreToken().getUid())) {
+                            MessageUtil.resetUnReadMessage(mAccount.getWeiCoToken().getAccess_token(),
+                                    UnReadMessage.TYPE_FOLLOWER, mAccount.getUid(),
                                     mServerMessageSource, mLocalMessageSource);
                         }
                     }

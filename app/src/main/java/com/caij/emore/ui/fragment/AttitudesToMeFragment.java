@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.caij.emore.account.Account;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Attitude;
@@ -39,8 +40,8 @@ public class AttitudesToMeFragment extends SwipeRefreshRecyclerViewFragment<Atti
     }
 
     protected RefreshListPresent createPresent() {
-        Token accessToken = UserPrefs.get(getActivity()).getWeiCoToken();
-        return new AttitudesToMePresentImp(accessToken.getAccess_token(), new ServerWeiboSource(),
+        Account account = UserPrefs.get(getActivity()).getAccount();
+        return new AttitudesToMePresentImp(account, new ServerWeiboSource(),
                 new ServerMessageSource(), new LocalMessageSource(), this);
     }
 

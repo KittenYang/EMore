@@ -4,7 +4,6 @@ import com.caij.emore.api.WeiBoService;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.User;
-import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.source.server.ServerUserSource;
@@ -12,8 +11,6 @@ import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.utils.GsonUtils;
 
 import org.junit.Test;
-
-import java.util.List;
 
 import rx.Subscriber;
 
@@ -46,7 +43,7 @@ public class WeiboUnitTest {
     @Test
     public void loadFriendWeibo() throws Exception {
         WeiboSource weiboSource = new ServerWeiboSource();
-        weiboSource.getFriendWeibo(Key.token, 0, 0, 20, 1).subscribe(new Subscriber<QueryWeiboResponse>() {
+        weiboSource.getFriendWeibo(Key.token, , 0, 0, 20, 1).subscribe(new Subscriber<QueryWeiboResponse>() {
             @Override
             public void onCompleted() {
 

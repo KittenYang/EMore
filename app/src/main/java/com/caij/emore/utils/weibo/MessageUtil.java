@@ -22,13 +22,12 @@ import rx.schedulers.Schedulers;
  */
 public class MessageUtil {
 
-    public static void resetUnReadMessage(final String token, String type,
+    public static void resetUnReadMessage(final String token, String type, final long uid,
                                           MessageSource serverMessageSource, final MessageSource localMessageSource) {
-        Observable<Response> serverObservable = serverMessageSource.resetUnReadMessage(token,
+        Observable<Response> serverObservable = serverMessageSource.resetUnReadMessage(token, uid,
                 Key.WEICO_APP_ID, Key.WEICO_APP_FROM, type, 0);
-        Observable<Response> localObservable = localMessageSource.resetUnReadMessage(token,
+        Observable<Response> localObservable = localMessageSource.resetUnReadMessage(token, uid,
                 Key.WEICO_APP_ID, Key.WEICO_APP_FROM, type, 0);
-        final long uid = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid());
         Observable.concat(serverObservable, localObservable)
                 .filter(new Func1<Response, Boolean>() {
                     @Override
@@ -62,10 +61,9 @@ public class MessageUtil {
                 });
     }
 
-    public static void resetLocalUnReadMessage(final String token, String type, int value, final MessageSource localMessageSource) {
-        Observable<Response> localObservable = localMessageSource.resetUnReadMessage(token,
+    public static void resetLocalUnReadMessage(final String token, String type, int value, final long uid, final MessageSource localMessageSource) {
+        Observable<Response> localObservable = localMessageSource.resetUnReadMessage(token, uid,
                 Key.WEICO_APP_ID, Key.WEICO_APP_FROM, type, value);
-        final long uid = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid());
         localObservable.flatMap(new Func1<Response, Observable<UnReadMessage>>() {
                     @Override
                     public Observable<UnReadMessage> call(Response response) {
