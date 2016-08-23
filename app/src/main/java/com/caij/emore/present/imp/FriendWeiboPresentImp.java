@@ -89,7 +89,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                         mView.setEntities(mWeibos);
 
                         if (System.currentTimeMillis() -
-                                SPUtil.getLong(Key.FRIEND_WEIBO_UPDATE_TIME + mAccount.getUsername(), -1) > 10 * 60 * 1000 ||
+                                SPUtil.getLong(Key.FRIEND_WEIBO_UPDATE_TIME + mAccount.getUsername(), -1) > 30 * 60 * 1000 ||
                                 weibos.size() <= 0) {
                             mView.toRefresh();
                         }

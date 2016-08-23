@@ -29,13 +29,6 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="关于">
-
-        <Preference
-            android:key="@string/key_setting_about" android:title="关于EMore"/>
-
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="账号">
 
         <Preference
@@ -44,6 +37,13 @@
 
         <Preference
             android:key="@string/setting_key_exit" android:title="退出"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="关于">
+
+        <Preference
+            android:key="@string/key_setting_about" android:title="关于EMore"/>
 
     </PreferenceCategory>
 
