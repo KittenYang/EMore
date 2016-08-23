@@ -37,4 +37,14 @@ public class UtilTest {
 //        467934697c9ac5440028fc281e7428aa
 //        467934697c9ac5440028fc281e7428aa
     }
+
+    @Test
+    public void convertMD5() {
+        String title = MD5Util.convertMD5("caij");
+//        title = MD5Util.convertMD5(title);
+        System.out.print(title);
+//        467934697c9ac5440028fc281e7428aa
+//        467934697c9ac5440028fc281e7428aa
+//        467934697c9ac5440028fc281e7428aa
+    }
 }

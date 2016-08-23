@@ -43,7 +43,7 @@ public class WeiboUnitTest {
     @Test
     public void loadFriendWeibo() throws Exception {
         WeiboSource weiboSource = new ServerWeiboSource();
-        weiboSource.getFriendWeibo(Key.token, , 0, 0, 20, 1).subscribe(new Subscriber<QueryWeiboResponse>() {
+        weiboSource.getFriendWeibo(Key.token, 0, 0, 0, 20, 1).subscribe(new Subscriber<QueryWeiboResponse>() {
             @Override
             public void onCompleted() {
 
