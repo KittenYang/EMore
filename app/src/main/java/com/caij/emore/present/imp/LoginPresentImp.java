@@ -37,13 +37,14 @@ public class LoginPresentImp extends AbsBasePresent implements LoginPresent{
                     public void call(Token accessToken) {
                         UserPrefs userPrefs = UserPrefs.get(AppApplication.getInstance());
                         Account account = new Account();
+                        long uid = Long.parseLong(accessToken.getUid());
                         account.setUsername(username);
                         account.setPwd(pwd);
                         accessToken.setKey(accessToken.getUid() + "_emore");
                         account.setEmoreToken(accessToken);
                         account.setStatus(Account.STATUS_USING);
-                        account.setUid(Long.parseLong(accessToken.getUid()));
-                        userPrefs.commit(account);
+                        account.setUid(uid);
+                        userPrefs.changeAccount(account);
                     }
                 })
                 .compose(new SchedulerTransformer<Token>())

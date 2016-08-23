@@ -6,8 +6,10 @@ import android.os.Bundle;
 
 import com.caij.emore.Key;
 import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.imp.LoginPresentImp;
+import com.caij.emore.ui.activity.MainActivity;
 import com.caij.emore.ui.view.LoginView;
 import com.caij.emore.source.server.LoginSourceImp;
 
@@ -64,7 +66,7 @@ public class EMoreLoginActivity extends AbsLoginActivity  implements LoginView {
 
     @Override
     public void onLoginSuccess(Token accessToken) {
-        Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(this, mUsername, mPassword);
+        Intent intent =  WeiCoLoginActivity.newWeiCoLoginIntent(this, mUsername, mPassword);
         startActivity(intent);
         finish();
     }

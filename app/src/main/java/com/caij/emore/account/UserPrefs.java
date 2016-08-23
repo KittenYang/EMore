@@ -102,40 +102,9 @@ public class UserPrefs {
         }
     }
 
-//    public void setEMoreToken(Token token) {
-//        if (mAccount == null) {
-//            mAccount = new Account();
-//        }
-//        token.setKey(token.getUid() + "_emore");
-//        mAccount.setUid(Long.parseLong(token.getUid()));
-//        mAccount.setEmoreToken(token);
-//    }
-//
-//    public void setWeiCoToken(Token token) {
-//        if (mAccount == null) {
-//            mAccount = new Account();
-//        }
-//        token.setKey(token.getUid() + "_weico");
-//        mAccount.setUid(Long.parseLong(token.getUid()));
-//        mAccount.setWeiCoToken(token);
-//    }
-
     public Account getAccount() {
         return mAccount;
     }
-
-//    public void clear() {
-//        mAccountDao.delete(mAccount);
-//        if (mAccount.getEmoreToken() != null) {
-//            mTokenDao.delete(mAccount.getEmoreToken());
-//        }
-//
-//        if (mAccount.getWeiCoToken() != null) {
-//            mTokenDao.delete(mAccount.getWeiCoToken());
-//        }
-//
-//        mAccount = null;
-//    }
 
     public List<Account> getAccounts() {
         List<Account> accounts = mAccountDao.queryBuilder().orderDesc(AccountDao.Properties.Status).list();

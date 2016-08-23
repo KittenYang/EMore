@@ -43,18 +43,15 @@ public abstract class BaseFragment<P extends BasePresent> extends Fragment imple
     @Override
     public void onAuthenticationError() {
         UserPrefs userPrefs = UserPrefs.get(getActivity());
-        showHint(getString(R.string.auth_invalid_hint));
-        ActivityStack.getInstance().remove(getActivity());
-        ActivityStack.getInstance().finishAllActivity();
-        Intent intent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(),
-                userPrefs.getAccount().getUsername(),
+        showHint(R.string.auth_invalid_hint);
+
+        Intent intent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(), userPrefs.getAccount().getUsername(),
                 userPrefs.getAccount().getPwd());
-        startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
         Init.getInstance().stop(getActivity());
-        UserPrefs.get(getActivity()).deleteAccount(userPrefs.getAccount());
 
-        getActivity().finish();
+        startActivity(intent);
     }
 
     @Override

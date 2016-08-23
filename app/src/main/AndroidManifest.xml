@@ -50,8 +50,7 @@
 
         <activity android:name="com.caij.emore.ui.activity.MainActivity"
             android:theme="@style/AppTheme.Main"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
+            android:screenOrientation="portrait"/>
 
         <activity android:name="com.caij.emore.ui.activity.UserInfoActivity"
             android:theme="@style/AppTheme.Main"

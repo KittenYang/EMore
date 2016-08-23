@@ -43,16 +43,14 @@ public abstract class BaseActivity<P extends BasePresent> extends AppCompatActiv
     public void onAuthenticationError() {
         UserPrefs userPrefs = UserPrefs.get(this);
         showHint(R.string.auth_invalid_hint);
-        ActivityStack.getInstance().remove(this);
-        ActivityStack.getInstance().finishAllActivity();
+
         Intent intent = EMoreLoginActivity.newEMoreLoginIntent(this, userPrefs.getAccount().getUsername(),
                 userPrefs.getAccount().getPwd());
-        startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
         Init.getInstance().stop(this);
-        UserPrefs.get(this).deleteAccount(userPrefs.getAccount());
 
-        finish();
+        startActivity(intent);
     }
 
     @Override

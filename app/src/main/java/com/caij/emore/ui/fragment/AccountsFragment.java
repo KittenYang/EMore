@@ -20,7 +20,6 @@ import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.adapter.AccountAdapter;
 import com.caij.emore.ui.view.AccountView;
-import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.utils.Init;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
@@ -56,63 +55,68 @@ public class AccountsFragment extends RecyclerViewFragment<AccountInfo, AccountP
     public void onItemClick(View view, int position) {
         Account account = mRecyclerViewAdapter.getItem(position).getAccount();
         if (view.getId() == R.id.iv_delete) {
-            if (!account.equals(UserPrefs.get(getActivity()).getAccount())) {
-                UserPrefs.get(getActivity()).deleteAccount(account);
-                mRecyclerViewAdapter.removeEntity(mRecyclerViewAdapter.getItem(position));
-                mRecyclerViewAdapter.notifyItemRemoved(position);
-            }else {
-                UserPrefs.get(getActivity()).deleteAccount(account);
-                mRecyclerViewAdapter.removeEntity(mRecyclerViewAdapter.getItem(position));
-
-                if (mRecyclerViewAdapter.getEntities().size() > 0) {
-                    Account otherAccount = mRecyclerViewAdapter.getEntities().get(0).getAccount();
-                    changeAccount(otherAccount);
-                }else {
-                    Init.getInstance().stop(getActivity());
-
-                    ActivityStack.getInstance().remove(getActivity());
-                    ActivityStack.getInstance().finishAllActivity();
-                    Intent toIntent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(),
-                            null, null);
-                    startActivity(toIntent);
-                    getActivity().finish();
-                }
-            }
+            deleteAccount(account, position);
         }else {
-            if (account.getEmoreToken() != null && !account.getEmoreToken().isExpired()
-                    && account.getWeiCoToken() != null && !account.getWeiCoToken().isExpired()) {
-                if (!account.equals(UserPrefs.get(getActivity()).getAccount())) {
-                    changeAccount(account);
-                }else {
-                    showHint(R.string.is_current_account);
-                }
+            changeAccount(account);
+        }
+    }
+
+    private void deleteAccount(Account account, int position) {
+        if (!account.equals(UserPrefs.get(getActivity()).getAccount())) {
+            UserPrefs.get(getActivity()).deleteAccount(account);
+            mRecyclerViewAdapter.removeEntity(mRecyclerViewAdapter.getItem(position));
+            mRecyclerViewAdapter.notifyItemRemoved(position);
+        }else {
+            UserPrefs.get(getActivity()).deleteAccount(account);
+            mRecyclerViewAdapter.removeEntity(mRecyclerViewAdapter.getItem(position));
+
+            if (mRecyclerViewAdapter.getEntities().size() > 0) {
+                Account otherAccount = mRecyclerViewAdapter.getEntities().get(0).getAccount();
+                toMain(otherAccount);
             }else {
-                Token eMoreAccessToken = UserPrefs.get(getActivity()).getEMoreToken();
-                Token weicoAccessToken = UserPrefs.get(getActivity()).getWeiCoToken();
-                Intent toIntent = null;
-                if (eMoreAccessToken.isExpired()) {
-                    toIntent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(),
-                            UserPrefs.get(getActivity()).getAccount().getUsername(),
-                            UserPrefs.get(getActivity()).getAccount().getPwd());
-                }else if (weicoAccessToken == null || weicoAccessToken.isExpired()){
-                    toIntent = WeiCoLoginActivity.newWeiCoLoginIntent(getActivity(),
-                            UserPrefs.get(getActivity()).getAccount().getUsername(),
-                            UserPrefs.get(getActivity()).getAccount().getPwd());
-                }
+                Init.getInstance().stop(getActivity());
+
+                Intent toIntent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(),
+                        null, null);
+                toIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(toIntent);
             }
         }
     }
 
     private void changeAccount(Account account) {
+        if (account.getEmoreToken() != null && !account.getEmoreToken().isExpired()
+                && account.getWeiCoToken() != null && !account.getWeiCoToken().isExpired()) {
+            if (!account.equals(UserPrefs.get(getActivity()).getAccount())) {
+                toMain(account);
+            }else {
+                showHint(R.string.is_current_account);
+            }
+        }else {
+            UserPrefs.get(getActivity()).changeAccount(account);
+            Init.getInstance().stop(getActivity());
+
+            Token weicoAccessToken = account.getWeiCoToken();
+            Intent toIntent = null;
+            if (weicoAccessToken == null || weicoAccessToken.isExpired()){
+                toIntent = WeiCoLoginActivity.newWeiCoLoginIntent(getActivity(),
+                        account.getUsername(), account.getPwd());
+            }else {
+                toIntent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(),
+                        account.getUsername(), account.getPwd());
+            }
+            toIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(toIntent);
+        }
+    }
+
+    private void toMain(Account account) {
         UserPrefs.get(getActivity()).changeAccount(account);
         Init.getInstance().reset(getActivity(), account.getUid());
 
         Intent intent = new Intent(getActivity(), MainActivity.class);
-        ActivityStack.getInstance().remove(getActivity());
-        ActivityStack.getInstance().finishAllActivity();
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        getActivity().finish();
     }
 
     @Override
@@ -124,11 +128,9 @@ public class AccountsFragment extends RecyclerViewFragment<AccountInfo, AccountP
     public boolean onOptionsItemSelected(MenuItem item) {
         // 新增授权
         if (item.getItemId() == R.id.add) {
-            ActivityStack.getInstance().remove(getActivity());
-            ActivityStack.getInstance().finishAllActivity();
             Intent intent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(), null, null);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            getActivity().finish();
         }
 
         return super.onOptionsItemSelected(item);
