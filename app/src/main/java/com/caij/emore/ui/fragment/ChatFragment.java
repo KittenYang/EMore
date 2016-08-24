@@ -30,6 +30,7 @@ import com.caij.emore.bean.Emotion;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.present.ChatPresent;
 import com.caij.emore.present.imp.ChatPresentImp;
+import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.view.DirectMessageView;
 import com.caij.emore.source.local.LocalMessageSource;
 import com.caij.emore.source.local.LocalUserSource;
@@ -345,12 +346,17 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @Override
     public void onItemClick(View view, int position) {
         DirectMessage directMessage = mMessageAdapter.getItem(position - 1);
-        int type = mMessageAdapter.getItemViewType(position - 1);
-        if (type == MessageAdapter.TYPE_OTHER_IMAGE || type == MessageAdapter.TYPE_SELT_IMAGE) {
-            ArrayList<String> images = new ArrayList<>(1);
-            images.add(appImageUrl(directMessage.getImageInfo().getUrl()));
-            Intent intent = ImagePrewActivity.newIntent(getActivity(), images, 0);
+        if (view.getId() == R.id.iv_avatar) {
+            Intent intent = UserInfoActivity.newIntent(getActivity(), directMessage.getSender_screen_name());
             startActivity(intent);
+        }else {
+            int type = mMessageAdapter.getItemViewType(position - 1);
+            if (type == MessageAdapter.TYPE_OTHER_IMAGE || type == MessageAdapter.TYPE_SELT_IMAGE) {
+                ArrayList<String> images = new ArrayList<>(1);
+                images.add(appImageUrl(directMessage.getImageInfo().getUrl()));
+                Intent intent = ImagePrewActivity.newIntent(getActivity(), images, 0);
+                startActivity(intent);
+            }
         }
     }
 

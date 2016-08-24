@@ -173,6 +173,12 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                         if (message.getAtt_ids() != null && message.getAtt_ids().size() > 0) {
                             getMessageImageInfo(message);
                         }
+
+                        //这里是5分钟还没有发送出去 认为发送失败
+                        if (message.getLocal_status() == DirectMessage.STATUS_SEND
+                                && System.currentTimeMillis() - message.getCreated_at_long() > 5 * 60 * 1000) {
+                            message.setLocal_status(DirectMessage.STATUS_FAIL);
+                        }
                         return message;
                     }
                 })
@@ -226,8 +232,10 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                                 && messageResponseEvent.message.getAtt_ids().size() > 0) {
                             getMessageImageInfo(messageResponseEvent.message);
                         }
-                        messageResponseEvent.message.setTextContentSpannable(SpannableStringUtil.
-                                paraeSpannable(messageResponseEvent.message));
+                        if (messageResponseEvent.message != null) {
+                            messageResponseEvent.message.setTextContentSpannable(SpannableStringUtil.
+                                    paraeSpannable(messageResponseEvent.message));
+                        }
                         return messageResponseEvent;
                     }
                 })
@@ -236,24 +244,17 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                     @Override
                     public void call(MessageResponseEvent messageResponseEvent) {
                         int updatePosition = -1;
-                        if (messageResponseEvent.message == null) {
-                            for (int i = mDirectMessages.size() - 1; i >= 0; i --) {
-                                DirectMessage directMessage = mDirectMessages.get(i);
-                                if (directMessage.getId() == messageResponseEvent.localMessageId) {
+                        for (int i = mDirectMessages.size() - 1; i >= 0; i --) {
+                            DirectMessage directMessage = mDirectMessages.get(i);
+                            if (directMessage.getId() == messageResponseEvent.localMessageId) {
+                                updatePosition = i;
+                                if (directMessage.getLocal_status() == DirectMessage.STATUS_FAIL) {
                                     directMessage.setLocal_status(DirectMessage.STATUS_FAIL);
-                                    updatePosition = i;
-                                    break;
-                                }
-                            }
-                        }else {
-                            for (int i = mDirectMessages.size() - 1; i >= 0; i --) {
-                                DirectMessage directMessage = mDirectMessages.get(i);
-                                if (directMessage.getId() == messageResponseEvent.localMessageId) {
+                                }else {
                                     mDirectMessages.remove(directMessage);
                                     mDirectMessages.add(i, messageResponseEvent.message);
-                                    updatePosition = i;
-                                    break;
                                 }
+                                break;
                             }
                         }
                         if (updatePosition > 0) {
@@ -342,7 +343,6 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtil.d("loadNewMessage", e.getMessage());
                         if (isShowDialog) {
                             mDirectMessageView.showDialogLoading(false);
                         }
@@ -440,6 +440,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         mDirectMessages.remove(message);
         message.setLocal_status(DirectMessage.STATUS_SEND);
         message.setCreated_at(DateUtil.formatCreatetime(System.currentTimeMillis()));
+        message.setCreated_at_long(System.currentTimeMillis());
         mDirectMessages.add(message);
         mDirectMessageView.setEntities(mDirectMessages);
         mDirectMessageView.attemptSmoothScrollToBottom();
@@ -554,6 +555,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
 
     private DirectMessage buildImageMessage(User self, long recipientId, String path) {
         DirectMessage directMessage = buildMessage(self, recipientId);
+        directMessage.setText("分享图片");
         List<Long> fids = new ArrayList<>(2);
         fids.add(directMessage.getId());
         fids.add(directMessage.getId());
@@ -572,6 +574,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         directMessage.setRecipient_id(recipientId);
         directMessage.setLocal_status(DirectMessage.STATUS_SEND);
         directMessage.setCreated_at(DateUtil.formatCreatetime(System.currentTimeMillis()));
+        directMessage.setCreated_at_long(System.currentTimeMillis());
         return directMessage;
     }
 

@@ -4,10 +4,13 @@ package com.caij.emore.database.bean;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
+
+import java.io.Serializable;
+
 /**
  * Entity mapped to table "MESSAGE_IMAGE".
  */
-public class MessageImage {
+public class MessageImage implements Serializable {
 
     private Long fid;
     private Long vfid;

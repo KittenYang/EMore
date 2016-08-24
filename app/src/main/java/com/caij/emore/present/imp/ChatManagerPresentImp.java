@@ -89,7 +89,7 @@ public class ChatManagerPresentImp extends AbsBasePresent implements ChatManager
                 public Observable<DirectMessage> call(MessageImage messageImage) {
                     long vifid = messageImage.getVfid();
                     long tofid = messageImage.getTovfid();
-                    return mServerMessageSource.createImageMessage(mToken, "分享图片", bean.message.getRecipient_id(),
+                    return mServerMessageSource.createImageMessage(mToken, bean.message.getText(), bean.message.getRecipient_id(),
                             bean.message.getRecipient_screen_name(), String.valueOf(vifid) + "," + tofid);
                 }
             });
@@ -123,7 +123,8 @@ public class ChatManagerPresentImp extends AbsBasePresent implements ChatManager
 
                     @Override
                     public void onError(Throwable e) {
-                        MessageResponseEvent responseEvent = new MessageResponseEvent(bean.localMessageId, null);
+                        bean.message.setLocal_status(DirectMessage.STATUS_FAIL);
+                        MessageResponseEvent responseEvent = new MessageResponseEvent(bean.localMessageId, bean.message);
                         RxBus.getDefault().post(Event.EVENT_SEND_MESSAGE_RESULT, responseEvent);
                         LogUtil.d(ChatManagerPresentImp.this, "message send error " + e.getMessage());
                     }

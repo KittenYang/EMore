@@ -324,11 +324,14 @@ public class SpannableStringUtil {
     }
 
     public static Spannable paraeSpannable(DirectMessage directMessage) {
-        SpannableStringBuilder contentSpannableString = SpannableStringBuilder.valueOf(directMessage.getText());
-        SpannableStringUtil.praseName(contentSpannableString);
-        SpannableStringUtil.praseTopic(contentSpannableString);
-        SpannableStringUtil.praseDefaultEmotions(contentSpannableString);
-        SpannableStringUtil.praseSoftEmotions(contentSpannableString);
-        return contentSpannableString;
+        if (!TextUtils.isEmpty(directMessage.getText())) {
+            SpannableStringBuilder contentSpannableString = SpannableStringBuilder.valueOf(directMessage.getText());
+            SpannableStringUtil.praseName(contentSpannableString);
+            SpannableStringUtil.praseTopic(contentSpannableString);
+            SpannableStringUtil.praseDefaultEmotions(contentSpannableString);
+            SpannableStringUtil.praseSoftEmotions(contentSpannableString);
+            return contentSpannableString;
+        }
+        return null;
     }
 }

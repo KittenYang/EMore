@@ -4,10 +4,13 @@ package com.caij.emore.database.bean;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
+
+import java.io.Serializable;
+
 /**
  * Entity mapped to table "IMAGE_INFO".
  */
-public class ImageInfo {
+public class ImageInfo implements Serializable {
 
     private String url;
     private Integer width;

@@ -242,14 +242,29 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         }
     }
 
-    public static class OtherMessageViewHolder extends BaseViewHolder {
+    public static class MessageViewHolder extends BaseViewHolder {
 
         @BindView(R.id.iv_avatar)
         ImageView ivAvatar;
-        @BindView(R.id.tv_message)
-        TextView tvMessage;
         @BindView(R.id.tv_send_time)
         TextView tvTime;
+
+        public MessageViewHolder(View itemView, final RecyclerViewOnItemClickListener onItemClickListener) {
+            super(itemView, onItemClickListener);
+            ButterKnife.bind(this, itemView);
+            ivAvatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick(v, getLayoutPosition());
+                }
+            });
+        }
+    }
+
+    public static class OtherMessageViewHolder extends MessageViewHolder {
+
+        @BindView(R.id.tv_message)
+        TextView tvMessage;
 
         public OtherMessageViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);
@@ -257,18 +272,14 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         }
     }
 
-    public static class SelfMessageViewHolder extends BaseViewHolder {
+    public static class SelfMessageViewHolder extends MessageViewHolder {
 
-        @BindView(R.id.iv_avatar)
-        ImageView ivAvatar;
         @BindView(R.id.tv_message)
         TextView tvMessage;
         @BindView(R.id.pb_loading)
         ProgressBar pbLoading;
         @BindView(R.id.iv_fail)
         ImageView ivFail;
-        @BindView(R.id.tv_send_time)
-        TextView tvTime;
 
         public SelfMessageViewHolder(View itemView, final RecyclerViewOnItemClickListener onItemClickListener,
                                      final RecyclerViewOnItemClickListener onItemLongClickListener) {
@@ -284,14 +295,10 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         }
     }
 
-    public static class OtherMessageViewImageHolder extends BaseViewHolder {
+    public static class OtherMessageViewImageHolder extends MessageViewHolder {
 
-        @BindView(R.id.iv_avatar)
-        ImageView ivAvatar;
         @BindView(R.id.iv_image)
         ImageView ivImage;
-        @BindView(R.id.tv_send_time)
-        TextView tvTime;
 
         public OtherMessageViewImageHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);
@@ -299,18 +306,14 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         }
     }
 
-    public static class SelfMessageViewImageHolder extends BaseViewHolder {
+    public static class SelfMessageViewImageHolder extends MessageViewHolder {
 
-        @BindView(R.id.iv_avatar)
-        ImageView ivAvatar;
         @BindView(R.id.iv_image)
         ImageView ivImage;
         @BindView(R.id.pb_loading)
         ProgressBar pbLoading;
         @BindView(R.id.iv_fail)
         ImageView ivFail;
-        @BindView(R.id.tv_send_time)
-        TextView tvTime;
 
         public SelfMessageViewImageHolder(View itemView, final RecyclerViewOnItemClickListener onItemClickListener,
                                           final RecyclerViewOnItemClickListener onItemLongClickListener) {
