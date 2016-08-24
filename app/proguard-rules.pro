@@ -79,5 +79,6 @@
 ### bean
 -keep class com.caij.emore.database.** { *; }
 -keep class com.caij.emore.bean.** { *; }
+-keep class com.caij.emore.account.** { *; }
 
 -keep class com.baidu.cyberplayer.** { *; }
