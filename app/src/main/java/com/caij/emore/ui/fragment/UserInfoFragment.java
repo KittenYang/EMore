@@ -63,7 +63,7 @@ public class UserInfoFragment extends LazyFragment {
         setItemTitle(itemJoinTime, "注册时间");
 
         setItemBody(itemName, user.getScreen_name());
-        setItemBody(itemRename, user.getName());
+        setItemBody(itemRename, user.getRemark());
         String sex;
         if ("m".equals(user.getGender())) {
             sex = "男";
