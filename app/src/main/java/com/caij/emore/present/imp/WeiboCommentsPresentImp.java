@@ -239,23 +239,23 @@ public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboComm
                 weibo.setComments_count(queryWeiboCommentResponse.getTotal_number());
                 weibo.setUpdate_time(System.currentTimeMillis());
                 mLocalWeiboSource.saveWeibo(mToken, weibo);
-            }
-        }).subscribe(new Subscriber<Weibo>() {
-            @Override
-            public void onCompleted() {
+                    }
+                }).subscribe(new Subscriber<Weibo>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(Weibo weibo) {
-                RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
-            }
-        });
+                    @Override
+                    public void onNext(Weibo weibo) {
+                        RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
+                    }
+                });
         addSubscription(subscription);
     }
 

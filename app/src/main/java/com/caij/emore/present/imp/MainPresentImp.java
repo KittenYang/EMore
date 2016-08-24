@@ -147,7 +147,7 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtil.d("getWeiboUserInfoByUid", e.getMessage());
+                        LogUtil.d(MainPresentImp.this, e.getMessage());
                     }
 
                     @Override

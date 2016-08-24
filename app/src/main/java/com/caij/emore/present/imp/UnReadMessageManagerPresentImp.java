@@ -104,7 +104,7 @@ public class UnReadMessageManagerPresentImp extends AbsBasePresent implements Un
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtil.d("notifyMessage", e.getMessage());
+                        LogUtil.d(UnReadMessageManagerPresentImp.this, e.getMessage());
                     }
 
                     @Override
