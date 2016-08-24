@@ -4,7 +4,7 @@
 
 ![main](introduce/main.png)   ![message](introduce/message.png)
 
-![weibo](introduce/weibo.png)   ![user](user/user.png)
+![weibo](introduce/weibo.png)   ![user](introduce/user.png)
 
 ###Libs 
 [butterknife](https://github.com/JakeWharton/butterknife) 
