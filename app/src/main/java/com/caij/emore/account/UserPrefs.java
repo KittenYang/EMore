@@ -50,6 +50,22 @@ public class UserPrefs {
                 mAccount.setWeiCoToken(weicoToken);
             }
         }
+//        Account account = new Account();
+//        account.setUid(2813584522L);
+//        Token emore = new Token();
+//        emore.setAccess_token("2.00WrV6EDP_6nCCcc4d7c35f5Pa1zPC");
+//        emore.setExpires_in(2625519L);
+//        emore.setUid("2813584522");
+//
+//        Token weico = new Token();
+//        weico.setAccess_token("2.00WrV6ED06XASO9c276f3c950k7avt");
+//        weico.setExpires_in(2625519L);
+//        weico.setUid("2813584522");
+//
+//        account.setWeiCoToken(weico);
+//        account.setEmoreToken(emore);
+//
+//        mAccount = account;
     }
 
     public static UserPrefs get(Context context) {
