@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.caij.emore.R;
-import com.caij.emore.database.bean.PicUrl;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.RatioImageView;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
@@ -15,7 +15,7 @@ import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 /**
  * Created by Caij on 2016/6/23.
  */
-public class UserGridImageAdapter extends BaseAdapter<PicUrl, BaseViewHolder> {
+public class UserGridImageAdapter extends BaseAdapter<ImageInfo, BaseViewHolder> {
 
     private ImageLoader.ImageConfig mImageConfig;
 
@@ -39,8 +39,8 @@ public class UserGridImageAdapter extends BaseAdapter<PicUrl, BaseViewHolder> {
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         ImageViewHolder imageView = (ImageViewHolder) holder;
-        PicUrl image = getItem(position);
-        ImageLoader.loadUrl(mContext, imageView.imageView, image.getBmiddle_pic(), R.drawable.weibo_image_placeholder, mImageConfig);
+        ImageInfo image = getItem(position);
+        ImageLoader.loadUrl(mContext, imageView.imageView, image.getBmiddle().getUrl(), R.drawable.weibo_image_placeholder, mImageConfig);
     }
 
     public static class ImageViewHolder extends BaseViewHolder {

@@ -30,7 +30,7 @@ public abstract class AbsListTimeLinePresent<V extends WeiboActionView & ListVie
                 weiboOnList.setAttitudes_count(weibo.getAttitudes_count());
                 weiboOnList.setReposts_count(weibo.getReposts_count());
                 weiboOnList.setComments_count(weibo.getComments_count());
-                weiboOnList.setAttitudes(weibo.isAttitudes());
+                weiboOnList.setAttitudes_status(weibo.getAttitudes_status());
                 mView.notifyItemChanged(mWeibos, index);
                 break;
             }

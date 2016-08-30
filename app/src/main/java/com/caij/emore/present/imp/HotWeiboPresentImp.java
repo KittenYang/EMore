@@ -117,21 +117,11 @@ public class HotWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView
                         return isRefresh || !mWeibos.contains(weibo);
                     }
                 })
-                .map(new Func1<Weibo, Weibo>() {
-
-                    @Override
-                    public Weibo call(Weibo weibo) {
-                        toGetImageSize(weibo);
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        return weibo;
-                    }
-                })
                 .toList()
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
                         mLocalWeiboSource.saveWeibos(mAccount.getEmoreToken().getAccess_token(), weibos);
-                        doSpanNext(weibos);
                     }
                 })
                 .compose(new SchedulerTransformer<List<Weibo>>());

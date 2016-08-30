@@ -1,7 +1,7 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.bean.response.UserWeiboResponse;
-import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.ui.view.TimeLineWeiboImageView;
@@ -31,13 +31,13 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
     private TimeLineWeiboImageView mView;
     private WeiboSource mServerWeiboSource;
     private List<Weibo> mWeibos;
-    private String mUsername;
-    private List<PicUrl> mPicUrl;
+    private long mUid;
+    private List<ImageInfo> mPicUrl;
 
-    public UserImagePresentImp(String token, String name, TimeLineWeiboImageView view, WeiboSource serverWeiboSource) {
+    public UserImagePresentImp(String token, long uid, TimeLineWeiboImageView view, WeiboSource serverWeiboSource) {
         mToken = token;
         mView = view;
-        mUsername = name;
+        mUid = uid;
         mServerWeiboSource = serverWeiboSource;
         mWeibos = new ArrayList<>();
         mPicUrl = new ArrayList<>();
@@ -80,7 +80,7 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
 
     @Override
     public void refresh() {
-        Subscription subscription = mServerWeiboSource.getUseWeibo(mToken, mUsername, 2, 0, 0, PAGE_COUNT, 1)
+        Subscription subscription = mServerWeiboSource.getUseWeibo(mToken, mUid, 2, 0, 0, PAGE_COUNT, 1)
                 .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(UserWeiboResponse response) {
@@ -90,7 +90,11 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
-                        mPicUrl.addAll(weibo.getPic_urls());
+                        // TODO: 2016/8/25 图片加载
+                        mPicUrl.clear();
+                        for (String picId : weibo.getPic_ids()) {
+                            mPicUrl.add(weibo.getPic_infos().get(picId));
+                        }
                     }
                 })
                 .toList()
@@ -103,9 +107,6 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
 
                     @Override
                     protected void onFail(Throwable e) {
-                        if (mPicUrl.size() == 0) {
-                            mView.showErrorView();
-                        }
                     }
 
                     @Override
@@ -131,7 +132,7 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
         if (mWeibos.size() > 0) {
             maxId = mWeibos.get(mWeibos.size() - 1).getId();
         }
-        Subscription subscription = mServerWeiboSource.getUseWeibo(mToken, mUsername, 2, 0, maxId, PAGE_COUNT, 1)
+        Subscription subscription = mServerWeiboSource.getUseWeibo(mToken, mUid, 2, 0, maxId, PAGE_COUNT, 1)
                 .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(UserWeiboResponse response) {
@@ -147,7 +148,9 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
-                        mPicUrl.addAll(weibo.getPic_urls());
+                        for (String picId : weibo.getPic_ids()) {
+                            mPicUrl.add(weibo.getPic_infos().get(picId));
+                        }
                     }
                 })
                 .toList()

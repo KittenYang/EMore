@@ -59,7 +59,7 @@ public class RepostWeiboListItemView extends WeiboListItemView {
 
     @Override
     protected void setImages(Weibo weibo, ImageInterface picsView) {
-        picsView.setPics(weibo.getRetweeted_status().getPic_urls());
+        picsView.setPics(weibo.getRetweeted_status().getPic_ids(), weibo.getRetweeted_status().getPic_infos());
     }
 
     @OnClick(R.id.ll_re)

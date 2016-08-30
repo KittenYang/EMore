@@ -5,13 +5,15 @@ import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
-import com.caij.emore.ui.view.WeiboRepostsView;
-import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.UrlSource;
+import com.caij.emore.source.local.LocalUrlSource;
+import com.caij.emore.source.server.ServerUrlSource;
+import com.caij.emore.ui.view.WeiboRepostsView;
+import com.caij.emore.utils.UrlUtil;
+import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
-import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
@@ -49,14 +51,12 @@ public class WeiboRepostsPresentImp extends AbsBasePresent implements WeiboRepos
 
     public WeiboRepostsPresentImp(String token, long weiboId, WeiboSource repostSource,
                                   WeiboSource localWeiboSource,
-                                  UrlSource servreUrlSource,
-                                  UrlSource localUrlSource,
                                   WeiboRepostsView repostsView) {
         mToken = token;
         mServerRepostSource = repostSource;
         mLocalWeiboSource = localWeiboSource;
-        mLocalUrlSource = localUrlSource;
-        mServerUrlSource = servreUrlSource;
+        mLocalUrlSource = new LocalUrlSource();
+        mServerUrlSource = new ServerUrlSource();
         mWeiboRepostsView = repostsView;
         mWeiboId = weiboId;
         mWeobos = new ArrayList<>();

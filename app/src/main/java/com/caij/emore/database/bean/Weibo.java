@@ -7,9 +7,13 @@ package com.caij.emore.database.bean;
 
 import android.text.Spanned;
 
+import com.caij.emore.bean.*;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.bean.response.Response;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -17,7 +21,7 @@ import java.util.List;
  */
 public class Weibo extends Response implements Serializable {
 
-    private String created_at;
+    private java.util.Date created_at;
     private Long id;
     private Long mid;
     private String idstr;
@@ -36,12 +40,16 @@ public class Weibo extends Response implements Serializable {
     private Integer attitudes_count;
     private Integer mlevel;
     private Long update_time = System.currentTimeMillis();
-    private Long create_at_long;
+    private Integer attitudes_status;
     private Boolean isLongText;
-    private String geo_id;
-    private Long user_id;
-    private String visible_id;
+    private String geo_json_string;
+    private String visible_json_string;
+    private String url_struct_json_string;
+    private String pic_ids_json_string;
+    private String pic_infos_json_string;
+    private String long_text_json_string;
     private Long retweeted_status_id;
+    private Long user_id;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -53,7 +61,7 @@ public class Weibo extends Response implements Serializable {
         this.id = id;
     }
 
-    public Weibo(String created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, Long create_at_long, Boolean isLongText, String geo_id, Long user_id, String visible_id, Long retweeted_status_id) {
+    public Weibo(java.util.Date created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, Integer attitudes_status, Boolean isLongText, String geo_json_string, String visible_json_string, String url_struct_json_string, String pic_ids_json_string, String pic_infos_json_string, String long_text_json_string, Long retweeted_status_id, Long user_id) {
         this.created_at = created_at;
         this.id = id;
         this.mid = mid;
@@ -73,19 +81,23 @@ public class Weibo extends Response implements Serializable {
         this.attitudes_count = attitudes_count;
         this.mlevel = mlevel;
         this.update_time = update_time;
-        this.create_at_long = create_at_long;
+        this.attitudes_status = attitudes_status;
         this.isLongText = isLongText;
-        this.geo_id = geo_id;
-        this.user_id = user_id;
-        this.visible_id = visible_id;
+        this.geo_json_string = geo_json_string;
+        this.visible_json_string = visible_json_string;
+        this.url_struct_json_string = url_struct_json_string;
+        this.pic_ids_json_string = pic_ids_json_string;
+        this.pic_infos_json_string = pic_infos_json_string;
+        this.long_text_json_string = long_text_json_string;
         this.retweeted_status_id = retweeted_status_id;
+        this.user_id = user_id;
     }
 
-    public String getCreated_at() {
+    public java.util.Date getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(String created_at) {
+    public void setCreated_at(java.util.Date created_at) {
         this.created_at = created_at;
     }
 
@@ -233,12 +245,12 @@ public class Weibo extends Response implements Serializable {
         this.update_time = update_time;
     }
 
-    public Long getCreate_at_long() {
-        return create_at_long;
+    public Integer getAttitudes_status() {
+        return attitudes_status;
     }
 
-    public void setCreate_at_long(Long create_at_long) {
-        this.create_at_long = create_at_long;
+    public void setAttitudes_status(Integer attitudes_status) {
+        this.attitudes_status = attitudes_status;
     }
 
     public Boolean getIsLongText() {
@@ -249,28 +261,52 @@ public class Weibo extends Response implements Serializable {
         this.isLongText = isLongText;
     }
 
-    public String getGeo_id() {
-        return geo_id;
+    public String getGeo_json_string() {
+        return geo_json_string;
     }
 
-    public void setGeo_id(String geo_id) {
-        this.geo_id = geo_id;
+    public void setGeo_json_string(String geo_json_string) {
+        this.geo_json_string = geo_json_string;
     }
 
-    public Long getUser_id() {
-        return user_id;
+    public String getVisible_json_string() {
+        return visible_json_string;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setVisible_json_string(String visible_json_string) {
+        this.visible_json_string = visible_json_string;
     }
 
-    public String getVisible_id() {
-        return visible_id;
+    public String getUrl_struct_json_string() {
+        return url_struct_json_string;
     }
 
-    public void setVisible_id(String visible_id) {
-        this.visible_id = visible_id;
+    public void setUrl_struct_json_string(String url_struct_json_string) {
+        this.url_struct_json_string = url_struct_json_string;
+    }
+
+    public String getPic_ids_json_string() {
+        return pic_ids_json_string;
+    }
+
+    public void setPic_ids_json_string(String pic_ids_json_string) {
+        this.pic_ids_json_string = pic_ids_json_string;
+    }
+
+    public String getPic_infos_json_string() {
+        return pic_infos_json_string;
+    }
+
+    public void setPic_infos_json_string(String pic_infos_json_string) {
+        this.pic_infos_json_string = pic_infos_json_string;
+    }
+
+    public String getLong_text_json_string() {
+        return long_text_json_string;
+    }
+
+    public void setLong_text_json_string(String long_text_json_string) {
+        this.long_text_json_string = long_text_json_string;
     }
 
     public Long getRetweeted_status_id() {
@@ -281,17 +317,27 @@ public class Weibo extends Response implements Serializable {
         this.retweeted_status_id = retweeted_status_id;
     }
 
+    public Long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
+    }
+
     // KEEP METHODS - put your custom methods here
     // KEEP METHODS END
 
     private Visible visible;
-    private List<PicUrl> pic_urls;
-    private boolean isAttitudes;
+    private LinkedHashMap<String, ImageInfo> pic_infos;
     private Geo geo;
     private User user;
     private Weibo retweeted_status;
-    private transient Spanned contentSpannableString;
     private LongText longText;
+    private List<String> pic_ids;
+    private List<ShortUrl> url_struct;
+
+    private transient Spanned contentSpannableString;
 
     public Visible getVisible() {
         return visible;
@@ -301,20 +347,12 @@ public class Weibo extends Response implements Serializable {
         this.visible = visible;
     }
 
-    public List<PicUrl> getPic_urls() {
-        return pic_urls;
+    public LinkedHashMap<String, ImageInfo> getPic_infos() {
+        return pic_infos;
     }
 
-    public void setPic_urls(List<PicUrl> pic_urls) {
-        this.pic_urls = pic_urls;
-    }
-
-    public boolean isAttitudes() {
-        return isAttitudes;
-    }
-
-    public void setAttitudes(boolean attitudes) {
-        isAttitudes = attitudes;
+    public void setPic_infos(LinkedHashMap<String, ImageInfo> pic_infos) {
+        this.pic_infos = pic_infos;
     }
 
     public Geo getGeo() {
@@ -347,6 +385,22 @@ public class Weibo extends Response implements Serializable {
 
     public void setLongText(LongText longText) {
         this.longText = longText;
+    }
+
+    public List<String> getPic_ids() {
+        return pic_ids;
+    }
+
+    public void setPic_ids(List<String> pic_ids) {
+        this.pic_ids = pic_ids;
+    }
+
+    public List<ShortUrl> getUrl_struct() {
+        return url_struct;
+    }
+
+    public void setUrl_struct(List<ShortUrl> url_struct) {
+        this.url_struct = url_struct;
     }
 
     public Spanned getContentSpannableString() {

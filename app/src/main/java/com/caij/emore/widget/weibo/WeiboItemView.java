@@ -78,9 +78,7 @@ public abstract class WeiboItemView extends FrameLayout {
         ImageLoader.loadUrl(getContext(), ivAvatar,
                 weibo.getUser().getAvatar_large(), R.drawable.circle_image_placeholder, config);
 
-        String createAt = "";
-        if (!TextUtils.isEmpty(weibo.getCreated_at()))
-            createAt = DateUtil.convWeiboDate(getContext(), weibo.getCreated_at());
+        String createAt = DateUtil.convWeiboDate(getContext(), weibo.getCreated_at().getTime());
         String from = "";
         if (!TextUtils.isEmpty(weibo.getSource()))
             from = String.format("%s", Html.fromHtml(weibo.getSource()));

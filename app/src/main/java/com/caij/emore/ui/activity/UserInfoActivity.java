@@ -159,8 +159,8 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
         if (viewPager.getAdapter() == null) {
             List<BaseFragment> fragments = new ArrayList<>(3);
             fragments.add(UserInfoFragment.newInstance(user));
-            fragments.add(UserWeiboFragment.newInstance(user.getScreen_name()));
-            fragments.add(UserImageFragment.newInstance(user.getScreen_name()));
+            fragments.add(UserWeiboFragment.newInstance(user.getId()));
+            fragments.add(UserImageFragment.newInstance(user.getId()));
             WeiboFragmentPagerAdapter adapter = new WeiboFragmentPagerAdapter(getSupportFragmentManager(),
                     fragments, mTabTitles);
             viewPager.setAdapter(adapter);

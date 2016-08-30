@@ -73,7 +73,7 @@ public class WeiboListItemView extends WeiboItemView {
         tvContent.setText(weibo.getContentSpannableString());
 
         tvLike.setText(String.valueOf(weibo.getAttitudes_count()));
-        tvLike.setSelected(weibo.isAttitudes());
+        tvLike.setSelected(weibo.getAttitudes_status() == 1);
 
         setImages(weibo, picsView);
 
@@ -84,7 +84,7 @@ public class WeiboListItemView extends WeiboItemView {
     }
 
     protected void setImages(Weibo weibo, ImageInterface picsView) {
-        picsView.setPics(weibo.getPic_urls());
+        picsView.setPics(weibo.getPic_ids(), weibo.getPic_infos());
     }
 
     @OnClick({R.id.tv_like, R.id.tv_comment_count, R.id.tv_repost_count, R.id.btn_menus})

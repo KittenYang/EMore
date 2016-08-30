@@ -18,7 +18,7 @@ import java.util.TimeZone;
 public class DateUtil {
 
 //    Fri Jul 15 11:45:31 +0800 2016
-    private static final SimpleDateFormat createTimeSimpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
+    public static final SimpleDateFormat createTimeSimpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
 
     static {
         createTimeSimpleDateFormat.setTimeZone(TimeZone.getDefault());

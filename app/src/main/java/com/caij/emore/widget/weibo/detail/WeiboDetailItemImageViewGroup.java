@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.caij.emore.database.bean.PicUrl;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.weibo.list.WeiboItemImageViewGroup;
 
@@ -33,10 +33,11 @@ public class WeiboDetailItemImageViewGroup extends WeiboItemImageViewGroup {
     protected int measureChildOnOneImage(int availableWidth) {
         //如果是详情就撑满屏幕
         int imageHeight;
-        PicUrl picUrl = mPicUrls.get(0);
+        ImageInfo picUrl = mImageInfoLinkedHashMap.get(mPicIds.get(0));
         View child = getChildAt(0);
-        if (picUrl.getHeight() > 0 && picUrl.getWidth() > 0) {
-            imageHeight = (int) (availableWidth * picUrl.getHeight() * 1.0f / picUrl.getWidth());
+        if (picUrl.getBmiddle().getHeight() > 0 && picUrl.getBmiddle().getWidth() > 0) {
+            imageHeight = (int) (availableWidth * picUrl.getBmiddle().getHeight() * 1.0f
+                    / picUrl.getBmiddle().getWidth());
             child.measure(MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(imageHeight, MeasureSpec.EXACTLY));
         }else {
@@ -51,11 +52,11 @@ public class WeiboDetailItemImageViewGroup extends WeiboItemImageViewGroup {
     @Override
     protected ImageLoader.ImageConfig processImageConfig(ImageLoader.ImageConfig  imageConfig) {
         //详情页是一张图片的时候不存到内存中
-        if (mPicUrls == null || mPicUrls.size() == 1) {
+        if (mPicIds == null || mPicIds.size() == 1) {
             ImageLoader.ImageConfigBuild imageConfigBuild = ImageLoader.ImageConfigBuild.clone(imageConfig);
             imageConfigBuild.setSupportGif(true);
             imageConfigBuild.setCacheMemory(false);
-            if (mPicUrls.get(0).getThumbnail_pic().contains("gif")) {
+            if (mImageInfoLinkedHashMap.get(mPicIds.get(0)).getBmiddle().getType().contains("gif")) {
                 imageConfigBuild.setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE);
             }
             return imageConfigBuild.build();

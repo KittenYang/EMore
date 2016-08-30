@@ -24,12 +24,13 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
 
     private final static int PAGE_COUNT = 20;
 
-    private String mUsername;
     private int mFeature = 0;
+    private long mUid;
 
-    public UserWeiboPresentImp(Account account, String name, TimeLineWeiboView view, WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
+    public UserWeiboPresentImp(Account account, long uid, TimeLineWeiboView view,
+                               WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
         super(account, view, serverWeiboSource, localWeiboSource);
-        mUsername = name;
+        mUid = uid;
     }
 
     @Override
@@ -104,7 +105,7 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getUseWeibo(mAccount.getWeiCoToken().getAccess_token(), mUsername, mFeature, 0, maxId, PAGE_COUNT, 1)
+        return mServerWeiboSource.getUseWeibo(mAccount.getWeiCoToken().getAccess_token(), mUid, mFeature, 0, maxId, PAGE_COUNT, 1)
                 .compose(new ErrorCheckerTransformer<UserWeiboResponse>())
                 .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
                     @Override
@@ -116,15 +117,6 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
                     @Override
                     public Boolean call(Weibo weibo) {
                         return isRefresh || !mWeibos.contains(weibo);
-                    }
-                })
-                .map(new Func1<Weibo, Weibo>() {
-
-                    @Override
-                    public Weibo call(Weibo weibo) {
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        toGetImageSize(weibo);
-                        return weibo;
                     }
                 })
                 .toList()

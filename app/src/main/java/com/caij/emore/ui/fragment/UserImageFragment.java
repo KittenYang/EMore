@@ -12,7 +12,7 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
-import com.caij.emore.database.bean.PicUrl;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.present.imp.UserImagePresentImp;
 import com.caij.emore.ui.view.TimeLineWeiboImageView;
@@ -25,12 +25,12 @@ import com.caij.emore.widget.recyclerview.XRecyclerView;
 /**
  * Created by Caij on 2016/6/29.
  */
-public class UserImageFragment extends RecyclerViewFragment<PicUrl, UserWeiboPresent> implements TimeLineWeiboImageView, XRecyclerView.OnLoadMoreListener {
+public class UserImageFragment extends RecyclerViewFragment<ImageInfo, UserWeiboPresent> implements TimeLineWeiboImageView, XRecyclerView.OnLoadMoreListener {
 
 
-    public static UserImageFragment newInstance(String username) {
+    public static UserImageFragment newInstance(long uid) {
         Bundle args = new Bundle();
-        args.putString(Key.USERNAME, username);
+        args.putLong(Key.ID, uid);
         UserImageFragment fragment = new UserImageFragment();
         fragment.setArguments(args);
         return fragment;
@@ -43,7 +43,7 @@ public class UserImageFragment extends RecyclerViewFragment<PicUrl, UserWeiboPre
     }
 
     @Override
-    protected BaseAdapter<PicUrl, ? extends BaseViewHolder> createRecyclerViewAdapter() {
+    protected BaseAdapter<ImageInfo, ? extends BaseViewHolder> createRecyclerViewAdapter() {
         return new UserGridImageAdapter(getActivity());
     }
 
@@ -72,8 +72,8 @@ public class UserImageFragment extends RecyclerViewFragment<PicUrl, UserWeiboPre
     @Override
     protected UserWeiboPresent createPresent() {
         Token accessToken = UserPrefs.get(getActivity()).getWeiCoToken();
-        String username = getArguments().getString(Key.USERNAME);
-        return new UserImagePresentImp(accessToken.getAccess_token(), username, this, new ServerWeiboSource());
+        long uid = getArguments().getLong(Key.ID);
+        return new UserImagePresentImp(accessToken.getAccess_token(), uid, this, new ServerWeiboSource());
     }
 
     @Override

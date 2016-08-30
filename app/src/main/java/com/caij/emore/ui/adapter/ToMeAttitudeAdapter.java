@@ -75,9 +75,7 @@ public class ToMeAttitudeAdapter extends BaseAdapter<Attitude, ToMeAttitudeAdapt
                 weibo.getBmiddle_pic() != null ?  weibo.getBmiddle_pic() : weibo.getUser().getAvatar_large(),
                 R.drawable.weibo_image_placeholder);
 
-        String createAt = "";
-        if (!TextUtils.isEmpty(weibo.getCreated_at()))
-            createAt = DateUtil.convWeiboDate(mContext, weibo.getCreated_at());
+        String createAt = DateUtil.convWeiboDate(mContext, weibo.getCreated_at().getTime());
         String from = "";
         if (!TextUtils.isEmpty(weibo.getSource()))
             from = String.format("%s", Html.fromHtml(weibo.getSource()));

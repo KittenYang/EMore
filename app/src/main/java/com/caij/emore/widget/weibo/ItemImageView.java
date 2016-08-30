@@ -11,7 +11,8 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.caij.emore.R;
-import com.caij.emore.database.bean.PicUrl;
+import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.utils.ImageUtil;
 
 /**
  * Created by Caij on 2016/6/7.
@@ -20,7 +21,7 @@ public class ItemImageView extends ImageView {
 
     private Bitmap mGifDrawable;
     private Paint paint;
-    private PicUrl mPicUrl;
+    private ImageInfo mImageInfo;
     private Bitmap mLongImageDrawable;
 
     public ItemImageView(Context context) {
@@ -65,16 +66,17 @@ public class ItemImageView extends ImageView {
         }
     }
 
-    public void setUrl(PicUrl picUrl) {
-        mPicUrl = picUrl;
+    public void setUrl(ImageInfo imageInfo) {
+        mImageInfo = imageInfo;
     }
 
     public boolean isLongImage() {
-        return mPicUrl != null && mPicUrl.isBigImage();
+        return mImageInfo != null
+                && ImageUtil.isLongImage(mImageInfo.getBmiddle().getWidth(), mImageInfo.getBmiddle().getHeight());
     }
 
     public boolean isGif() {
-        return mPicUrl != null && mPicUrl.getThumbnail_pic().contains("gif");
+        return mImageInfo != null && mImageInfo.getBmiddle().getType().contains("gif");
     }
 
 //    @Override

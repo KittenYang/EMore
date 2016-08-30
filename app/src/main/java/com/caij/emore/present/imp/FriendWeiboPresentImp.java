@@ -8,6 +8,7 @@ import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.ui.view.FriendWeiboView;
+import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.WeiboSource;
@@ -48,30 +49,19 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
         super.onCreate();
         Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getEmoreToken().getAccess_token(), mAccount.getUid(),
                 0, 0, PAGE_COUNT * 2, 1)
-                .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
+                .flatMap(new Func1<QueryWeiboResponse, Observable<List<Weibo>>>() {
                     @Override
-                    public Observable<Weibo> call(QueryWeiboResponse response) {
-                        return Observable.from(response.getStatuses());
+                    public Observable<List<Weibo>> call(QueryWeiboResponse response) {
+                        return Observable.just(response.getStatuses());
                     }
                 })
-                .map(new Func1<Weibo, Weibo>() {
-
-                    @Override
-                    public Weibo call(Weibo weibo) {
-                        toGetImageSize(weibo);
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        return weibo;
-                    }
-                })
-                .toList()
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
                         doSpanNext(weibos);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new SchedulerTransformer<List<Weibo>>())
                 .subscribe(new Subscriber<List<Weibo>>() {
                     @Override
                     public void onCompleted() {
@@ -198,21 +188,12 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                         return isRefresh || !mWeibos.contains(weibo);
                     }
                 })
-                .map(new Func1<Weibo, Weibo>() {
-
-                    @Override
-                    public Weibo call(Weibo weibo) {
-                        toGetImageSize(weibo);
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        return weibo;
-                    }
-                })
                 .toList()
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
-                        mLocalWeiboSource.saveWeibos(mAccount.getEmoreToken().getAccess_token(), weibos);
                         doSpanNext(weibos);
+                        mLocalWeiboSource.saveWeibos(mAccount.getEmoreToken().getAccess_token(), weibos);
                     }
                 })
                 .compose(new SchedulerTransformer<List<Weibo>>());

@@ -23,7 +23,7 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Created_at = new Property(0, String.class, "created_at", false, "CREATED_AT");
+        public final static Property Created_at = new Property(0, java.util.Date.class, "created_at", false, "CREATED_AT");
         public final static Property Id = new Property(1, Long.class, "id", true, "ID");
         public final static Property Mid = new Property(2, Long.class, "mid", false, "MID");
         public final static Property Idstr = new Property(3, String.class, "idstr", false, "IDSTR");
@@ -42,12 +42,16 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
         public final static Property Attitudes_count = new Property(16, Integer.class, "attitudes_count", false, "ATTITUDES_COUNT");
         public final static Property Mlevel = new Property(17, Integer.class, "mlevel", false, "MLEVEL");
         public final static Property Update_time = new Property(18, Long.class, "update_time", false, "UPDATE_TIME");
-        public final static Property Create_at_long = new Property(19, Long.class, "create_at_long", false, "CREATE_AT_LONG");
+        public final static Property Attitudes_status = new Property(19, Integer.class, "attitudes_status", false, "ATTITUDES_STATUS");
         public final static Property IsLongText = new Property(20, Boolean.class, "isLongText", false, "IS_LONG_TEXT");
-        public final static Property Geo_id = new Property(21, String.class, "geo_id", false, "GEO_ID");
-        public final static Property User_id = new Property(22, Long.class, "user_id", false, "USER_ID");
-        public final static Property Visible_id = new Property(23, String.class, "visible_id", false, "VISIBLE_ID");
-        public final static Property Retweeted_status_id = new Property(24, Long.class, "retweeted_status_id", false, "RETWEETED_STATUS_ID");
+        public final static Property Geo_json_string = new Property(21, String.class, "geo_json_string", false, "GEO_JSON_STRING");
+        public final static Property Visible_json_string = new Property(22, String.class, "visible_json_string", false, "VISIBLE_JSON_STRING");
+        public final static Property Url_struct_json_string = new Property(23, String.class, "url_struct_json_string", false, "URL_STRUCT_JSON_STRING");
+        public final static Property Pic_ids_json_string = new Property(24, String.class, "pic_ids_json_string", false, "PIC_IDS_JSON_STRING");
+        public final static Property Pic_infos_json_string = new Property(25, String.class, "pic_infos_json_string", false, "PIC_INFOS_JSON_STRING");
+        public final static Property Long_text_json_string = new Property(26, String.class, "long_text_json_string", false, "LONG_TEXT_JSON_STRING");
+        public final static Property Retweeted_status_id = new Property(27, Long.class, "retweeted_status_id", false, "RETWEETED_STATUS_ID");
+        public final static Property User_id = new Property(28, Long.class, "user_id", false, "USER_ID");
     };
 
 
@@ -63,7 +67,7 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"WEIBO\" (" + //
-                "\"CREATED_AT\" TEXT," + // 0: created_at
+                "\"CREATED_AT\" INTEGER," + // 0: created_at
                 "\"ID\" INTEGER PRIMARY KEY ," + // 1: id
                 "\"MID\" INTEGER," + // 2: mid
                 "\"IDSTR\" TEXT," + // 3: idstr
@@ -82,12 +86,16 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
                 "\"ATTITUDES_COUNT\" INTEGER," + // 16: attitudes_count
                 "\"MLEVEL\" INTEGER," + // 17: mlevel
                 "\"UPDATE_TIME\" INTEGER," + // 18: update_time
-                "\"CREATE_AT_LONG\" INTEGER," + // 19: create_at_long
+                "\"ATTITUDES_STATUS\" INTEGER," + // 19: attitudes_status
                 "\"IS_LONG_TEXT\" INTEGER," + // 20: isLongText
-                "\"GEO_ID\" TEXT," + // 21: geo_id
-                "\"USER_ID\" INTEGER," + // 22: user_id
-                "\"VISIBLE_ID\" TEXT," + // 23: visible_id
-                "\"RETWEETED_STATUS_ID\" INTEGER);"); // 24: retweeted_status_id
+                "\"GEO_JSON_STRING\" TEXT," + // 21: geo_json_string
+                "\"VISIBLE_JSON_STRING\" TEXT," + // 22: visible_json_string
+                "\"URL_STRUCT_JSON_STRING\" TEXT," + // 23: url_struct_json_string
+                "\"PIC_IDS_JSON_STRING\" TEXT," + // 24: pic_ids_json_string
+                "\"PIC_INFOS_JSON_STRING\" TEXT," + // 25: pic_infos_json_string
+                "\"LONG_TEXT_JSON_STRING\" TEXT," + // 26: long_text_json_string
+                "\"RETWEETED_STATUS_ID\" INTEGER," + // 27: retweeted_status_id
+                "\"USER_ID\" INTEGER);"); // 28: user_id
     }
 
     /** Drops the underlying database table. */
@@ -101,9 +109,9 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
     protected void bindValues(SQLiteStatement stmt, Weibo entity) {
         stmt.clearBindings();
  
-        String created_at = entity.getCreated_at();
+        java.util.Date created_at = entity.getCreated_at();
         if (created_at != null) {
-            stmt.bindString(1, created_at);
+            stmt.bindLong(1, created_at.getTime());
         }
  
         Long id = entity.getId();
@@ -196,9 +204,9 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
             stmt.bindLong(19, update_time);
         }
  
-        Long create_at_long = entity.getCreate_at_long();
-        if (create_at_long != null) {
-            stmt.bindLong(20, create_at_long);
+        Integer attitudes_status = entity.getAttitudes_status();
+        if (attitudes_status != null) {
+            stmt.bindLong(20, attitudes_status);
         }
  
         Boolean isLongText = entity.getIsLongText();
@@ -206,24 +214,44 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
             stmt.bindLong(21, isLongText ? 1L: 0L);
         }
  
-        String geo_id = entity.getGeo_id();
-        if (geo_id != null) {
-            stmt.bindString(22, geo_id);
+        String geo_json_string = entity.getGeo_json_string();
+        if (geo_json_string != null) {
+            stmt.bindString(22, geo_json_string);
         }
  
-        Long user_id = entity.getUser_id();
-        if (user_id != null) {
-            stmt.bindLong(23, user_id);
+        String visible_json_string = entity.getVisible_json_string();
+        if (visible_json_string != null) {
+            stmt.bindString(23, visible_json_string);
         }
  
-        String visible_id = entity.getVisible_id();
-        if (visible_id != null) {
-            stmt.bindString(24, visible_id);
+        String url_struct_json_string = entity.getUrl_struct_json_string();
+        if (url_struct_json_string != null) {
+            stmt.bindString(24, url_struct_json_string);
+        }
+ 
+        String pic_ids_json_string = entity.getPic_ids_json_string();
+        if (pic_ids_json_string != null) {
+            stmt.bindString(25, pic_ids_json_string);
+        }
+ 
+        String pic_infos_json_string = entity.getPic_infos_json_string();
+        if (pic_infos_json_string != null) {
+            stmt.bindString(26, pic_infos_json_string);
+        }
+ 
+        String long_text_json_string = entity.getLong_text_json_string();
+        if (long_text_json_string != null) {
+            stmt.bindString(27, long_text_json_string);
         }
  
         Long retweeted_status_id = entity.getRetweeted_status_id();
         if (retweeted_status_id != null) {
-            stmt.bindLong(25, retweeted_status_id);
+            stmt.bindLong(28, retweeted_status_id);
+        }
+ 
+        Long user_id = entity.getUser_id();
+        if (user_id != null) {
+            stmt.bindLong(29, user_id);
         }
     }
 
@@ -237,7 +265,7 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
     @Override
     public Weibo readEntity(Cursor cursor, int offset) {
         Weibo entity = new Weibo( //
-            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // created_at
+            cursor.isNull(offset + 0) ? null : new java.util.Date(cursor.getLong(offset + 0)), // created_at
             cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // id
             cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // mid
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // idstr
@@ -256,12 +284,16 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
             cursor.isNull(offset + 16) ? null : cursor.getInt(offset + 16), // attitudes_count
             cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17), // mlevel
             cursor.isNull(offset + 18) ? null : cursor.getLong(offset + 18), // update_time
-            cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19), // create_at_long
+            cursor.isNull(offset + 19) ? null : cursor.getInt(offset + 19), // attitudes_status
             cursor.isNull(offset + 20) ? null : cursor.getShort(offset + 20) != 0, // isLongText
-            cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21), // geo_id
-            cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22), // user_id
-            cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23), // visible_id
-            cursor.isNull(offset + 24) ? null : cursor.getLong(offset + 24) // retweeted_status_id
+            cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21), // geo_json_string
+            cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22), // visible_json_string
+            cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23), // url_struct_json_string
+            cursor.isNull(offset + 24) ? null : cursor.getString(offset + 24), // pic_ids_json_string
+            cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // pic_infos_json_string
+            cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26), // long_text_json_string
+            cursor.isNull(offset + 27) ? null : cursor.getLong(offset + 27), // retweeted_status_id
+            cursor.isNull(offset + 28) ? null : cursor.getLong(offset + 28) // user_id
         );
         return entity;
     }
@@ -269,7 +301,7 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, Weibo entity, int offset) {
-        entity.setCreated_at(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setCreated_at(cursor.isNull(offset + 0) ? null : new java.util.Date(cursor.getLong(offset + 0)));
         entity.setId(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
         entity.setMid(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
         entity.setIdstr(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
@@ -288,12 +320,16 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
         entity.setAttitudes_count(cursor.isNull(offset + 16) ? null : cursor.getInt(offset + 16));
         entity.setMlevel(cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17));
         entity.setUpdate_time(cursor.isNull(offset + 18) ? null : cursor.getLong(offset + 18));
-        entity.setCreate_at_long(cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19));
+        entity.setAttitudes_status(cursor.isNull(offset + 19) ? null : cursor.getInt(offset + 19));
         entity.setIsLongText(cursor.isNull(offset + 20) ? null : cursor.getShort(offset + 20) != 0);
-        entity.setGeo_id(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
-        entity.setUser_id(cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22));
-        entity.setVisible_id(cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23));
-        entity.setRetweeted_status_id(cursor.isNull(offset + 24) ? null : cursor.getLong(offset + 24));
+        entity.setGeo_json_string(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
+        entity.setVisible_json_string(cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22));
+        entity.setUrl_struct_json_string(cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23));
+        entity.setPic_ids_json_string(cursor.isNull(offset + 24) ? null : cursor.getString(offset + 24));
+        entity.setPic_infos_json_string(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
+        entity.setLong_text_json_string(cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26));
+        entity.setRetweeted_status_id(cursor.isNull(offset + 27) ? null : cursor.getLong(offset + 27));
+        entity.setUser_id(cursor.isNull(offset + 28) ? null : cursor.getLong(offset + 28));
      }
     
     /** @inheritdoc */

@@ -85,11 +85,11 @@ public interface WeiBoService {
     @GET("2/users/show.json")
     Observable<User> getWeiBoUserInfoByUid(@Query("access_token") String accessToken, @Query("uid") long uid);
 
-    @GET("2/statuses/friends_timeline.json")
-    Observable<QueryWeiboResponse> getFriendsWeibo(@Query("access_token") String accessToken,
-                                                   @Query("since_id") long since_id,
-                                                   @Query("max_id") long max_id,
-                                                   @Query("count") int count, @Query("page") int page);
+//    @GET("2/statuses/friends_timeline.json")
+//    Observable<QueryWeiboResponse> getFriendsWeibo(@Query("access_token") String accessToken,
+//                                                   @Query("since_id") long since_id,
+//                                                   @Query("max_id") long max_id,
+//                                                   @Query("count") int count, @Query("page") int page);
 
     /**
      * 评论微博
@@ -148,14 +148,14 @@ public interface WeiBoService {
                                                             @Query("count") int count,
                                                             @Query("page") int page);
 
-    @GET("2/statuses/user_timeline.json")
-    Observable<UserWeiboResponse> getUserWeibos(@Query("access_token") String accessToken,
-                                                @Query("screen_name") String screen_name,
-                                                @Query("feature") int feature,
-                                                @Query("since_id") long since_id,
-                                                @Query("max_id") long max_id,
-                                                @Query("count") int count,
-                                                @Query("page") int page);
+//    @GET("2/statuses/user_timeline.json")
+//    Observable<UserWeiboResponse> getUserWeibos(@Query("access_token") String accessToken,
+//                                                @Query("screen_name") String screen_name,
+//                                                @Query("feature") int feature,
+//                                                @Query("since_id") long since_id,
+//                                                @Query("max_id") long max_id,
+//                                                @Query("count") int count,
+//                                                @Query("page") int page);
 
     @FormUrlEncoded
     @POST("2/friendships/create.json")
@@ -207,19 +207,19 @@ public interface WeiBoService {
                                               @Query("trim_status") int trim_status,
                                               @Query("cursor") long cursor);
 
-    @GET("2/statuses/mentions.json")
-    Observable<QueryWeiboResponse> getWeiboMentions(@Query("access_token") String accessToken,
-                                                         @Query("since_id") long since_id,
-                                                         @Query("max_id") long max_id,
-                                                         @Query("count") int count,
-                                                         @Query("page") int page);
+//    @GET("2/statuses/mentions.json")
+//    Observable<QueryWeiboResponse> getWeiboMentions(@Query("access_token") String accessToken,
+//                                                         @Query("since_id") long since_id,
+//                                                         @Query("max_id") long max_id,
+//                                                         @Query("count") int count,
+//                                                         @Query("page") int page);
 
-    @GET("2/comments/mentions.json")
-    Observable<QueryWeiboCommentResponse> getCommentsMentions(@Query("access_token") String accessToken,
-                                                             @Query("since_id") long since_id,
-                                                             @Query("max_id") long max_id,
-                                                             @Query("count") int count,
-                                                             @Query("page") int page);
+//    @GET("2/comments/mentions.json")
+//    Observable<QueryWeiboCommentResponse> getCommentsMentions(@Query("access_token") String accessToken,
+//                                                             @Query("since_id") long since_id,
+//                                                             @Query("max_id") long max_id,
+//                                                             @Query("count") int count,
+//                                                             @Query("page") int page);
 
     @GET("2/comments/by_me.json")
     Observable<QueryWeiboCommentResponse> getPublishComments(@Query("access_token") String accessToken,
@@ -228,12 +228,12 @@ public interface WeiBoService {
                                                               @Query("count") int count,
                                                               @Query("page") int page);
 
-    @GET("2/comments/to_me.json")
-    Observable<QueryWeiboCommentResponse> getAcceptComments(@Query("access_token") String accessToken,
-                                                             @Query("since_id") long since_id,
-                                                             @Query("max_id") long max_id,
-                                                             @Query("count") int count,
-                                                             @Query("page") int page);
+//    @GET("2/comments/to_me.json")
+//    Observable<QueryWeiboCommentResponse> getAcceptComments(@Query("access_token") String accessToken,
+//                                                             @Query("since_id") long since_id,
+//                                                             @Query("max_id") long max_id,
+//                                                             @Query("count") int count,
+//                                                             @Query("page") int page);
 
 //    @GET
 //    Observable<UnreadMessageCount> getUnReadMessage(@Url String url, @Query("access_token") String accessToken,
@@ -273,9 +273,9 @@ public interface WeiBoService {
                                                        @Query("access_token") String accessToken,
                                                        @Query("fid") long fid);
 
-    @GET("/2/statuses/show.json")
-    Observable<Weibo> getWeiboById(@Query("access_token") String accessToken,
-                                   @Query("id") long id, @Query("isGetLongText") int isGetLongText);
+//    @GET("/2/statuses/show.json")
+//    Observable<Weibo> getWeiboById(@Query("access_token") String accessToken,
+//                                   @Query("id") long id, @Query("isGetLongText") int isGetLongText);
 
 
     @GET("/2/short_url/info.json")

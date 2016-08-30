@@ -12,7 +12,7 @@ import android.webkit.WebView;
 
 import com.bumptech.glide.request.target.Target;
 import com.caij.emore.R;
-import com.caij.emore.database.bean.PicUrl;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.LogUtil;
@@ -22,6 +22,7 @@ import com.caij.emore.widget.weibo.ImageInterface;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -31,7 +32,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implements ImageInterface {
 
-    private PicUrl mPicUrl;
+    private ImageInfo mImageInfo;
     private Handler mMainHandler;
     private WebView mWebView;
     private AsyncTask downImageAsyncTask;
@@ -66,9 +67,9 @@ public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implemen
         mWebView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPicUrl != null) {
+                if (mImageInfo != null) {
                     ArrayList<String> images = new ArrayList<String>();
-                    images.add(mPicUrl.getBmiddle_pic());
+                    images.add(mImageInfo.getBmiddle().getUrl());
                     NavigationUtil.startImagePreActivity(context, v, images, 0);
                 }
             }
@@ -83,11 +84,12 @@ public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implemen
         int imageHeight = 0;
         for (int i = 0; i < getChildCount(); i ++) {
             View childView = getChildAt(i);
-            if (mPicUrl != null) {
-                imageHeight = (int) (availableWidth * mPicUrl.getHeight() * 1.0f / mPicUrl.getWidth());
+            if (mImageInfo != null) {
+                imageHeight = (int) (availableWidth * mImageInfo.getBmiddle().getHeight() * 1.0f / mImageInfo.getBmiddle().getWidth());
                 childView.measure(MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.EXACTLY),
                         MeasureSpec.makeMeasureSpec(imageHeight, MeasureSpec.EXACTLY));
-                LogUtil.d(this, "mPicUrl width =  %s   height = %s", mPicUrl.getWidth(), mPicUrl.getHeight());
+                LogUtil.d(this, "mPicUrl width =  %s   height = %s", mImageInfo.getBmiddle().getWidth(),
+                        mImageInfo.getBmiddle().getHeight());
             }
         }
         height = imageHeight;
@@ -105,24 +107,13 @@ public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implemen
         }
     }
 
-    public void setPics(List<PicUrl> picUrls) {
-        this.mPicUrl = picUrls.get(0);
-        requestLayout();
-        //因为请求重新绘制requestLayout是通过主线程handler发送消息， 这个再通过handler发送消息展示图片就会在绘制以后
-        mMainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                disPlayPics(mPicUrl);
-            }
-        });
-    }
-
-    private void disPlayPics(final PicUrl picUrl) {
+    private void disPlayPics(final ImageInfo imageInfo) {
         ExecutorServiceUtil.submit(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final File file = ImageLoader.getFile(getContext(), picUrl.getBmiddle_pic(), Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+                    final File file = ImageLoader.getFile(getContext(), imageInfo.getBmiddle().getUrl(),
+                            Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
                     mMainHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -207,4 +198,16 @@ public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implemen
         }
     }
 
+    @Override
+    public void setPics(List<String> pic_ids, LinkedHashMap<String, ImageInfo> imageInfoLinkedHashMap) {
+        this.mImageInfo = imageInfoLinkedHashMap.get(pic_ids.get(0));
+        requestLayout();
+        //因为请求重新绘制requestLayout是通过主线程handler发送消息， 这个再通过handler发送消息展示图片就会在绘制以后
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                disPlayPics(mImageInfo);
+            }
+        });
+    }
 }

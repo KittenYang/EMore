@@ -16,9 +16,7 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.present.imp.WeiboRepostsPresentImp;
 import com.caij.emore.ui.view.WeiboRepostsView;
-import com.caij.emore.source.local.LocalUrlSource;
 import com.caij.emore.source.local.LocalWeiboSource;
-import com.caij.emore.source.server.ServerUrlSource;
 import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.adapter.RepostAdapter;
@@ -72,8 +70,7 @@ public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRe
         Token token = UserPrefs.get(getActivity()).getWeiCoToken();
         long weiId = getArguments().getLong(Key.ID);
         return  new WeiboRepostsPresentImp(token.getAccess_token(), weiId,
-                new ServerWeiboSource(), new LocalWeiboSource(),
-                new ServerUrlSource(),  new LocalUrlSource(),  this);
+                new ServerWeiboSource(), new LocalWeiboSource(), this);
     }
 
     @Override

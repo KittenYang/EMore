@@ -170,7 +170,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity<WeiboDetailPresent>
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_star:
-                if (mWeibo.isAttitudes()) {
+                if (mWeibo.getAttitudes_status() == 1) {
                     mPresent.destoryAttitudesWeibo(mWeibo);
                 }else {
                     mPresent.attitudesWeibo(mWeibo);
@@ -244,7 +244,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity<WeiboDetailPresent>
     }
 
     private void setAttitudeStatus(Weibo weibo) {
-        actionStar.setSelected(weibo.isAttitudes());
+        actionStar.setSelected(weibo.getAttitudes_status() == 1);
     }
 
     @Override

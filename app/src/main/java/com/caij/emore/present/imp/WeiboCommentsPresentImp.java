@@ -6,10 +6,7 @@ import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboCommentsPresent;
 import com.caij.emore.ui.view.WeiboCommentsView;
-import com.caij.emore.source.UrlSource;
 import com.caij.emore.source.WeiboSource;
-import com.caij.emore.source.local.LocalUrlSource;
-import com.caij.emore.source.server.ServerUrlSource;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -43,8 +40,6 @@ public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboComm
     WeiboSource mLocalWeiboSource;
     WeiboCommentsView mWeiboCommentsView;
     List<Comment> mComments;
-    protected UrlSource mLocalUrlSource;
-    protected UrlSource mServerUrlSource;
     private Observable<Comment> mCommentObservable;
     private Observable<List<Comment>> mWeiboRefreshObservable;
 
@@ -57,8 +52,6 @@ public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboComm
         mLocalWeiboSource = localWeiboSource;
         mWeiboCommentsView = weiboCommentsView;
         mWeiboId = weiboId;
-        mLocalUrlSource = new LocalUrlSource();
-        mServerUrlSource = new ServerUrlSource();
         mComments = new ArrayList<>();
     }
 

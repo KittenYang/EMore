@@ -9,19 +9,13 @@ import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.Response;
-import com.caij.emore.database.bean.ImageInfo;
-import com.caij.emore.database.bean.PicUrl;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboActionPresent;
-import com.caij.emore.ui.view.WeiboActionView;
-import com.caij.emore.source.ImageSouce;
 import com.caij.emore.source.UrlSource;
-import com.caij.emore.source.WeiboSource;
-import com.caij.emore.source.local.LocalImageSource;
 import com.caij.emore.source.local.LocalUrlSource;
-import com.caij.emore.source.server.ServerImageSource;
 import com.caij.emore.source.server.ServerUrlSource;
-import com.caij.emore.utils.LogUtil;
+import com.caij.emore.ui.view.WeiboActionView;
+import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -30,7 +24,6 @@ import com.caij.emore.utils.rxjava.DefaultTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -47,8 +40,6 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
         implements WeiboActionPresent {
 
     protected V mView;
-    protected ImageSouce mServerImageSouce;
-    protected ImageSouce mLocalImageSouce;
     protected WeiboSource mServerWeiboSource;
     protected Account mAccount;
     protected WeiboSource mLocalWeiboSource;
@@ -61,8 +52,6 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
         super();
         mView = view;
         mAccount = account;
-        mLocalImageSouce = new LocalImageSource();
-        mServerImageSouce = new ServerImageSource();
         mLocalUrlSource = new LocalUrlSource();
         mServerUrlSource = new ServerUrlSource();
         mServerWeiboSource = serverWeiboSource;
@@ -72,12 +61,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
     @Override
     public void onCreate() {
         mWeiboUpdateObservable = RxBus.getDefault().register(Event.EVENT_WEIBO_UPDATE);
-        mWeiboUpdateObservable.doOnNext(new Action1<Weibo>() {
-                @Override
-                public void call(Weibo weibo) {
-                    weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                }
-            })
+        mWeiboUpdateObservable
             .compose(new SchedulerTransformer<Weibo>())
             .subscribe(new Subscriber<Weibo>() {
                 @Override
@@ -197,25 +181,6 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                     }
                 });
         addSubscription(subscription);
-    }
-
-    protected void toGetImageSize(Weibo weibo) {
-        Weibo realWeibo = weibo.getRetweeted_status() != null ? weibo.getRetweeted_status() : weibo;
-        if (realWeibo.getPic_urls() != null && realWeibo.getPic_urls().size() == 1) {
-            PicUrl picUrl = realWeibo.getPic_urls().get(0);
-            try {
-                ImageInfo image = mLocalImageSouce.get(picUrl.getThumbnail_pic());
-                if (image == null) {
-                    image = mServerImageSouce.get(picUrl.getThumbnail_pic());
-                    mLocalImageSouce.save(image);
-                    LogUtil.d(this, picUrl.getThumbnail_pic() + "pic width and height from server");
-                }
-                picUrl.setWidth(image.getWidth());
-                picUrl.setHeight(image.getHeight());
-            } catch (IOException e) {
-                LogUtil.d(this, "%s 图片尺寸获取失败", picUrl.getThumbnail_pic());
-            }
-        }
     }
 
     @Override

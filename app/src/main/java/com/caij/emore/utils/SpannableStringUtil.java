@@ -41,7 +41,6 @@ public class SpannableStringUtil {
 
 
     static String httpRegular = "(http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]";
-    static String fullTextRegularHead = "全文： ";
     static Pattern sHttpPattern = Pattern.compile(httpRegular);
 
     public static void praseName(Spannable spannableString) {
@@ -170,8 +169,7 @@ public class SpannableStringUtil {
     }
 
     private static String  parseFullText(String text) {
-//        "...全文： http://m.weibo.cn/1815070622/3998176861989899"
-        Matcher matcher = Pattern.compile(fullTextRegularHead + "(http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]").matcher(text);
+        Matcher matcher = Pattern.compile("http://m.weibo.cn/client/version").matcher(text);
         String str = text;
         while (matcher.find()) {
             String url  = matcher.group();
@@ -181,8 +179,7 @@ public class SpannableStringUtil {
     }
 
     private static CharSequence createFullTextString(String url) {
-        String path = url.replace(fullTextRegularHead, "").
-                replace("http://", FULL_TEXT_SCHEME).replace("https://", FULL_TEXT_SCHEME);
+        String path = url.replace("http://", FULL_TEXT_SCHEME).replace("https://", FULL_TEXT_SCHEME);
         return " <a href=\"" + path + "\">全文</a>";
     }
 

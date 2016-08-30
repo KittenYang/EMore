@@ -9,13 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.caij.emore.R;
-import com.caij.emore.database.bean.PicUrl;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.widget.weibo.ImageInterface;
 import com.caij.emore.widget.weibo.ItemImageView;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -29,7 +30,8 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
     public ImageLoader.ImageConfig mLongAndGifImageConfig;
 
     protected int mSpaceWidth;
-    protected List<PicUrl> mPicUrls;
+    protected LinkedHashMap<String, ImageInfo> mImageInfoLinkedHashMap;
+    protected List<String> mPicIds;
 
     private Handler mHandler;
 
@@ -72,7 +74,9 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
 
     protected void addItemViews() {
         for (int i = 0; i < 9; i ++) {
-            addView(createImageView(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            ItemImageView imageView = createImageView(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            imageView.setOnClickListener(this);
+            addView(imageView);
         }
     }
 
@@ -81,8 +85,8 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int availableWidth = width - getPaddingLeft() - getPaddingRight();
         int height = 0;
-        if (mPicUrls != null && mPicUrls.size() != 0) {
-            if (mPicUrls.size() == 1) {
+        if (mImageInfoLinkedHashMap != null && mImageInfoLinkedHashMap.size() != 0) {
+            if (mImageInfoLinkedHashMap.size() == 1) {
                 height = measureChildOnOneImage(availableWidth);
             }else {
                 height = measureChildOnMultipleImage(availableWidth);
@@ -98,12 +102,12 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
         int imageHeight = 0;
         if (child != null && child.getVisibility() != GONE) {
             int imageWidth;
-            PicUrl picUrl = mPicUrls.get(0);
-            if (picUrl.getHeight() > 0 && picUrl.getWidth() > 0) {
-                if (picUrl.getWidth() * 1.0f / picUrl.getHeight() < MAX_RADIO) { //宽比高小很多  竖着的图
+            ImageInfo imageInfo = mImageInfoLinkedHashMap.get(mPicIds.get(0));
+            if (imageInfo.getBmiddle().getHeight() > 0 && imageInfo.getBmiddle().getWidth() > 0) {
+                if (imageInfo.getBmiddle().getWidth() * 1.0f / imageInfo.getBmiddle().getHeight() < MAX_RADIO) { //宽比高小很多  竖着的图
                     imageWidth = (int) (availableWidth * 1.0f / 2);
                     imageHeight = (int) (imageWidth * 1.34f);
-                } else if (picUrl.getHeight() * 1.0f / picUrl.getWidth() < MAX_RADIO) {//宽比高大很多  横着的图
+                } else if (imageInfo.getBmiddle().getHeight() * 1.0f / imageInfo.getBmiddle().getWidth() < MAX_RADIO) {//宽比高大很多  横着的图
                     imageWidth = (int) (availableWidth * 1.0f / 3 * 2);
                     imageHeight = (int) (imageWidth / 1.34f);
                 } else { //接近正方形
@@ -122,7 +126,7 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
 
     protected int measureChildOnMultipleImage(int availableWidth) {
         int defaultImageWidth = (availableWidth - 2 * mSpaceWidth) / 3;
-        int imageLine = mPicUrls.size() == 4 ? 2 : mPicUrls.size() / 4 + 1;
+        int imageLine = mImageInfoLinkedHashMap.size() == 4 ? 2 : mImageInfoLinkedHashMap.size() / 4 + 1;
         int height = defaultImageWidth * imageLine + (imageLine - 1) * mSpaceWidth;
         for (int i = 0; i < getChildCount(); i ++) {
             View child = getChildAt(i);
@@ -140,7 +144,7 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        if (mPicUrls == null || mPicUrls.size() == 0)
+        if (mImageInfoLinkedHashMap == null || mImageInfoLinkedHashMap.size() == 0)
             return;
         for (int i = 0; i < getChildCount(); i++) {
             ItemImageView childView = (ItemImageView) getChildAt(i);
@@ -149,10 +153,10 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
             if (childView.getVisibility() == View.GONE) {
                 continue;
             }
-            if (i < mPicUrls.size()) {
-                if (mPicUrls.size() == 1) {
+            if (i < mImageInfoLinkedHashMap.size()) {
+                if (mImageInfoLinkedHashMap.size() == 1) {
                     childView.layout(startX, startY, startX + childView.getMeasuredWidth(), startY + childView.getMeasuredHeight());
-                }else if (mPicUrls.size() == 4) {
+                }else if (mImageInfoLinkedHashMap.size() == 4) {
                     int imageWidth = childView.getMeasuredWidth();
                     int line = i / 2; // 0 1  2
                     int column = i % 2;// 0 1  2
@@ -179,61 +183,25 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
         }
     }
 
-    public static boolean isImageWidthAndHeightSame(PicUrl picUrl1, PicUrl picUrl2) {
-        return (picUrl1.getWidth() * 1.0f / picUrl1.getHeight() < MAX_RADIO && picUrl2.getWidth() * 1.0f / picUrl2.getHeight() < MAX_RADIO)
-                ||(picUrl1.getHeight() * 1.0f / picUrl1.getWidth() < MAX_RADIO && picUrl2.getHeight() * 1.0f / picUrl2.getWidth() < MAX_RADIO)
-                ||(picUrl1.getHeight() * 1.0f / picUrl1.getWidth() == MAX_RADIO && picUrl2.getHeight() * 1.0f / picUrl2.getWidth() == MAX_RADIO)
-                || ((picUrl1.getWidth() <= 0 || picUrl1.getHeight() <=0) && (picUrl2.getWidth() <= 0 || picUrl2.getHeight() <=0));
-    }
-
-    public void setPics(List<PicUrl> picUrls) {
-        if (null == picUrls || picUrls.size() == 0) {
-            setVisibility(GONE);
-        }else {
-            setVisibility(VISIBLE);
-
-            for (int i = 0; i < getChildCount(); i++) {
-                if (i < picUrls.size()) {
-                    getChildAt(i).setVisibility(VISIBLE);
-                }else {
-                    getChildAt(i).setVisibility(GONE);
-                }
-            }
-
-            //当只有一张的时候复用  图片宽度是有变化 需要判断
-            boolean isNeedRequestLayout = false;
-            if (mPicUrls != null
-                    && mPicUrls.size() == picUrls.size()
-                    && mPicUrls.size() == 1
-                    && !isImageWidthAndHeightSame(mPicUrls.get(0), picUrls.get(0))) { //这个时候图片长度一样
-                    isNeedRequestLayout = true;
-            }
-
-            if (isNeedRequestLayout && !isLayoutRequested()) {
-                requestLayout();
-            }
-
-            this.mPicUrls = picUrls;
-
-            //因为请求重新绘制requestLayout是通过主线程handler发送消息， 这个再通过handler发送消息展示图片就会在绘制以后
-            mHandler.post(this);
-        }
-    }
+//    public static boolean isImageWidthAndHeightSame(PicUrl picUrl1, PicUrl picUrl2) {
+//        return (picUrl1.getWidth() * 1.0f / picUrl1.getHeight() < MAX_RADIO && picUrl2.getWidth() * 1.0f / picUrl2.getHeight() < MAX_RADIO)
+//                ||(picUrl1.getHeight() * 1.0f / picUrl1.getWidth() < MAX_RADIO && picUrl2.getHeight() * 1.0f / picUrl2.getWidth() < MAX_RADIO)
+//                ||(picUrl1.getHeight() * 1.0f / picUrl1.getWidth() == MAX_RADIO && picUrl2.getHeight() * 1.0f / picUrl2.getWidth() == MAX_RADIO)
+//                || ((picUrl1.getWidth() <= 0 || picUrl1.getHeight() <=0) && (picUrl2.getWidth() <= 0 || picUrl2.getHeight() <=0));
+//    }
 
     @Override
     public void run() {
-        disPlayPics(mPicUrls);
+        disPlayPics(mPicIds, mImageInfoLinkedHashMap);
     }
 
-    protected void disPlayPics(List<PicUrl> picUrls) {
+    protected void disPlayPics(List<String> mPicIds, LinkedHashMap<String, ImageInfo> linkedHashMap) {
         for (int i = 0; i < getChildCount(); i++) {
             ItemImageView imgView = (ItemImageView) getChildAt(i);
-            if (i < picUrls.size()) {
-                PicUrl picUrl = picUrls.get(i);
-                String url = picUrl.getBmiddle_pic();
-                imgView.setUrl(picUrl);
-                imgView.setTag(url);
-                imgView.setOnClickListener(this);
+            if (i < mPicIds.size()) {
+                ImageInfo imageInfo = linkedHashMap.get(mPicIds.get(i));
+                String url = imageInfo.getBmiddle().getUrl();
+                imgView.setUrl(imageInfo);
 
                 if (imgView.isLongImage() || imgView.isGif()) {
                     ImageLoader.ImageConfig imageConfig  = processImageConfig(mLongAndGifImageConfig);
@@ -264,10 +232,10 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
     public void onClick(View v) {
         ArrayList<String> paths = new ArrayList<>();
         int position = 0;
-        for (int i = 0; i < mPicUrls.size(); i ++) {
-            PicUrl picUrl = mPicUrls.get(i);
+        for (int i = 0; i < mPicIds.size(); i ++) {
+            ImageInfo picUrl = mImageInfoLinkedHashMap.get(mPicIds.get(i));
             View child = getChildAt(i);
-            paths.add(picUrl.getBmiddle_pic());
+            paths.add(picUrl.getLarge().getUrl());
             if (child == v) {
                 position = i;
             }
@@ -276,4 +244,39 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
 
     }
 
+    @Override
+    public void setPics(List<String> pic_ids, LinkedHashMap<String, ImageInfo> imageInfoLinkedHashMap) {
+        if (null == imageInfoLinkedHashMap || imageInfoLinkedHashMap.size() == 0) {
+            setVisibility(GONE);
+        }else {
+            setVisibility(VISIBLE);
+
+            for (int i = 0; i < getChildCount(); i++) {
+                if (i < imageInfoLinkedHashMap.size()) {
+                    getChildAt(i).setVisibility(VISIBLE);
+                }else {
+                    getChildAt(i).setVisibility(GONE);
+                }
+            }
+
+            //当只有一张的时候复用  图片宽度是有变化 需要判断
+            boolean isNeedRequestLayout = false;
+            if (mImageInfoLinkedHashMap != null
+                    && mImageInfoLinkedHashMap.size() == imageInfoLinkedHashMap.size()
+                    && mImageInfoLinkedHashMap.size() == 1) {
+//                    && !isImageWidthAndHeightSame(mImageInfoLinkedHashMap.get(0), imageInfoLinkedHashMap.get(0))) { //这个时候图片长度一样
+                isNeedRequestLayout = true;
+            }
+
+            if (isNeedRequestLayout && !isLayoutRequested()) {
+                requestLayout();
+            }
+
+            this.mImageInfoLinkedHashMap = imageInfoLinkedHashMap;
+            this.mPicIds = pic_ids;
+
+            //因为请求重新绘制requestLayout是通过主线程handler发送消息， 这个再通过handler发送消息展示图片就会在绘制以后
+            mHandler.post(this);
+        }
+    }
 }

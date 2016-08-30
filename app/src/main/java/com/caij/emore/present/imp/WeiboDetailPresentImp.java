@@ -66,17 +66,14 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                                 && (!weibo.getIsLongText() || weibo.getLongText() != null);
                     }
                 })
-                .compose(new ErrorCheckerTransformer<Weibo>())
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
-                        toGetImageSize(weibo);
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        doSpanNext(weibo, true);
+                        doSpanNext(weibo);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new ErrorCheckerTransformer<Weibo>())
+                .compose(new SchedulerTransformer<Weibo>())
                 .subscribe(new DefaultResponseSubscriber<Weibo>(mView) {
                     @Override
                     public void onCompleted() {
@@ -105,10 +102,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
-                        mLocalWeiboSource.saveWeibo(token, weibo);
-                        toGetImageSize(weibo);
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        doSpanNext(weibo, true);
+                        doSpanNext(weibo);
                     }
                 });
 

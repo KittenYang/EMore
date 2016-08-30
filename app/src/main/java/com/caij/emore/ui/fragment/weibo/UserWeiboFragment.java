@@ -24,9 +24,9 @@ public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> i
 
     private Dialog mFilterDialog;
 
-    public static UserWeiboFragment newInstance(String username) {
+    public static UserWeiboFragment newInstance(long uid) {
         Bundle args = new Bundle();
-        args.putString(Key.USERNAME, username);
+        args.putLong(Key.ID, uid);
         UserWeiboFragment fragment = new UserWeiboFragment();
         fragment.setArguments(args);
         return fragment;
@@ -45,8 +45,8 @@ public class UserWeiboFragment extends TimeLineWeiboFragment<UserWeiboPresent> i
 
     @Override
     protected UserWeiboPresent createPresent() {
-        String username = getArguments().getString(Key.USERNAME);
-        return new UserWeiboPresentImp(UserPrefs.get(getActivity()).getAccount(), username, this, new ServerWeiboSource(), new LocalWeiboSource());
+        long uid = getArguments().getLong(Key.ID);
+        return new UserWeiboPresentImp(UserPrefs.get(getActivity()).getAccount(), uid, this, new ServerWeiboSource(), new LocalWeiboSource());
     }
 
     @Override

@@ -10,10 +10,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.caij.emore.R;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
+import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.widget.weibo.WeiboItemView;
+
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -76,22 +81,26 @@ public class WeiboDetailItemView extends WeiboItemView {
     }
 
     private void setImages(Weibo weibo, ViewGroup viewGroup) {
-        if (weibo.getPic_urls() == null || weibo.getPic_urls().size() == 0) {
+        List<String> picIds = weibo.getPic_ids();
+        LinkedHashMap<String, ImageInfo> imageInfoLinkedHashMap =  weibo.getPic_infos();
+        if (weibo.getPic_ids() == null || weibo.getPic_ids().size() == 0) {
             viewGroup.setVisibility(GONE);
-        }else if (weibo.getPic_urls() != null && weibo.getPic_urls().size() == 1 && weibo.getPic_urls().get(0).isBigImageAndHeightBtWidth()) {
+        }else if (picIds != null && picIds.size() == 1
+                && ImageUtil.isLongImage(imageInfoLinkedHashMap.get(picIds.get(0)).getBmiddle().getWidth(),
+                imageInfoLinkedHashMap.get(picIds.get(0)).getBmiddle().getHeight())) {
             viewGroup.setVisibility(VISIBLE);
             WeiboDetailItemImageViewGroupOf1BigImage imagesView = new WeiboDetailItemImageViewGroupOf1BigImage(getContext());
             viewGroup.addView(imagesView,
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
-            imagesView.setPics(weibo.getPic_urls());
+            imagesView.setPics(weibo.getPic_ids(), weibo.getPic_infos());
         } else {
             viewGroup.setVisibility(VISIBLE);
             WeiboDetailItemImageViewGroup imagesView = new WeiboDetailItemImageViewGroup(getContext());
             viewGroup.addView(imagesView,
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
-            imagesView.setPics(weibo.getPic_urls());
+            imagesView.setPics(weibo.getPic_ids(), weibo.getPic_infos());
         }
     }
 

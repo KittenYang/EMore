@@ -37,13 +37,11 @@ public class LocalMessageSource implements MessageSource {
 
     private DirectMessageDao mDirectMessageDao;
     private UserDao mUserDao;
-    private GeoDao mGeoDao;
     private UnReadMessageDao mUnReadMessageDao;
 
     public LocalMessageSource (){
         mDirectMessageDao = DBManager.getDaoSession().getDirectMessageDao();
         mUserDao = DBManager.getDaoSession().getUserDao();
-        mGeoDao = DBManager.getDaoSession().getGeoDao();
         mUnReadMessageDao = DBManager.getDaoSession().getUnReadMessageDao();
     }
 
@@ -118,8 +116,8 @@ public class LocalMessageSource implements MessageSource {
                         message.setSender(sender);
                         message.setRecipient(recipien);
 
-                        Geo geo = mGeoDao.load(String.valueOf(message.getId()));
-                        message.setGeo(geo);
+//                        Geo geo = mGeoDao.load(String.valueOf(message.getId()));
+//                        message.setGeo(geo);
                     }
 
                     UserMessageResponse response = new UserMessageResponse();
@@ -161,11 +159,11 @@ public class LocalMessageSource implements MessageSource {
         if (message.getSender() != null) {
             mUserDao.insertOrReplace(message.getSender());
         }
-        Geo geo = message.getGeo();
-        if (geo != null) {
-            geo.setId(String.valueOf(message.getId()));
-            mGeoDao.insertOrReplace(geo);
-        }
+//        Geo geo = message.getGeo();
+//        if (geo != null) {
+//            geo.setId(String.valueOf(message.getId()));
+//            mGeoDao.insertOrReplace(geo);
+//        }
         mDirectMessageDao.insertOrReplace(message);
         mDirectMessageDao.getDatabase().setTransactionSuccessful();
         mDirectMessageDao.getDatabase().endTransaction();

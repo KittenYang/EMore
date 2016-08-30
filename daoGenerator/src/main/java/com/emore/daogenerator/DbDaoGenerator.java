@@ -12,20 +12,23 @@ public class DbDaoGenerator {
         sch.setDefaultJavaPackageDao("com.caij.emore.database.dao");
         sch.enableKeepSectionsByDefault();
         createUser(sch);
-        createImage(sch);
+//        createImage(sch);
         createFile(sch);
-        createLikeBean(sch);
-        createGeo(sch);
+
         createWeibo(sch);
-        createPic(sch);
-        createVisible(sch);
+
+//        createPic(sch);
+//        createVisible(sch);
+//        createGeo(sch);
+//        createLikeBean(sch);
+
         createDirectMessage(sch);
         createDirectMessageImage(sch);
         createUrlInfo(sch);
         createUploadImageResponse(sch);
         createDraft(sch);
         createUnReadMessage(sch);
-        createLongText(sch);
+//        createLongText(sch);
         new de.greenrobot.daogenerator.DaoGenerator().generateAll(sch, "./app/src/main/java");
     }
 
@@ -71,7 +74,7 @@ public class DbDaoGenerator {
 
     private static void createWeibo(Schema sch) {
         Entity entity = sch.addEntity("Weibo");
-        entity.addStringProperty("created_at");
+        entity.addDateProperty("created_at");
         entity.addLongProperty("id").primaryKey();
         entity.addLongProperty("mid");
         entity.addStringProperty("idstr");
@@ -90,50 +93,26 @@ public class DbDaoGenerator {
         entity.addIntProperty("attitudes_count");
         entity.addIntProperty("mlevel");
         entity.addLongProperty("update_time");
-        entity.addLongProperty("create_at_long");
+        entity.addIntProperty("attitudes_status");
         entity.addBooleanProperty("isLongText");
 
-        entity.addStringProperty("geo_id");
-        entity.addLongProperty("user_id");
-        entity.addStringProperty("visible_id");
+        entity.addStringProperty("geo_json_string");
+        entity.addStringProperty("visible_json_string");
+        entity.addStringProperty("url_struct_json_string");
+        entity.addStringProperty("pic_ids_json_string");
+        entity.addStringProperty("pic_infos_json_string");
+        entity.addStringProperty("long_text_json_string");
+
         entity.addLongProperty("retweeted_status_id");
+        entity.addLongProperty("user_id");
     }
 
-    static void createPic(Schema sch) {
-        Entity image = sch.addEntity("PicUrl");
-        image.addStringProperty("id").primaryKey();
-        image.addStringProperty("thumbnail_pic");
-        image.addLongProperty("weibo_id");
-    }
-
-    static void createVisible(Schema sch) {
-        Entity image = sch.addEntity("Visible");
-        image.addStringProperty("id").primaryKey();
-        image.addStringProperty("type");
-        image.addStringProperty("list_id");
-    }
-
-    static void createGeo(Schema sch) {
-        Entity image = sch.addEntity("Geo");
-        image.addStringProperty("id").primaryKey();
-        image.addStringProperty("longitude");
-        image.addStringProperty("latitude");
-        image.addStringProperty("city");
-        image.addStringProperty("province");
-        image.addStringProperty("city_name");
-        image.addStringProperty("province_name");
-        image.addStringProperty("address");
-        image.addStringProperty("pinyin");
-        image.addStringProperty("more");
-        image.addStringProperty("type");
-    }
-
-    static void createImage(Schema sch) {
-        Entity image = sch.addEntity("ImageInfo");
-        image.addStringProperty("url").primaryKey();
-        image.addIntProperty("width");
-        image.addIntProperty("height");
-    }
+//    static void createImage(Schema sch) {
+//        Entity image = sch.addEntity("ImageInfo");
+//        image.addStringProperty("url").primaryKey();
+//        image.addIntProperty("width");
+//        image.addIntProperty("height");
+//    }
 
     static void createFile(Schema sch) {
         Entity image = sch.addEntity("LocalFile");
@@ -142,11 +121,6 @@ public class DbDaoGenerator {
         image.addIntProperty("status");
     }
 
-    static void createLikeBean(Schema sch) {
-        Entity image = sch.addEntity("LikeBean");
-        image.addLongProperty("id").primaryKey();
-        image.addBooleanProperty("isLike");
-    }
 
     static void createDirectMessage(Schema sch) {
         Entity entity = sch.addEntity("DirectMessage");
@@ -243,10 +217,10 @@ public class DbDaoGenerator {
         entity.addIntProperty("dm_single");
     }
 
-    static void createLongText(Schema sch) {
-        Entity entity = sch.addEntity("LongText");
-        entity.addLongProperty("weiboId").primaryKey();
-        entity.addStringProperty("longTextContent");
-    }
+//    static void createLongText(Schema sch) {
+//        Entity entity = sch.addEntity("LongText");
+//        entity.addLongProperty("weiboId").primaryKey();
+//        entity.addStringProperty("longTextContent");
+//    }
 
 }

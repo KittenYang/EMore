@@ -112,7 +112,7 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends S
     public void onLikeClick(View v, int position) {
         if (WeicoAuthUtil.checkWeicoLogin(this, false)) {
             Weibo weibo = mRecyclerViewAdapter.getItem(position);
-            if (weibo.isAttitudes()) {
+            if (weibo.getAttitudes_status() == 1) {
                 mPresent.destoryAttitudesWeibo(weibo);
             }else {
                 mPresent.attitudesWeibo(weibo);

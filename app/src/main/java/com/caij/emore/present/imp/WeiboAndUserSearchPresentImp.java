@@ -44,7 +44,13 @@ public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAn
 
     @Override
     public void refresh() {
-        Observable<List<Weibo>> weiboObservable = createObservable(1, true);
+        Observable<List<Weibo>> weiboObservable = createObservable(1, true)
+                .doOnNext(new Action1<List<Weibo>>() {
+                    @Override
+                    public void call(List<Weibo> weibos) {
+                        doSpanNext(weibos);
+                    }
+                });
         Observable<List<User>> userObservable = mServerUserSource.getSearchUser(mAccount.getWeiCoToken().getAccess_token(),
                 mKey, 1, PAGE_COUNT);
 
@@ -142,21 +148,11 @@ public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAn
                         return isRefresh || !mWeibos.contains(weibo);
                     }
                 })
-                .map(new Func1<Weibo, Weibo>() {
-
-                    @Override
-                    public Weibo call(Weibo weibo) {
-                        toGetImageSize(weibo);
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        return weibo;
-                    }
-                })
                 .toList()
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
-                        mLocalWeiboSource.saveWeibos(mAccount.getEmoreToken().getAccess_token(), weibos);
-                        doSpanNext(weibos);
+                      doSpanNext(weibos);
                     }
                 })
                 .subscribeOn(Schedulers.io())

@@ -119,15 +119,6 @@ public class WeiboMentionPresentImp extends AbsListTimeLinePresent<TimeLineWeibo
                         return isRefresh || !mWeibos.contains(weibo);
                     }
                 })
-                .map(new Func1<Weibo, Weibo>() {
-
-                    @Override
-                    public Weibo call(Weibo weibo) {
-                        weibo.setAttitudes(mLocalWeiboSource.getAttitudes(weibo.getId()));
-                        toGetImageSize(weibo);
-                        return weibo;
-                    }
-                })
                 .toList()
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override

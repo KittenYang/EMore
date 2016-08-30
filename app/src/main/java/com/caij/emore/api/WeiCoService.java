@@ -6,8 +6,10 @@ import com.caij.emore.bean.VideoInfo;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
+import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
+import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
@@ -58,11 +60,40 @@ public interface WeiCoService {
                                                                 @Field("source") String source, @Field("i") String i,
                                                                 @Field("getcookie") String getcookie);
 
+    @GET("2/statuses/friends_timeline")
+    Observable<QueryWeiboResponse> getFriendsWeibo(@Query("access_token") String accessToken,
+                                                   @Query("source") String source,
+                                                   @Query("since_id") long since_id,
+                                                   @Query("max_id") long max_id,
+                                                   @Query("count") int count, @Query("page") int page);
+
+    @GET("/2/statuses/show")
+    Observable<Weibo> getWeiboById(@Query("access_token") String accessToken, @Query("source") String source,
+                                   @Query("id") long id, @Query("isGetLongText") int isGetLongText);
+
+    @GET("2/statuses/user_timeline")
+    Observable<UserWeiboResponse> getUserWeibos(@Query("access_token") String accessToken,
+                                                @Query("source") String source,
+                                                @Query("uid") long uid,
+                                                @Query("feature") int feature,
+                                                @Query("since_id") long since_id,
+                                                @Query("max_id") long max_id,
+                                                @Query("count") int count,
+                                                @Query("page") int page);
+
     @FormUrlEncoded
     @POST("/2/like/set_like")
     public Observable<Attitude> attitudesWeibo(@Field("access_token") String access_token,
                                                @Field("source") String source,
                                                @Field("attitude") String attitude, @Field("id") long weiboId);
+
+    @GET("2/comments/to_me")
+    Observable<QueryWeiboCommentResponse> getAcceptComments(@Query("access_token") String accessToken,
+                                                            @Query("source") String source,
+                                                            @Query("since_id") long since_id,
+                                                            @Query("max_id") long max_id,
+                                                            @Query("count") int count,
+                                                            @Query("page") int page);
 
     @FormUrlEncoded
     @POST("/2/like/cancel_like")
@@ -88,6 +119,22 @@ public interface WeiCoService {
                                                 @Field("object_id") long id,
                                                 @Field("object_type") String type,
                                                 @Field("source") String source);
+
+    @GET("2/statuses/mentions")
+    Observable<QueryWeiboResponse> getWeiboMentions(@Query("access_token") String accessToken,
+                                                    @Query("source") String source,
+                                                    @Query("since_id") long since_id,
+                                                    @Query("max_id") long max_id,
+                                                    @Query("count") int count,
+                                                    @Query("page") int page);
+
+    @GET("2/comments/mentions")
+    Observable<QueryWeiboCommentResponse> getCommentsMentions(@Query("access_token") String accessToken,
+                                                              @Query("source") String source,
+                                                              @Query("since_id") long since_id,
+                                                              @Query("max_id") long max_id,
+                                                              @Query("count") int count,
+                                                              @Query("page") int page);
 
     @GET("/2/like/to_me")
     Observable<QueryWeiboAttitudeResponse> getToMeAttitudes(@Query("access_token") String accessToken,

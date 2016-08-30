@@ -30,7 +30,7 @@ public interface WeiboSource {
 
     public void saveWeibos(String accessToken, List<Weibo> weibos);
 
-    public Observable<UserWeiboResponse> getUseWeibo(String accessToken,  String name, int feature, long since_id, long max_id,
+    public Observable<UserWeiboResponse> getUseWeibo(String accessToken, long uid, int feature, long since_id, long max_id,
                                                      int count, int page);
 
     public Observable<Weibo> publishWeiboOfText(String token, String content);
@@ -83,8 +83,6 @@ public interface WeiboSource {
 
     public Observable<Response> destoryAttitudesWeibo(String token, String source,
                                       String attitude, long weiboId);
-
-    boolean getAttitudes(long id);
 
     public Observable<Weibo> getWeiboById(String token, String source, int isGetLongText, long id);
 

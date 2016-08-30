@@ -5,17 +5,14 @@ import android.os.AsyncTask;
 
 import com.caij.emore.Event;
 import com.caij.emore.account.Account;
-import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.database.bean.Draft;
-import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.PublishWeiboManagerPresent;
 import com.caij.emore.ui.view.PublishServiceView;
 import com.caij.emore.source.DraftSource;
 import com.caij.emore.source.WeiboSource;
-import com.caij.emore.source.local.LocalImageSource;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.ImageUtil;
@@ -40,7 +37,6 @@ import rx.schedulers.Schedulers;
  */
 public class PublishWeiboManagerPresentImp extends AbsBasePresent implements PublishWeiboManagerPresent {
 
-    LocalImageSource mLocalImageSouce;
     Observable<PublishBean> mPublishWeiboObservable;
     DraftSource mDraftSource;
     WeiboSource mServerWeiboSource;
@@ -57,7 +53,6 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
         mLocalWeiboSource = localWeiboSource;
         mDraftSource = localDraftSource;
         mPublishServiceView = view;
-        mLocalImageSouce = new LocalImageSource();
     }
 
     @Override
@@ -198,17 +193,6 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
                     public void call(Weibo weibo) {
                         mDraftSource.deleteDraftById(publishBean.getId());
                         mLocalWeiboSource.saveWeibo(mAccount.getEmoreToken().getAccess_token(), weibo);
-
-                        try {
-                            ImageInfo locakImage = new ImageInfo();
-                            locakImage.setUrl(weibo.getPic_urls().get(0).getThumbnail_pic());
-                            BitmapFactory.Options options = ImageUtil.getImageOptions(new File(publishBean.getPics().get(0)));
-                            locakImage.setHeight(options.outHeight);
-                            locakImage.setWidth(options.outWidth);
-                            mLocalImageSouce.save(locakImage);
-                        }catch (Exception e) {
-                            LogUtil.d(PublishWeiboManagerPresentImp.this, "publish one image save image size error");
-                        }
                     }
                 })
                 .subscribeOn(Schedulers.io())
