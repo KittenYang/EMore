@@ -1,0 +1,49 @@
+package com.caij.emore.widget.weibo.list;
+
+import android.content.Context;
+import android.util.AttributeSet;
+
+import com.caij.emore.R;
+import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.widget.weibo.ImageInterface;
+
+import butterknife.BindView;
+
+/**
+ * Created by Caij on 2016/9/1.
+ */
+public class WeiboListTextAndImageItemView extends WeiboListItemView {
+
+    @BindView(R.id.pics_view)
+    ImageInterface picsView;
+
+    public WeiboListTextAndImageItemView(Context context) {
+        super(context);
+    }
+
+    public WeiboListTextAndImageItemView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public WeiboListTextAndImageItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public WeiboListTextAndImageItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    @Override
+    public void setWeibo(Weibo weibo) {
+        super.setWeibo(weibo);
+        setImages(weibo, picsView);
+    }
+
+    protected void setImages(Weibo weibo, ImageInterface picsView) {
+        picsView.setPics(weibo.getPic_ids(), weibo.getPic_infos());
+    }
+
+    protected int getLayoutId() {
+        return R.layout.view_weibo_text_and_image_item;
+    }
+}

@@ -1,7 +1,6 @@
 package com.caij.emore.ui.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -10,7 +9,7 @@ import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
-import com.caij.emore.widget.weibo.list.RepostWeiboListItemView;
+import com.caij.emore.widget.weibo.list.RepostWeiboListTextAndImageItemView;
 import com.caij.emore.widget.weibo.list.WeiboListItemView;
 
 import java.util.List;
@@ -76,8 +75,6 @@ public class WeiboAdapter extends BaseAdapter<Weibo, BaseViewHolder> {
 
         @BindView(R.id.weibo_item_view)
         WeiboListItemView weiboItemView;
-        @BindView(R.id.cardView)
-        CardView cardView;
 
         public WeiboViewHoller(View itemView, final RecyclerViewOnItemClickListener onItemClickListener,
                                final OnItemActionClickListener onItemActionClickListener) {
@@ -105,9 +102,7 @@ public class WeiboAdapter extends BaseAdapter<Weibo, BaseViewHolder> {
     static class RepostWeiboViewHoller extends BaseViewHolder {
 
         @BindView(R.id.weibo_item_view)
-        RepostWeiboListItemView weiboItemView;
-        @BindView(R.id.cardView)
-        CardView cardView;
+        RepostWeiboListTextAndImageItemView weiboItemView;
 
         public RepostWeiboViewHoller(View itemView, final RecyclerViewOnItemClickListener onItemClickListener,
                                final OnItemActionClickListener onItemActionClickListener) {

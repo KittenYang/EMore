@@ -15,7 +15,6 @@ import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserMessageResponse;
-import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.MessageImage;
 import com.caij.emore.database.bean.UploadImageResponse;

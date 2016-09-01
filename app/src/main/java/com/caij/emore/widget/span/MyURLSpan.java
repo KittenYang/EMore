@@ -11,11 +11,10 @@ import android.view.View;
 
 import com.caij.emore.AppSettings;
 import com.caij.emore.R;
-import com.caij.emore.bean.ShortUrlInfo;
+import com.caij.emore.bean.ShortUrl;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.VideoViewPlayingActivity;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
-import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 
 /**
@@ -26,7 +25,7 @@ public class MyURLSpan extends URLSpan implements ParcelableSpan {
     private int color;
     private int pressColor;
     private boolean pressed;
-    private ShortUrlInfo.UrlsBean urlBean;
+    private ShortUrl urlBean;
 
     public MyURLSpan(String url) {
         super(url);
@@ -39,48 +38,38 @@ public class MyURLSpan extends URLSpan implements ParcelableSpan {
 
     private void toDetaiPage(Context context, View widget){
         if (urlBean != null) {
-            if (urlBean.getAnnotations() != null
-                    && urlBean.getAnnotations().size() > 0
-                    && urlBean.getAnnotations().get(0) != null) {
+            switch (urlBean.getObj_type()) {
+                case ShortUrl.TYPE_WEB:
+                    toWebActivity(context, getURL());
+                    break;
 
-                ShortUrlInfo.UrlsBean.AnnotationsBean annotationsBean = urlBean.getAnnotations().get(0);
-                ShortUrlInfo.UrlsBean.AnnotationsBean.ObjectBean objectBean = annotationsBean.getObject();
-                switch (annotationsBean.getUrlType()) {
-                    case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_WEB:
-                    case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_WEB_PAGE:
-                        toWebActivity(context, getURL());
-                        break;
-
-                    case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_VIDEO:
-                        Intent intent;
-                        if (objectBean != null && !objectBean.getUrl().contains("video.weibo.com")) {
-                            intent = VideoViewPlayingActivity.newIntent(context, objectBean.getStream().getUrl());
-                            context.startActivity(intent);
-                        }
+                case ShortUrl.TYPE_VIDEO:
+                    Intent intent;
+//                    if (objectBean != null && !objectBean.getUrl().contains("video.weibo.com")) {
+//                        intent = VideoViewPlayingActivity.newIntent(context, objectBean.getStream().getUrl());
+//                        context.startActivity(intent);
+//                    }
 //                        else if (widget.getTag() != null && widget.getTag() instanceof Weibo) {
 //                            Weibo weibo = (Weibo) widget.getTag();
 //                            intent = VideoViewPlayingActivity.newIntent(context, weibo.getId());
 //                            context.startActivity(intent);
 //                        }
-                        else {
-                            toWebActivity(context, urlBean.getUrl_short());
-                        }
-                        break;
+//                    else {
+                        toWebActivity(context, urlBean.getShort_url());
+//                    }
+                    break;
 
-                    case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_IMAGE:
-                        toWebActivity(context, urlBean.getUrl_long());
-                        break;
+                case ShortUrl.TYPE_IMAGE:
+                    toWebActivity(context, urlBean.getShort_url());
+                    break;
 
-                    case ShortUrlInfo.UrlsBean.AnnotationsBean.TYPE_MUSIC:
-                        toWebActivity(context, urlBean.getUrl_long());
-                        break;
+                case ShortUrl.TYPE_MUSIC:
+                    toWebActivity(context, urlBean.getShort_url());
+                    break;
 
-                    default:
-                        toWebActivity(context, urlBean.getUrl_long());
-                        break;
-                }
-            }else {
-                toWebActivity(context, getURL());
+                default:
+                    toWebActivity(context, urlBean.getShort_url());
+                    break;
             }
         }else {
             //这里有两种情况 一种是网页 一种是全文
@@ -125,7 +114,7 @@ public class MyURLSpan extends URLSpan implements ParcelableSpan {
         context.startActivity(intent);
     }
 
-    public void setUrlBean(ShortUrlInfo.UrlsBean urlBean) {
+    public void setUrlBean(ShortUrl urlBean) {
         this.urlBean = urlBean;
     }
 }

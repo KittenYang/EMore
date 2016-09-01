@@ -304,11 +304,8 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
     }
 
     protected void doSpanNext(List<Weibo> weibos) {
-        List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibos);
-        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
-                mLocalUrlSource, mAccount.getEmoreToken().getAccess_token());
         for (Weibo weibo : weibos) {
-            SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
+            SpannableStringUtil.paraeSpannable(weibo);
         }
     }
 
@@ -318,10 +315,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
 
     protected void doSpanNext(Weibo weibo, boolean isLongText) {
-        List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, isLongText, null);
-        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
-                mLocalUrlSource, mAccount.getEmoreToken().getAccess_token());
-        SpannableStringUtil.paraeSpannable(weibo, isLongText, shortLongLinkMap);
+        SpannableStringUtil.paraeSpannable(weibo, isLongText);
     }
 
 }

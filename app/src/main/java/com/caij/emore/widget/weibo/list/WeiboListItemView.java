@@ -20,7 +20,7 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/16.
  */
-public class WeiboListItemView extends WeiboItemView {
+public abstract class WeiboListItemView extends WeiboItemView {
 
     @BindView(R.id.tv_like)
     TextView tvLike;
@@ -31,8 +31,6 @@ public class WeiboListItemView extends WeiboItemView {
     @BindView(R.id.btn_menus)
     ImageView btnMenus;
 
-    @BindView(R.id.pics_view)
-    ImageInterface picsView;
 
     private OnClickListener onMenuClickListener;
     private OnClickListener onLikeClickListener;
@@ -53,10 +51,6 @@ public class WeiboListItemView extends WeiboItemView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    protected int getLayoutId() {
-        return R.layout.view_weibo;
-    }
-
     @Override
     public void setWeibo(Weibo weibo) {
         super.setWeibo(weibo);
@@ -70,22 +64,16 @@ public class WeiboListItemView extends WeiboItemView {
 
         tvCommentCount.setText(CountUtil.getCounter(getContext(), weibo.getComments_count()));
 
-        tvContent.setText(weibo.getContentSpannableString());
-
         tvLike.setText(String.valueOf(weibo.getAttitudes_count()));
         tvLike.setSelected(weibo.getAttitudes_status() == 1);
-
-        setImages(weibo, picsView);
 
         tvLike.setTag(weibo);
         tvCommentCount.setTag(weibo);
         tvRepostCount.setTag(weibo);
         btnMenus.setTag(weibo);
+
     }
 
-    protected void setImages(Weibo weibo, ImageInterface picsView) {
-        picsView.setPics(weibo.getPic_ids(), weibo.getPic_infos());
-    }
 
     @OnClick({R.id.tv_like, R.id.tv_comment_count, R.id.tv_repost_count, R.id.btn_menus})
     public void onClick(View view) {

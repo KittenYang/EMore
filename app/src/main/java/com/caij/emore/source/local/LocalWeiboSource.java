@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.bean.ShortUrl;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
@@ -17,6 +18,7 @@ import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Geo;
 import com.caij.emore.database.bean.LongText;
 import com.caij.emore.database.bean.UploadImageResponse;
+import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Visible;
 import com.caij.emore.database.bean.Weibo;
@@ -164,8 +166,13 @@ public class LocalWeiboSource implements WeiboSource {
 
         LongText longText =  weibo.getLongText();
         if (weibo.getIsLongText() && weibo.getIsLongText() != null && longText != null
-                && !TextUtils.isEmpty(longText.getLongTextContent())) {
+                && !TextUtils.isEmpty(longText.getContent())) {
             weibo.setLong_text_json_string(GsonUtils.toJson(longText));
+        }
+
+        List<ShortUrl> urlInfos = weibo.getUrl_struct();
+        if (urlInfos != null && urlInfos.size() > 0) {
+            weibo.setUrl_struct_json_string(GsonUtils.toJson(urlInfos));
         }
 
         if (weibo.getRetweeted_status() != null) {
@@ -205,6 +212,13 @@ public class LocalWeiboSource implements WeiboSource {
                     && !TextUtils.isEmpty(weibo.getLong_text_json_string())) {
                 LongText longText = GsonUtils.fromJson(weibo.getLong_text_json_string(), LongText.class);
                 weibo.setLongText(longText);
+            }
+
+            if (!TextUtils.isEmpty(weibo.getUrl_struct_json_string())) {
+                List<ShortUrl> shortUrls = GsonUtils.fromJson(weibo.getPic_ids_json_string(),
+                        new TypeToken<List<ShortUrl>>() {
+                        }.getType());
+                weibo.setUrl_struct(shortUrls);
             }
 
             if (weibo.getRetweeted_status_id() != null && weibo.getRetweeted_status_id() > 0) {

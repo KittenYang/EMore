@@ -19,31 +19,31 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/16.
  */
-public class RepostWeiboListItemView extends WeiboListItemView {
+public class RepostWeiboListTextAndImageItemView extends WeiboListTextAndImageItemView {
 
     @BindView(R.id.ll_re)
     LinearLayout llRe;
     @BindView(R.id.tv_re_content)
     TextView tvReContent;
 
-    public RepostWeiboListItemView(Context context) {
+    public RepostWeiboListTextAndImageItemView(Context context) {
         super(context);
     }
 
-    public RepostWeiboListItemView(Context context, AttributeSet attrs) {
+    public RepostWeiboListTextAndImageItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public RepostWeiboListItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RepostWeiboListTextAndImageItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public RepostWeiboListItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RepostWeiboListTextAndImageItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     protected int getLayoutId() {
-        return R.layout.view_repost_weibo;
+        return R.layout.view_weibo_repost_text_and_image_item;
     }
 
     @Override

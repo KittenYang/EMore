@@ -242,18 +242,12 @@ public class WeiboRepostsPresentImp extends AbsBasePresent implements WeiboRepos
     }
 
     protected void doSpanNext(List<Weibo> weibos) {
-        List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibos);
-        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
-                mLocalUrlSource, mToken);
         for (Weibo weibo : weibos) {
-            SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
+            SpannableStringUtil.paraeSpannable(weibo);
         }
     }
 
     protected void doSpanNext(Weibo weibo) {
-        List<String> shortUrls  = SpannableStringUtil.getWeiboTextHttpUrl(weibo, false, null);
-        Map<String, ShortUrlInfo.UrlsBean> shortLongLinkMap = UrlUtil.getShortUrlInfos(shortUrls, mServerUrlSource,
-                mLocalUrlSource, mToken);
-        SpannableStringUtil.paraeSpannable(weibo, shortLongLinkMap);
+        SpannableStringUtil.paraeSpannable(weibo);
     }
 }

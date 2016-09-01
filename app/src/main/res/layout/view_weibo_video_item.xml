@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/spacing_large">
+
+        <include
+            layout="@layout/include_weibo_item_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_weibo_item" />
+
+        <com.caij.emore.widget.FixClickableSpanBugTextView
+            android:id="@+id/tv_content"
+            style="@style/WeiboTextBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_micro"
+            android:lineSpacingExtra="2dp"
+            android:paddingLeft="@dimen/spacing_weibo_item"
+            android:paddingRight="@dimen/spacing_weibo_item"
+            android:paddingTop="2dp" />
+
+            <com.caij.emore.widget.RatioImageView
+                android:id="@+id/iv_video"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:ratio="0.56"/>
+
+        <include layout="@layout/include_weibo_bottom" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/btn_menus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="right"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:paddingBottom="8dp"
+        android:src="@mipmap/ic_menu_moreoverflow_card_dark_normal" />
+
+</merge>

@@ -10,7 +10,7 @@ package com.caij.emore.database.bean;
 public class LongText {
 
     private Long weiboId;
-    private String longTextContent;
+    private String content;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -22,10 +22,6 @@ public class LongText {
         this.weiboId = weiboId;
     }
 
-    public LongText(Long weiboId, String longTextContent) {
-        this.weiboId = weiboId;
-        this.longTextContent = longTextContent;
-    }
 
     public Long getWeiboId() {
         return weiboId;
@@ -35,12 +31,12 @@ public class LongText {
         this.weiboId = weiboId;
     }
 
-    public String getLongTextContent() {
-        return longTextContent;
+    public String getContent() {
+        return content;
     }
 
-    public void setLongTextContent(String longTextContent) {
-        this.longTextContent = longTextContent;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     // KEEP METHODS - put your custom methods here
