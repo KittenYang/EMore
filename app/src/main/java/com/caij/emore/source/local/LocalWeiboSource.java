@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.bean.PageInfo;
 import com.caij.emore.bean.ShortUrl;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
@@ -18,7 +19,6 @@ import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Geo;
 import com.caij.emore.database.bean.LongText;
 import com.caij.emore.database.bean.UploadImageResponse;
-import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Visible;
 import com.caij.emore.database.bean.Weibo;
@@ -175,6 +175,11 @@ public class LocalWeiboSource implements WeiboSource {
             weibo.setUrl_struct_json_string(GsonUtils.toJson(urlInfos));
         }
 
+        PageInfo pageInfo = weibo.getPage_info();
+        if (pageInfo != null) {
+            weibo.setPage_info_json_string(GsonUtils.toJson(pageInfo));
+        }
+
         if (weibo.getRetweeted_status() != null) {
             weibo.setRetweeted_status_id(weibo.getRetweeted_status().getId());
             insertWeibo(weibo.getRetweeted_status());
@@ -219,6 +224,11 @@ public class LocalWeiboSource implements WeiboSource {
                         new TypeToken<List<ShortUrl>>() {
                         }.getType());
                 weibo.setUrl_struct(shortUrls);
+            }
+
+            if (!TextUtils.isEmpty(weibo.getPage_info_json_string())) {
+                PageInfo pageInfo = GsonUtils.fromJson(weibo.getPage_info_json_string(), PageInfo.class);
+                weibo.setPage_info(pageInfo);
             }
 
             if (weibo.getRetweeted_status_id() != null && weibo.getRetweeted_status_id() > 0) {

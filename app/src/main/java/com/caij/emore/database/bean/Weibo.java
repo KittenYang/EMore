@@ -7,14 +7,14 @@ package com.caij.emore.database.bean;
 
 import android.text.Spanned;
 
-import com.caij.emore.bean.*;
-import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.bean.PageInfo;
+import com.caij.emore.bean.ShortUrl;
 import com.caij.emore.bean.response.Response;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import com.caij.emore.bean.ImageInfo;
 
 /**
  * Entity mapped to table "WEIBO".
@@ -48,6 +48,7 @@ public class Weibo extends Response implements Serializable {
     private String pic_ids_json_string;
     private String pic_infos_json_string;
     private String long_text_json_string;
+    private String page_info_json_string;
     private Long retweeted_status_id;
     private Long user_id;
 
@@ -61,7 +62,7 @@ public class Weibo extends Response implements Serializable {
         this.id = id;
     }
 
-    public Weibo(java.util.Date created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, Integer attitudes_status, Boolean isLongText, String geo_json_string, String visible_json_string, String url_struct_json_string, String pic_ids_json_string, String pic_infos_json_string, String long_text_json_string, Long retweeted_status_id, Long user_id) {
+    public Weibo(java.util.Date created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, Integer attitudes_status, Boolean isLongText, String geo_json_string, String visible_json_string, String url_struct_json_string, String pic_ids_json_string, String pic_infos_json_string, String long_text_json_string, String page_info_json_string, Long retweeted_status_id, Long user_id) {
         this.created_at = created_at;
         this.id = id;
         this.mid = mid;
@@ -89,6 +90,7 @@ public class Weibo extends Response implements Serializable {
         this.pic_ids_json_string = pic_ids_json_string;
         this.pic_infos_json_string = pic_infos_json_string;
         this.long_text_json_string = long_text_json_string;
+        this.page_info_json_string = page_info_json_string;
         this.retweeted_status_id = retweeted_status_id;
         this.user_id = user_id;
     }
@@ -309,6 +311,14 @@ public class Weibo extends Response implements Serializable {
         this.long_text_json_string = long_text_json_string;
     }
 
+    public String getPage_info_json_string() {
+        return page_info_json_string;
+    }
+
+    public void setPage_info_json_string(String page_info_json_string) {
+        this.page_info_json_string = page_info_json_string;
+    }
+
     public Long getRetweeted_status_id() {
         return retweeted_status_id;
     }
@@ -336,6 +346,7 @@ public class Weibo extends Response implements Serializable {
     private LongText longText;
     private List<String> pic_ids;
     private List<ShortUrl> url_struct;
+    private PageInfo page_info;
 
     private transient Spanned contentSpannableString;
 
@@ -409,6 +420,14 @@ public class Weibo extends Response implements Serializable {
 
     public void setContentSpannableString(Spanned contentSpannableString) {
         this.contentSpannableString = contentSpannableString;
+    }
+
+    public PageInfo getPage_info() {
+        return page_info;
+    }
+
+    public void setPage_info(PageInfo page_info) {
+        this.page_info = page_info;
     }
 
     @Override

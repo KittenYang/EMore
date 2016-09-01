@@ -50,8 +50,9 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
         public final static Property Pic_ids_json_string = new Property(24, String.class, "pic_ids_json_string", false, "PIC_IDS_JSON_STRING");
         public final static Property Pic_infos_json_string = new Property(25, String.class, "pic_infos_json_string", false, "PIC_INFOS_JSON_STRING");
         public final static Property Long_text_json_string = new Property(26, String.class, "long_text_json_string", false, "LONG_TEXT_JSON_STRING");
-        public final static Property Retweeted_status_id = new Property(27, Long.class, "retweeted_status_id", false, "RETWEETED_STATUS_ID");
-        public final static Property User_id = new Property(28, Long.class, "user_id", false, "USER_ID");
+        public final static Property Page_info_json_string = new Property(27, String.class, "page_info_json_string", false, "PAGE_INFO_JSON_STRING");
+        public final static Property Retweeted_status_id = new Property(28, Long.class, "retweeted_status_id", false, "RETWEETED_STATUS_ID");
+        public final static Property User_id = new Property(29, Long.class, "user_id", false, "USER_ID");
     };
 
 
@@ -94,8 +95,9 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
                 "\"PIC_IDS_JSON_STRING\" TEXT," + // 24: pic_ids_json_string
                 "\"PIC_INFOS_JSON_STRING\" TEXT," + // 25: pic_infos_json_string
                 "\"LONG_TEXT_JSON_STRING\" TEXT," + // 26: long_text_json_string
-                "\"RETWEETED_STATUS_ID\" INTEGER," + // 27: retweeted_status_id
-                "\"USER_ID\" INTEGER);"); // 28: user_id
+                "\"PAGE_INFO_JSON_STRING\" TEXT," + // 27: page_info_json_string
+                "\"RETWEETED_STATUS_ID\" INTEGER," + // 28: retweeted_status_id
+                "\"USER_ID\" INTEGER);"); // 29: user_id
     }
 
     /** Drops the underlying database table. */
@@ -244,14 +246,19 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
             stmt.bindString(27, long_text_json_string);
         }
  
+        String page_info_json_string = entity.getPage_info_json_string();
+        if (page_info_json_string != null) {
+            stmt.bindString(28, page_info_json_string);
+        }
+ 
         Long retweeted_status_id = entity.getRetweeted_status_id();
         if (retweeted_status_id != null) {
-            stmt.bindLong(28, retweeted_status_id);
+            stmt.bindLong(29, retweeted_status_id);
         }
  
         Long user_id = entity.getUser_id();
         if (user_id != null) {
-            stmt.bindLong(29, user_id);
+            stmt.bindLong(30, user_id);
         }
     }
 
@@ -292,8 +299,9 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
             cursor.isNull(offset + 24) ? null : cursor.getString(offset + 24), // pic_ids_json_string
             cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // pic_infos_json_string
             cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26), // long_text_json_string
-            cursor.isNull(offset + 27) ? null : cursor.getLong(offset + 27), // retweeted_status_id
-            cursor.isNull(offset + 28) ? null : cursor.getLong(offset + 28) // user_id
+            cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27), // page_info_json_string
+            cursor.isNull(offset + 28) ? null : cursor.getLong(offset + 28), // retweeted_status_id
+            cursor.isNull(offset + 29) ? null : cursor.getLong(offset + 29) // user_id
         );
         return entity;
     }
@@ -328,8 +336,9 @@ public class WeiboDao extends AbstractDao<Weibo, Long> {
         entity.setPic_ids_json_string(cursor.isNull(offset + 24) ? null : cursor.getString(offset + 24));
         entity.setPic_infos_json_string(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
         entity.setLong_text_json_string(cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26));
-        entity.setRetweeted_status_id(cursor.isNull(offset + 27) ? null : cursor.getLong(offset + 27));
-        entity.setUser_id(cursor.isNull(offset + 28) ? null : cursor.getLong(offset + 28));
+        entity.setPage_info_json_string(cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27));
+        entity.setRetweeted_status_id(cursor.isNull(offset + 28) ? null : cursor.getLong(offset + 28));
+        entity.setUser_id(cursor.isNull(offset + 29) ? null : cursor.getLong(offset + 29));
      }
     
     /** @inheritdoc */

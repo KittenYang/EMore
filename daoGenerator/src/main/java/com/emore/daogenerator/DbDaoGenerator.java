@@ -102,6 +102,7 @@ public class DbDaoGenerator {
         entity.addStringProperty("pic_ids_json_string");
         entity.addStringProperty("pic_infos_json_string");
         entity.addStringProperty("long_text_json_string");
+        entity.addStringProperty("page_info_json_string");
 
         entity.addLongProperty("retweeted_status_id");
         entity.addLongProperty("user_id");

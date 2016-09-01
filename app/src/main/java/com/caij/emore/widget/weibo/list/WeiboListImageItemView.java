@@ -12,24 +12,24 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/9/1.
  */
-public class WeiboListTextAndImageItemView extends WeiboListItemView {
+public class WeiboListImageItemView extends WeiboListItemView {
 
     @BindView(R.id.pics_view)
     ImageInterface picsView;
 
-    public WeiboListTextAndImageItemView(Context context) {
+    public WeiboListImageItemView(Context context) {
         super(context);
     }
 
-    public WeiboListTextAndImageItemView(Context context, AttributeSet attrs) {
+    public WeiboListImageItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WeiboListTextAndImageItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WeiboListImageItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public WeiboListTextAndImageItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public WeiboListImageItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 

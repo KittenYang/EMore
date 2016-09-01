@@ -13,29 +13,29 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/9/1.
  */
-public class WeiboListVideoItemView extends WeiboListItemView {
+public class RepostWeiboListVideoItemView extends RepostWeiboListItemView {
 
     @BindView(R.id.iv_video)
     ImageView mIvVideo;
 
     ImageLoader.ImageConfig mVideoImageConfig;
 
-    public WeiboListVideoItemView(Context context) {
+    public RepostWeiboListVideoItemView(Context context) {
         super(context);
         init();
     }
 
-    public WeiboListVideoItemView(Context context, AttributeSet attrs) {
+    public RepostWeiboListVideoItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public WeiboListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RepostWeiboListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public WeiboListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RepostWeiboListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
@@ -48,7 +48,7 @@ public class WeiboListVideoItemView extends WeiboListItemView {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.view_weibo_video_item;
+        return R.layout.view_weibo_repost_video_item;
     }
 
     @Override

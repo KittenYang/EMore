@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.caij.emore.R;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.widget.weibo.ImageInterface;
 
@@ -19,31 +20,27 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/16.
  */
-public class RepostWeiboListTextAndImageItemView extends WeiboListTextAndImageItemView {
+public abstract class RepostWeiboListItemView extends WeiboListItemView {
 
     @BindView(R.id.ll_re)
     LinearLayout llRe;
     @BindView(R.id.tv_re_content)
     TextView tvReContent;
 
-    public RepostWeiboListTextAndImageItemView(Context context) {
+    public RepostWeiboListItemView(Context context) {
         super(context);
     }
 
-    public RepostWeiboListTextAndImageItemView(Context context, AttributeSet attrs) {
+    public RepostWeiboListItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public RepostWeiboListTextAndImageItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RepostWeiboListItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public RepostWeiboListTextAndImageItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RepostWeiboListItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    protected int getLayoutId() {
-        return R.layout.view_weibo_repost_text_and_image_item;
     }
 
     @Override
@@ -55,11 +52,6 @@ public class RepostWeiboListTextAndImageItemView extends WeiboListTextAndImageIt
 
         tvReContent.setText(reWeibo.getContentSpannableString());
         tvReContent.setTag(reWeibo);
-    }
-
-    @Override
-    protected void setImages(Weibo weibo, ImageInterface picsView) {
-        picsView.setPics(weibo.getRetweeted_status().getPic_ids(), weibo.getRetweeted_status().getPic_infos());
     }
 
     @OnClick(R.id.ll_re)
