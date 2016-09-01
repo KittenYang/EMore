@@ -63,17 +63,20 @@ public interface WeiCoService {
     @GET("2/statuses/friends_timeline")
     Observable<QueryWeiboResponse> getFriendsWeibo(@Query("access_token") String accessToken,
                                                    @Query("source") String source,
+                                                   @Query("from") String from,
                                                    @Query("since_id") long since_id,
                                                    @Query("max_id") long max_id,
                                                    @Query("count") int count, @Query("page") int page);
 
     @GET("/2/statuses/show")
     Observable<Weibo> getWeiboById(@Query("access_token") String accessToken, @Query("source") String source,
+                                   @Query("from") String from,
                                    @Query("id") long id, @Query("isGetLongText") int isGetLongText);
 
     @GET("2/statuses/user_timeline")
     Observable<UserWeiboResponse> getUserWeibos(@Query("access_token") String accessToken,
                                                 @Query("source") String source,
+                                                @Query("from") String from,
                                                 @Query("uid") long uid,
                                                 @Query("feature") int feature,
                                                 @Query("since_id") long since_id,
@@ -85,11 +88,13 @@ public interface WeiCoService {
     @POST("/2/like/set_like")
     public Observable<Attitude> attitudesWeibo(@Field("access_token") String access_token,
                                                @Field("source") String source,
+                                               @Field("from") String from,
                                                @Field("attitude") String attitude, @Field("id") long weiboId);
 
     @GET("2/comments/to_me")
     Observable<QueryWeiboCommentResponse> getAcceptComments(@Query("access_token") String accessToken,
                                                             @Query("source") String source,
+                                                            @Query("from") String from,
                                                             @Query("since_id") long since_id,
                                                             @Query("max_id") long max_id,
                                                             @Query("count") int count,
@@ -99,6 +104,7 @@ public interface WeiCoService {
     @POST("/2/like/cancel_like")
     public Observable<Response> destoryAttitudesWeibo(@Field("access_token") String access_token,
                                                       @Field("source") String source,
+                                                      @Field("from") String from,
                                                @Field("attitude") String attitude, @Field("id") long weiboId);
 
 //    @GET("/2/statuses/show")
@@ -123,6 +129,7 @@ public interface WeiCoService {
     @GET("2/statuses/mentions")
     Observable<QueryWeiboResponse> getWeiboMentions(@Query("access_token") String accessToken,
                                                     @Query("source") String source,
+                                                    @Query("from") String from,
                                                     @Query("since_id") long since_id,
                                                     @Query("max_id") long max_id,
                                                     @Query("count") int count,
@@ -131,6 +138,7 @@ public interface WeiCoService {
     @GET("2/comments/mentions")
     Observable<QueryWeiboCommentResponse> getCommentsMentions(@Query("access_token") String accessToken,
                                                               @Query("source") String source,
+                                                              @Query("from") String from,
                                                               @Query("since_id") long since_id,
                                                               @Query("max_id") long max_id,
                                                               @Query("count") int count,
