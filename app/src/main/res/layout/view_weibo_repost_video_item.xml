@@ -85,6 +85,12 @@
                     android:layout_marginRight="@dimen/spacing_medium"
                     android:layout_marginBottom="@dimen/spacing_micro"/>
 
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/multimedia_videocard_play"
+                    android:layout_centerInParent="true"/>
+
             </com.caij.emore.widget.RatioRelativeLayout>
 
         </LinearLayout>
