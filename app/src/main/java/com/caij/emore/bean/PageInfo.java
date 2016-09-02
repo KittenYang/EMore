@@ -1,5 +1,10 @@
 package com.caij.emore.bean;
 
+import android.net.Uri;
+import android.text.TextUtils;
+
+import com.caij.emore.utils.LogUtil;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -190,6 +195,45 @@ public class PageInfo implements Serializable {
     public String getObject_type() {
         return object_type;
     }
+
+    private int pageType = -1;
+
+    public int getPageType() {
+        if (pageType > -1) {
+            return pageType;
+        }
+        if (!TextUtils.isEmpty(object_type)) {
+            LogUtil.d(this, "string obj type " + object_type);
+            pageType = stringTypeToInt(object_type);
+            LogUtil.d(this, "int obj type " + pageType);
+            return pageType;
+        }else {
+            return pageType = ShortUrl.getType(page_url);
+        }
+    }
+
+    public static int getType(String pageUrl) {
+        if (TextUtils.isEmpty(pageUrl) || !pageUrl.startsWith("sinaweibo://")) {
+            return ShortUrl.TYPE_WEB;
+        }else {
+            Uri uri = Uri.parse(pageUrl);
+            String type = uri.getQueryParameter("object_type");
+            return stringTypeToInt(type);
+        }
+    }
+
+    public static int stringTypeToInt(String type) {
+        if ("article".equals(type)) {
+            return ShortUrl.TYPE_WEB;
+        }else if ("video".equals(type)) {
+            return ShortUrl.TYPE_VIDEO;
+        }else if ("collection".equals(type)) {
+            return ShortUrl.TYPE_IMAGE;
+        }else {
+            return ShortUrl.TYPE_WEB;
+        }
+    }
+
 
     public void setObject_type(String object_type) {
         this.object_type = object_type;

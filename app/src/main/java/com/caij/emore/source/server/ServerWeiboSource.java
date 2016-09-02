@@ -233,7 +233,7 @@ public class ServerWeiboSource implements WeiboSource{
 
     @Override
     public Observable<QueryWeiboResponse> getWeibosByIds(String access_token, String ids) {
-        return mWeiBoService.getWeibsoByIds(access_token, ids);
+        return mWeiCoService.getWeibsoByIds(access_token, Key.WEIBO_APP_ID, Key.WEICO_APP_FROM, ids);
     }
 
     @Override
@@ -250,8 +250,6 @@ public class ServerWeiboSource implements WeiboSource{
     public Observable<QueryWeiboResponse> getSearchWeibo(String access_token, String q, int page, int count) {
         return mWeiCoService.searchStatus(access_token, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, q, count, page);
     }
-
-
 
     @Override
     public Observable<QueryRepostWeiboResponse> getRepostWeibos(String accessToken, long id, long since_id, long max_id, int count, int page) {

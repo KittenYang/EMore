@@ -135,6 +135,12 @@ public interface WeiCoService {
                                                     @Query("count") int count,
                                                     @Query("page") int page);
 
+    @GET("2/statuses/show_batch")
+    Observable<QueryWeiboResponse> getWeibsoByIds(@Query("access_token") String accessToken,
+                                                  @Query("source") String source,
+                                                  @Query("from") String from,
+                                                  @Query("ids") String ids);
+
     @GET("2/comments/mentions")
     Observable<QueryWeiboCommentResponse> getCommentsMentions(@Query("access_token") String accessToken,
                                                               @Query("source") String source,

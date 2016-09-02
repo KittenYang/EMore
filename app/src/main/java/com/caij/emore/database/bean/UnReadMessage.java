@@ -157,6 +157,9 @@ public class UnReadMessage implements Serializable {
     }
 
     public Integer getMsgbox() {
+        if (msgbox == null || msgbox < 0) {
+            return 0;
+        }
         return msgbox;
     }
 

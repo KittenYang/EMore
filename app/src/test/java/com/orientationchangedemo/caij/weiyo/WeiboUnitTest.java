@@ -63,23 +63,6 @@ public class WeiboUnitTest {
 
     @Test
     public void loadUserWeibo() throws Exception {
-        WeiBoService weiBoService = WeiBoService.Factory.create();
-        weiBoService.getUserWeibos(Key.token, "GitCafe", 0, 0, 0, 20, 1)
-                .subscribe(new Subscriber<UserWeiboResponse>() {
-                    @Override
-                    public void onCompleted() {
-                        System.out.print("onCompleted");
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print(e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(UserWeiboResponse userWeiboResponse) {
-                        System.out.print("onCompleted");
-                    }
-                });
     }
 }

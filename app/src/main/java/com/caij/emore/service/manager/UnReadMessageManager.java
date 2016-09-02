@@ -17,6 +17,7 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.UnReadMessageManagerPresent;
 import com.caij.emore.present.imp.UnReadMessageManagerPresentImp;
+import com.caij.emore.ui.activity.SplashActivity;
 import com.caij.emore.ui.view.UnReadMessageManagerPresentView;
 import com.caij.emore.service.EMoreService;
 import com.caij.emore.source.local.LocalMessageSource;
@@ -140,13 +141,12 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getMention_status(),
                         R.mipmap.timeline_icon_unlike, ATTITUDE_NOTIFICATION_ID, intent);
             }
-
         }
     }
 
     private void scheduleHeartbeat(long seconds){
         LogUtil.d(this, "scheduleHeartbeat in time %s ", seconds);
-
+        seconds = 3000;
         cancelHeartbeatTimer();
 
         if (pendingIntent == null) {

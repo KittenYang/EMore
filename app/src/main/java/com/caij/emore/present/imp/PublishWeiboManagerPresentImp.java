@@ -245,7 +245,8 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
     }
 
     private void postPublishWeiboSuccessEvent(Weibo weibo) {
-        RxBus.getDefault().post(Event.EVENT_PUBLISH_WEIBO_SUCCESS, weibo);
+        //这里暂时不发送微博 因为发送微博的接口是weibo.com(emore 没有高级权限 用不了cn的)  展示微博的时候用的是weico cn的域名
+//        RxBus.getDefault().post(Event.EVENT_PUBLISH_WEIBO_SUCCESS, weibo);
     }
 
     @Override

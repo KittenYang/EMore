@@ -47,4 +47,9 @@ public class UtilTest {
 //        467934697c9ac5440028fc281e7428aa
 //        467934697c9ac5440028fc281e7428aa
     }
+
+    @Test
+    public void testDate() {
+        System.out.print(DateUtil.formatDate(147280489L, "yyyy HH:mm:ss"));
+    }
 }

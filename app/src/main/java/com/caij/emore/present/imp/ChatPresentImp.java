@@ -19,6 +19,7 @@ import com.caij.emore.source.MessageSource;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -418,10 +419,8 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
             locakImage.setWidth(Integer.parseInt(strings[0]));
             locakImage.setHeight(Integer.parseInt(strings[1]));
         }else {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
             File file = new File(URI.create(messageImage.getThumbnail_600()));
-            BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+            BitmapFactory.Options options = ImageUtil.getImageOptions(file);
             locakImage.setWidth(options.outWidth);
             locakImage.setHeight(options.outHeight);
         }

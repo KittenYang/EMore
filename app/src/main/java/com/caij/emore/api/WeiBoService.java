@@ -288,9 +288,9 @@ public interface WeiBoService {
                                                              @Query("id") long id, @Query("page") int page,
                                                              @Query("count") int count);
 
-    @GET("2/statuses/show_batch.json")
-    Observable<QueryWeiboResponse> getWeibsoByIds(@Query("access_token") String accessToken,
-                                                             @Query("ids") String ids);
+//    @GET("2/statuses/show_batch.json")
+//    Observable<QueryWeiboResponse> getWeibsoByIds(@Query("access_token") String accessToken,
+//                                                             @Query("ids") String ids);
 
     @GET("2/search/topics.json")
     public Observable<QueryWeiboResponse> getTopicsByKey(@Query("access_token") String accessToken,

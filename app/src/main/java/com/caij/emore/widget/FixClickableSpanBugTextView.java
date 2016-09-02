@@ -13,7 +13,7 @@ import com.caij.emore.utils.LogUtil;
 import com.caij.emore.widget.span.MyURLSpan;
 
 /**
- * fix TextView onClick failure on set ClickableSpan
+ * fix TextView onVideoClick failure on set ClickableSpan
  */
 public class FixClickableSpanBugTextView extends TextView {
 

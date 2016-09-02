@@ -5,7 +5,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.caij.emore.R;
+import com.caij.emore.bean.PageInfo;
+import com.caij.emore.bean.ShortUrl;
 import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
@@ -70,16 +73,29 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboBaseViewH
     public int getItemViewType(int position) {
         Weibo weibo = getItem(position);
         if (weibo.getRetweeted_status() == null) {
-            if (weibo.getPage_info() != null &&
+            PageInfo pageInfo = weibo.getPage_info();
+            if (pageInfo != null &&
                     (weibo.getPic_ids() == null || weibo.getPic_ids().size() == 0)) {
-                return TYPE_NORMAL_VIDEO;
+                int type = pageInfo.getPageType();
+                if (type == ShortUrl.TYPE_VIDEO) {
+                    return TYPE_NORMAL_VIDEO;
+                }else {
+                    return TYPE_NORMAL_IMAGE;
+                }
             }else {
                 return TYPE_NORMAL_IMAGE;
             }
         }else {
-            if (weibo.getPage_info() != null
-                    && (weibo.getPic_ids() == null || weibo.getPic_ids().size() == 0)) {
-                return TYPE_REPOST_VIDEO;
+            Weibo reWebo = weibo.getRetweeted_status();
+            PageInfo pageInfo = weibo.getPage_info();
+            if (pageInfo != null
+                    && (reWebo.getPic_ids() == null || reWebo.getPic_ids().size() == 0)) {
+                int type = pageInfo.getPageType();
+                if (type == ShortUrl.TYPE_VIDEO) {
+                    return TYPE_REPOST_VIDEO;
+                }else {
+                    return TYPE_NORMAL_IMAGE;
+                }
             } else {
                 return TYPE_REPOST_IMAGE;
             }

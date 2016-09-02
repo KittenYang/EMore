@@ -3,12 +3,14 @@ package com.caij.emore.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Process;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.present.imp.AbsBasePresent;
+import com.caij.emore.utils.LogUtil;
 
 import java.util.List;
 
@@ -51,6 +53,7 @@ public class DefaultFragmentActivity extends BaseToolBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogUtil.d(Key.PROCESS, this.getClass().getSimpleName() + "pid " + Process.myPid());
         Intent intent = getIntent();
 
         mType = intent.getIntExtra(Key.TYPE, -1);

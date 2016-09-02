@@ -220,7 +220,7 @@ public class LocalWeiboSource implements WeiboSource {
             }
 
             if (!TextUtils.isEmpty(weibo.getUrl_struct_json_string())) {
-                List<ShortUrl> shortUrls = GsonUtils.fromJson(weibo.getPic_ids_json_string(),
+                List<ShortUrl> shortUrls = GsonUtils.fromJson(weibo.getUrl_struct_json_string(),
                         new TypeToken<List<ShortUrl>>() {
                         }.getType());
                 weibo.setUrl_struct(shortUrls);

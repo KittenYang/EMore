@@ -70,10 +70,14 @@ public class ShortUrl {
                 // %2Fshow%2FJ53GkPTmaNlrsDB4hAww2A__.htm&url_open_direct=1&toolbar_hidden=1&url_type=39&object_type=video&pos=1  视频
 //        sinaweibo://browser?url=http%3A%2F%2Fm.weibo.cn%2Fclient%2Fversion&sinainternalbrowser=topnav&share_menu=1 全文
 //        sinaweibo://browser?url=http%3A%2F%2Fm.weibo.cn%2Fclient%2Fversion&sinainternalbrowser=topnav&url_type=39&object_type=collection&pos=1 //图片
-        if (TextUtils.isEmpty(ori_url) || !ori_url.startsWith("sinaweibo://")) {
+       return getType(ori_url);
+    }
+
+    public static int getType(String pageUrl) {
+        if (TextUtils.isEmpty(pageUrl) || !pageUrl.startsWith("sinaweibo://")) {
             return TYPE_WEB;
         }else {
-            Uri uri = Uri.parse(ori_url);
+            Uri uri = Uri.parse(pageUrl);
             String type = uri.getQueryParameter("object_type");
             if ("article".equals(type)) {
                 return TYPE_WEB;
