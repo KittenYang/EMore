@@ -70,7 +70,6 @@ public class EMoreService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        LogUtil.d(Key.PROCESS, this.getClass().getSimpleName() + "pid " + Process.myPid());
         if (Build.VERSION.SDK_INT < 18) {
             startForeground(SERVICE_ID, new Notification());//API < 18 ，此方法能有效隐藏Notification上的图标
         } else {
