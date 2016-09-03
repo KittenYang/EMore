@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/spacing_large"
+        android:paddingRight="@dimen/spacing_large"
+        android:paddingTop="@dimen/spacing_medium_bt"
+        android:paddingBottom="@dimen/spacing_medium_bt">
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_avatar"
+            android:text="Caij"
+            android:textSize="@dimen/text_size_medium"
+            android:textColor="@color/text_80"
+            android:layout_marginLeft="@dimen/spacing_medium_bt"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_article_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_100"
+        android:textSize="@dimen/text_size_large"
+        android:lineSpacingExtra="6dp"
+        android:paddingLeft="@dimen/spacing_large"
+        android:paddingRight="@dimen/spacing_large"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/spacing_large"
+        android:paddingRight="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_large">
+
+        <TextView
+            android:id="@+id/tv_article_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@color/text_54"/>
+
+        <TextView
+            android:id="@+id/tv_article_view_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@color/text_54"
+            android:layout_marginLeft="@dimen/spacing_medium_bt"/>
+
+    </LinearLayout>
+
+    <com.caij.emore.widget.RatioImageView
+        android:id="@+id/iv_article"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ratio="0.5"
+        android:layout_marginTop="@dimen/spacing_large"/>
+
+</LinearLayout>

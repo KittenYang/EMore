@@ -96,16 +96,6 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         mActionBarDrawerToggle.syncState();
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // fitsSystemWindows
-            int statusBarHeight = SystemUtil.getStatusBarHeight(this);
-            ViewGroup.LayoutParams headParams = mRlNavHead.getLayoutParams();
-            headParams.height += statusBarHeight;
-            mRlNavHead.setLayoutParams(headParams);
-            RelativeLayout.LayoutParams avatarParams = (RelativeLayout.LayoutParams) mImgNavigationAvatar.getLayoutParams();
-            avatarParams.height += statusBarHeight;
-            mImgNavigationAvatar.setLayoutParams(avatarParams);
-        }
-
         Drawable iconWeiboDrawable = createNavMenuItemDrawable(R.mipmap.ic_weibo);
         tvWeibo.setCompoundDrawables(iconWeiboDrawable, null, null, null);
 

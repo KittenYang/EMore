@@ -26,15 +26,35 @@
             android:lineSpacingExtra="2dp"
             android:paddingLeft="@dimen/spacing_weibo_item"
             android:paddingRight="@dimen/spacing_weibo_item"
-            android:paddingTop="2dp" />
+            android:paddingTop="2dp"
+            android:text="哈哈，我今天发了条微博" />
 
-        <include layout="@layout/include_weibo_item_video"
+        <LinearLayout
+            android:id="@+id/ll_re"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_micro"
-            android:layout_marginLeft="@dimen/spacing_weibo_item"
-            android:layout_marginRight="@dimen/spacing_weibo_item"
-            android:layout_marginTop="@dimen/spacing_micro_plu"/>
+            android:background="@drawable/repost_content_bg_selector"
+            android:orientation="vertical"
+            android:paddingBottom="11dp"
+            android:paddingLeft="@dimen/spacing_weibo_item"
+            android:paddingRight="@dimen/spacing_weibo_item"
+            android:paddingTop="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_micro">
+
+            <com.caij.emore.widget.FixClickableSpanBugTextView
+                android:id="@+id/tv_re_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="2dp"
+                android:textColor="@color/text_54"
+                android:textSize="@dimen/text_size_medium" />
+
+            <include layout="@layout/include_weibo_item_article"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"/>
+
+        </LinearLayout>
 
         <include layout="@layout/include_weibo_bottom" />
 

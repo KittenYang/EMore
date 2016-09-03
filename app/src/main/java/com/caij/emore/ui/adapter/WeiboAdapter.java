@@ -8,11 +8,16 @@ import com.caij.emore.R;
 import com.caij.emore.bean.PageInfo;
 import com.caij.emore.bean.ShortUrl;
 import com.caij.emore.database.bean.Weibo;
-import com.caij.emore.utils.LogUtil;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.weibo.list.RepostWeiboListArticleItemView;
+import com.caij.emore.widget.weibo.list.RepostWeiboListImageItemView;
+import com.caij.emore.widget.weibo.list.RepostWeiboListVideoItemView;
+import com.caij.emore.widget.weibo.list.WeiboListArticleItemView;
+import com.caij.emore.widget.weibo.list.WeiboListImageItemView;
 import com.caij.emore.widget.weibo.list.WeiboListItemView;
+import com.caij.emore.widget.weibo.list.WeiboListVideoItemView;
 
 import java.util.List;
 
@@ -28,6 +33,8 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboBaseViewH
     private static final int TYPE_REPOST_IMAGE = 2;
     private static final int TYPE_NORMAL_VIDEO = 3;
     private static final int TYPE_REPOST_VIDEO = 4;
+    private static final int TYPE_NORMAL_ARTICLE = 5;
+    private static final int TYPE_REPOST_ARTICLE = 6;
 
     private OnItemActionClickListener mOnItemActionClickListener;
 
@@ -47,26 +54,37 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboBaseViewH
 
     @Override
     public WeiboBaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == TYPE_NORMAL_IMAGE) {
-            return new WeiboBaseViewHolder(mInflater.inflate(R.layout.item_weibo_image, parent, false),
-                    mOnItemClickListener, mOnItemActionClickListener);
-        }else if (viewType == TYPE_REPOST_IMAGE){
-            return new WeiboBaseViewHolder(mInflater.inflate(R.layout.item_weibo_repost_image, parent, false),
-                    mOnItemClickListener, mOnItemActionClickListener);
-        }else if (viewType == TYPE_NORMAL_VIDEO) {
-            return new WeiboBaseViewHolder(mInflater.inflate(R.layout.item_weibo_video, parent, false),
-                    mOnItemClickListener, mOnItemActionClickListener);
-        }else if (viewType == TYPE_REPOST_VIDEO) {
-            return new WeiboBaseViewHolder(mInflater.inflate(R.layout.item_weibo_repost_video, parent, false),
-                    mOnItemClickListener, mOnItemActionClickListener);
-        }
+        ViewGroup viewGroup = (ViewGroup) mInflater.inflate(R.layout.item_weibo, parent, false);
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        return null;
+        WeiboListItemView weiboListItemView = null;
+        if (viewType == TYPE_NORMAL_IMAGE) {
+            weiboListItemView = new WeiboListImageItemView(parent.getContext());
+        }else if (viewType == TYPE_REPOST_IMAGE){
+            weiboListItemView = new RepostWeiboListImageItemView(parent.getContext());
+        }else if (viewType == TYPE_NORMAL_VIDEO) {
+            weiboListItemView = new WeiboListVideoItemView(parent.getContext());
+        }else if (viewType == TYPE_REPOST_VIDEO) {
+            weiboListItemView = new RepostWeiboListVideoItemView(parent.getContext());
+        }else if (viewType == TYPE_NORMAL_ARTICLE) {
+            weiboListItemView = new WeiboListArticleItemView(parent.getContext());
+        }else if (viewType == TYPE_REPOST_ARTICLE) {
+            weiboListItemView = new RepostWeiboListArticleItemView(parent.getContext());
+        }
+        if (weiboListItemView != null) {
+            weiboListItemView.setId(R.id.weibo_item_view);
+            viewGroup.addView(weiboListItemView, layoutParams);
+        }
+        return new WeiboBaseViewHolder(viewGroup,
+                mOnItemClickListener, mOnItemActionClickListener);
     }
 
     @Override
     public void onBindViewHolder(WeiboBaseViewHolder holder, int position) {
-        holder.weiboItemView.setWeibo(getItem(position));
+        if (holder.weiboItemView != null) {
+            holder.weiboItemView.setWeibo(getItem(position));
+        }
     }
 
     @Override
@@ -79,7 +97,9 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboBaseViewH
                 int type = pageInfo.getPageType();
                 if (type == ShortUrl.TYPE_VIDEO) {
                     return TYPE_NORMAL_VIDEO;
-                }else {
+                } else if (type == ShortUrl.TYPE_ARTICLE){
+                    return TYPE_NORMAL_ARTICLE;
+                } else {
                     return TYPE_NORMAL_IMAGE;
                 }
             }else {
@@ -93,8 +113,10 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboBaseViewH
                 int type = pageInfo.getPageType();
                 if (type == ShortUrl.TYPE_VIDEO) {
                     return TYPE_REPOST_VIDEO;
-                }else {
-                    return TYPE_NORMAL_IMAGE;
+                } else if (type == ShortUrl.TYPE_ARTICLE){
+                    return TYPE_REPOST_ARTICLE;
+                } else {
+                    return TYPE_REPOST_IMAGE;
                 }
             } else {
                 return TYPE_REPOST_IMAGE;

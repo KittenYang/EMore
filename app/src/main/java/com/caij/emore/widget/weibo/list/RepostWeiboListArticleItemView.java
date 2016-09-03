@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.caij.emore.R;
@@ -20,44 +21,45 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/9/1.
  */
-public class WeiboListVideoItemView extends WeiboListItemView {
+public class RepostWeiboListArticleItemView extends RepostWeiboListItemView {
 
-    private CompositePatternVideo mCompositePatternVideo;
+    private CompositePatternArticle mCompositePatternArticle;
 
-    public WeiboListVideoItemView(Context context) {
+    public RepostWeiboListArticleItemView(Context context) {
         super(context);
         init();
     }
 
-    public WeiboListVideoItemView(Context context, AttributeSet attrs) {
+    public RepostWeiboListArticleItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public WeiboListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RepostWeiboListArticleItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public WeiboListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RepostWeiboListArticleItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
 
     private void init() {
-        mCompositePatternVideo = new CompositePatternVideo();
-        mCompositePatternVideo.setUp(this);
+        //这里采用组合模式 解决多继承问题
+        mCompositePatternArticle = new CompositePatternArticle();
+        mCompositePatternArticle.setUp(this);
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.view_weibo_video_item;
+        return R.layout.view_weibo_repost_article_item;
     }
 
     @Override
     public void setWeibo(Weibo weibo) {
         super.setWeibo(weibo);
-        mCompositePatternVideo.setWeibo(weibo, getContext());
+        mCompositePatternArticle.setWeibo(weibo, getContext());
     }
 
 }

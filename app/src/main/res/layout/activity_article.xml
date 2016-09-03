@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.caij.emore.widget.weibo.html.ArticleHeadView
+                android:id="@+id/article_head"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </com.caij.emore.widget.weibo.html.ArticleHeadView>
+
+            <!--<com.caij.emore.widget.FixClickableSpanBugTextView-->
+                <!--android:id="@+id/tv_content"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_marginBottom="@dimen/spacing_large"-->
+                <!--android:layout_marginTop="@dimen/spacing_large"-->
+                <!--android:lineSpacingMultiplier="1.5"-->
+                <!--android:paddingLeft="@dimen/spacing_large"-->
+                <!--android:paddingRight="@dimen/spacing_large"-->
+                <!--android:textColor="@color/text_80"-->
+                <!--android:textSize="@dimen/text_size_medium"-->
+                <!--android:visibility="gone"/>-->
+
+            <WebView
+                android:id="@+id/web_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/spacing_medium_bt">
+
+            </WebView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

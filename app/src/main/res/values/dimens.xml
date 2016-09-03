@@ -21,6 +21,8 @@
     <dimen name="text_size_medium">16dp</dimen>
     <dimen name="text_size_large">18dp</dimen>
 
+    <dimen name="text_size_large_bt">24dp</dimen>
+
 
     <dimen name="dialog_corners">2dp</dimen>
 
@@ -38,4 +40,7 @@
 
     <dimen name="main_menu_red_size">6dp</dimen>
     <dimen name="fab_scrollthreshold">4dip</dimen>
+    <dimen name="view_border_size">0.66dp</dimen>
+    <dimen name="nav_avatar_margin_top">32dp</dimen>
+    <dimen name="lay_detail_margin_bottom">0dp</dimen>
 </resources>

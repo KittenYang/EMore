@@ -47,14 +47,14 @@
                 android:layout_height="@dimen/user_info_avatar_image"
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="32dp" />
+                android:layout_marginTop="@dimen/nav_avatar_margin_top" />
 
             <TextView
                 android:id="@+id/tv_navigation_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="@dimen/spacing_large"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:textColor="@color/white" />
 

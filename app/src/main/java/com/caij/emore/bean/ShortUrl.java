@@ -16,6 +16,7 @@ public class ShortUrl {
     public static final int TYPE_IMAGE = 39;
     public static final int TYPE_MUSIC = 2;
     public static final int TYPE_FULL_TEXT = 10;
+    public static final int TYPE_ARTICLE = 5;
     /**
      * short_url : http://t.cn/RtgcYZQ
      * ori_url : sinaweibo://browser?url=http%3A%2F%2Fm.weibo.cn%2Fclient%2Fversion&sinainternalbrowser=topnav&url_type=39&object_type=collection&pos=1

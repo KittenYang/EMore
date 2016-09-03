@@ -1,6 +1,7 @@
 package com.caij.emore.api;
 
 import com.caij.emore.Key;
+import com.caij.emore.bean.Article;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.VideoInfo;
 import com.caij.emore.bean.WeiboIds;
@@ -198,5 +199,10 @@ public interface WeiCoService {
     @POST
     public Observable<VideoInfo> getVideoInfo(@Url String url, @Query("a") String a, @Query("c") String c,
                                               @FieldMap Map<String, Object> fields);
+
+    @GET("/2/infopage/get_content")
+    public Observable<Article> getInfoPageContent(@Query("access_token") String accessToken,
+                                                  @Query("source") String source,
+                                                  @Query("containerid") String containerid);
 
 }

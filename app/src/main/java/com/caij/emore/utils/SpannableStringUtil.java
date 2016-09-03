@@ -251,30 +251,6 @@ public class SpannableStringUtil {
         SpannableStringUtil.praseSoftEmotions(text);
     }
 
-    public static List<String> getWeiboTextHttpUrl(List<Weibo> weibos) {
-        List<String> shortUrls = new ArrayList<>();
-        for (Weibo weibo : weibos) {
-            getWeiboTextHttpUrl(weibo, false, shortUrls);
-        }
-        return shortUrls;
-    }
-
-    public static List<String> getWeiboTextHttpUrl(Weibo weibo, boolean isLongText, List<String> shortUrls) {
-        String text;
-        LongText longText = weibo.getLongText();
-        if (isLongText && longText != null && !TextUtils.isEmpty(longText.getContent())) {
-            text = longText.getContent();
-        }else {
-            text = weibo.getText();
-        }
-        List<String> list = getTextUrl(text, shortUrls);
-        if (weibo.getRetweeted_status() != null) {
-            getWeiboTextHttpUrl(weibo.getRetweeted_status(), isLongText, list);
-        }
-        return list;
-    }
-
-
     public static void paraeSpannable(Weibo weibo) {
         paraeSpannable(weibo, false);
     }
@@ -302,7 +278,7 @@ public class SpannableStringUtil {
             if (reUser != null && !TextUtils.isEmpty(reUser.getScreen_name())) {
                 reUserName = String.format("@%s :", reUser.getScreen_name());
             }
-            SpannableStringBuilder reContentSpannableString = praseHttpUrlText(reUserName + reWeibo.getText() + " ", reWeibo.getUrl_struct());
+            SpannableStringBuilder reContentSpannableString = praseHttpUrlText(reUserName + reWeibo.getText() + " ", weibo.getUrl_struct());
             SpannableStringUtil.praseName(reContentSpannableString);
             SpannableStringUtil.praseTopic(reContentSpannableString);
             SpannableStringUtil.praseDefaultEmotions(reContentSpannableString);

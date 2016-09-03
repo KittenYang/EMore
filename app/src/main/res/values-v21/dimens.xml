@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="nav_avatar_margin_top">48dp</dimen>
+    <dimen name="rl_nav_head_height">164dp</dimen>
+    <dimen name="lay_detail_margin_bottom">16dp</dimen>
+</resources>

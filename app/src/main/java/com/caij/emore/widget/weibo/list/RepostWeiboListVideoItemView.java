@@ -22,16 +22,7 @@ import butterknife.OnClick;
  */
 public class RepostWeiboListVideoItemView extends RepostWeiboListItemView {
 
-    @BindView(R.id.iv_video)
-    ImageView mIvVideo;
-    @BindView(R.id.tv_video_view_count)
-    TextView mTvVideoViewCount;
-    @BindView(R.id.tv_video_during)
-    TextView mTvVideoDuring;
-    @BindView(R.id.rl_video)
-    RatioRelativeLayout mRlVideo;
-
-    ImageLoader.ImageConfig mVideoImageConfig;
+    private CompositePatternVideo mCompositePatternVideo;
 
     public RepostWeiboListVideoItemView(Context context) {
         super(context);
@@ -54,9 +45,8 @@ public class RepostWeiboListVideoItemView extends RepostWeiboListItemView {
     }
 
     private void initSelf(){
-        mVideoImageConfig = new ImageLoader.ImageConfigBuild()
-                .setScaleType(ImageLoader.ScaleType.CENTER_CROP)
-                .build();
+        mCompositePatternVideo = new CompositePatternVideo();
+        mCompositePatternVideo.setUp(this);
     }
 
     @Override
@@ -67,24 +57,7 @@ public class RepostWeiboListVideoItemView extends RepostWeiboListItemView {
     @Override
     public void setWeibo(Weibo weibo) {
         super.setWeibo(weibo);
-        PageInfo pageInfo = weibo.getPage_info();
-        ImageLoader.loadUrl(getContext(), mIvVideo, pageInfo.getPage_pic(),
-                R.drawable.weibo_image_placeholder, mVideoImageConfig);
-        mTvVideoViewCount.setText(pageInfo.getMedia_info().getOnline_users());
-        if (pageInfo.getMedia_info().getDuration() > 0) {
-            mTvVideoDuring.setVisibility(VISIBLE);
-            mTvVideoDuring.setText(DateUtil.formatSeconds(pageInfo.getMedia_info().getDuration()));
-        }else {
-            mTvVideoDuring.setVisibility(GONE);
-        }
-        mRlVideo.setTag(weibo);
+        mCompositePatternVideo.setWeibo(weibo, getContext());
     }
 
-    @OnClick(R.id.rl_video)
-    public void onVideoClick() {
-        Weibo weibo = (Weibo) mRlVideo.getTag();
-        PageInfo.MediaInfo mediaInfo = weibo.getPage_info().getMedia_info();
-        Intent intent = VideoViewPlayingActivity.newIntent(getContext(), mediaInfo.getStream_url());
-        getContext().startActivity(intent);
-    }
 }

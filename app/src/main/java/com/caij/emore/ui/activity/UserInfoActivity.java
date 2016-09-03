@@ -115,12 +115,6 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
         setTitle("");
         tvTitleUserName.setText(mUserName);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) layDetail.getLayoutParams();
-            params.bottomMargin = SystemUtil.getStatusBarHeight(this) + params.bottomMargin;
-            layDetail.setLayoutParams(params);
-        }
-
         viewRoot.setVisibility(View.GONE);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeColors(

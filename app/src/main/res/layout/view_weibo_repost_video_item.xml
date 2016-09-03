@@ -49,49 +49,10 @@
                 android:textColor="@color/text_54"
                 android:textSize="@dimen/text_size_medium" />
 
-            <com.caij.emore.widget.RatioRelativeLayout
-                android:id="@+id/rl_video"
+            <include layout="@layout/include_weibo_item_video"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:ratio="0.56"
-                android:layout_marginTop="@dimen/spacing_medium">
-
-                <ImageView
-                    android:id="@+id/iv_video"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                </ImageView>
-
-
-                <TextView
-                    android:id="@+id/tv_video_view_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_small"
-                    android:textColor="@color/text_87_inverse"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/spacing_medium"
-                    android:layout_marginBottom="@dimen/spacing_micro"/>
-
-                <TextView
-                    android:id="@+id/tv_video_during"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_small"
-                    android:textColor="@color/text_87_inverse"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/spacing_medium"
-                    android:layout_marginBottom="@dimen/spacing_micro"/>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/multimedia_videocard_play"
-                    android:layout_centerInParent="true"/>
-
-            </com.caij.emore.widget.RatioRelativeLayout>
+                android:layout_marginTop="@dimen/spacing_medium"/>
 
         </LinearLayout>
 

@@ -96,6 +96,10 @@ public class PageInfo implements Serializable {
 
     private Actionlog actionlog;
 
+
+    private List<Card> cards;
+
+
     public int getType() {
         return type;
     }
@@ -208,7 +212,7 @@ public class PageInfo implements Serializable {
             LogUtil.d(this, "int obj type " + pageType);
             return pageType;
         }else {
-            return pageType = ShortUrl.getType(page_url);
+            return pageType = getType(page_url);
         }
     }
 
@@ -224,7 +228,7 @@ public class PageInfo implements Serializable {
 
     public static int stringTypeToInt(String type) {
         if ("article".equals(type)) {
-            return ShortUrl.TYPE_WEB;
+            return ShortUrl.TYPE_ARTICLE;
         }else if ("video".equals(type)) {
             return ShortUrl.TYPE_VIDEO;
         }else if ("collection".equals(type)) {
@@ -277,6 +281,14 @@ public class PageInfo implements Serializable {
 
     public void setActionlog(Actionlog actionlog) {
         this.actionlog = actionlog;
+    }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
     }
 
     public static class PicInfo {
@@ -812,6 +824,117 @@ public class PageInfo implements Serializable {
 
         public void setFid(Object fid) {
             this.fid = fid;
+        }
+    }
+
+    public static class Card {
+        private int type;
+        private String button_name;
+        private String button_pic;
+        private String content1;
+        private String content2;
+        private String object_id;
+        private String page_id;
+        private String page_pic;
+        private String page_title;
+        private String page_url;
+        private String source_type;
+        private String type_icon;
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
+
+        public String getButton_name() {
+            return button_name;
+        }
+
+        public void setButton_name(String button_name) {
+            this.button_name = button_name;
+        }
+
+        public String getButton_pic() {
+            return button_pic;
+        }
+
+        public void setButton_pic(String button_pic) {
+            this.button_pic = button_pic;
+        }
+
+        public String getContent1() {
+            return content1;
+        }
+
+        public void setContent1(String content1) {
+            this.content1 = content1;
+        }
+
+        public String getContent2() {
+            return content2;
+        }
+
+        public void setContent2(String content2) {
+            this.content2 = content2;
+        }
+
+        public String getObject_id() {
+            return object_id;
+        }
+
+        public void setObject_id(String object_id) {
+            this.object_id = object_id;
+        }
+
+        public String getPage_id() {
+            return page_id;
+        }
+
+        public void setPage_id(String page_id) {
+            this.page_id = page_id;
+        }
+
+        public String getPage_pic() {
+            return page_pic;
+        }
+
+        public void setPage_pic(String page_pic) {
+            this.page_pic = page_pic;
+        }
+
+        public String getPage_title() {
+            return page_title;
+        }
+
+        public void setPage_title(String page_title) {
+            this.page_title = page_title;
+        }
+
+        public String getPage_url() {
+            return page_url;
+        }
+
+        public void setPage_url(String page_url) {
+            this.page_url = page_url;
+        }
+
+        public String getSource_type() {
+            return source_type;
+        }
+
+        public void setSource_type(String source_type) {
+            this.source_type = source_type;
+        }
+
+        public String getType_icon() {
+            return type_icon;
+        }
+
+        public void setType_icon(String type_icon) {
+            this.type_icon = type_icon;
         }
     }
 }
