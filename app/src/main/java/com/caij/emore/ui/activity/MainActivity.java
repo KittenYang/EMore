@@ -2,7 +2,6 @@ package com.caij.emore.ui.activity;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
@@ -10,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,7 +33,6 @@ import com.caij.emore.ui.fragment.weibo.FriendWeiboFragment;
 import com.caij.emore.ui.fragment.weibo.HotWeiboFragment;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.widget.main.ActionBarDrawerToggle;
 import com.caij.emore.widget.DoubleClickToolBar;
@@ -45,9 +42,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity<MainPresent> implements MainView, View.OnClickListener {
-
-    private static final String FRIEND_WEIBO_FRAGMENT_TAG = "friend_weibo_fragment_tag";
-    private static final String MESSAGE_FRAGMENT_TAG = "message_fragment_tag";
 
     @BindView(R.id.img_navigation_avatar)
     ImageView mImgNavigationAvatar;
@@ -102,62 +96,66 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         Drawable iconMessageDrawable = createNavMenuItemDrawable(R.mipmap.ic_message);
         tvMessage.setCompoundDrawables(iconMessageDrawable, null, null, null);
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (savedInstanceState == null) {
-            mFriendWeiboFragment = new FriendWeiboFragment();
-            mMessageFragment = new MessageUserFragment();
-            transaction.add(R.id.attach_container,
-                    mFriendWeiboFragment, FRIEND_WEIBO_FRAGMENT_TAG).commit();
+        initContent(savedInstanceState);
 
-            mVisibleFragment = mFriendWeiboFragment;
-        } else {
-            mFriendWeiboFragment = getSupportFragmentManager().findFragmentByTag(FRIEND_WEIBO_FRAGMENT_TAG);
-            if (mFriendWeiboFragment == null) {
-                mFriendWeiboFragment = new FriendWeiboFragment();
-            }
-            mMessageFragment = getSupportFragmentManager().findFragmentByTag(MESSAGE_FRAGMENT_TAG);
-            if (mMessageFragment == null) {
-                mMessageFragment = new MessageUserFragment();
-            }
-
-            String key  = savedInstanceState.getString(Key.ID);
-            if (FRIEND_WEIBO_FRAGMENT_TAG.equals(key)) {
-                mVisibleFragment = mFriendWeiboFragment;
-            }else if (MESSAGE_FRAGMENT_TAG.equals(key)) {
-                mVisibleFragment = mMessageFragment;
-            }
-        }
-
-        if (mVisibleFragment == mFriendWeiboFragment) {
-            rlItemWeibo.setSelected(true);
-            rlItemMessage.setSelected(false);
-            tvWeibo.setSelected(true);
-            tvMessage.setSelected(false);
-        }else if (mVisibleFragment == mMessageFragment) {
-            rlItemMessage.setSelected(true);
-            rlItemWeibo.setSelected(false);
-            tvMessage.setSelected(true);
-            tvWeibo.setSelected(false);
-        }
+        setNavItemStatus(mVisibleFragment);
 
         mPresent.getWeiboUserInfoByUid();
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String key  = intent.getStringExtra(Key.ID);
+        if (Key.FRIEND_WEIBO_FRAGMENT_TAG.equals(key)) {
+            changeContent2FriendWeibo();
+        }else if (Key.MESSAGE_FRAGMENT_TAG.equals(key)) {
+            changeContent2Message();
+        }
+    }
+
+    private void initContent(Bundle savedInstanceState) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (savedInstanceState == null) {
+            mFriendWeiboFragment = new FriendWeiboFragment();
+            mMessageFragment = new MessageUserFragment();
+            transaction.add(R.id.attach_container,
+                    mFriendWeiboFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG).commit();
+
+            mVisibleFragment = mFriendWeiboFragment;
+        } else {
+            mFriendWeiboFragment = getSupportFragmentManager().findFragmentByTag(Key.FRIEND_WEIBO_FRAGMENT_TAG);
+            if (mFriendWeiboFragment == null) {
+                mFriendWeiboFragment = new FriendWeiboFragment();
+            }
+            mMessageFragment = getSupportFragmentManager().findFragmentByTag(Key.MESSAGE_FRAGMENT_TAG);
+            if (mMessageFragment == null) {
+                mMessageFragment = new MessageUserFragment();
+            }
+
+            String key  = savedInstanceState.getString(Key.ID);
+            if (Key.FRIEND_WEIBO_FRAGMENT_TAG.equals(key)) {
+                mVisibleFragment = mFriendWeiboFragment;
+            }else if (Key.MESSAGE_FRAGMENT_TAG.equals(key)) {
+                mVisibleFragment = mMessageFragment;
+            }
+        }
+    }
+
+    @Override
     protected MainPresent createPresent() {
         Token token = UserPrefs.get(this).getEMoreToken();
-        MainPresent simpleUserPresent = new MainPresentImp(token.getAccess_token(), Long.parseLong(token.getUid()),
+        return new MainPresentImp(token.getAccess_token(), Long.parseLong(token.getUid()),
                 this, new ServerUserSource(), new LocalUserSource(), new LocalMessageSource(), new LocalDraftSource());
-        return simpleUserPresent;
     }
 
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (mVisibleFragment == mFriendWeiboFragment) {
-            outState.putString(Key.ID, FRIEND_WEIBO_FRAGMENT_TAG);
+            outState.putString(Key.ID, Key.FRIEND_WEIBO_FRAGMENT_TAG);
         }else if (mVisibleFragment == mMessageFragment) {
-            outState.putString(Key.ID, MESSAGE_FRAGMENT_TAG);
+            outState.putString(Key.ID, Key.MESSAGE_FRAGMENT_TAG);
         }
         super.onSaveInstanceState(outState);
     }
@@ -165,6 +163,20 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
     private Drawable createNavMenuItemDrawable(int drawableId) {
         return DrawableUtil.createSelectThemeDrawable(this, drawableId, R.color.icon_normal_color, R.color.colorPrimary);
+    }
+
+    private void setNavItemStatus(Fragment fragment) {
+        if (fragment == mFriendWeiboFragment) {
+            rlItemWeibo.setSelected(true);
+            rlItemMessage.setSelected(false);
+            tvWeibo.setSelected(true);
+            tvMessage.setSelected(false);
+        }else if (fragment == mMessageFragment) {
+            rlItemMessage.setSelected(true);
+            rlItemWeibo.setSelected(false);
+            tvMessage.setSelected(true);
+            tvWeibo.setSelected(false);
+        }
     }
 
     public void switchContent(Fragment from, Fragment to, int id, String tag) {
@@ -176,7 +188,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         }
     }
 
-    private void changeToolBarFlag(boolean isScroll) {
+    private void setToolBarFlag(boolean isScroll) {
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
         if (isScroll) {
             params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
@@ -265,29 +277,15 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
             case R.id.rl_item_weibo:
                 if (!rlItemWeibo.isSelected()) {
-                    switchContent(mVisibleFragment, mFriendWeiboFragment, R.id.attach_container, FRIEND_WEIBO_FRAGMENT_TAG);
-                    mVisibleFragment = mFriendWeiboFragment;
+                    changeContent2FriendWeibo();
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
-                    changeToolBarFlag(true);
-
-                    rlItemWeibo.setSelected(true);
-                    rlItemMessage.setSelected(false);
-                    tvWeibo.setSelected(true);
-                    tvMessage.setSelected(false);
                 }
                 break;
 
             case R.id.rl_item_message:
                 if (!rlItemMessage.isSelected()) {
-                    switchContent(mVisibleFragment, mMessageFragment, R.id.attach_container, MESSAGE_FRAGMENT_TAG);
-                    mVisibleFragment = mMessageFragment;
+                    changeContent2Message();
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
-                    changeToolBarFlag(false);
-
-                    rlItemMessage.setSelected(true);
-                    rlItemWeibo.setSelected(false);
-                    tvMessage.setSelected(true);
-                    tvWeibo.setSelected(false);
                 }
                 break;
 
@@ -301,5 +299,20 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         }
     }
 
+    private void changeContent2FriendWeibo() {
+        changeContent(mFriendWeiboFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG);
+        setToolBarFlag(true);
+    }
+
+    private void changeContent2Message() {
+        changeContent(mMessageFragment, Key.MESSAGE_FRAGMENT_TAG);
+        setToolBarFlag(false);
+    }
+
+    private void changeContent(Fragment fragment, String tag) {
+        switchContent(mVisibleFragment, fragment, R.id.attach_container, tag);
+        mVisibleFragment = fragment;
+        setNavItemStatus(mVisibleFragment);
+    }
 
 }

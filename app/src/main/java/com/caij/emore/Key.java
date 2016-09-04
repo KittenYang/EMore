@@ -56,4 +56,7 @@ public interface Key {
     String HEIGHT = "height";
     String TEXT = "text";
     String PROCESS = "process";
+
+    static final String FRIEND_WEIBO_FRAGMENT_TAG = "friend_weibo_fragment_tag";
+    static final String MESSAGE_FRAGMENT_TAG = "message_fragment_tag";
 }

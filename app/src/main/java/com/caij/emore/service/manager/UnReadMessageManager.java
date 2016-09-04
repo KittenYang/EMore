@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 
 import com.caij.emore.AppSettings;
+import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.UnReadMessage;
@@ -95,51 +96,63 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
                     && serverUnReadMessage.getFollower() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getFollower() - localUnReadMessage.getFollower() > 0)) {
                 String text = serverUnReadMessage.getFollower() + ctx.getString(R.string.new_followers);
-
-                Intent intent = FriendshipActivity.newIntent(ctx, Long.parseLong(UserPrefs.get(ctx).getEMoreToken().getUid()));
+                Intent[] intents = new Intent[2];
+                intents[0] = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
+                intents[1] = FriendshipActivity.newIntent(ctx, Long.parseLong(UserPrefs.get(ctx).getEMoreToken().getUid()));
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getFollower(),
-                        R.mipmap.statusbar_ic_follower_small, FOLLOWER_NOTIFICATION_ID, intent);
+                        R.mipmap.statusbar_ic_follower_small, FOLLOWER_NOTIFICATION_ID, intents);
             }
 
             if (AppSettings.isNotifyCommentEnable(ctx) && serverUnReadMessage.getCmt() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getCmt() - localUnReadMessage.getCmt() > 0)) {
                 String text = serverUnReadMessage.getCmt() + ctx.getString(R.string.new_comment);
-                Intent intent = new Intent(ctx, CommentsActivity.class);
+                Intent[] intents = new Intent[2];
+                intents[0] = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
+                intents[1] = new Intent(ctx, CommentsActivity.class);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getCmt(),
-                        R.mipmap.statusbar_ic_comment_small, COMMENT_NOTIFICATION_ID, intent);
+                        R.mipmap.statusbar_ic_comment_small, COMMENT_NOTIFICATION_ID, intents);
             }
 
             if (AppSettings.isNotifyDmEnable(ctx) && serverUnReadMessage.getDm_single() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getDm_single() - localUnReadMessage.getDm_single() > 0)) {
                 String text = serverUnReadMessage.getDm_single() + ctx.getString(R.string.new_dm);
-                Intent intent = DefaultFragmentActivity.starFragmentV4(ctx, ctx.getString(R.string.message), MessageUserFragment.class, null);
+                Intent[] intents = new Intent[1];
+                Intent intent = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
+                intent.putExtra(Key.ID, Key.MESSAGE_FRAGMENT_TAG);
+                intents[0] = intent;
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getDm_single(),
-                        R.mipmap.statusbar_ic_dm_small, MESSAGE_NOTIFICATION_ID, intent);
+                        R.mipmap.statusbar_ic_dm_small, MESSAGE_NOTIFICATION_ID, intents);
             }
 
             if (AppSettings.isNotifyWeiboMentionEnable(ctx) && serverUnReadMessage.getMention_status() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getMention_status() - localUnReadMessage.getMention_status() > 0)) {
                 String text = serverUnReadMessage.getMention_status() + ctx.getString(R.string.weibo_mention_count_hint);
-                Intent intent = new Intent(ctx, MentionActivity.class);
+                Intent[] intents = new Intent[2];
+                intents[0] = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
+                intents[1] =  new Intent(ctx, MentionActivity.class);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getMention_status(),
-                        R.mipmap.statusbar_ic_mention_small, WEIBI_MENTION_NOTIFICATION_ID, intent);
+                        R.mipmap.statusbar_ic_mention_small, WEIBI_MENTION_NOTIFICATION_ID, intents);
             }
 
             if (AppSettings.isNotifyCommentMentionEnable(ctx) && serverUnReadMessage.getMention_cmt() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getMention_cmt() - localUnReadMessage.getMention_cmt() > 0)) {
                 String text = serverUnReadMessage.getMention_cmt() + ctx.getString(R.string.comment_mention_count_hint);
-                Intent intent = new Intent(ctx, MentionActivity.class);
+                Intent[] intents = new Intent[2];
+                intents[0] = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
+                intents[1] =  new Intent(ctx, MentionActivity.class);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getMention_status(),
-                        R.mipmap.statusbar_ic_mention_small, COMMENT_MENTION_NOTIFICATION_ID, intent);
+                        R.mipmap.statusbar_ic_mention_small, COMMENT_MENTION_NOTIFICATION_ID, intents);
             }
 
             if (AppSettings.isNotifyAttitudeEnable(ctx) && serverUnReadMessage.getAttitude() > 0
                     && (localUnReadMessage == null || serverUnReadMessage.getAttitude() - localUnReadMessage.getAttitude() > 0)) {
                 String text = serverUnReadMessage.getAttitude() + ctx.getString(R.string.new_attitude);
-                Intent intent = DefaultFragmentActivity.starFragmentV4(ctx, ctx.getString(R.string.attitude),
+                Intent[] intents = new Intent[2];
+                intents[0] = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
+                intents[1] =  DefaultFragmentActivity.starFragmentV4(ctx, ctx.getString(R.string.attitude),
                         AttitudesToMeFragment.class, null);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getMention_status(),
-                        R.mipmap.timeline_icon_unlike, ATTITUDE_NOTIFICATION_ID, intent);
+                        R.mipmap.timeline_icon_unlike, ATTITUDE_NOTIFICATION_ID, intents);
             }
         }
     }
@@ -182,15 +195,12 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
         }
     };
 
-    private void notifyNotification(String title, String contentText, int num, int drawable, int id, Intent intent) {
+    private void notifyNotification(String title, String contentText, int num, int drawable, int id, Intent[] intents) {
         Notification.Builder notificationBuilder = new Notification.Builder(ctx);
         notificationBuilder.setContentTitle(title);
         notificationBuilder.setContentText(contentText);
         notificationBuilder.setSmallIcon(drawable);
         notificationBuilder.setNumber(num);
-        Intent[] intents = new Intent[2];
-        intents[0] = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
-        intents[1] = intent;
         PendingIntent pendingIntent = PendingIntent.getActivities(ctx,  -1, intents, PendingIntent.FLAG_CANCEL_CURRENT);
         notificationBuilder.setContentIntent(pendingIntent);
         notificationBuilder.setLargeIcon(BitmapFactory.decodeResource(ctx.getResources(), R.mipmap.ic_launcher));
