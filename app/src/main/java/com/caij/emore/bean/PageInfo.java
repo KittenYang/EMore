@@ -207,10 +207,7 @@ public class PageInfo implements Serializable {
             return pageType;
         }
         if (!TextUtils.isEmpty(object_type)) {
-            LogUtil.d(this, "string obj type " + object_type);
-            pageType = stringTypeToInt(object_type);
-            LogUtil.d(this, "int obj type " + pageType);
-            return pageType;
+            return pageType = stringTypeToInt(object_type);
         }else {
             return pageType = getType(page_url);
         }

@@ -159,7 +159,6 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
 
     private void scheduleHeartbeat(long seconds){
         LogUtil.d(this, "scheduleHeartbeat in time %s ", seconds);
-        seconds = 3000;
         cancelHeartbeatTimer();
 
         if (pendingIntent == null) {
