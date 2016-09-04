@@ -97,7 +97,7 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboBaseViewH
                 int type = pageInfo.getPageType();
                 if (type == ShortUrl.TYPE_VIDEO) {
                     return TYPE_NORMAL_VIDEO;
-                } else if (type == ShortUrl.TYPE_ARTICLE){
+                } else if (type == ShortUrl.TYPE_ARTICLE && pageInfo.getCards() != null){
                     return TYPE_NORMAL_ARTICLE;
                 } else {
                     return TYPE_NORMAL_IMAGE;
@@ -113,7 +113,7 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboBaseViewH
                 int type = pageInfo.getPageType();
                 if (type == ShortUrl.TYPE_VIDEO) {
                     return TYPE_REPOST_VIDEO;
-                } else if (type == ShortUrl.TYPE_ARTICLE){
+                } else if (type == ShortUrl.TYPE_ARTICLE && pageInfo.getCards() != null){
                     return TYPE_REPOST_ARTICLE;
                 } else {
                     return TYPE_REPOST_IMAGE;
