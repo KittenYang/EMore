@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/spacing_large">
+
+        <include
+            layout="@layout/include_weibo_item_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_weibo_item" />
+
+        <com.caij.emore.widget.FixClickableSpanBugTextView
+            android:id="@+id/tv_content"
+            style="@style/WeiboTextBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_micro"
+            android:lineSpacingExtra="2dp"
+            android:paddingLeft="@dimen/spacing_weibo_item"
+            android:paddingRight="@dimen/spacing_weibo_item"
+            android:paddingTop="2dp"
+            android:text="哈哈，我今天发了条微博" />
+
+        <LinearLayout
+            android:id="@+id/ll_re"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/repost_content_bg_selector"
+            android:orientation="vertical"
+            android:paddingBottom="11dp"
+            android:paddingLeft="@dimen/spacing_weibo_item"
+            android:paddingRight="@dimen/spacing_weibo_item"
+            android:paddingTop="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_micro">
+
+            <com.caij.emore.widget.FixClickableSpanBugTextView
+                android:id="@+id/tv_re_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="2dp"
+                android:textColor="@color/text_54"
+                android:textSize="@dimen/text_size_medium" />
+
+            <FrameLayout
+                android:id="@+id/fl_pics_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium">
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <include layout="@layout/include_weibo_bottom" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/btn_menus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="right"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:paddingBottom="8dp"
+        android:src="@mipmap/ic_menu_moreoverflow_card_dark_normal" />
+
+</merge>

@@ -21,6 +21,7 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboDetailPresent;
 import com.caij.emore.present.imp.WeiboDetailPresentImp;
+import com.caij.emore.ui.adapter.WeiboAdapter;
 import com.caij.emore.ui.view.WeiboDetailView;
 import com.caij.emore.source.local.LocalWeiboSource;
 import com.caij.emore.source.server.ServerWeiboSource;
@@ -35,7 +36,14 @@ import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.widget.recyclerview.OnScrollListener;
-import com.caij.emore.widget.weibo.detail.WeiboDetailItemView;
+import com.caij.emore.widget.weibo.WeiboItemView;
+import com.caij.emore.widget.weibo.detail.RepostWeiboImageItemView;
+import com.caij.emore.widget.weibo.detail.WeiboImageItemView;
+import com.caij.emore.widget.weibo.list.RepostWeiboListArticleItemView;
+import com.caij.emore.widget.weibo.list.RepostWeiboListVideoItemView;
+import com.caij.emore.widget.weibo.list.WeiboListArticleItemView;
+import com.caij.emore.widget.weibo.list.WeiboListItemView;
+import com.caij.emore.widget.weibo.list.WeiboListVideoItemView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
@@ -52,8 +60,8 @@ import butterknife.OnClick;
 public class WeiboDetialActivity extends BaseToolBarActivity<WeiboDetailPresent> implements WeiboDetailView,
         SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener, OnScrollListener, ViewPager.OnPageChangeListener {
 
-    @BindView(R.id.weibo_item_view)
-    WeiboDetailItemView weiboItemView;
+    @BindView(R.id.fl_weibo_item_view)
+    FrameLayout flWeiboItemView;
     @BindView(R.id.tabLayout)
     TabLayout tabLayout;
     @BindView(R.id.view_pager)
@@ -72,6 +80,8 @@ public class WeiboDetialActivity extends BaseToolBarActivity<WeiboDetailPresent>
     AppBarLayout appBarLayout;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+
+    private WeiboListItemView mWeiboItemView;
 
     private long mWeiboId;
     private Weibo mWeibo;
@@ -222,9 +232,42 @@ public class WeiboDetialActivity extends BaseToolBarActivity<WeiboDetailPresent>
     @Override
     public void setWeibo(Weibo weibo) {
         mAttachContainer.setVisibility(View.VISIBLE);
-        weiboItemView.setWeibo(weibo);
+
+        if (mWeiboItemView == null) {
+            int type = WeiboAdapter.getWeiboType(weibo);
+            switch (type) {
+                case WeiboAdapter.TYPE_NORMAL_IMAGE:
+                    mWeiboItemView = new WeiboImageItemView(this);
+                    break;
+
+                case WeiboAdapter.TYPE_REPOST_IMAGE:
+                    mWeiboItemView = new RepostWeiboImageItemView(this);
+                    break;
+
+                case WeiboAdapter.TYPE_NORMAL_VIDEO:
+                    mWeiboItemView = new WeiboListVideoItemView(this);
+                    break;
+
+                case WeiboAdapter.TYPE_REPOST_VIDEO:
+                    mWeiboItemView = new RepostWeiboListVideoItemView(this);
+                    break;
+
+                case WeiboAdapter.TYPE_NORMAL_ARTICLE:
+                    mWeiboItemView = new WeiboListArticleItemView(this);
+                    break;
+
+                case WeiboAdapter.TYPE_REPOST_ARTICLE:
+                    mWeiboItemView = new RepostWeiboListArticleItemView(this);
+                    break;
+            }
+            mWeiboItemView.makeDetail();
+            flWeiboItemView.addView(mWeiboItemView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
 
         mWeibo = weibo;
+
+        mWeiboItemView.setWeibo(weibo);
 
         setTabText(weibo);
         setAttitudeStatus(weibo);

@@ -29,12 +29,12 @@ import butterknife.ButterKnife;
  */
 public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboBaseViewHolder> {
 
-    private static final int TYPE_NORMAL_IMAGE = 1;
-    private static final int TYPE_REPOST_IMAGE = 2;
-    private static final int TYPE_NORMAL_VIDEO = 3;
-    private static final int TYPE_REPOST_VIDEO = 4;
-    private static final int TYPE_NORMAL_ARTICLE = 5;
-    private static final int TYPE_REPOST_ARTICLE = 6;
+    public static final int TYPE_NORMAL_IMAGE = 1;
+    public static final int TYPE_REPOST_IMAGE = 2;
+    public static final int TYPE_NORMAL_VIDEO = 3;
+    public static final int TYPE_REPOST_VIDEO = 4;
+    public static final int TYPE_NORMAL_ARTICLE = 5;
+    public static final int TYPE_REPOST_ARTICLE = 6;
 
     private OnItemActionClickListener mOnItemActionClickListener;
 
@@ -90,6 +90,10 @@ public class WeiboAdapter extends BaseAdapter<Weibo, WeiboAdapter.WeiboBaseViewH
     @Override
     public int getItemViewType(int position) {
         Weibo weibo = getItem(position);
+        return getWeiboType(weibo);
+    }
+
+    public static int getWeiboType(Weibo weibo) {
         if (weibo.getRetweeted_status() == null) {
             PageInfo pageInfo = weibo.getPage_info();
             if (pageInfo != null &&

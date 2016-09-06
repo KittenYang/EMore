@@ -27,12 +27,14 @@
                     android:orientation="vertical"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                    <com.caij.emore.widget.weibo.detail.WeiboDetailItemView
-                        android:id="@+id/weibo_item_view"
+                    <FrameLayout
+                        android:id="@+id/fl_weibo_item_view"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_medium"
+                        android:layout_marginRight="@dimen/spacing_medium">
 
-                    </com.caij.emore.widget.weibo.detail.WeiboDetailItemView>
+                    </FrameLayout>
 
                     <!--<View-->
                         <!--android:layout_width="match_parent"-->

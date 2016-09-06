@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.caij.emore.R;
@@ -30,7 +31,8 @@ public abstract class WeiboListItemView extends WeiboItemView {
     TextView tvRepostCount;
     @BindView(R.id.btn_menus)
     ImageView btnMenus;
-
+    @BindView(R.id.rl_weibo_bottom)
+    RelativeLayout rlWeiboBottom;
 
     private OnClickListener onMenuClickListener;
     private OnClickListener onLikeClickListener;
@@ -105,5 +107,10 @@ public abstract class WeiboListItemView extends WeiboItemView {
 
     public void setLikeClickListener(OnClickListener onLikeClickListener) {
         this.onLikeClickListener = onLikeClickListener;
+    }
+
+    public void makeDetail() {
+        rlWeiboBottom.setVisibility(GONE);
+        btnMenus.setVisibility(GONE);
     }
 }
