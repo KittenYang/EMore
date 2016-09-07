@@ -1,9 +1,11 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Event;
 import com.caij.emore.R;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
 import com.caij.emore.ui.view.DetailUserView;
+import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.utils.rxjava.DefaultTransformer;
@@ -27,6 +29,7 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     private UserSource mLocalUserSource;
     private String mToken;
     private String mName;
+    private Observable<User> mUserObservable;
 
     public UserInfoDetailPresentImp(String token, String name, DetailUserView userView,
                                     UserSource serverUserSource, UserSource localUserSource) {
@@ -104,21 +107,7 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     public void getWeiboUserInfoByName() {
         mUserView.showDialogLoading(true);
         Observable<User> localObservable =   mLocalUserSource.getWeiboUserInfoByName(mToken, mName);
-        Observable<User> serverObservable =   mServerUserSource.getWeiboUserInfoByName(mToken, mName)
-                .doOnNext(new Action1<User>() {
-                    @Override
-                    public void call(User user) {
-                        mLocalUserSource.saveWeiboUser(user);
-                    }
-                });
-        Subscription subscription = Observable.concat(localObservable, serverObservable)
-                .first(new Func1<User, Boolean>() {
-                    @Override
-                    public Boolean call(User user) {
-                        //缓存时间 两个小时
-                        return user != null && System.currentTimeMillis() - user.getUpdate_time() < 2 * 60 * 60 * 1000;
-                    }
-                })
+        Subscription subscription = localObservable
                 .compose(new DefaultTransformer<User>())
                 .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
                     @Override
@@ -187,6 +176,19 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
 
     @Override
     public void onCreate() {
+        mUserObservable =  RxBus.getDefault().register(Event.EVENT_USER_UPDATE);
+        mUserObservable.compose(new SchedulerTransformer<User>())
+                .subscribe(new Action1<User>() {
+                    @Override
+                    public void call(User user) {
+                        mUserView.setUser(user);
+                    }
+                });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RxBus.getDefault().unregister(Event.EVENT_USER_UPDATE, mUserObservable);
+    }
 }

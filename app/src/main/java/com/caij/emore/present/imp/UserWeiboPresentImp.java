@@ -1,11 +1,15 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.Event;
 import com.caij.emore.account.Account;
 import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.UserWeiboPresent;
+import com.caij.emore.source.UserSource;
 import com.caij.emore.ui.view.TimeLineWeiboView;
 import com.caij.emore.source.WeiboSource;
+import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
@@ -27,10 +31,13 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
     private int mFeature = 0;
     private long mUid;
 
+    private UserSource mLocalUserSource;
+
     public UserWeiboPresentImp(Account account, long uid, TimeLineWeiboView view,
-                               WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
+                               WeiboSource serverWeiboSource, WeiboSource localWeiboSource, UserSource localUserSource) {
         super(account, view, serverWeiboSource, localWeiboSource);
         mUid = uid;
+        mLocalUserSource = localUserSource;
     }
 
     @Override
@@ -123,6 +130,11 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
+                        if (weibos.size() > 0) {
+                            User user = weibos.get(weibos.size() - 1).getUser();
+                            mLocalUserSource.saveWeiboUser(user);
+                            RxBus.getDefault().post(Event.EVENT_USER_UPDATE, user);
+                        }
                         doSpanNext(weibos);
                     }
                 })

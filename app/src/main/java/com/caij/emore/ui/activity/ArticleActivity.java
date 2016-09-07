@@ -2,14 +2,19 @@ package com.caij.emore.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Browser;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.caij.emore.AppSettings;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
@@ -58,6 +63,21 @@ public class ArticleActivity extends BaseToolBarActivity<ArticlePresent> impleme
         settings.getTextZoom();
         settings.setTextZoom(110);
 
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (AppSettings.isInnerBrower(ArticleActivity.this)) {
+                    url = url.replace("http", getString(R.string.emore_http_scheme));
+                    Uri uri = Uri.parse(url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    intent.putExtra(Browser.EXTRA_APPLICATION_ID, getPackageName());
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
+            }
+        });
+
         mPresent.loadArticleInfo();
     }
 
@@ -77,8 +97,7 @@ public class ArticleActivity extends BaseToolBarActivity<ArticlePresent> impleme
     public void onArticleLoadSuccess(Article article) {
         articleHead.setHtml(article);
         content.setVisibility(View.VISIBLE);
-
-        webView.loadDataWithBaseURL("https://api.weibo.com", Jsoup.parse(article.getData().getArticle()).getElementsByClass("WBA_content").html(), "text/html", "UTF-8", "");
+        webView.loadDataWithBaseURL(Key.WEIBO_BASE_URL, Jsoup.parse(article.getData().getArticle()).getElementsByClass("WBA_content").html(), "text/html", "UTF-8", "");
     }
 
     @Override
@@ -88,5 +107,12 @@ public class ArticleActivity extends BaseToolBarActivity<ArticlePresent> impleme
         } else {
             pbLoading.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        webView.removeAllViews();
+        webView.destroy();
     }
 }

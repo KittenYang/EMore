@@ -25,4 +25,6 @@ public interface Event {
     String EVENT_HAS_NEW_DM = "event_has_new_dm";
 
     String EVENT_WEIBO_UPDATE = "event_weibo_update";
+
+    String EVENT_USER_UPDATE = "event_user_update";
 }
