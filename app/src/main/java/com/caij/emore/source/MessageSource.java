@@ -45,4 +45,6 @@ public interface MessageSource {
     void saveUnReadMessage(UnReadMessage serverUnReadMessage);
 
     Observable<Response> resetUnReadMessage(String token, long uid, String source, String from, String type, int value);
+
+    Observable<Response> deleteMessageConversation(String accessToken, long uid);
 }

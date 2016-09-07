@@ -244,4 +244,9 @@ public class LocalMessageSource implements MessageSource {
             }
         });
     }
+
+    @Override
+    public Observable<Response> deleteMessageConversation(String accessToken, long uid) {
+        return null;
+    }
 }

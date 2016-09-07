@@ -7,8 +7,6 @@ package com.caij.emore.database.bean;
 
 import android.text.Spannable;
 
-import com.caij.emore.bean.MessageAttach;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -40,10 +38,9 @@ public class DirectMessage implements Serializable {
     private Boolean pushToMPS;
     private Long oriImageId;
     private Long geo_id;
-    private Integer local_status;
+    private Integer local_status = STATUS_SERVER;
+    private Long created_at_long;
     private String att_ids_json;
-    private String attachinfo_json;
-    private String attachments_json;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -55,7 +52,7 @@ public class DirectMessage implements Serializable {
         this.id = id;
     }
 
-    public DirectMessage(Long id, String idstr, String created_at, String text, Integer sys_type, Integer msg_status, Long sender_id, Long recipient_id, String sender_screen_name, String recipient_screen_name, String mid, Boolean isLargeDm, String source, Long status_id, Integer dm_type, Integer media_type, Long ip, Long burn_time, Boolean matchKeyword, Boolean topublic, Boolean pushToMPS, Long oriImageId, Long geo_id, Integer local_status, String att_ids_json, String attachinfo_json, String attachments_json) {
+    public DirectMessage(Long id, String idstr, String created_at, String text, Integer sys_type, Integer msg_status, Long sender_id, Long recipient_id, String sender_screen_name, String recipient_screen_name, String mid, Boolean isLargeDm, String source, Long status_id, Integer dm_type, Integer media_type, Long ip, Long burn_time, Boolean matchKeyword, Boolean topublic, Boolean pushToMPS, Long oriImageId, Long geo_id, Integer local_status, Long created_at_long, String att_ids_json) {
         this.id = id;
         this.idstr = idstr;
         this.created_at = created_at;
@@ -80,9 +77,8 @@ public class DirectMessage implements Serializable {
         this.oriImageId = oriImageId;
         this.geo_id = geo_id;
         this.local_status = local_status;
+        this.created_at_long = created_at_long;
         this.att_ids_json = att_ids_json;
-        this.attachinfo_json = attachinfo_json;
-        this.attachments_json = attachments_json;
     }
 
     public Long getId() {
@@ -277,28 +273,20 @@ public class DirectMessage implements Serializable {
         this.local_status = local_status;
     }
 
+    public Long getCreated_at_long() {
+        return created_at_long;
+    }
+
+    public void setCreated_at_long(Long created_at_long) {
+        this.created_at_long = created_at_long;
+    }
+
     public String getAtt_ids_json() {
         return att_ids_json;
     }
 
     public void setAtt_ids_json(String att_ids_json) {
         this.att_ids_json = att_ids_json;
-    }
-
-    public String getAttachinfo_json() {
-        return attachinfo_json;
-    }
-
-    public void setAttachinfo_json(String attachinfo_json) {
-        this.attachinfo_json = attachinfo_json;
-    }
-
-    public String getAttachments_json() {
-        return attachments_json;
-    }
-
-    public void setAttachments_json(String attachments_json) {
-        this.attachments_json = attachments_json;
     }
 
     // KEEP METHODS - put your custom methods here
@@ -314,9 +302,8 @@ public class DirectMessage implements Serializable {
     private User sender;
     private User recipient;
     private Geo geo;
+    private ImageInfo imageInfo;
     private transient Spannable textContentSpannable;
-    private MessageAttach attachinfo;
-    private MessageAttach attachments;
 
     public List<Long> getAtt_ids() {
         return att_ids;
@@ -350,28 +337,20 @@ public class DirectMessage implements Serializable {
         this.geo = geo;
     }
 
+    public ImageInfo getImageInfo() {
+        return imageInfo;
+    }
+
+    public void setImageInfo(ImageInfo imageInfo) {
+        this.imageInfo = imageInfo;
+    }
+
     public Spannable getTextContentSpannable() {
         return textContentSpannable;
     }
 
     public void setTextContentSpannable(Spannable textContentSpannable) {
         this.textContentSpannable = textContentSpannable;
-    }
-
-    public MessageAttach getAttachinfo() {
-        return attachinfo;
-    }
-
-    public void setAttachinfo(MessageAttach attachinfo) {
-        this.attachinfo = attachinfo;
-    }
-
-    public MessageAttach getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(MessageAttach attachments) {
-        this.attachments = attachments;
     }
 
     @Override

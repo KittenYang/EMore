@@ -4,12 +4,14 @@ import com.caij.emore.AppApplication;
 import com.caij.emore.Event;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.MessageUser;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.MessageUserPresent;
 import com.caij.emore.ui.view.MessageUserView;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.DefaultTransformer;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
@@ -159,8 +161,39 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
     }
 
     @Override
+    public void deleteMessageConversation(final Long id) {
+        mServerMessageSource.deleteMessageConversation(mToken, id)
+                .compose(new DefaultTransformer<Response>())
+                .subscribe(new DefaultResponseSubscriber<Response>(mMessageUserView) {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    protected void onFail(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        for (int i = 0; i < mUserListBeens.size(); i ++) {
+                            MessageUser.UserListBean bean = mUserListBeens.get(i);
+                            if (bean.getUser().getId().longValue() == id.longValue()) {
+                                mUserListBeens.remove(bean);
+                                mMessageUserView.notifyItemRemove(mUserListBeens, i);
+                                break;
+                            }
+                        }
+                    }
+                });
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         RxBus.getDefault().unregister(Event.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
     }
+
+
 }

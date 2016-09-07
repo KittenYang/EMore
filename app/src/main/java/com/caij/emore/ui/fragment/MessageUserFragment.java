@@ -1,5 +1,6 @@
 package com.caij.emore.ui.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,12 +25,16 @@ import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.MentionActivity;
 import com.caij.emore.ui.adapter.MessageUserAdapter;
 import com.caij.emore.utils.DensityUtil;
+import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
+import com.caij.emore.widget.recyclerview.RecyclerViewOnItemLongClickListener;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -37,7 +42,7 @@ import rx.functions.Action1;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<MessageUser.UserListBean, MessageUserPresent> implements MessageUserView {
+public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<MessageUser.UserListBean, MessageUserPresent> implements MessageUserView, RecyclerViewOnItemLongClickListener {
 
     private TextView tvMentionCount;
     private TextView tvCommentCount;
@@ -68,6 +73,8 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
                 margin(DensityUtil.dip2px(getActivity(), 72), 0).
                 size(DensityUtil.dip2px(getActivity(), 0.5f)).
                 build());
+
+        mRecyclerViewAdapter.setOnItemLongClickListener(this);
 
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         final View mentionView = layoutInflater.inflate(R.layout.item_message_head, xRecyclerView, false);
@@ -161,6 +168,19 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         xRecyclerView.getAdapter().notifyItemChanged(position);
     }
 
+
+    @Override
+    public boolean onItemLongClick(View view, int position) {
+        final MessageUser.UserListBean bean = mRecyclerViewAdapter.getItem(position - 3);
+        DialogUtil.showItemDialog(getActivity(), null, new String[]{"清除会话"}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mPresent.deleteMessageConversation(bean.getUser().getId());
+            }
+        });
+        return true;
+    }
+
     @Override
     public void onLoadUnReadMessageSuccess(UnReadMessage unReadMessage) {
         if (unReadMessage != null) {
@@ -188,6 +208,12 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         }
     }
 
+    @Override
+    public void notifyItemRemove(List<MessageUser.UserListBean> mUserListBeens, int position) {
+        mRecyclerViewAdapter.setEntities(mUserListBeens);
+        mRecyclerViewAdapter.notifyItemRemoved(position);
+    }
+
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -205,4 +231,5 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         super.onDestroyView();
         RxBus.getDefault().unregister(Event.EVENT_HAS_NEW_DM, mUnReadMessageObservable);
     }
+
 }

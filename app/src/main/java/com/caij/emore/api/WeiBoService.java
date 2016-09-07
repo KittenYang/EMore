@@ -328,4 +328,9 @@ public interface WeiBoService {
 //                                                             @Query("count") int count);
 
 
+    @FormUrlEncoded
+    @POST("/2/direct_messages/destroy_batch.json")
+    Observable<Response> deleteMessageConversation(@Field("access_token") String accessToken,
+                                       @Field("uid") long uid);
+
 }

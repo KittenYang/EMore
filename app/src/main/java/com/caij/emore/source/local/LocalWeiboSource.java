@@ -165,7 +165,7 @@ public class LocalWeiboSource implements WeiboSource {
         }
 
         LongText longText =  weibo.getLongText();
-        if (weibo.getIsLongText() && weibo.getIsLongText() != null && longText != null
+        if (weibo.getIsLongText() != null && weibo.getIsLongText() && longText != null
                 && !TextUtils.isEmpty(longText.getContent())) {
             weibo.setLong_text_json_string(GsonUtils.toJson(longText));
         }

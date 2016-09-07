@@ -25,6 +25,8 @@ public abstract class BaseAdapter<E, VH extends BaseViewHolder> extends Recycler
 
     protected RecyclerViewOnItemClickListener mOnItemClickListener;
 
+    protected RecyclerViewOnItemLongClickListener mRecyclerViewOnItemLongClickListener;
+
     public BaseAdapter(Context context) {
         this(context, null);
     }
@@ -37,6 +39,10 @@ public abstract class BaseAdapter<E, VH extends BaseViewHolder> extends Recycler
 
     public void setOnItemClickListener(RecyclerViewOnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
+    }
+
+    public void setOnItemLongClickListener(RecyclerViewOnItemLongClickListener longClickListener) {
+        this.mRecyclerViewOnItemLongClickListener = longClickListener;
     }
 
     public E getItem(int i) {

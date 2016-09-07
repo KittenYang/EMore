@@ -130,4 +130,9 @@ public class ServerMessageSource implements MessageSource {
         return mWeiCoService.resetUnReadMsg(token, source, from, type, value);
     }
 
+    @Override
+    public Observable<Response> deleteMessageConversation(String accessToken, long uid) {
+        return mWeiBoService.deleteMessageConversation(accessToken, uid);
+    }
+
 }
