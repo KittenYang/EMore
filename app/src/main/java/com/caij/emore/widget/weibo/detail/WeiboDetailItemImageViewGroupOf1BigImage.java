@@ -35,7 +35,8 @@ public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implemen
     private ImageInfo mImageInfo;
     private Handler mMainHandler;
     private WebView mWebView;
-    private AsyncTask downImageAsyncTask;
+
+    private boolean isDetached;
 
     public WeiboDetailItemImageViewGroupOf1BigImage(Context context) {
         super(context);
@@ -117,13 +118,12 @@ public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implemen
                     mMainHandler.post(new Runnable() {
                         @Override
                         public void run() {
+                            if (isDetached) return;
                             readLargePicture(mWebView, file);
                         }
                     });
                 } catch (ExecutionException e) {
-                    ToastUtil.show(getContext(), R.string.image_load_error);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         });
@@ -189,13 +189,16 @@ public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implemen
         large.loadDataWithBaseURL("file:///android_asset/", str2, "text/html", "utf-8", null);
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        isDetached = false;
+    }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (downImageAsyncTask != null) {
-            downImageAsyncTask.cancel(true);
-        }
+        isDetached = true;
     }
 
     @Override
