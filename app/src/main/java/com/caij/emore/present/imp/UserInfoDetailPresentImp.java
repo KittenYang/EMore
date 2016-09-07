@@ -107,7 +107,20 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     public void getWeiboUserInfoByName() {
         mUserView.showDialogLoading(true);
         Observable<User> localObservable =   mLocalUserSource.getWeiboUserInfoByName(mToken, mName);
-        Subscription subscription = localObservable
+        Observable<User> serverObservable =   mServerUserSource.getWeiboUserInfoByName(mToken, mName)
+                .doOnNext(new Action1<User>() {
+                    @Override
+                    public void call(User user) {
+                        mLocalUserSource.saveWeiboUser(user);
+                    }
+                });
+        Subscription subscription = Observable.concat(localObservable, serverObservable)
+                .first(new Func1<User, Boolean>() {
+                    @Override
+                    public Boolean call(User user) {
+                        return user != null;
+                    }
+                })
                 .compose(new DefaultTransformer<User>())
                 .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
                     @Override

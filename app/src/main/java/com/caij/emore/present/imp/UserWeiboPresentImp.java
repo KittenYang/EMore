@@ -130,11 +130,15 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
-                        if (weibos.size() > 0) {
-                            User user = weibos.get(weibos.size() - 1).getUser();
-                            mLocalUserSource.saveWeiboUser(user);
-                            RxBus.getDefault().post(Event.EVENT_USER_UPDATE, user);
+                        for (Weibo weibo : weibos) {
+                            if (weibo.getUser().getId() == mUid) {
+                                User user = weibo.getUser();
+                                mLocalUserSource.saveWeiboUser(user);
+                                RxBus.getDefault().post(Event.EVENT_USER_UPDATE, user);
+                                break;
+                            }
                         }
+
                         doSpanNext(weibos);
                     }
                 })
