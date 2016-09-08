@@ -123,9 +123,7 @@ public class LogUtil {
                         Log.d(tag, "│" + " " + line);
                     }
                     Log.d(tag, "└───────────────────────────────────────────────────────────────────────────────────────");
-                    return;
-                }
-                if (msg.startsWith("[")) {
+                }else if (msg.startsWith("[")) {
                     JSONArray jsonArray = new JSONArray(msg);
                     String message = jsonArray.toString(JSON_INDENT);
                     String[] lines = message.split(System.getProperty("line.separator"));
@@ -134,9 +132,11 @@ public class LogUtil {
                         Log.d(tag, "│" + " " + line);
                     }
                     Log.d(tag, "└───────────────────────────────────────────────────────────────────────────────────────");
+                }else {
+                    Log.d(tag, msg);
                 }
             } catch (JSONException e) {
-                Log.e(tag, e.getCause().getMessage() + "\n" + msg);
+                Log.d(tag, msg);
             }
         }
     }
