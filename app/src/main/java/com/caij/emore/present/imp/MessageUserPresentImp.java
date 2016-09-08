@@ -1,8 +1,6 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.AppApplication;
 import com.caij.emore.Event;
-import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.UnReadMessage;
@@ -161,9 +159,18 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
     }
 
     @Override
-    public void deleteMessageConversation(final Long id) {
-        mServerMessageSource.deleteMessageConversation(mToken, id)
-                .compose(new DefaultTransformer<Response>())
+    public void deleteMessageConversation(final MessageUser.UserListBean userListBean) {
+        mServerMessageSource.deleteMessageConversation(mToken, userListBean.getUser().getId())
+                .compose(new ErrorCheckerTransformer<Response>())
+                .doOnNext(new Action1<Response>() {
+                    @Override
+                    public void call(Response response) {
+                        if (userListBean.getUnread_count() > 0) {
+                            resetMessage(userListBean);
+                        }
+                    }
+                })
+                .compose(new SchedulerTransformer<Response>())
                 .subscribe(new DefaultResponseSubscriber<Response>(mMessageUserView) {
                     @Override
                     public void onCompleted() {
@@ -179,12 +186,40 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
                     public void onNext(Response response) {
                         for (int i = 0; i < mUserListBeens.size(); i ++) {
                             MessageUser.UserListBean bean = mUserListBeens.get(i);
-                            if (bean.getUser().getId().longValue() == id.longValue()) {
+                            if (bean.getUser().getId().longValue() == userListBean.getUser().getId().longValue()) {
                                 mUserListBeens.remove(bean);
                                 mMessageUserView.notifyItemRemove(mUserListBeens, i);
                                 break;
                             }
                         }
+                    }
+                });
+    }
+
+    private void resetMessage(final MessageUser.UserListBean userListBean) {
+        mLocalMessageSource.getUnReadMessage(mToken, mUid)
+                .doOnNext(new Action1<UnReadMessage>() {
+                    @Override
+                    public void call(UnReadMessage unReadMessage) {
+                        unReadMessage.setDm_single(unReadMessage.getDm_single() - userListBean.getUnread_count());
+                        mLocalMessageSource.saveUnReadMessage(unReadMessage);
+                    }
+                })
+                .compose(new SchedulerTransformer<UnReadMessage>())
+                .subscribe(new Subscriber<UnReadMessage>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(UnReadMessage unReadMessage) {
+                        RxBus.getDefault().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
                     }
                 });
     }

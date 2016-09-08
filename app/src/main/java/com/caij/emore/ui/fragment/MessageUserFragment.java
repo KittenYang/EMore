@@ -175,7 +175,7 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         DialogUtil.showItemDialog(getActivity(), null, new String[]{"清除会话"}, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mPresent.deleteMessageConversation(bean.getUser().getId());
+                mPresent.deleteMessageConversation(bean);
             }
         });
         return true;
