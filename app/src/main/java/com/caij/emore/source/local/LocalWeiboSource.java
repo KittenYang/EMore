@@ -382,6 +382,11 @@ public class LocalWeiboSource implements WeiboSource {
 
     @Override
     public Observable<Response> destoryAttitudesWeibo(String token, final String source, String attitude, final long weiboId) {
+        Weibo weibo = weiboDao.load(weiboId);
+        if (weibo != null) {
+            weibo.setAttitudes_status(0);
+            insertWeibo(weibo);
+        }
         return null;
     }
 

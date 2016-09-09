@@ -245,6 +245,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                     weibo.setReposts_count(data.getReposts_count());
                     weibo.setComments_count(data.getComments_count());
                     weibo.setUpdate_time(System.currentTimeMillis());
+                    weibo.setAttitudes_status(1);
                     mLocalWeiboSource.saveWeibo(mAccount.getEmoreToken().getAccess_token(), weibo);
                 }
             }).subscribe(new Subscriber<Weibo>() {
@@ -281,6 +282,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                     public void call(Response response) {
                         mLocalWeiboSource.destoryAttitudesWeibo(token,
                                 Key.WEICO_APP_ID, "smile", weibo.getId());
+                        weibo.setAttitudes_status(0);
                     }
                 })
                 .subscribe(new DefaultResponseSubscriber<Response>(mView) {
