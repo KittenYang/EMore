@@ -2,6 +2,7 @@ package com.caij.emore;
 
 
 import com.facebook.stetho.Stetho;
+import com.squareup.leakcanary.LeakCanary;
 
 
 /**
@@ -17,6 +18,6 @@ public class EMoreDebugApplication extends AppApplication {
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
                         .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
                         .build());
-//        LeakCanary.install(this);
+        LeakCanary.install(this);
     }
 }

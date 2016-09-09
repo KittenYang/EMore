@@ -37,12 +37,14 @@ import rx.functions.Action1;
 public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresent> implements
         RecyclerViewOnItemClickListener, XRecyclerView.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, FriendWeiboView {
 
+    private Observable<Object> mToolBarDoubleClickobservable;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-        Observable<Object> observable = RxBus.getDefault().register(Event.EVENT_TOOL_BAR_DOUBLE_CLICK);
-        observable.subscribe(new Action1<Object>() {
+        mToolBarDoubleClickobservable = RxBus.getDefault().register(Event.EVENT_TOOL_BAR_DOUBLE_CLICK);
+        mToolBarDoubleClickobservable.subscribe(new Action1<Object>() {
             @Override
             public void call(Object object) {
                 if (object == FriendWeiboFragment.this) {
@@ -122,5 +124,11 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RxBus.getDefault().unregister(Event.EVENT_TOOL_BAR_DOUBLE_CLICK, mToolBarDoubleClickobservable);
     }
 }

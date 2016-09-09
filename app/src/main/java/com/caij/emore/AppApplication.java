@@ -3,6 +3,7 @@ package com.caij.emore;
 import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Debug;
 import android.text.TextUtils;
 
 import com.caij.emore.account.Token;
@@ -23,6 +24,7 @@ public class AppApplication extends Application{
 
     public void onCreate() {
         super.onCreate();
+
         mApplication = this;
         initCrashReport();
         if (UserPrefs.get(this).getEMoreToken() != null && UserPrefs.get(this).getWeiCoToken() != null) {
@@ -32,26 +34,24 @@ public class AppApplication extends Application{
     }
 
     private void initCrashReport(){
-        ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, String>() {
-            @Override
-            protected String doInBackground(Object... params) {
-                return ChannelUtil.getChannel(getApplicationContext());
-            }
+        if (!BuildConfig.DEBUG) {
+            ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, String>() {
+                @Override
+                protected String doInBackground(Object... params) {
+                    String channel = ChannelUtil.getChannel(getApplicationContext());
+                    LogUtil.d(AppApplication.this, "get channel : %s", channel);
+                    if (TextUtils.isEmpty(channel)) {
+                        channel = "default";
+                    }
 
-            @Override
-            protected void onPostExecute(String channel) {
-                LogUtil.d(AppApplication.this, "get channel : %s", channel);
-                if (TextUtils.isEmpty(channel)) {
-                    channel = "default";
-                }
-                if (!BuildConfig.DEBUG) {
                     CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
 
                     strategy.setAppChannel(channel);
                     CrashReport.initCrashReport(getApplicationContext(), Key.BUGLY_KEY, true, strategy);
+                    return null;
                 }
-            }
-        });
+            });
+         }
     }
 
     public static Context getInstance() {

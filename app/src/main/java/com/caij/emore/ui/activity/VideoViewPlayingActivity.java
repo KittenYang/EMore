@@ -311,6 +311,8 @@ public class VideoViewPlayingActivity extends BaseActivity<VideoPlayPresent> imp
         mHandlerThread.quit();
 
         mMainHandler.removeCallbacksAndMessages(null);
+        mEventHandler.removeCallbacksAndMessages(null);
+
     }
 
     @Override

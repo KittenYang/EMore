@@ -134,11 +134,14 @@ dependencies {
     compile("com.lapism:searchview:${rootProject.ext.searchviewVersion}") {
         exclude module: 'design'
     }
+    compile "com.tencent.bugly:crashreport:${rootProject.ext.crashreportVersion}"
+    //    compile "com.tencent.bugly:nativecrashreport:${rootProject.ext.nativecrashreportVersion}"
+
     compile "com.jakewharton:butterknife:${rootProject.ext.butterknifeVersion}"
     apt "com.jakewharton:butterknife-compiler:${rootProject.ext.butterknifeVersion}"
+
     debugCompile "com.facebook.stetho:stetho:${rootProject.ext.stethoVersion}"
     debugCompile "com.facebook.stetho:stetho-okhttp3:${rootProject.ext.stethoVersion}"
     debugCompile "com.squareup.leakcanary:leakcanary-android:${rootProject.ext.leakcanaryVersion}"
-    compile "com.tencent.bugly:crashreport:${rootProject.ext.crashreportVersion}"
-    //    compile "com.tencent.bugly:nativecrashreport:${rootProject.ext.nativecrashreportVersion}"
+
 }
