@@ -199,6 +199,9 @@ public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implemen
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         isDetached = true;
+
+        mWebView.removeAllViews();
+        mWebView.destroy();
     }
 
     @Override

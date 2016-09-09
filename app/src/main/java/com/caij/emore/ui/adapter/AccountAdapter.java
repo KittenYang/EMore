@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.baidu.cyberplayer.utils.G;
 import com.caij.emore.R;
 import com.caij.emore.account.Account;
 import com.caij.emore.bean.AccountInfo;
