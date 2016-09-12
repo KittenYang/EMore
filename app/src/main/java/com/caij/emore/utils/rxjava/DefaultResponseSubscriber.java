@@ -37,8 +37,8 @@ public abstract class DefaultResponseSubscriber<T> extends Subscriber<T> {
             }else {
                 mBaseView.showHint(R.string.server_error);
             }
-        }else if (e instanceof ErrorResponseException) {
-            ErrorResponseException errorResponseException = (ErrorResponseException) e;
+        }else if (e instanceof RuntimeException && e.getCause() instanceof ErrorResponseException) {
+            ErrorResponseException errorResponseException = (ErrorResponseException) e.getCause();
             if (TextUtils.isEmpty(errorResponseException.mResponse.getError())) {
                 mBaseView.showHint(errorResponseException.mResponse.getErrmsg());
             }else {

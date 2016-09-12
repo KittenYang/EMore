@@ -6,6 +6,7 @@ import android.content.Context;
 import com.caij.emore.bean.response.Response;
 
 import rx.Observable;
+import rx.exceptions.Exceptions;
 import rx.functions.Func1;
 
 /**
@@ -20,10 +21,9 @@ public class ErrorCheckerTransformer<T extends Response>
             @Override
             public T call(T t) {
                 if (!t.isSuccessful()) {
-                    throw new ErrorResponseException(t);
-                } else {
-                    return t;
+                    throw new RuntimeException(new ErrorResponseException(t));
                 }
+                return t;
             }
         });
     }

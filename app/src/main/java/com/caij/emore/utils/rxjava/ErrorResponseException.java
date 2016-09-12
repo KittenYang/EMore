@@ -2,10 +2,12 @@ package com.caij.emore.utils.rxjava;
 
 import com.caij.emore.bean.response.Response;
 
+import java.io.IOException;
+
 /**
  * Created by Caij on 2016/8/3.
  */
-public class ErrorResponseException extends RuntimeException {
+public class ErrorResponseException extends IllegalStateException {
 
     public Response mResponse;
 
