@@ -24,6 +24,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -79,7 +80,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                         mView.setEntities(mWeibos);
 
                         if (System.currentTimeMillis() -
-                                SPUtil.getLong(Key.FRIEND_WEIBO_UPDATE_TIME + mAccount.getUsername(), -1) > 30 * 60 * 1000 ||
+                                SPUtil.getLong(Key.FRIEND_WEIBO_UPDATE_TIME + mAccount.getUsername(), -1) > 60 * 60 * 1000 ||
                                 weibos.size() <= 0) {
                             mView.toRefresh();
                         }
@@ -110,15 +111,21 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     @Override
     public void refresh() {
         Subscription subscription = createObservable(0, true)
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        mView.onRefreshComplete();
+                    }
+                })
                 .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
                     @Override
                     public void onCompleted() {
-                        mView.onRefreshComplete();
+
                     }
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mView.onRefreshComplete();
+
                     }
 
                     @Override
