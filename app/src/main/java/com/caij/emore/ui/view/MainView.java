@@ -14,4 +14,6 @@ public interface MainView extends BaseView{
     void setUnReadMessage(UnReadMessage unReadMessage);
 
     void setDraftCount(Integer integer);
+
+    public void setNightMode(boolean isNight);
 }

@@ -11,7 +11,7 @@
     android:layout_marginTop="@dimen/spacing_micro"
     android:clickable="true"
     android:foreground="?attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="@color/color_card"
     app:cardCornerRadius="3dip"
     app:cardElevation="1.5dip">
 

@@ -22,7 +22,8 @@
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabIndicatorColor="@color/white"
+            app:tabIndicatorColor="@color/tab_indicator"
+            app:tabTextColor="@color/text_87_inverse"
             android:layout_gravity="center_horizontal"
             app:tabMode="scrollable"/>
 

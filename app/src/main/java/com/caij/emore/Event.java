@@ -27,4 +27,6 @@ public interface Event {
     String EVENT_WEIBO_UPDATE = "event_weibo_update";
 
     String EVENT_USER_UPDATE = "event_user_update";
+
+    String EVENT_MODE_NIGHT_UPDATE = "event_mode_night_update";
 }

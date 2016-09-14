@@ -67,7 +67,7 @@
                 android:background="@drawable/chat_btn_bg"
                 android:padding="@dimen/spacing_micro_plu"
                 android:text="发送"
-                android:textColor="@color/white"
+                android:textColor="@color/ui_background"
                 android:textSize="@dimen/text_size_medium_min"
                 android:visibility="gone" />
 

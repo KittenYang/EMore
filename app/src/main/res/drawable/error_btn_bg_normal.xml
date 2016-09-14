@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <solid android:color="@color/white" />
+    <solid android:color="@color/ui_background" />
     <stroke android:color="@color/navmenu_selected_color"
         android:width="0.6dp"/>
     <corners android:radius="@dimen/spacing_micro"/>

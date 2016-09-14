@@ -34,6 +34,7 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
     private DraftSource mDraftSource;
     private Observable<UnReadMessage> mUnReadMessageObservable;
     private Observable<Draft> mDraftObservable;
+    private Observable<Boolean> mModeNightUpdate;
 
     public MainPresentImp(String token, long uid, MainView userView,
                           UserSource serverUserSource, UserSource localUserSource,
@@ -90,6 +91,14 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
             }
         });
 
+        mModeNightUpdate = RxBus.getDefault().register(Event.EVENT_MODE_NIGHT_UPDATE);
+        mModeNightUpdate.subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean aBoolean) {
+                mUserView.setNightMode(aBoolean);
+            }
+        });
+
         loadDrafts();
     }
 
@@ -119,6 +128,7 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
         super.onDestroy();
         RxBus.getDefault().unregister(Event.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
         RxBus.getDefault().unregister(Event.EVENT_DRAFT_UPDATE, mDraftObservable);
+        RxBus.getDefault().unregister(Event.EVENT_MODE_NIGHT_UPDATE, mModeNightUpdate);
     }
 
     @Override

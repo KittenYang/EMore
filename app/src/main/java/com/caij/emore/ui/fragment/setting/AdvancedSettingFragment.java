@@ -9,7 +9,11 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
+import android.support.v7.app.AppCompatDelegate;
+import android.view.View;
 
+import com.caij.emore.AppApplication;
+import com.caij.emore.Event;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
@@ -21,6 +25,7 @@ import com.caij.emore.utils.Init;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.rxbus.RxBus;
 
 
 /**
@@ -29,13 +34,13 @@ import com.caij.emore.utils.ExecutorServiceUtil;
  * @date 2014年10月21日
  */
 public class AdvancedSettingFragment extends PreferenceFragment
-									implements  OnPreferenceClickListener {
+									implements  OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
 
 	private Preference cachePreference;
 
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
 		addPreferencesFromResource(R.xml.fragment_advanced_item);
 		Preference pNotification =  findPreference(getString(R.string.key_setting_notify));
 		pNotification.setOnPreferenceClickListener(this);
@@ -48,6 +53,8 @@ public class AdvancedSettingFragment extends PreferenceFragment
 		Preference exitPreference = findPreference(getString(R.string.setting_key_exit));
 		exitPreference.setOnPreferenceClickListener(this);
 		findPreference(getString(R.string.key_setting_about)).setOnPreferenceClickListener(this);
+		CheckBoxPreference theme = (CheckBoxPreference) findPreference(getString(R.string.key_setting_theme));
+		theme.setOnPreferenceChangeListener(this);
 		lodCacheSize();
 	}
 
@@ -55,7 +62,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 		ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, String>() {
 			@Override
 			protected String doInBackground(Object... params) {
-				return CacheUtils.getCacheFileSizeString(getActivity());
+				return CacheUtils.getCacheFileSizeString(AppApplication.getInstance());
 			}
 
 			@Override
@@ -121,5 +128,21 @@ public class AdvancedSettingFragment extends PreferenceFragment
 		});
 	}
 
-	
+
+	@Override
+	public boolean onPreferenceChange(Preference preference, Object newValue) {
+		if (getString(R.string.key_setting_theme).equals(preference.getKey())) {
+			boolean isNight = (boolean) newValue;
+			if (isNight) {
+				AppCompatDelegate.setDefaultNightMode(
+						AppCompatDelegate.MODE_NIGHT_YES);
+			} else {
+				AppCompatDelegate.setDefaultNightMode(
+						AppCompatDelegate.MODE_NIGHT_NO);
+			}
+			getActivity().recreate();
+			RxBus.getDefault().post(Event.EVENT_MODE_NIGHT_UPDATE, newValue);
+		}
+		return true;
+	}
 }

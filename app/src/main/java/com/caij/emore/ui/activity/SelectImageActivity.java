@@ -123,7 +123,7 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
     private void initView() {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        mRecyclerView.setBackgroundColor(getResources().getColor(R.color.white));
+        mRecyclerView.setBackgroundColor(getResources().getColor(R.color.ui_background));
         mImageAdapter = new GridImageAdapter(this);
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override

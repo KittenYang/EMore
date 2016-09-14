@@ -6,16 +6,24 @@
 
     <color name="transparent">#00000000</color>
 
+    <color name="white">#ffffff</color>
+
     <color name="color_black">#000000</color>
     <color name="background_white_light">#fafafa</color>
-    <color name="white">#ffffff</color>
     <color name="gray_white">#fcfcfc</color>
+
+    <color name="ui_background">#EEEEEE</color>
+    <color name="color_card">#ffffff</color>
+
+    <color name="appbar_background">#ffffff</color>
 
     <color name="background_selected_color">#1a000000</color>
 
     <color name="navmenu_selected_color">@color/background_selected_color</color>
     <color name="nav_item_text_color">#ff676767</color>
     <color name="icon_normal_color">#ff676767</color>
+
+    <color name="default_img_placeholder">#e1e1e1</color>
 
     <color name="gplus_color_1">#3e802f</color>
     <color name="gplus_color_2">#f4b400</color>
@@ -33,16 +41,14 @@
     <color name="text_60_inverse">#99ffffff</color>
     <color name="text_54_inverse">#89ffffff</color>
 
-
-    <color name="link_text_press_bg_color">#33969696</color>
-
-    <color name="default_img_placeholder">#e1e1e1</color>
+    <color name="tab_indicator">@color/colorPrimary</color>
 
     <color name="re_post_bg">#f7f7f7</color>
     <color name="re_post_press_bg">#f0f0f0</color>
 
     <color name="link_text_color">#507daf</color>
     <color name="link_text_press_color">#c0cddc</color>
+    <color name="link_text_press_bg_color">#33969696</color>
 
     <color name="divider_timeline_item">#ebeef4</color>
 
@@ -55,4 +61,6 @@
     <color name="chat_bottom_bg">#f7f7f7</color>
 
     <color name="red_message_bg">#ff5250</color>
+
+    <color name="chat_edit_text_bg">#EEEEEE</color>
 </resources>

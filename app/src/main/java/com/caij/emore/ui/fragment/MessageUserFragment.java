@@ -67,7 +67,7 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
     }
 
     private void initView() {
-        mSwipeRefreshLayout.setBackgroundColor(getResources().getColor(R.color.white));
+        mSwipeRefreshLayout.setBackgroundColor(getResources().getColor(R.color.ui_background));
         xRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item)).
                 margin(DensityUtil.dip2px(getActivity(), 72), 0).

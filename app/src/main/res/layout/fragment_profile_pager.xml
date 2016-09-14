@@ -39,7 +39,7 @@
                 android:tint="#11000000"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.8"
-                android:background="@color/white"
+                android:background="@color/ui_background"
                 android:src="@mipmap/bg_nav_head"/>
 
 
@@ -72,7 +72,7 @@
                             android:id="@+id/txtName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="蔡静" android:textColor="@color/white"
+                            android:text="蔡静" android:textColor="@color/ui_background"
                             android:textSize="24sp"/>
 
                         <ImageView

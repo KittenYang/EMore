@@ -7,6 +7,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -262,6 +263,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
                     Intent intent = UserInfoActivity.newIntent(this, user.getScreen_name());
                     startActivity(intent);
                 }
+
                 break;
             }
             case R.id.toolbar:
@@ -313,6 +315,11 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         switchContent(mVisibleFragment, fragment, R.id.attach_container, tag);
         mVisibleFragment = fragment;
         setNavItemStatus(mVisibleFragment);
+    }
+
+    @Override
+    public void setNightMode(boolean isNight) {
+        recreate();
     }
 
 }

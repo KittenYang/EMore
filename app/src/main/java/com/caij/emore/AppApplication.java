@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Debug;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 
 import com.caij.emore.account.Token;
@@ -30,6 +31,15 @@ public class AppApplication extends Application{
         if (UserPrefs.get(this).getEMoreToken() != null && UserPrefs.get(this).getWeiCoToken() != null) {
             Token accessToken = UserPrefs.get(this).getEMoreToken();
             Init.getInstance().reset(this, Long.parseLong(accessToken.getUid()));
+        }
+
+        boolean isNight = AppSettings.isNight(this);
+        if (isNight) {
+            AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_NO);
         }
     }
 

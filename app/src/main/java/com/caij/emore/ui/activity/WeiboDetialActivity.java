@@ -36,7 +36,6 @@ import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.widget.recyclerview.OnScrollListener;
-import com.caij.emore.widget.weibo.WeiboItemView;
 import com.caij.emore.widget.weibo.detail.RepostWeiboImageItemView;
 import com.caij.emore.widget.weibo.detail.WeiboImageItemView;
 import com.caij.emore.widget.weibo.list.RepostWeiboListArticleItemView;

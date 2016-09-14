@@ -16,7 +16,8 @@
         android:id="@+id/hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_medium_min" />
+        android:textSize="@dimen/text_size_medium_min"
+        android:textColor="@color/text_80"/>
 
 </LinearLayout>
 

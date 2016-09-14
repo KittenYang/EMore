@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/watch_time"
             android:textSize="@dimen/text_size_small"
-            android:textColor="@color/white"
+            android:textColor="@color/ui_background"
             android:text="00:00"/>
 
         <SeekBar
@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/video_time"
-            android:textColor="@color/white"
+            android:textColor="@color/ui_background"
             android:textSize="@dimen/text_size_small"
             android:text="00:00"/>
 

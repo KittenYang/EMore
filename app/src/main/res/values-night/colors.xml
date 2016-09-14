@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#0F1010</color>
+    <color name="colorPrimaryDark">#0F1010</color>
+    <color name="colorAccent">#181921</color>
+
+    <!--<color name="colorBackground">#0F1010</color>-->
+
+    <color name="ui_background">#0F1010</color>
+    <color name="color_card">#202124</color>
+    <color name="appbar_background">#202124</color>
+
+    <color name="re_post_bg">#222222</color>
+    <color name="re_post_press_bg">#0F1010</color>
+
+    <!--适配Materail Design后添加的颜色-->
+    <color name="text_100">#ccffffff</color>
+    <color name="text_80">#6B6D72</color>
+    <color name="text_70">#6B6D72</color>
+    <color name="text_54">#6B6D72</color>
+
+    <color name="text_100_inverse">#ffffffff</color>
+    <color name="text_87_inverse">#ddffffff</color>
+    <color name="text_80_inverse">#ccffffff</color>
+    <color name="text_60_inverse">#99ffffff</color>
+    <color name="text_54_inverse">#89ffffff</color>
+
+    <color name="divider_timeline_item">#0F1010</color>
+
+    <color name="background_selected_color">#6b6d72</color>
+    <color name="navmenu_selected_color">@color/background_selected_color</color>
+
+    <color name="tab_indicator">#ccffffff</color>
+
+    <!--<color name="fab_bg">#6b6d72</color>-->
+    <!--<color name="drawer_item_bg_p">#6b6d72</color>-->
+    <!--<color name="drawer_item_bg_n">#303030</color>-->
+    <!--<color name="news_unread">#999999</color>-->
+    <!--<color name="news_read">#6b6d72</color>-->
+
+    <!--<color name="comment_text">#bdb4b3</color>-->
+    <!--<color name="comment_reply">#606266</color>-->
+    <!--<color name="comment_btn">#606266</color>-->
+    <!--<color name="comment_at">#3289b3</color>-->
+</resources>
