@@ -304,19 +304,19 @@ public interface WeiBoService {
                                                           @Query("key") String key);
 
 
-        @FormUrlEncoded
-    @POST("2/attitudes/destroy.json")
-    Observable<Response> destoryAttitudesWeibo(@Field("access_token")String token, @Field("attitude")String attitude,
-                                               @Field("id")long weiboId);
+//        @FormUrlEncoded
+//    @POST("2/attitudes/destroy.json")
+//    Observable<Response> destoryAttitudesWeibo(@Field("access_token")String token, @Field("attitude")String attitude,
+//                                               @Field("id")long weiboId);
 
 
 //        https://api.weibo.com/2/attitudes/create.json
 //        smile,naughty,surprise,sad,heart
-    @FormUrlEncoded
-    @POST("2/attitudes/create.json")
-    Observable<Attitude> attitudeWeibo(@Field("access_token") String accessToken,
-                                      @Field("id") long weiboId,
-                                      @Field("attitude") String attitude);
+//    @FormUrlEncoded
+//    @POST("2/attitudes/create.json")
+//    Observable<Attitude> attitudeWeibo(@Field("access_token") String accessToken,
+//                                      @Field("id") long weiboId,
+//                                      @Field("attitude") String attitude);
 
 //
 //    @GET
