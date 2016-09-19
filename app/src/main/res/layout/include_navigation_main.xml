@@ -131,7 +131,8 @@
             android:padding="@dimen/spacing_large"
             android:text="@string/hot_weibo"
             android:textColor="@color/nav_item_text_color"
-            android:textSize="@dimen/text_size_medium" />
+            android:textSize="@dimen/text_size_medium"
+            android:visibility="gone"/>
 
         <RelativeLayout
             android:id="@+id/rl_draft"
