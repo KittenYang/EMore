@@ -203,5 +203,6 @@
     <string name="menu_add_account">添加账号</string>
     <string name="is_current_account">当前的账户已经是您选择的账号啦</string>
     <string name="article_detail">文章详情</string>
+    <string name="night_mode_change_theme_hint">夜间模式下不能切换主题</string>
 
 </resources>

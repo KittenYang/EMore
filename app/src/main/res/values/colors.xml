@@ -39,8 +39,6 @@
     <color name="text_60_inverse">#99ffffff</color>
     <color name="text_54_inverse">#89ffffff</color>
 
-    <color name="tab_indicator">@color/colorPrimary</color>
-
     <color name="re_post_bg">#f7f7f7</color>
     <color name="re_post_press_bg">#f0f0f0</color>
 

@@ -32,6 +32,7 @@ import com.caij.emore.utils.Init;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.ThemeUtils;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
@@ -177,7 +178,11 @@ public class AdvancedSettingFragment extends PreferenceFragment
 			Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), getString(R.string.settings_account), AccountsFragment.class, null);
 			startActivity(intent);
 		}else if (getString(R.string.key_settings_theme).equals(preference.getKey())) {
-			mThemeDialog.show();
+			if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+				ToastUtil.show(getActivity(), getString(R.string.night_mode_change_theme_hint));
+			}else {
+				mThemeDialog.show();
+			}
 		}
 		return true;
 	}
