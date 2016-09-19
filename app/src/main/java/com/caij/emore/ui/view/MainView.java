@@ -15,5 +15,5 @@ public interface MainView extends BaseView{
 
     void setDraftCount(Integer integer);
 
-    public void setNightMode(boolean isNight);
+    public void updateTheme();
 }

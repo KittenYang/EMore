@@ -18,6 +18,7 @@ public class SettingActivity extends BaseToolBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getApplication().setTheme(R.style.AppTheme_Pink);
         getFragmentManager().beginTransaction().
                 replace(R.id.attach_container, new AdvancedSettingFragment()).commit();
     }

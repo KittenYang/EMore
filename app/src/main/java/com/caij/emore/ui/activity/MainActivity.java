@@ -7,7 +7,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatDelegate;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,6 +35,7 @@ import com.caij.emore.ui.fragment.weibo.HotWeiboFragment;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.weibo.ThemeUtils;
 import com.caij.emore.widget.main.ActionBarDrawerToggle;
 import com.caij.emore.widget.DoubleClickToolBar;
 
@@ -115,6 +116,12 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         }
     }
 
+    @Override
+    protected void setTheme() {
+        int themePosition = ThemeUtils.getThemePosition(this);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][1]);
+    }
+
     private void initContent(Bundle savedInstanceState) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
@@ -163,7 +170,9 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
 
     private Drawable createNavMenuItemDrawable(int drawableId) {
-        return DrawableUtil.createSelectThemeDrawable(this, drawableId, R.color.icon_normal_color, R.color.colorPrimary);
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        return DrawableUtil.createSelectThemeDrawable(this, drawableId, R.color.icon_normal_color, typedValue.resourceId);
     }
 
     private void setNavItemStatus(Fragment fragment) {
@@ -318,7 +327,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
     }
 
     @Override
-    public void setNightMode(boolean isNight) {
+    public void updateTheme() {
         recreate();
     }
 

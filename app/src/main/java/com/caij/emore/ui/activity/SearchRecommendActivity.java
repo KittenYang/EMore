@@ -16,6 +16,7 @@ import com.caij.emore.ui.view.SearchRecommendView;
 import com.caij.emore.source.server.ServerSearchSource;
 import com.caij.emore.ui.adapter.SearchAdapter;
 import com.caij.emore.ui.fragment.WeiboAndUserSearchFragment;
+import com.caij.emore.utils.weibo.ThemeUtils;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 import com.lapism.searchview.SearchView;
 
@@ -105,6 +106,12 @@ public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent
                 mSearchView.open(true);
             }
         }, 200);
+    }
+
+    @Override
+    protected void setTheme() {
+        int themePosition = ThemeUtils.getThemePosition(this);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][5]);
     }
 
     @Override

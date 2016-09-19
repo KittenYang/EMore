@@ -13,7 +13,9 @@ import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.Init;
+import com.caij.emore.utils.SPUtil;
 import com.caij.emore.utils.ToastUtil;
+import com.caij.emore.utils.weibo.ThemeUtils;
 
 /**
  * Created by Caij on 2016/5/27.
@@ -26,11 +28,17 @@ public abstract class BaseActivity<P extends BasePresent> extends AppCompatActiv
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme();
         ActivityStack.getInstance().push(this);
         mPresent = createPresent();
         if (mPresent != null) {
             mPresent.onCreate();
         }
+    }
+
+    protected void setTheme() {
+        int themePosition = ThemeUtils.getThemePosition(this);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][0]);
     }
 
     protected abstract P createPresent();

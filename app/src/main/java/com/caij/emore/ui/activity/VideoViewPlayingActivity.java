@@ -34,6 +34,7 @@ import com.caij.emore.ui.view.VideoPlayView;
 import com.caij.emore.source.server.ServerVideoInfoSource;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.LogUtil;
+import com.caij.emore.utils.weibo.ThemeUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -206,6 +207,12 @@ public class VideoViewPlayingActivity extends BaseActivity<VideoPlayPresent> imp
         if (TextUtils.isEmpty(mVideoSource)) {
             mPresent.getVideoInfo();
         }
+    }
+
+    @Override
+    protected void setTheme() {
+        int themePosition = ThemeUtils.getThemePosition(this);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][3]);
     }
 
     @Override
