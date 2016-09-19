@@ -184,7 +184,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                app:tabIndicatorColor="@color/tab_indicator"
+                app:tabIndicatorColor="?attr/colorPrimary"
                 app:tabTextColor="@color/text_87_inverse"
                 app:tabMode="scrollable"/>
 
