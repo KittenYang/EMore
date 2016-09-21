@@ -204,6 +204,8 @@ public class ImageUtil {
             FileOutputStream outputStream = new FileOutputStream(ourFile);
             bitmap.compress(Bitmap.CompressFormat.JPEG, QUALITY_MEDIUM, outputStream);
 
+            outputStream.close();
+
             if (rotation != 0) {
                 int saveRotation;
                 switch (rotation) {
