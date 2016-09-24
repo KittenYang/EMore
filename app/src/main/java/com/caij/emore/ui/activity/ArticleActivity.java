@@ -100,6 +100,7 @@ public class ArticleActivity extends BaseToolBarActivity<ArticlePresent> impleme
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        content.removeAllViews();
         webView.removeAllViews();
         webView.destroy();
     }
