@@ -31,6 +31,7 @@ public class WebActivity extends BaseToolBarActivity {
 
     @BindView(R.id.progressbar)
     protected ProgressBar mProgressBar;
+    @BindView(R.id.web_view)
     protected WebView mWebView;
     private LinearLayout mLinearLayout;
 
@@ -75,8 +76,6 @@ public class WebActivity extends BaseToolBarActivity {
 
     protected void initView() {
         mLinearLayout = (LinearLayout) findViewById(R.id.ll_content);
-        mWebView = new WebView(getApplicationContext());
-        mLinearLayout.addView(mWebView);
         WebSettings setting = mWebView.getSettings();
         setting.setJavaScriptEnabled(true);
         setting.setDomStorageEnabled(true);
