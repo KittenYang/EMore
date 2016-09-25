@@ -100,7 +100,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
         initContent(savedInstanceState);
 
-        setNavItemStatus(mVisibleFragment);
+        setViewStatus(mVisibleFragment);
 
         mPresent.getWeiboUserInfoByUid();
     }
@@ -175,17 +175,21 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         return DrawableUtil.createSelectThemeDrawable(this, drawableId, R.color.icon_normal_color, typedValue.resourceId);
     }
 
-    private void setNavItemStatus(Fragment fragment) {
+    private void setViewStatus(Fragment fragment) {
         if (fragment == mFriendWeiboFragment) {
             rlItemWeibo.setSelected(true);
             rlItemMessage.setSelected(false);
             tvWeibo.setSelected(true);
             tvMessage.setSelected(false);
+
+            setToolBarFlag(true);
         }else if (fragment == mMessageFragment) {
             rlItemMessage.setSelected(true);
             rlItemWeibo.setSelected(false);
             tvMessage.setSelected(true);
             tvWeibo.setSelected(false);
+
+            setToolBarFlag(false);
         }
     }
 
@@ -312,18 +316,16 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
     private void changeContent2FriendWeibo() {
         changeContent(mFriendWeiboFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG);
-        setToolBarFlag(true);
     }
 
     private void changeContent2Message() {
         changeContent(mMessageFragment, Key.MESSAGE_FRAGMENT_TAG);
-        setToolBarFlag(false);
     }
 
     private void changeContent(Fragment fragment, String tag) {
         switchContent(mVisibleFragment, fragment, R.id.attach_container, tag);
         mVisibleFragment = fragment;
-        setNavItemStatus(mVisibleFragment);
+        setViewStatus(mVisibleFragment);
     }
 
     @Override
