@@ -78,7 +78,7 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
 
     @Override
     protected WeiboCommentsPresent createPresent() {
-        Token token = UserPrefs.get(getActivity()).getEMoreToken();
+        Token token = UserPrefs.get(getActivity()).getToken();
         long weibiId  = getArguments().getLong(Key.ID);
         return new WeiboCommentsPresentImp(token.getAccess_token(), weibiId,
                 new ServerWeiboSource(), new LocalWeiboSource(), this);
@@ -124,7 +124,7 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
             Intent intent = UserInfoActivity.newIntent(getActivity(), comment.getUser().getScreen_name());
             startActivity(intent);
         }else {
-            if (comment.getUser().getId() == Long.parseLong(UserPrefs.get(getActivity()).getEMoreToken().getUid())) {
+            if (comment.getUser().getId() == Long.parseLong(UserPrefs.get(getActivity()).getToken().getUid())) {
                 String[] array = new String[]{"删除", "复制"};
                 DialogUtil.showItemDialog(getActivity(), null, array, new DialogInterface.OnClickListener() {
                     @Override

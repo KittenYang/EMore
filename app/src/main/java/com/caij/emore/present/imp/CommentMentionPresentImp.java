@@ -75,7 +75,7 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
                         mMentionView.onRefreshComplete();
                         mMentionView.onLoadComplete(comments.size() > COUNT - 1);
 
-                        MessageUtil.resetUnReadMessage(mAccount.getWeiCoToken().getAccess_token(),UnReadMessage.TYPE_MENTION_CMT,
+                        MessageUtil.resetUnReadMessage(mAccount.getToken().getAccess_token(),UnReadMessage.TYPE_MENTION_CMT,
                                 mAccount.getUid(), mServerMessageSource, mLocalMessageSource);
                     }
                 });
@@ -118,7 +118,7 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
     }
 
     private Observable<List<Comment>> createGetCommentObservable(long maxId, final boolean isRefresh) {
-        return mWeiboSource.getCommentsMentions(mAccount.getWeiCoToken().getAccess_token(), 0, maxId, COUNT, 1)
+        return mWeiboSource.getCommentsMentions(mAccount.getToken().getAccess_token(), 0, maxId, COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
                 .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
                     @Override

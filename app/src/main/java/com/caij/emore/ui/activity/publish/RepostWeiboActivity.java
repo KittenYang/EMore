@@ -69,7 +69,7 @@ public class RepostWeiboActivity extends PublishActivity<RepostWeiboPresent> imp
 
     @Override
     protected RepostWeiboPresent createPresent() {
-        Token accessToken = UserPrefs.get(this).getEMoreToken();
+        Token accessToken = UserPrefs.get(this).getToken();
         Weibo weibo = (Weibo) getIntent().getSerializableExtra(Key.OBJ);
         return new RepostWeiboPresentImp(accessToken.getAccess_token(), weibo.getId(),
                 new ServerWeiboSource(), this);

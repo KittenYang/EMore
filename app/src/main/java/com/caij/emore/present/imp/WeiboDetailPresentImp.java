@@ -44,7 +44,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
 
     @Override
     public void loadWeiboDetail() {
-        final String token  = mAccount.getWeiCoToken().getAccess_token();
+        final String token  = mAccount.getToken().getAccess_token();
         Observable<Weibo> localObservable = mLocalWeiboSource.getWeiboById(token,
                 Key.WEICO_APP_ID, 1, mWeiboId);
         mView.showDialogLoading(true);
@@ -96,7 +96,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
 
     @Override
     public void refreshWeiboDetail() {
-        final String token  = mAccount.getWeiCoToken().getAccess_token();
+        final String token  = mAccount.getToken().getAccess_token();
         Observable<Weibo> weiboObservable = mServerWeiboSource.getWeiboById(token,
                 Key.WEICO_APP_ID, 1, mWeiboId)
                 .doOnNext(new Action1<Weibo>() {

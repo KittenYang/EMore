@@ -65,7 +65,7 @@ public class WeiboLikerListFragment extends RecyclerViewFragment<Attitude, ListP
 
     @Override
     protected ListPresent createPresent() {
-        Token token = UserPrefs.get(getActivity()).getWeiCoToken();
+        Token token = UserPrefs.get(getActivity()).getToken();
         long weiId = getArguments().getLong(Key.ID);
         return  new WeiboAttitudesPresentImp(token.getAccess_token(), weiId,
                 new ServerWeiboSource(), new LocalWeiboSource(), this);

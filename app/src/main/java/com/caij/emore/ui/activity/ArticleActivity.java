@@ -6,15 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Browser;
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
-import com.caij.emore.AppApplication;
 import com.caij.emore.AppSettings;
 import com.caij.emore.Key;
 import com.caij.emore.R;
@@ -76,7 +73,7 @@ public class ArticleActivity extends BaseToolBarActivity<ArticlePresent> impleme
 
     @Override
     protected ArticlePresent createPresent() {
-        String token = UserPrefs.get(this).getWeiCoToken().getAccess_token();
+        String token = UserPrefs.get(this).getToken().getAccess_token();
         String contentId = getIntent().getStringExtra(Key.ID);
         return new ArticlePresentImp(token, contentId, new SercerArticleSource(), this);
     }

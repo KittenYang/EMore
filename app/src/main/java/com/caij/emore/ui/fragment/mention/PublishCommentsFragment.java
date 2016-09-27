@@ -31,7 +31,7 @@ public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment<Co
 
     @Override
     protected PublishCommentsPresent createPresent() {
-        Token accessToken = UserPrefs.get(getActivity()).getEMoreToken();
+        Token accessToken = UserPrefs.get(getActivity()).getToken();
         return new PublishCommentsPresentImp(accessToken.getAccess_token(), new ServerWeiboSource(), this);
     }
 

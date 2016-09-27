@@ -18,8 +18,7 @@ public class AccountDaoGenerator {
 
     private static void createToken(Schema sch) {
         Entity token = sch.addEntity("Token");
-        token.addStringProperty("key").primaryKey();
-        token.addStringProperty("uid");
+        token.addStringProperty("uid").primaryKey();
         token.addStringProperty("access_token");
         token.addLongProperty("expires_in");
         token.addLongProperty("create_at");

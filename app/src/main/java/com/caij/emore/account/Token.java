@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class Token {
 
-    private String key;
     private String uid;
     private String access_token;
     private Long expires_in;
@@ -26,24 +25,15 @@ public class Token {
     public Token() {
     }
 
-    public Token(String key) {
-        this.key = key;
+    public Token(String uid) {
+        this.uid = uid;
     }
 
-    public Token(String key, String uid, String access_token, Long expires_in, Long create_at) {
-        this.key = key;
+    public Token(String uid, String access_token, Long expires_in, Long create_at) {
         this.uid = uid;
         this.access_token = access_token;
         this.expires_in = expires_in;
         this.create_at = create_at;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 
     public String getUid() {
@@ -80,6 +70,7 @@ public class Token {
 
     // KEEP METHODS - put your custom methods here
     // KEEP METHODS END
+
 
     public boolean isExpired() {
         long time  = expires_in * 1000 - (System.currentTimeMillis() - create_at);

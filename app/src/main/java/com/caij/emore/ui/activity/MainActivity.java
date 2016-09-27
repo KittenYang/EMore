@@ -152,7 +152,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
     @Override
     protected MainPresent createPresent() {
-        Token token = UserPrefs.get(this).getEMoreToken();
+        Token token = UserPrefs.get(this).getToken();
         return new MainPresentImp(token.getAccess_token(), Long.parseLong(token.getUid()),
                 this, new ServerUserSource(), new LocalUserSource(), new LocalMessageSource(), new LocalDraftSource());
     }

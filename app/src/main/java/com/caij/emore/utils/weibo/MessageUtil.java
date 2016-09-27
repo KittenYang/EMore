@@ -93,7 +93,7 @@ public class MessageUtil {
     }
 
     public static void resetLocalUnReadMessageDisValue(final String token, final String type, final int disValue, final MessageSource localMessageSource) {
-        long uid  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid());
+        long uid  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getToken().getUid());
         localMessageSource.getUnReadMessage(token, uid)
                 .doOnNext(new Action1<UnReadMessage>() {
                     @Override

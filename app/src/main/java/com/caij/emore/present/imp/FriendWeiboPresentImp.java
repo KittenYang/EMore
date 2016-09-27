@@ -48,7 +48,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     @Override
     public void onCreate() {
         super.onCreate();
-        Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getEmoreToken().getAccess_token(), mAccount.getUid(),
+        Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getToken().getAccess_token(), mAccount.getUid(),
                 0, 0, PAGE_COUNT * 2, 1)
                 .flatMap(new Func1<QueryWeiboResponse, Observable<List<Weibo>>>() {
                     @Override
@@ -136,7 +136,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
 
                         mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1);
 
-                        MessageUtil.resetLocalUnReadMessage(mAccount.getWeiCoToken().getAccess_token(),
+                        MessageUtil.resetLocalUnReadMessage(mAccount.getToken().getAccess_token(),
                                 UnReadMessage.TYPE_STATUS, 0, mAccount.getUid(), mLocalMessageSource);
 
                         SPUtil.saveLong(Key.FRIEND_WEIBO_UPDATE_TIME + mAccount.getUsername(), System.currentTimeMillis());
@@ -180,7 +180,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getFriendWeibo(mAccount.getWeiCoToken().getAccess_token(), mAccount.getUid(),
+        return mServerWeiboSource.getFriendWeibo(mAccount.getToken().getAccess_token(), mAccount.getUid(),
                 0, maxId, PAGE_COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
@@ -200,7 +200,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                     @Override
                     public void call(List<Weibo> weibos) {
                         doSpanNext(weibos);
-                        mLocalWeiboSource.saveWeibos(mAccount.getEmoreToken().getAccess_token(), weibos);
+                        mLocalWeiboSource.saveWeibos(mAccount.getToken().getAccess_token(), weibos);
                     }
                 })
                 .compose(new SchedulerTransformer<List<Weibo>>());

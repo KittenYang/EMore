@@ -20,10 +20,8 @@ import android.view.ViewGroup;
 import com.caij.emore.AppApplication;
 import com.caij.emore.Event;
 import com.caij.emore.R;
-import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.ThemeItem;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
-import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.ui.adapter.ThemeAdapter;
 import com.caij.emore.ui.fragment.AccountsFragment;
 import com.caij.emore.ui.fragment.AppAboutFragment;
@@ -35,7 +33,6 @@ import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.ThemeUtils;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.ArrayList;

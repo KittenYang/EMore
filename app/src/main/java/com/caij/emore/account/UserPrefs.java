@@ -44,10 +44,8 @@ public class UserPrefs {
                 throw new IllegalStateException("have multiple account using");
             }else {
                 mAccount = accounts.get(0);
-                Token emoreToken = mTokenDao.load(mAccount.getUid() + "_emore");
-                Token weicoToken = mTokenDao.load(mAccount.getUid() + "_weico");
-                mAccount.setEmoreToken(emoreToken);
-                mAccount.setWeiCoToken(weicoToken);
+                Token token = mTokenDao.load(String.valueOf(mAccount.getUid()));
+                mAccount.setToken(token);
             }
         }
 //        Account account = new Account();
@@ -79,17 +77,9 @@ public class UserPrefs {
         return singleton;
     }
 
-    public Token getEMoreToken(){
+    public Token getToken(){
         if (mAccount != null) {
-            return mAccount.getEmoreToken();
-        }
-        return null;
-    }
-
-
-    public Token getWeiCoToken(){
-        if (mAccount != null) {
-            return mAccount.getWeiCoToken();
+            return mAccount.getToken();
         }
         return null;
     }
@@ -109,12 +99,8 @@ public class UserPrefs {
 
     private void save(Account account) {
         mAccountDao.insertOrReplace(account);
-        if (account.getEmoreToken() != null) {
-            mTokenDao.insertOrReplace(account.getEmoreToken());
-        }
-
-        if (account.getWeiCoToken() != null) {
-            mTokenDao.insertOrReplace(account.getWeiCoToken());
+        if (account.getToken() != null) {
+            mTokenDao.insertOrReplace(account.getToken());
         }
     }
 
@@ -125,10 +111,8 @@ public class UserPrefs {
     public List<Account> getAccounts() {
         List<Account> accounts = mAccountDao.queryBuilder().orderDesc(AccountDao.Properties.Status).list();
         for (Account account : accounts) {
-            Token emoreToken = mTokenDao.load(account.getUid() + "_emore");
-            Token weicoToken = mTokenDao.load(account.getUid() + "_weico");
-            account.setEmoreToken(emoreToken);
-            account.setWeiCoToken(weicoToken);
+            Token token = mTokenDao.load(String.valueOf(account.getUid()));
+            account.setToken(token);
         }
         return accounts;
     }
@@ -139,12 +123,9 @@ public class UserPrefs {
 
     public void deleteAccount(Account account) {
         mAccountDao.delete(account);
-        if (mAccount.getEmoreToken() != null) {
-            mTokenDao.delete(account.getEmoreToken());
-        }
 
-        if (mAccount.getWeiCoToken() != null) {
-            mTokenDao.delete(account.getWeiCoToken());
+        if (mAccount.getToken() != null) {
+            mTokenDao.delete(account.getToken());
         }
 
         if (account.equals(mAccount)) {

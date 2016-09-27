@@ -19,7 +19,7 @@ public class MentionSelectActivity extends BaseToolBarActivity {
         setTitle(getString(R.string.mention_friend));
         MentionSelectFragment fragment = new MentionSelectFragment();
         Bundle bundle = new Bundle();
-        bundle.putLong(Key.ID, Long.parseLong(UserPrefs.get(this).getEMoreToken().getUid()));
+        bundle.putLong(Key.ID, Long.parseLong(UserPrefs.get(this).getToken().getUid()));
         fragment.setArguments(bundle);
         fragment.setUserVisibleHint(true);
         getSupportFragmentManager().beginTransaction().replace(R.id.attach_container, fragment).commit();

@@ -86,7 +86,7 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
     }
 
     public Observable<List<User>> createUsersObservable(long next_cursor, final boolean isRefresh) {
-        return mUserSource.getFollowers(mAccount.getWeiCoToken().getAccess_token(),
+        return mUserSource.getFollowers(mAccount.getToken().getAccess_token(),
                 mUid, PAGE_SIZE, 0, next_cursor)
                 .compose(new ErrorCheckerTransformer<FriendshipResponse>())
                 .flatMap(new Func1<FriendshipResponse, Observable<User>>() {
@@ -128,8 +128,8 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
                         mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
                         mFriendshipView.onRefreshComplete();
 
-                        if (mUid == Long.parseLong(mAccount.getEmoreToken().getUid())) {
-                            MessageUtil.resetUnReadMessage(mAccount.getWeiCoToken().getAccess_token(),
+                        if (mUid == Long.parseLong(mAccount.getToken().getUid())) {
+                            MessageUtil.resetUnReadMessage(mAccount.getToken().getAccess_token(),
                                     UnReadMessage.TYPE_FOLLOWER, mAccount.getUid(),
                                     mServerMessageSource, mLocalMessageSource);
                         }

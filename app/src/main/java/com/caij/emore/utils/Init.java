@@ -58,7 +58,7 @@ public class Init {
         RxBus.getDefault().removeEventListener(mRxBusListener);
     }
 
-    private void start(Context context, long uid) {
+    public void start(Context context, long uid) {
         DBManager.initDB(context, uid, BuildConfig.DEBUG);
         SPUtil.init(context, Key.SP_CONFIG + "_" + uid);
         if (SystemUtil.isMainProcess(context)) {

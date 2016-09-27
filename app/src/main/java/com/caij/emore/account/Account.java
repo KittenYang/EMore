@@ -69,23 +69,14 @@ public class Account {
     public static final int STATUS_USING = 1;
     public static final int STATUS_BACKGROUND = 0;
 
-    private Token emoreToken;
-    private Token weiCoToken;
+    private Token token;
 
-    public Token getEmoreToken() {
-        return emoreToken;
+    public Token getToken() {
+        return token;
     }
 
-    public void setEmoreToken(Token emoreToken) {
-        this.emoreToken = emoreToken;
-    }
-
-    public Token getWeiCoToken() {
-        return weiCoToken;
-    }
-
-    public void setWeiCoToken(Token weiCoToken) {
-        this.weiCoToken = weiCoToken;
+    public void setToken(Token token) {
+        this.token = token;
     }
 
     @Override

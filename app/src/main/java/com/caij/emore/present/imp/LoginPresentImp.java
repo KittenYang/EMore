@@ -40,8 +40,7 @@ public class LoginPresentImp extends AbsBasePresent implements LoginPresent{
                         long uid = Long.parseLong(accessToken.getUid());
                         account.setUsername(username);
                         account.setPwd(pwd);
-                        accessToken.setKey(accessToken.getUid() + "_emore");
-                        account.setEmoreToken(accessToken);
+                        account.setToken(accessToken);
                         account.setStatus(Account.STATUS_USING);
                         account.setUid(uid);
                         userPrefs.changeAccount(account);

@@ -50,7 +50,7 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends S
         }else {
             items.add("收藏");
         }
-        long uid = Long.parseLong(UserPrefs.get(getActivity()).getEMoreToken().getUid());
+        long uid = Long.parseLong(UserPrefs.get(getActivity()).getToken().getUid());
         if (weibo.getUser().getId() == uid) {
             items.add("删除");
         }

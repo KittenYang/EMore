@@ -50,7 +50,7 @@ public class CommentWeiboActivity extends PublishActivity<CommentWeiboPresent> i
 
     @Override
     protected CommentWeiboPresent createPresent() {
-        Token token = UserPrefs.get(this).getEMoreToken();
+        Token token = UserPrefs.get(this).getToken();
         long weiboId = getIntent().getLongExtra(Key.ID, -1);
         return new CommentWeiboPresentImp(token.getAccess_token(),
                 weiboId ,new ServerWeiboSource(), this);

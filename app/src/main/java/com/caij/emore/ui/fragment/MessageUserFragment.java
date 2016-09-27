@@ -139,7 +139,7 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
     @Override
     protected MessageUserPresent createPresent() {
         if (WeicoAuthUtil.checkWeicoLogin(this, false)) {
-            Token accessToken = UserPrefs.get(getActivity()).getWeiCoToken();
+            Token accessToken = UserPrefs.get(getActivity()).getToken();
             return new MessageUserPresentImp(accessToken.getAccess_token(), Long.parseLong(accessToken.getUid()),
                     new ServerMessageSource(), new LocalMessageSource(), this);
         }

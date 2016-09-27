@@ -67,7 +67,7 @@ public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRe
 
     @Override
     protected WeiboRepostsPresent createPresent() {
-        Token token = UserPrefs.get(getActivity()).getWeiCoToken();
+        Token token = UserPrefs.get(getActivity()).getToken();
         long weiId = getArguments().getLong(Key.ID);
         return  new WeiboRepostsPresentImp(token.getAccess_token(), weiId,
                 new ServerWeiboSource(), new LocalWeiboSource(), this);

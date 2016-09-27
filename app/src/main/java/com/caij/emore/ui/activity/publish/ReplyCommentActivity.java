@@ -50,7 +50,7 @@ public class ReplyCommentActivity extends PublishActivity<ReplyCommentWeiboPrese
 
     @Override
     protected ReplyCommentWeiboPresent createPresent() {
-        Token token = UserPrefs.get(this).getEMoreToken();
+        Token token = UserPrefs.get(this).getToken();
         long weiboId = getIntent().getLongExtra(Key.ID, -1);
         long cid = getIntent().getLongExtra(Key.CID, -1);
         return new ReplyCommentPresentImp(token.getAccess_token(),

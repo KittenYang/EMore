@@ -202,7 +202,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
 
     @Override
     protected ChatPresent createPresent() {
-        Token accessToken = UserPrefs.get(getActivity()).getWeiCoToken();
+        Token accessToken = UserPrefs.get(getActivity()).getToken();
         long recipientId = getArguments().getLong(Key.ID);
         return new ChatPresentImp(accessToken, recipientId, Long.parseLong(accessToken.getUid()),
                 new ServerMessageSource(), new LocalMessageSource(), new LocalUserSource(), this);
@@ -362,7 +362,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
 
     private String appImageUrl(String url) {
         if (url.startsWith("http")) {
-            return url + "&access_token=" + UserPrefs.get(getActivity()).getWeiCoToken().getAccess_token();
+            return url + "&access_token=" + UserPrefs.get(getActivity()).getToken().getAccess_token();
         }
         return url;
     }

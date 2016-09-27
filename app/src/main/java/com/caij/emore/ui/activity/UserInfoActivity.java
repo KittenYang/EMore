@@ -2,7 +2,6 @@ package com.caij.emore.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -34,7 +33,6 @@ import com.caij.emore.ui.fragment.UserInfoFragment;
 import com.caij.emore.ui.fragment.weibo.UserWeiboFragment;
 import com.caij.emore.utils.CountUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.weibo.WeiboUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 
@@ -135,7 +133,7 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
 
     @Override
     protected UserInfoDetailPresent createPresent() {
-        Token token = UserPrefs.get(this).getWeiCoToken();
+        Token token = UserPrefs.get(this).getToken();
         String username = getIntent().getStringExtra(Key.USERNAME);
         return new UserInfoDetailPresentImp(token.getAccess_token(), username, this,
                 new ServerUserSource(), new LocalUserSource());

@@ -3,7 +3,6 @@ package com.caij.emore;
 import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Debug;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 
@@ -13,7 +12,6 @@ import com.caij.emore.utils.Init;
 import com.caij.emore.utils.ChannelUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.LogUtil;
-import com.caij.emore.utils.SPUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 
 /**
@@ -28,9 +26,8 @@ public class AppApplication extends Application{
 
         mApplication = this;
         initCrashReport();
-        if (UserPrefs.get(this).getEMoreToken() != null && UserPrefs.get(this).getWeiCoToken() != null) {
-            Token accessToken = UserPrefs.get(this).getEMoreToken();
-            Init.getInstance().reset(this, Long.parseLong(accessToken.getUid()));
+        if (UserPrefs.get(this).getToken() != null) {
+            Init.getInstance().start(this, UserPrefs.get(this).getAccount().getUid());
         }
 
         boolean isNight = AppSettings.isNight(this);

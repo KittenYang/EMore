@@ -8,12 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.BasePresent;
+import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.view.BaseView;
-import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.Init;
-import com.caij.emore.utils.SPUtil;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.utils.weibo.ThemeUtils;
 
@@ -52,7 +51,7 @@ public abstract class BaseActivity<P extends BasePresent> extends AppCompatActiv
         UserPrefs userPrefs = UserPrefs.get(this);
         showHint(R.string.auth_invalid_hint);
 
-        Intent intent = EMoreLoginActivity.newEMoreLoginIntent(this, userPrefs.getAccount().getUsername(),
+        Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(this, userPrefs.getAccount().getUsername(),
                 userPrefs.getAccount().getPwd());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 

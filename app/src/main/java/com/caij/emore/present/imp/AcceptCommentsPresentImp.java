@@ -19,7 +19,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/4.
@@ -55,7 +54,7 @@ public class AcceptCommentsPresentImp extends AbsBasePresent implements RefreshL
 
     @Override
     public void refresh() {
-        Subscription su =  creategetCommentObservable(0, true)
+        Subscription su =  createGetCommentObservable(0, true)
                 .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -75,7 +74,7 @@ public class AcceptCommentsPresentImp extends AbsBasePresent implements RefreshL
                         mMentionView.onRefreshComplete();
                         mMentionView.onLoadComplete(comments.size() > PAGE_COUNT - 1);
 
-                        MessageUtil.resetUnReadMessage(mAccount.getWeiCoToken().getAccess_token(),
+                        MessageUtil.resetUnReadMessage(mAccount.getToken().getAccess_token(),
                                 UnReadMessage.TYPE_CMT, mAccount.getUid(), mServerMessageSource, mLocalMessageSource);
                     }
                 });
@@ -88,7 +87,7 @@ public class AcceptCommentsPresentImp extends AbsBasePresent implements RefreshL
         if (mComments != null && mComments.size() > 1) {
             maxId = mComments.get(mComments.size() - 1).getId();
         }
-        Subscription subscription = creategetCommentObservable(maxId, false)
+        Subscription subscription = createGetCommentObservable(maxId, false)
                 .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -112,8 +111,8 @@ public class AcceptCommentsPresentImp extends AbsBasePresent implements RefreshL
         addSubscription(subscription);
     }
 
-    private Observable<List<Comment>> creategetCommentObservable(long maxId, final boolean isRefresh) {
-        return mWeiboSource.getAcceptComments(mAccount.getWeiCoToken().getAccess_token(), 0, maxId, PAGE_COUNT, 1)
+    private Observable<List<Comment>> createGetCommentObservable(long maxId, final boolean isRefresh) {
+        return mWeiboSource.getAcceptComments(mAccount.getToken().getAccess_token(), 0, maxId, PAGE_COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
                 .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
                     @Override

@@ -41,7 +41,7 @@ public class WeiboPublishPresentImp extends AbsBasePresent implements WeiboPubli
     @Override
     public void publishWeibo(long id, String content, ArrayList<String> imagePaths) {
         if (imagePaths != null && imagePaths.size() > 1) {
-            if (mAccount.getWeiCoToken() == null || mAccount.getWeiCoToken().isExpired()) {
+            if (mAccount.getToken() == null || mAccount.getToken().isExpired()) {
                 mWeiboPublishView.toAuthWeico();
                 return;
             }

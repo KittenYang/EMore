@@ -18,7 +18,6 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.UnReadMessageManagerPresent;
 import com.caij.emore.present.imp.UnReadMessageManagerPresentImp;
-import com.caij.emore.ui.activity.SplashActivity;
 import com.caij.emore.ui.view.UnReadMessageManagerPresentView;
 import com.caij.emore.service.EMoreService;
 import com.caij.emore.source.local.LocalMessageSource;
@@ -29,7 +28,6 @@ import com.caij.emore.ui.activity.FriendshipActivity;
 import com.caij.emore.ui.activity.MainActivity;
 import com.caij.emore.ui.activity.MentionActivity;
 import com.caij.emore.ui.fragment.AttitudesToMeFragment;
-import com.caij.emore.ui.fragment.MessageUserFragment;
 import com.caij.emore.utils.LogUtil;
 
 /**
@@ -61,14 +59,14 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
     protected void doOnCreate() {
         mAlarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        mUnReadMessageManagerPresent = new UnReadMessageManagerPresentImp(UserPrefs.get(ctx).getWeiCoToken(),
+        mUnReadMessageManagerPresent = new UnReadMessageManagerPresentImp(UserPrefs.get(ctx).getToken(),
                 new ServerMessageSource(), new LocalMessageSource(), this);
         mUnReadMessageManagerPresent.onCreate();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_SENDING_HEARTBEAT);
         ctx.registerReceiver(scheduleReceiver, intentFilter);
 
-        if (UserPrefs.get(ctx).getEMoreToken() == null || UserPrefs.get(ctx).getWeiCoToken() == null) {
+        if (UserPrefs.get(ctx).getToken() == null) {
             EMoreService.stop(ctx);
         }else {
             scheduleHeartbeat(AppSettings.getMessageIntervalValue(ctx));
@@ -98,7 +96,7 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
                 String text = serverUnReadMessage.getFollower() + ctx.getString(R.string.new_followers);
                 Intent[] intents = new Intent[2];
                 intents[0] = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
-                intents[1] = FriendshipActivity.newIntent(ctx, Long.parseLong(UserPrefs.get(ctx).getEMoreToken().getUid()));
+                intents[1] = FriendshipActivity.newIntent(ctx, Long.parseLong(UserPrefs.get(ctx).getToken().getUid()));
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getFollower(),
                         R.mipmap.statusbar_ic_follower_small, FOLLOWER_NOTIFICATION_ID, intents);
             }

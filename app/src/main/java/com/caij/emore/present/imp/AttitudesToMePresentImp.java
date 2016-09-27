@@ -76,7 +76,7 @@ public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshLi
                         mView.onRefreshComplete();
                         mView.onLoadComplete(attitudes.size() > COUNT - 1);
 
-                        MessageUtil.resetUnReadMessage(mAccount.getWeiCoToken().getAccess_token(), UnReadMessage.TYPE_ATTITUDE,
+                        MessageUtil.resetUnReadMessage(mAccount.getToken().getAccess_token(), UnReadMessage.TYPE_ATTITUDE,
                                 mAccount.getUid(), mServerMessageSource, mLocalMessageSource);
                     }
                 });
@@ -114,7 +114,7 @@ public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshLi
     }
 
     private Observable<List<Attitude>> createGetAttitudeObservable(long maxId, final boolean isRefresh) {
-        return mWeiboSource.getToMeAttiyudes(mAccount.getWeiCoToken().getAccess_token(), maxId, 0, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, 1, COUNT)
+        return mWeiboSource.getToMeAttiyudes(mAccount.getToken().getAccess_token(), maxId, 0, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, 1, COUNT)
                 .compose(new ErrorCheckerTransformer<QueryWeiboAttitudeResponse>())
                 .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<Attitude>>() {
                     @Override
