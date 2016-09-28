@@ -12,6 +12,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.caij.emore.Key;
@@ -32,6 +33,7 @@ public class WebActivity extends BaseToolBarActivity {
     protected ProgressBar mProgressBar;
     @BindView(R.id.web_view)
     protected WebView mWebView;
+    private LinearLayout mLinearLayout;
 
     public static Intent newIntent(Activity activity, String url) {
         Intent intent = new Intent(activity, WebActivity.class);
@@ -73,6 +75,7 @@ public class WebActivity extends BaseToolBarActivity {
     }
 
     protected void initView() {
+        mLinearLayout = (LinearLayout) findViewById(R.id.ll_content);
         WebSettings setting = mWebView.getSettings();
         setting.setJavaScriptEnabled(true);
         setting.setDomStorageEnabled(true);
@@ -104,10 +107,9 @@ public class WebActivity extends BaseToolBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mLinearLayout.removeAllViews();
         mWebView.removeAllViews();
         mWebView.destroy();
-        mWebView.setWebViewClient(null);
-        mWebView.setWebChromeClient(null);
     }
 
     static protected class MyWebViewClient extends WebViewClient {

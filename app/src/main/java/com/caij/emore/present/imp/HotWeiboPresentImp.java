@@ -92,7 +92,7 @@ public class HotWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView
     }
 
     private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
-        final String token = mAccount.getWeiCoToken().getAccess_token();
+        final String token = mAccount.getToken().getAccess_token();
         return mServerWeiboSource.getHotWeibosIds(token, page)
                 .flatMap(new Func1<WeiboIds, Observable<QueryWeiboResponse>>() {
                     @Override
@@ -121,7 +121,7 @@ public class HotWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
-                        mLocalWeiboSource.saveWeibos(mAccount.getEmoreToken().getAccess_token(), weibos);
+                        mLocalWeiboSource.saveWeibos(mAccount.getToken().getAccess_token(), weibos);
                     }
                 })
                 .compose(new SchedulerTransformer<List<Weibo>>());

@@ -48,7 +48,7 @@ public class AccountAdapter extends BaseAdapter<AccountInfo, AccountAdapter.Acco
             holder.ivSelect.setVisibility(View.GONE);
         }
 
-        if (accountInfo.getAccount().getEmoreToken().isExpired()) {
+        if (accountInfo.getAccount().getToken().isExpired()) {
             holder.txtTokenInfo.setVisibility(View.VISIBLE);
         }else {
             holder.txtTokenInfo.setVisibility(View.GONE);

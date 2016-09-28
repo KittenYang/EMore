@@ -18,10 +18,10 @@ import java.util.TimeZone;
 public class DateUtil {
 
 //    Fri Jul 15 11:45:31 +0800 2016
-    public static final SimpleDateFormat createTimeSimpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
+    public static final SimpleDateFormat CREATE_TIME_SIMPLE_DATE_FORMAT = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
 
     static {
-        createTimeSimpleDateFormat.setTimeZone(TimeZone.getDefault());
+        CREATE_TIME_SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getDefault());
     }
 
     public static String convWeiboDate(Context context, long time) {
@@ -70,7 +70,7 @@ public class DateUtil {
 
     public static String convWeiboDate(Context context, String time) {
         try {
-            return convWeiboDate(context, createTimeSimpleDateFormat.parse(time).getTime());
+            return convWeiboDate(context, CREATE_TIME_SIMPLE_DATE_FORMAT.parse(time).getTime());
         } catch (ParseException e) {
             e.printStackTrace();
             return time;
@@ -84,7 +84,7 @@ public class DateUtil {
     }
 
     public static String formatCreatetime(long time) {
-        return createTimeSimpleDateFormat.format(new Date(time));
+        return CREATE_TIME_SIMPLE_DATE_FORMAT.format(new Date(time));
     }
 
     public static String formatTime(long milliseconds) {
@@ -111,7 +111,7 @@ public class DateUtil {
 
     public static Long parseCreateTime(String created_at) {
         try {
-            return createTimeSimpleDateFormat.parse(created_at).getTime();
+            return CREATE_TIME_SIMPLE_DATE_FORMAT.parse(created_at).getTime();
         } catch (ParseException e) {
             return System.currentTimeMillis();
         }

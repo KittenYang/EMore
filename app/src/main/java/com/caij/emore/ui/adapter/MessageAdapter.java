@@ -219,7 +219,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
 
     private String appImageUrl(String url) {
         if (url.startsWith("http")) {
-            return url + "&access_token=" + UserPrefs.get(AppApplication.getInstance()).getWeiCoToken().getAccess_token();
+            return url + "&access_token=" + UserPrefs.get(AppApplication.getInstance()).getToken().getAccess_token();
         }
         return url;
     }
@@ -227,7 +227,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
     @Override
     public int getItemViewType(int position) {
         DirectMessage directMessage = getItem(position);
-        if (directMessage.getSender_id() == Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid())) {
+        if (directMessage.getSender_id() == Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getToken().getUid())) {
             if (directMessage.getAtt_ids() != null && directMessage.getAtt_ids().size() > 0 && directMessage.getImageInfo() != null) {
                 return TYPE_SELT_IMAGE;
             }else {

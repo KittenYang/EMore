@@ -33,4 +33,18 @@ public class SPUtil {
     public static long getLong(String name, long defaultValue) {
         return sp.getLong(name, defaultValue);
     }
+
+    public static void saveInt(Context context, String spName, String name, int value) {
+        SharedPreferences sp = context.getSharedPreferences(spName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(name, value);
+        editor.commit();
+    }
+
+    public static int getInt(Context context, String spName, String key, int defaultValue) {
+        SharedPreferences sp = context.getSharedPreferences(spName, Context.MODE_PRIVATE);
+        return sp.getInt(key, defaultValue);
+    }
+
+
 }

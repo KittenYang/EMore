@@ -94,7 +94,7 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
     }
 
     private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
-        return mServerWeiboSource.getTopicsByKey(mAccount.getWeiCoToken().getAccess_token(), mTopic, page, COUNT)
+        return mServerWeiboSource.getTopicsByKey(mAccount.getToken().getAccess_token(), mTopic, page, COUNT)
                 .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override

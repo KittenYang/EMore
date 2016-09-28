@@ -212,7 +212,7 @@ public class LocalMessageSource implements MessageSource {
     }
 
     @Override
-    public Observable<Response> resetUnReadMessage(String token, final long uid, String source, String from, final String type, final int value) {
+    public Observable<Response> resetUnReadMessage(String token, final long uid, final String type, final int value) {
         return Observable.create(new Observable.OnSubscribe<Response>() {
             @Override
             public void call(Subscriber<? super Response> subscriber) {

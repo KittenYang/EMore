@@ -248,7 +248,7 @@ public class Weibo extends Response implements Serializable {
     }
 
     public Integer getAttitudes_status() {
-        return attitudes_status;
+        return attitudes_status == null ? 0 : attitudes_status;
     }
 
     public void setAttitudes_status(Integer attitudes_status) {

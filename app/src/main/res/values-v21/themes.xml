@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme_Default" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme_Default.Main">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <style name="AppTheme_Default.ImagePrewActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/color_black</item>
+    </style>
+
+    <style name="AppTheme_Default.VideoPlayActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme_Default.SplashActivity">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppTheme_Default.SearchActivity">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <!--                       分割线                                                  -->
+    <style name="AppTheme_Pink">
+        <item name="colorPrimary">@color/pink</item>
+        <item name="colorPrimaryDark">@color/pink_dark</item>
+        <item name="colorAccent">@color/pink</item>
+    </style>
+
+    <style name="AppTheme_Pink.Main">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <style name="AppTheme_Pink.ImagePrewActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/color_black</item>
+    </style>
+
+    <style name="AppTheme_Pink.VideoPlayActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme_Pink.SplashActivity">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppTheme_Pink.SearchActivity">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <!--                       分割线                                                  -->
+
+    <style name="AppTheme_Blue">
+        <item name="colorPrimary">@color/blue</item>
+        <item name="colorPrimaryDark">@color/blue_dark</item>
+        <item name="colorAccent">@color/blue_dark</item>
+    </style>
+
+    <style name="AppTheme_Blue.Main">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <style name="AppTheme_Blue.ImagePrewActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/color_black</item>
+    </style>
+
+    <style name="AppTheme_Blue.VideoPlayActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme_Blue.SplashActivity">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppTheme_Blue.SearchActivity">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <!--                       分割线                                                  -->
+
+    <style name="AppTheme_Green">
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimaryDark">@color/green_dark</item>
+        <item name="colorAccent">@color/green_dark</item>
+    </style>
+
+    <style name="AppTheme_Green.Main">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+
+    <style name="AppTheme_Green.ImagePrewActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/color_black</item>
+    </style>
+
+    <style name="AppTheme_Green.VideoPlayActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme_Green.SplashActivity">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppTheme_Green.SearchActivity">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <!--                       分割线                                                  -->
+
+    <style name="AppTheme_Yellow">
+        <item name="colorPrimary">@color/yellow</item>
+        <item name="colorPrimaryDark">@color/yellow_dark</item>
+        <item name="colorAccent">@color/yellow_dark</item>
+    </style>
+
+    <style name="AppTheme_Yellow.Main">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <style name="AppTheme_Yellow.ImagePrewActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/color_black</item>
+    </style>
+
+    <style name="AppTheme_Yellow.VideoPlayActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme_Yellow.SplashActivity">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppTheme_Yellow.SearchActivity">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <!--                       分割线                                                  -->
+
+    <style name="AppTheme_Red">
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorPrimaryDark">@color/red_dark</item>
+        <item name="colorAccent">@color/red_dark</item>
+    </style>
+
+    <style name="AppTheme_Red.Main">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <style name="AppTheme_Red.ImagePrewActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/color_black</item>
+    </style>
+
+    <style name="AppTheme_Red.VideoPlayActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme_Red.SplashActivity">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppTheme_Red.SearchActivity">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <!--                       分割线                                                  -->
+
+    <!-- grey -->
+    <style name="AppTheme_Grey">
+        <item name="colorPrimary">@color/grey</item>
+        <item name="colorPrimaryDark">@color/grey_dark</item>
+        <item name="colorAccent">@color/grey_dark</item>
+    </style>
+
+    <style name="AppTheme_Grey.Main">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <style name="AppTheme_Grey.ImagePrewActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/color_black</item>
+    </style>
+
+    <style name="AppTheme_Grey.VideoPlayActivity">
+        <item name="android:statusBarColor">@color/color_black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme_Grey.SplashActivity">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppTheme_Grey.SearchActivity">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <!--                       分割线                                                  -->
+
+</resources>

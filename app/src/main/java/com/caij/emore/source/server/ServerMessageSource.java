@@ -38,29 +38,29 @@ public class ServerMessageSource implements MessageSource {
 
     @Override
     public Observable<UnReadMessage> getUnReadMessage(String accessToken, long uid) {
-        return mWeiCoService.getUnreadMessageCount(accessToken, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, uid);
+        return mWeiCoService.getUnreadMessageCount(uid);
     }
 
     @Override
     public Observable<MessageUser> getMessageUserList(String accessToken, int count, long cursor) {
-        return mWeiBoService.getMessageUserList(accessToken, count, cursor);
+        return mWeiBoService.getMessageUserList(count, cursor);
     }
 
     @Override
     public Observable<UserMessageResponse> getUserMessage(String accessToken, long toUid, long selfUid,
                                                           long since_id, long max_id, int count, int page) {
-        return mWeiBoService.getUserMessage(accessToken, toUid, since_id, max_id, count, page);
+        return mWeiBoService.getUserMessage(toUid, since_id, max_id, count, page);
     }
 
     @Override
     public Observable<DirectMessage> createTextMessage(String accessToken, String text, long uid) {
-        return mWeiBoService.createMessage(accessToken, text, uid, "", "");
+        return mWeiBoService.createMessage(text, uid, "", "");
     }
 
     @Override
     public Observable<DirectMessage> createImageMessage(final String accessToken, final String text,
                                                         final long uid, final String screenName,  String fids) {
-        return mWeiBoService.createMessage(accessToken, text, uid, screenName, fids);
+        return mWeiBoService.createMessage(text, uid, screenName, fids);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ServerMessageSource implements MessageSource {
                         RequestBody.create(MediaType.parse("image/" + type), file);
                 MultipartBody.Part body =
                         MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-                return  mWeiBoService.uploadMessageImage(Key.UPLOAD_MESSAGE_IMAGE_URL, paramMap, accessToken, uid, body);
+                return  mWeiBoService.uploadMessageImage(Key.UPLOAD_MESSAGE_IMAGE_URL, paramMap, uid, body);
             }
         });
     }
@@ -97,7 +97,7 @@ public class ServerMessageSource implements MessageSource {
 
     @Override
     public Observable<MessageImage> getMessageImageInfo(String accessToken, long fid) {
-        return mWeiBoService.getMessageImageInfo(Key.QUERY_MESSAGE_IMAGE_URL, accessToken, fid);
+        return mWeiBoService.getMessageImageInfo(Key.QUERY_MESSAGE_IMAGE_URL, fid);
     }
 
     @Override
@@ -126,13 +126,13 @@ public class ServerMessageSource implements MessageSource {
     }
 
     @Override
-    public Observable<Response> resetUnReadMessage(String token, long uid, String source, String from, String type, int value) {
-        return mWeiCoService.resetUnReadMsg(token, source, from, type, value);
+    public Observable<Response> resetUnReadMessage(String token, long uid,String type, int value) {
+        return mWeiCoService.resetUnReadMsg(type, value);
     }
 
     @Override
     public Observable<Response> deleteMessageConversation(String accessToken, long uid) {
-        return mWeiBoService.deleteMessageConversation(accessToken, uid);
+        return mWeiBoService.deleteMessageConversation(uid);
     }
 
 }

@@ -20,7 +20,7 @@
 [leakcanary](https://github.com/square/leakcanary)
 
 ###Contact
-[worldcaij@gmail.com](mailto:worldcaij@gmail.com)  
+[dev.caij@gmail.com](dev.caij@gmail.com)
 
 ###License
 Copyright (C) 2016 Caij

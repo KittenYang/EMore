@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+
 
     <color name="transparent">#00000000</color>
 
@@ -41,8 +39,6 @@
     <color name="text_60_inverse">#99ffffff</color>
     <color name="text_54_inverse">#89ffffff</color>
 
-    <color name="tab_indicator">@color/colorPrimary</color>
-
     <color name="re_post_bg">#f7f7f7</color>
     <color name="re_post_press_bg">#f0f0f0</color>
 
@@ -63,4 +59,6 @@
     <color name="red_message_bg">#ff5250</color>
 
     <color name="chat_edit_text_bg">#EEEEEE</color>
+
+
 </resources>

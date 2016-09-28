@@ -6,13 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Browser;
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.caij.emore.AppSettings;
 import com.caij.emore.Key;
@@ -63,20 +61,7 @@ public class ArticleActivity extends BaseToolBarActivity<ArticlePresent> impleme
         settings.getTextZoom();
         settings.setTextZoom(110);
 
-        webView.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (AppSettings.isInnerBrower(ArticleActivity.this)) {
-                    url = url.replace("http", getString(R.string.emore_http_scheme));
-                    Uri uri = Uri.parse(url);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    intent.putExtra(Browser.EXTRA_APPLICATION_ID, getPackageName());
-                    startActivity(intent);
-                    return true;
-                }
-                return false;
-            }
-        });
+        webView.setWebViewClient(new ArticleWebViewClient());
 
         mPresent.loadArticleInfo();
     }
@@ -88,7 +73,7 @@ public class ArticleActivity extends BaseToolBarActivity<ArticlePresent> impleme
 
     @Override
     protected ArticlePresent createPresent() {
-        String token = UserPrefs.get(this).getWeiCoToken().getAccess_token();
+        String token = UserPrefs.get(this).getToken().getAccess_token();
         String contentId = getIntent().getStringExtra(Key.ID);
         return new ArticlePresentImp(token, contentId, new SercerArticleSource(), this);
     }
@@ -112,7 +97,24 @@ public class ArticleActivity extends BaseToolBarActivity<ArticlePresent> impleme
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        content.removeAllViews();
         webView.removeAllViews();
         webView.destroy();
+    }
+
+    private static class ArticleWebViewClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Context context = view.getContext();
+            if (AppSettings.isInnerBrower(context)) {
+                url = url.replace("http", context.getString(R.string.emore_http_scheme));
+                Uri uri = Uri.parse(url);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
+                context.startActivity(intent);
+                return true;
+            }
+            return false;
+        }
     }
 }

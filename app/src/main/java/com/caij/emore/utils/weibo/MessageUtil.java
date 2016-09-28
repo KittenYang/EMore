@@ -24,10 +24,8 @@ public class MessageUtil {
 
     public static void resetUnReadMessage(final String token, String type, final long uid,
                                           MessageSource serverMessageSource, final MessageSource localMessageSource) {
-        Observable<Response> serverObservable = serverMessageSource.resetUnReadMessage(token, uid,
-                Key.WEICO_APP_ID, Key.WEICO_APP_FROM, type, 0);
-        Observable<Response> localObservable = localMessageSource.resetUnReadMessage(token, uid,
-                Key.WEICO_APP_ID, Key.WEICO_APP_FROM, type, 0);
+        Observable<Response> serverObservable = serverMessageSource.resetUnReadMessage(token, uid, type, 0);
+        Observable<Response> localObservable = localMessageSource.resetUnReadMessage(token, uid, type, 0);
         Observable.concat(serverObservable, localObservable)
                 .filter(new Func1<Response, Boolean>() {
                     @Override
@@ -62,8 +60,7 @@ public class MessageUtil {
     }
 
     public static void resetLocalUnReadMessage(final String token, String type, int value, final long uid, final MessageSource localMessageSource) {
-        Observable<Response> localObservable = localMessageSource.resetUnReadMessage(token, uid,
-                Key.WEICO_APP_ID, Key.WEICO_APP_FROM, type, value);
+        Observable<Response> localObservable = localMessageSource.resetUnReadMessage(token, uid, type, value);
         localObservable.flatMap(new Func1<Response, Observable<UnReadMessage>>() {
                     @Override
                     public Observable<UnReadMessage> call(Response response) {
@@ -93,7 +90,7 @@ public class MessageUtil {
     }
 
     public static void resetLocalUnReadMessageDisValue(final String token, final String type, final int disValue, final MessageSource localMessageSource) {
-        long uid  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getEMoreToken().getUid());
+        long uid  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getToken().getUid());
         localMessageSource.getUnReadMessage(token, uid)
                 .doOnNext(new Action1<UnReadMessage>() {
                     @Override

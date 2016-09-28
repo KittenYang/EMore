@@ -66,8 +66,6 @@ public class ToMeAttitudeAdapter extends BaseAdapter<Attitude, ToMeAttitudeAdapt
             holder.tvComment.setText("赞了这条微博");
         }
 
-        holder.tvComment.setText(attitude.getText());
-
         Weibo weibo = attitude.getStatus();
         holder.tvBottomName.setText("@" + weibo.getUser().getName());
         holder.tvWeibo.setText(weibo.getText());

@@ -4,11 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.caij.emore.R;
+import com.caij.emore.account.Account;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.BasePresent;
-import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
+import com.caij.emore.utils.weibo.ThemeUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,18 +30,22 @@ public class SplashActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Token eMoreAccessToken = UserPrefs.get(this).getEMoreToken();
-        Token weicoAccessToken = UserPrefs.get(this).getWeiCoToken();
-        if (eMoreAccessToken == null || eMoreAccessToken.isExpired()) {
-            mToIntent = EMoreLoginActivity.newEMoreLoginIntent(this, null, null);
-        }else if (weicoAccessToken == null || weicoAccessToken.isExpired()){
+        Token token = UserPrefs.get(this).getToken();
+        if (token == null || token.isExpired()){
+            Account account = UserPrefs.get(this).getAccount();
             mToIntent = WeiCoLoginActivity.newWeiCoLoginIntent(this,
-                    UserPrefs.get(this).getAccount().getUsername(),
-                    UserPrefs.get(this).getAccount().getPwd());
+                    account != null ? account.getUsername() : null,
+                    account != null ? account.getPwd() : null);
         }else {
             mToIntent = new Intent(this, MainActivity.class);
         }
         mToAppObservable = Observable.timer(3, TimeUnit.SECONDS);
+    }
+
+    @Override
+    protected void setTheme() {
+        int themePosition = ThemeUtils.getThemePosition(this);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][4]);
     }
 
     @Override

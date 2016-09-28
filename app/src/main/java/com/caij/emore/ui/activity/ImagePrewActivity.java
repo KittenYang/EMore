@@ -15,6 +15,7 @@ import com.caij.emore.present.imp.AbsBasePresent;
 import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
 import com.caij.emore.ui.fragment.ImagePrewFragment;
+import com.caij.emore.utils.weibo.ThemeUtils;
 import com.caij.emore.widget.HackyViewPager;
 
 import java.util.ArrayList;
@@ -49,6 +50,12 @@ public class ImagePrewActivity extends BaseActivity {
         final ArrayList<String> paths = getIntent().getStringArrayListExtra(Key.IMAGE_PATHS);
         final int position = getIntent().getIntExtra(Key.POSITION, 0);
         init(paths, position);
+    }
+
+    @Override
+    protected void setTheme() {
+        int themePosition = ThemeUtils.getThemePosition(this);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][2]);
     }
 
     @Override

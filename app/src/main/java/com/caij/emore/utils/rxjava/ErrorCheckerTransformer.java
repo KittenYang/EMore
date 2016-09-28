@@ -27,4 +27,8 @@ public class ErrorCheckerTransformer<T extends Response>
             }
         });
     }
+
+    public static <T extends Response> ErrorCheckerTransformer<T> create() {
+        return new ErrorCheckerTransformer<>();
+    }
 }

@@ -18,7 +18,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/6/3.
@@ -95,7 +94,7 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
         mModeNightUpdate.subscribe(new Action1<Boolean>() {
             @Override
             public void call(Boolean aBoolean) {
-                mUserView.setNightMode(aBoolean);
+                mUserView.updateTheme();
             }
         });
 

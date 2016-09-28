@@ -71,7 +71,7 @@ public class UserImageFragment extends RecyclerViewFragment<ImageInfo, UserWeibo
 
     @Override
     protected UserWeiboPresent createPresent() {
-        Token accessToken = UserPrefs.get(getActivity()).getWeiCoToken();
+        Token accessToken = UserPrefs.get(getActivity()).getToken();
         long uid = getArguments().getLong(Key.ID);
         return new UserImagePresentImp(accessToken.getAccess_token(), uid, this, new ServerWeiboSource());
     }

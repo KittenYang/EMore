@@ -18,6 +18,7 @@ import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 
 import java.io.File;
 import java.io.IOException;
@@ -109,7 +110,7 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
                     public Observable<UploadImageResponse> call(final String imagePath) {
                         try {
                             Observable<UploadImageResponse> serverObservable = mServerWeiboSource.
-                                    uploadWeiboOfOneImage(mAccount.getWeiCoToken().getAccess_token(), imagePath)
+                                    uploadWeiboOfOneImage(mAccount.getToken().getAccess_token(), imagePath)
                                     .doOnNext(new Action1<UploadImageResponse>() {
                                         @Override
                                         public void call(UploadImageResponse uploadImageResponse) {
@@ -118,7 +119,7 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
                                         }
                                     });
                             Observable<UploadImageResponse> localObservable = mLocalWeiboSource.
-                                    uploadWeiboOfOneImage(mAccount.getWeiCoToken().getAccess_token(), imagePath);
+                                    uploadWeiboOfOneImage(mAccount.getToken().getAccess_token(), imagePath);
                             return Observable.concat(localObservable, serverObservable)
                                     .first(new Func1<UploadImageResponse, Boolean>() {
                                         @Override
@@ -139,7 +140,7 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
                         for (UploadImageResponse uploadImageResponse : uploadImageResponses) {
                             sb.append(uploadImageResponse.getPic_id()).append(",");
                         }
-                        return mServerWeiboSource.publishWeiboOfMultiImage(mAccount.getEmoreToken().getAccess_token(), publishBean.getText(), sb.toString());
+                        return mServerWeiboSource.publishWeiboOfMultiImage(mAccount.getToken().getAccess_token(), publishBean.getText(), sb.toString());
                     }
                 })
                 .doOnError(new Action1<Throwable>() {
@@ -152,7 +153,7 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
                     @Override
                     public void call(Weibo weibo) {
                         mDraftSource.deleteDraftById(publishBean.getId());
-                        mLocalWeiboSource.saveWeibo(mAccount.getEmoreToken().getAccess_token(), weibo);
+                        mLocalWeiboSource.saveWeibo(mAccount.getToken().getAccess_token(), weibo);
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -178,10 +179,11 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
                 .flatMap(new Func1<String, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(String path) {
-                        return mServerWeiboSource.publishWeiboOfOneImage(mAccount.getEmoreToken().getAccess_token(),
+                        return mServerWeiboSource.publishWeiboOfOneImage(mAccount.getToken().getAccess_token(),
                                 publishBean.getText(), path);
                     }
                 })
+                .compose(ErrorCheckerTransformer.<Weibo>create())
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
@@ -192,7 +194,7 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
                     @Override
                     public void call(Weibo weibo) {
                         mDraftSource.deleteDraftById(publishBean.getId());
-                        mLocalWeiboSource.saveWeibo(mAccount.getEmoreToken().getAccess_token(), weibo);
+                        mLocalWeiboSource.saveWeibo(mAccount.getToken().getAccess_token(), weibo);
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -203,7 +205,7 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
 
     private void publishText(final PublishBean publishBean) {
         Observable<Weibo> publishWeiboObservable = mServerWeiboSource.
-                publishWeiboOfText(mAccount.getEmoreToken().getAccess_token(), publishBean.getText());
+                publishWeiboOfText(mAccount.getToken().getAccess_token(), publishBean.getText());
         mPublishServiceView.onPublishStart(publishBean);
         Subscription subscription = publishWeiboObservable.subscribeOn(Schedulers.io())
                 .doOnError(new Action1<Throwable>() {
@@ -216,7 +218,7 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
                     @Override
                     public void call(Weibo weibo) {
                         mDraftSource.deleteDraftById(publishBean.getId());
-                        mLocalWeiboSource.saveWeibo(mAccount.getEmoreToken().getAccess_token(), weibo);
+                        mLocalWeiboSource.saveWeibo(mAccount.getToken().getAccess_token(), weibo);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -245,7 +247,6 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
     }
 
     private void postPublishWeiboSuccessEvent(Weibo weibo) {
-        //这里暂时不发送微博 因为发送微博的接口是weibo.com(emore 没有高级权限 用不了cn的)  展示微博的时候用的是weico cn的域名
 //        RxBus.getDefault().post(Event.EVENT_PUBLISH_WEIBO_SUCCESS, weibo);
     }
 

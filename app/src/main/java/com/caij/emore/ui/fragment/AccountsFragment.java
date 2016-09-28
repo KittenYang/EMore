@@ -16,7 +16,6 @@ import com.caij.emore.bean.AccountInfo;
 import com.caij.emore.present.AccountPresent;
 import com.caij.emore.present.imp.AccountPresentImp;
 import com.caij.emore.ui.activity.MainActivity;
-import com.caij.emore.ui.activity.login.EMoreLoginActivity;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.adapter.AccountAdapter;
 import com.caij.emore.ui.view.AccountView;
@@ -76,7 +75,7 @@ public class AccountsFragment extends RecyclerViewFragment<AccountInfo, AccountP
             }else {
                 Init.getInstance().stop(getActivity());
 
-                Intent toIntent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(),
+                Intent toIntent = WeiCoLoginActivity.newWeiCoLoginIntent(getActivity(),
                         null, null);
                 toIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(toIntent);
@@ -85,8 +84,7 @@ public class AccountsFragment extends RecyclerViewFragment<AccountInfo, AccountP
     }
 
     private void changeAccount(Account account) {
-        if (account.getEmoreToken() != null && !account.getEmoreToken().isExpired()
-                && account.getWeiCoToken() != null && !account.getWeiCoToken().isExpired()) {
+        if (account.getToken() != null && !account.getToken().isExpired()) {
             if (!account.equals(UserPrefs.get(getActivity()).getAccount())) {
                 toMain(account);
             }else {
@@ -96,15 +94,8 @@ public class AccountsFragment extends RecyclerViewFragment<AccountInfo, AccountP
             UserPrefs.get(getActivity()).changeAccount(account);
             Init.getInstance().stop(getActivity());
 
-            Token weicoAccessToken = account.getWeiCoToken();
-            Intent toIntent = null;
-            if (weicoAccessToken == null || weicoAccessToken.isExpired()){
-                toIntent = WeiCoLoginActivity.newWeiCoLoginIntent(getActivity(),
+            Intent toIntent = WeiCoLoginActivity.newWeiCoLoginIntent(getActivity(),
                         account.getUsername(), account.getPwd());
-            }else {
-                toIntent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(),
-                        account.getUsername(), account.getPwd());
-            }
             toIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(toIntent);
         }
@@ -128,8 +119,7 @@ public class AccountsFragment extends RecyclerViewFragment<AccountInfo, AccountP
     public boolean onOptionsItemSelected(MenuItem item) {
         // 新增授权
         if (item.getItemId() == R.id.add) {
-            Intent intent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(), null, null);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(getActivity(), null, null);
             startActivity(intent);
         }
 

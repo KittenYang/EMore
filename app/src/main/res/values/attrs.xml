@@ -22,4 +22,8 @@
     <declare-styleable name="RatioView">
         <attr name="ratio" format="float"/>
     </declare-styleable>
+
+    <declare-styleable name="CircleView">
+        <attr name="CircleView_color" format="reference|color"/>
+    </declare-styleable>
 </resources>

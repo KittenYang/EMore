@@ -20,6 +20,6 @@ public class SercerArticleSource implements ArticleSource {
 
     @Override
     public Observable<Article> getArticleInfo(String accessToken, String containerid) {
-        return mWeiCoService.getInfoPageContent(accessToken, Key.WEIBO_APP_ID, containerid);
+        return mWeiCoService.getInfoPageContent(containerid);
     }
 }

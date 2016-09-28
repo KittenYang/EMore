@@ -60,7 +60,7 @@ public class GsonUtils {
                 out.nullValue();
                 return;
             }
-            String dateFormatAsString = DateUtil.createTimeSimpleDateFormat.format(value);
+            String dateFormatAsString = DateUtil.CREATE_TIME_SIMPLE_DATE_FORMAT.format(value);
             out.value(dateFormatAsString);
         }
 
@@ -75,7 +75,7 @@ public class GsonUtils {
 
         private synchronized Date deserializeToDate(String json) {
             try {
-                return  DateUtil.createTimeSimpleDateFormat.parse(json);
+                return  DateUtil.CREATE_TIME_SIMPLE_DATE_FORMAT.parse(json);
             } catch (ParseException ignored) {
             }
 

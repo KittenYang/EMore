@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.caij.emore.Key;
+import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
@@ -32,7 +33,7 @@ public class WeiCoLoginActivity extends AbsLoginActivity implements WeiCoLoginVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("高级认证");
+        setTitle(getString(R.string.login_label));
     }
 
     @Override
@@ -77,11 +78,10 @@ public class WeiCoLoginActivity extends AbsLoginActivity implements WeiCoLoginVi
 
     @Override
     public void onLoginSuccess(Token accessToken) {
-        init(UserPrefs.get(this).getEMoreToken().getUid());
+        init(accessToken.getUid());
 
-        ActivityStack.getInstance().remove(this);
-        ActivityStack.getInstance().finishAllActivity();
         Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }

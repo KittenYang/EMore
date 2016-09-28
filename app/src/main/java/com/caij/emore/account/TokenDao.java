@@ -23,11 +23,10 @@ public class TokenDao extends AbstractDao<Token, String> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Key = new Property(0, String.class, "key", true, "KEY");
-        public final static Property Uid = new Property(1, String.class, "uid", false, "UID");
-        public final static Property Access_token = new Property(2, String.class, "access_token", false, "ACCESS_TOKEN");
-        public final static Property Expires_in = new Property(3, Long.class, "expires_in", false, "EXPIRES_IN");
-        public final static Property Create_at = new Property(4, Long.class, "create_at", false, "CREATE_AT");
+        public final static Property Uid = new Property(0, String.class, "uid", true, "UID");
+        public final static Property Access_token = new Property(1, String.class, "access_token", false, "ACCESS_TOKEN");
+        public final static Property Expires_in = new Property(2, Long.class, "expires_in", false, "EXPIRES_IN");
+        public final static Property Create_at = new Property(3, Long.class, "create_at", false, "CREATE_AT");
     };
 
 
@@ -43,11 +42,10 @@ public class TokenDao extends AbstractDao<Token, String> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"TOKEN\" (" + //
-                "\"KEY\" TEXT PRIMARY KEY NOT NULL ," + // 0: key
-                "\"UID\" TEXT," + // 1: uid
-                "\"ACCESS_TOKEN\" TEXT," + // 2: access_token
-                "\"EXPIRES_IN\" INTEGER," + // 3: expires_in
-                "\"CREATE_AT\" INTEGER);"); // 4: create_at
+                "\"UID\" TEXT PRIMARY KEY NOT NULL ," + // 0: uid
+                "\"ACCESS_TOKEN\" TEXT," + // 1: access_token
+                "\"EXPIRES_IN\" INTEGER," + // 2: expires_in
+                "\"CREATE_AT\" INTEGER);"); // 3: create_at
     }
 
     /** Drops the underlying database table. */
@@ -61,29 +59,24 @@ public class TokenDao extends AbstractDao<Token, String> {
     protected void bindValues(SQLiteStatement stmt, Token entity) {
         stmt.clearBindings();
  
-        String key = entity.getKey();
-        if (key != null) {
-            stmt.bindString(1, key);
-        }
- 
         String uid = entity.getUid();
         if (uid != null) {
-            stmt.bindString(2, uid);
+            stmt.bindString(1, uid);
         }
  
         String access_token = entity.getAccess_token();
         if (access_token != null) {
-            stmt.bindString(3, access_token);
+            stmt.bindString(2, access_token);
         }
  
         Long expires_in = entity.getExpires_in();
         if (expires_in != null) {
-            stmt.bindLong(4, expires_in);
+            stmt.bindLong(3, expires_in);
         }
  
         Long create_at = entity.getCreate_at();
         if (create_at != null) {
-            stmt.bindLong(5, create_at);
+            stmt.bindLong(4, create_at);
         }
     }
 
@@ -97,11 +90,10 @@ public class TokenDao extends AbstractDao<Token, String> {
     @Override
     public Token readEntity(Cursor cursor, int offset) {
         Token entity = new Token( //
-            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // key
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // uid
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // access_token
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // expires_in
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4) // create_at
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // uid
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // access_token
+            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // expires_in
+            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3) // create_at
         );
         return entity;
     }
@@ -109,24 +101,23 @@ public class TokenDao extends AbstractDao<Token, String> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, Token entity, int offset) {
-        entity.setKey(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setUid(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setAccess_token(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setExpires_in(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
-        entity.setCreate_at(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
+        entity.setUid(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setAccess_token(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setExpires_in(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
+        entity.setCreate_at(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
      }
     
     /** @inheritdoc */
     @Override
     protected String updateKeyAfterInsert(Token entity, long rowId) {
-        return entity.getKey();
+        return entity.getUid();
     }
     
     /** @inheritdoc */
     @Override
     public String getKey(Token entity) {
         if(entity != null) {
-            return entity.getKey();
+            return entity.getUid();
         } else {
             return null;
         }

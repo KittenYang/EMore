@@ -22,6 +22,6 @@ public class LoginSourceImp implements LoginSource{
 
     @Override
     public Observable<WeiCoLoginResponse> weicoLogin(String access_token, String source, String i, String getcookie) {
-        return WeiCoService.WeiCoFactory.create().loginForGsid(access_token, source, i, getcookie);
+        return WeiCoService.WeiCoFactory.create().loginForGsid(source, i, getcookie);
     }
 }

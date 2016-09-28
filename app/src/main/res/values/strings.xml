@@ -99,6 +99,7 @@
     <string name="settings_inner_browser">使用内置浏览器</string>
     <string name="settings_app_resident">应用常驻内存</string>
     <string name="settings_md_colors">夜间模式</string>
+    <string name="settings_theme">主题</string>
 
     <!-- 通知设置 -->
     <string name="title_notification">通知中心</string>
@@ -135,6 +136,7 @@
     <string name="key_setting_notify_led">pNotifyLED</string>
     <string name="key_setting_theme">pTheme</string>
     <string name="key_setting_browser">pInnerBrowser</string>
+    <string name="key_settings_theme">key_settings_theme</string>
     <string name="weibo_mention_count_hint">条@我的微博</string>
     <string name="comment_mention_count_hint">条@我的评论</string>
     <string name="emore_http_scheme">emorehttp</string>
@@ -201,5 +203,6 @@
     <string name="menu_add_account">添加账号</string>
     <string name="is_current_account">当前的账户已经是您选择的账号啦</string>
     <string name="article_detail">文章详情</string>
+    <string name="night_mode_change_theme_hint">夜间模式下不能切换主题</string>
 
 </resources>

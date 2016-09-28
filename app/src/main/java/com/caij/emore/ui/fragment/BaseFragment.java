@@ -10,9 +10,8 @@ import android.view.View;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.BasePresent;
+import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.view.BaseView;
-import com.caij.emore.ui.activity.login.EMoreLoginActivity;
-import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.Init;
 import com.caij.emore.utils.ToastUtil;
@@ -45,7 +44,7 @@ public abstract class BaseFragment<P extends BasePresent> extends Fragment imple
         UserPrefs userPrefs = UserPrefs.get(getActivity());
         showHint(R.string.auth_invalid_hint);
 
-        Intent intent = EMoreLoginActivity.newEMoreLoginIntent(getActivity(), userPrefs.getAccount().getUsername(),
+        Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(getActivity(), userPrefs.getAccount().getUsername(),
                 userPrefs.getAccount().getPwd());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 

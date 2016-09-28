@@ -7,7 +7,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatDelegate;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,6 +35,7 @@ import com.caij.emore.ui.fragment.weibo.HotWeiboFragment;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.weibo.ThemeUtils;
 import com.caij.emore.widget.main.ActionBarDrawerToggle;
 import com.caij.emore.widget.DoubleClickToolBar;
 
@@ -99,7 +100,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
         initContent(savedInstanceState);
 
-        setNavItemStatus(mVisibleFragment);
+        setViewStatus(mVisibleFragment);
 
         mPresent.getWeiboUserInfoByUid();
     }
@@ -113,6 +114,12 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         }else if (Key.MESSAGE_FRAGMENT_TAG.equals(key)) {
             changeContent2Message();
         }
+    }
+
+    @Override
+    protected void setTheme() {
+        int themePosition = ThemeUtils.getThemePosition(this);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][1]);
     }
 
     private void initContent(Bundle savedInstanceState) {
@@ -145,7 +152,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
     @Override
     protected MainPresent createPresent() {
-        Token token = UserPrefs.get(this).getEMoreToken();
+        Token token = UserPrefs.get(this).getToken();
         return new MainPresentImp(token.getAccess_token(), Long.parseLong(token.getUid()),
                 this, new ServerUserSource(), new LocalUserSource(), new LocalMessageSource(), new LocalDraftSource());
     }
@@ -163,20 +170,26 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
 
     private Drawable createNavMenuItemDrawable(int drawableId) {
-        return DrawableUtil.createSelectThemeDrawable(this, drawableId, R.color.icon_normal_color, R.color.colorPrimary);
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        return DrawableUtil.createSelectThemeDrawable(this, drawableId, R.color.icon_normal_color, typedValue.resourceId);
     }
 
-    private void setNavItemStatus(Fragment fragment) {
+    private void setViewStatus(Fragment fragment) {
         if (fragment == mFriendWeiboFragment) {
             rlItemWeibo.setSelected(true);
             rlItemMessage.setSelected(false);
             tvWeibo.setSelected(true);
             tvMessage.setSelected(false);
+
+            setToolBarFlag(true);
         }else if (fragment == mMessageFragment) {
             rlItemMessage.setSelected(true);
             rlItemWeibo.setSelected(false);
             tvMessage.setSelected(true);
             tvWeibo.setSelected(false);
+
+            setToolBarFlag(false);
         }
     }
 
@@ -303,22 +316,20 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
     private void changeContent2FriendWeibo() {
         changeContent(mFriendWeiboFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG);
-        setToolBarFlag(true);
     }
 
     private void changeContent2Message() {
         changeContent(mMessageFragment, Key.MESSAGE_FRAGMENT_TAG);
-        setToolBarFlag(false);
     }
 
     private void changeContent(Fragment fragment, String tag) {
         switchContent(mVisibleFragment, fragment, R.id.attach_container, tag);
         mVisibleFragment = fragment;
-        setNavItemStatus(mVisibleFragment);
+        setViewStatus(mVisibleFragment);
     }
 
     @Override
-    public void setNightMode(boolean isNight) {
+    public void updateTheme() {
         recreate();
     }
 

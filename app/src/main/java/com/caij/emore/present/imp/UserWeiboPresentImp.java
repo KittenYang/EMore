@@ -112,7 +112,7 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getUseWeibo(mAccount.getWeiCoToken().getAccess_token(), mUid, mFeature, 0, maxId, PAGE_COUNT, 1)
+        return mServerWeiboSource.getUseWeibo(mAccount.getToken().getAccess_token(), mUid, mFeature, 0, maxId, PAGE_COUNT, 1)
                 .compose(new ErrorCheckerTransformer<UserWeiboResponse>())
                 .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
                     @Override

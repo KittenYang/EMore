@@ -41,8 +41,8 @@ public class MentionActivity extends BaseToolBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-        setTitle("@我");
-        Token weicoToken = UserPrefs.get(this).getWeiCoToken();
+        setTitle(R.string.mention);
+        Token weicoToken = UserPrefs.get(this).getToken();
         if (weicoToken == null || weicoToken.isExpired()) {
             DialogUtil.showHintDialog(this, getString(R.string.hint), getString(R.string.aouth_high_hint), getString(R.string.ok), new DialogInterface.OnClickListener() {
                 @Override
