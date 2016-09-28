@@ -194,14 +194,12 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
         mView.showDialogLoading(true, R.string.requesting);
         final String token  = mAccount.getToken().getAccess_token();
-        Observable<Attitude> serverObservable = mServerWeiboSource.attitudesWeibo(token, Key.WEICO_APP_ID,
-                "smile", weibo.getId())
+        Observable<Attitude> serverObservable = mServerWeiboSource.attitudesWeibo(token, "smile", weibo.getId())
                 .compose(new DefaultTransformer<Attitude>())
                 .doOnNext(new Action1<Attitude>() {
                     @Override
                     public void call(Attitude attitude) {
-                        mLocalWeiboSource.attitudesWeibo(token, Key.WEICO_APP_ID,
-                                "smile", weibo.getId());
+                        mLocalWeiboSource.attitudesWeibo(token, "smile", weibo.getId());
                         postAttitudeWeiboUpdate(attitude);
                     }
                 });
@@ -273,15 +271,14 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
         mView.showDialogLoading(true, R.string.requesting);
         final String token  = mAccount.getToken().getAccess_token();
         Observable<Response> serverObservable = mServerWeiboSource.destoryAttitudesWeibo(token,
-                Key.WEICO_APP_ID, "smile", weibo.getId())
+                "smile", weibo.getId())
                 .compose(new DefaultTransformer<Response>());
 
         Subscription subscription = serverObservable
                 .doOnNext(new Action1<Response>() {
                     @Override
                     public void call(Response response) {
-                        mLocalWeiboSource.destoryAttitudesWeibo(token,
-                                Key.WEICO_APP_ID, "smile", weibo.getId());
+                        mLocalWeiboSource.destoryAttitudesWeibo(token, "smile", weibo.getId());
                         weibo.setAttitudes_status(0);
                     }
                 })

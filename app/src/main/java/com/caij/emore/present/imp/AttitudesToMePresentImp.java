@@ -114,7 +114,7 @@ public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshLi
     }
 
     private Observable<List<Attitude>> createGetAttitudeObservable(long maxId, final boolean isRefresh) {
-        return mWeiboSource.getToMeAttiyudes(mAccount.getToken().getAccess_token(), maxId, 0, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, 1, COUNT)
+        return mWeiboSource.getToMeAttiyudes(mAccount.getToken().getAccess_token(), maxId, 0, 1, COUNT)
                 .compose(new ErrorCheckerTransformer<QueryWeiboAttitudeResponse>())
                 .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<Attitude>>() {
                     @Override

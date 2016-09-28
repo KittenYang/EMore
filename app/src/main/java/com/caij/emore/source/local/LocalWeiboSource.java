@@ -376,12 +376,12 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<Attitude> attitudesWeibo(String token, String source, String attitude, final long weiboId) {
+    public Observable<Attitude> attitudesWeibo(String token, String attitude, final long weiboId) {
         return null;
     }
 
     @Override
-    public Observable<Response> destoryAttitudesWeibo(String token, final String source, String attitude, final long weiboId) {
+    public Observable<Response> destoryAttitudesWeibo(String token, String attitude, final long weiboId) {
         Weibo weibo = weiboDao.load(weiboId);
         if (weibo != null) {
             weibo.setAttitudes_status(0);
@@ -392,7 +392,7 @@ public class LocalWeiboSource implements WeiboSource {
 
 
     @Override
-    public Observable<Weibo> getWeiboById(String token, String source, int isGetLongText, final long id) {
+    public Observable<Weibo> getWeiboById(String token, int isGetLongText, final long id) {
         return Observable.create(new Observable.OnSubscribe<Weibo>() {
             @Override
             public void call(Subscriber<? super Weibo> subscriber) {
@@ -446,8 +446,7 @@ public class LocalWeiboSource implements WeiboSource {
 
     @Override
     public Observable<QueryWeiboAttitudeResponse> getToMeAttiyudes(String token, long maxId,
-                                                                   long sinceId, String source, String from,
-                                                                   int page, int count) {
+                                                                   long sinceId, int page, int count) {
         return null;
     }
 

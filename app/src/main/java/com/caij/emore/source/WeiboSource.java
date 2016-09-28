@@ -40,7 +40,7 @@ public interface WeiboSource {
 
     Observable<UploadImageResponse> uploadWeiboOfOneImage(String access_token, String imagePath) throws IOException;
 
-    Observable<Weibo> publishWeiboOfMultiImage( String accessToken,String status, String picIds);
+    Observable<Weibo> publishWeiboOfMultiImage( String accessToken, String status, String picIds);
 
     Observable<Weibo> deleteWeibo(String accessToken, long id);
 
@@ -78,13 +78,11 @@ public interface WeiboSource {
     Observable<QueryWeiboCommentResponse> getAcceptComments(String accessToken, long since_id, long max_id,
                                                             int count,  int page);
 
-    public Observable<Attitude> attitudesWeibo(String token, String source,
-                                               String attitude, long weiboId);
+    public Observable<Attitude> attitudesWeibo(String token, String attitude, long weiboId);
 
-    public Observable<Response> destoryAttitudesWeibo(String token, String source,
-                                      String attitude, long weiboId);
+    public Observable<Response> destoryAttitudesWeibo(String token, String attitude, long weiboId);
 
-    public Observable<Weibo> getWeiboById(String token, String source, int isGetLongText, long id);
+    public Observable<Weibo> getWeiboById(String token, int isGetLongText, long id);
 
     public Observable<Weibo> getWeiboById(String token, long id);
 
@@ -95,7 +93,7 @@ public interface WeiboSource {
     void saveUploadImageResponse(UploadImageResponse uploadImageResponse);
 
     public Observable<QueryWeiboAttitudeResponse> getToMeAttiyudes(String token, long maxId, long sinceId,
-                                                       String source,  String from, int page, int count);
+                                                       int page, int count);
 
     Observable<QueryWeiboResponse> getWeibosByIds(String access_token, String ids);
 

@@ -28,14 +28,12 @@ public class ServerUserSource implements UserSource{
 
     @Override
     public Observable<User> getWeiboUserInfoByName(String accessToken, String name) {
-        WeiBoService service = WeiBoService.Factory.create();
-        return service.getWeiBoUserInfoByName(accessToken, name);
+        return mWeiCoService.getWeiBoUserInfoByName(name);
     }
 
     @Override
     public Observable<User> getWeiboUserInfoByUid(String accessToken, long uid) {
-        WeiBoService service = WeiBoService.Factory.create();
-        return service.getWeiBoUserInfoByUid(accessToken, uid);
+        return mWeiCoService.getWeiBoUserInfoByUid(uid);
     }
 
     @Override
@@ -44,27 +42,27 @@ public class ServerUserSource implements UserSource{
 
     @Override
     public Observable<User> followUser(String accessToken, String screen_name) {
-        return mWeiBoService.followUser(accessToken, screen_name);
+        return mWeiCoService.followUser(screen_name);
     }
 
     @Override
     public Observable<User> unfollowUser(String accessToken, String screen_name) {
-        return mWeiBoService.unfollowUser(accessToken, screen_name);
+        return mWeiCoService.unfollowUser(screen_name);
     }
 
     @Override
     public Observable<FriendshipResponse> getFriends(String accessToken, long uid, int count, int trim_status, long cursor) {
-        return mWeiBoService.getFriends(accessToken, uid, count, trim_status, cursor);
+        return mWeiCoService.getFriends(uid, count, trim_status, cursor);
     }
 
     @Override
     public Observable<FriendshipResponse> getFollowers(String accessToken, long uid, int count, int trim_status, long cursor) {
-        return mWeiBoService.getFollowers(accessToken, uid, count, trim_status, cursor);
+        return mWeiCoService.getFollowers(uid, count, trim_status, cursor);
     }
 
     @Override
     public Observable<List<User>> getSearchUser(String access_token, String q, int page, int count) {
-        return mWeiCoService.searchUsers(access_token, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, q, count, page)
+        return mWeiCoService.searchUsers(q, count, page)
                 .flatMap(new Func1<FriendshipResponse, Observable<List<User>>>() {
                     @Override
                     public Observable<List<User>> call(FriendshipResponse queryWeiboResponse) {

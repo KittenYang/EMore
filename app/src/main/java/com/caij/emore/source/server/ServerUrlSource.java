@@ -18,7 +18,7 @@ public class ServerUrlSource implements UrlSource {
 
     @Override
     public ShortUrlInfo getShortUrlInfo(String token, List<String> shortUrls) {
-        Call<ShortUrlInfo> call = WeiBoService.Factory.create().getShortUrlInfo(token, shortUrls);
+        Call<ShortUrlInfo> call = WeiBoService.Factory.create().getShortUrlInfo(shortUrls);
         Response<ShortUrlInfo> responseResponse = null;
         try {
             responseResponse = call.execute();

@@ -18,6 +18,7 @@ import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 
 import java.io.File;
 import java.io.IOException;
@@ -182,6 +183,7 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
                                 publishBean.getText(), path);
                     }
                 })
+                .compose(ErrorCheckerTransformer.<Weibo>create())
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
@@ -245,7 +247,6 @@ public class PublishWeiboManagerPresentImp extends AbsBasePresent implements Pub
     }
 
     private void postPublishWeiboSuccessEvent(Weibo weibo) {
-        //这里暂时不发送微博 因为发送微博的接口是weibo.com(emore 没有高级权限 用不了cn的)  展示微博的时候用的是weico cn的域名
 //        RxBus.getDefault().post(Event.EVENT_PUBLISH_WEIBO_SUCCESS, weibo);
     }
 

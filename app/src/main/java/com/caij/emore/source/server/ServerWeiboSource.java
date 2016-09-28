@@ -46,7 +46,7 @@ public class ServerWeiboSource implements WeiboSource{
     @Override
     public Observable<QueryWeiboResponse> getFriendWeibo(String accessToken, long uid, long sinceId, long maxId,
                                                          int count, int page) {
-        return mWeiCoService.getFriendsWeibo(accessToken, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, sinceId, maxId, count, page);
+        return mWeiCoService.getFriendsWeibo(sinceId, maxId, count, page);
     }
 
     @Override
@@ -56,13 +56,13 @@ public class ServerWeiboSource implements WeiboSource{
 
     @Override
     public Observable<UserWeiboResponse> getUseWeibo(String accessToken, long uid, int feature, long since_id, long max_id, int count, int page) {
-        return mWeiCoService.getUserWeibos(accessToken, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, uid, feature, since_id, max_id, count, page);
+        return mWeiCoService.getUserWeibos(uid, feature, since_id, max_id, count, page);
     }
 
 
     @Override
     public Observable<Weibo> publishWeiboOfText(String token, String content) {
-        return mWeiBoService.publishWeiboOfOnlyText(token, content);
+        return mWeiCoService.publishWeiboOfOnlyText(content);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class ServerWeiboSource implements WeiboSource{
                         RequestBody.create(MediaType.parse("image/" + type), file);
                 MultipartBody.Part body =
                         MultipartBody.Part.createFormData("pic", file.getName(), requestFile);
-                return mWeiBoService.publishWeiboOfOneImage("OAuth2 " + token, content, body);
+                return mWeiCoService.publishWeiboOfOneImage(content, body);
             }
         });
     }
@@ -116,103 +116,99 @@ public class ServerWeiboSource implements WeiboSource{
                         RequestBody.create(MediaType.parse("image/" + type), file);
                 MultipartBody.Part filePart =
                         MultipartBody.Part.createFormData("pic", file.getName(), fileBody);
-                RequestBody tokenBody =
-                        RequestBody.create(null, access_token);
-                return mWeiBoService.uploadWeiboOfOneImage(tokenBody, filePart);
+                return mWeiBoService.uploadWeiboOfOneImage(filePart);
             }
         });
     }
 
     @Override
     public Observable<Weibo> publishWeiboOfMultiImage(String accessToken, String status, String picIds) {
-        return mWeiBoService.publishWeiboOfMultiImage(accessToken, status, picIds);
+        return mWeiCoService.publishWeiboOfMultiImage(status, picIds);
     }
 
     @Override
     public Observable<Weibo> deleteWeibo(String accessToken, long id) {
-        return mWeiBoService.statusesDestroy(accessToken, id);
+        return mWeiCoService.statusesDestroy(id);
     }
 
     @Override
     public Observable<FavoritesCreateResponse> collectWeibo(String accessToken, long id) {
-        return mWeiBoService.favoritesCreate(accessToken, id);
+        return mWeiCoService.favoritesCreate(id);
     }
 
     @Override
     public Observable<FavoritesCreateResponse> uncollectWeibo(String accessToken, long id) {
-        return mWeiBoService.favoritesDestroy(accessToken, id);
+        return mWeiCoService.favoritesDestroy(id);
     }
 
     @Override
     public Observable<QueryWeiboCommentResponse> getCommentsByWeibo(String accessToken, long id, long since_id, long max_id, int count, int page) {
-        return mWeiBoService.getCommentsByWeibo(accessToken, id, since_id, max_id, count, page);
+        return mWeiCoService.getCommentsByWeibo(id, since_id, max_id, count, page);
     }
 
     @Override
     public Observable<Comment> commentForWeibo(String accessToken, String comment, long weiboId) {
-        return mWeiBoService.createCommentForWeibo(accessToken, comment, weiboId);
+        return mWeiCoService.createCommentForWeibo(comment, weiboId);
     }
 
     @Override
     public Observable<Comment> deleteComment(String accessToken, long cid) {
-        return mWeiBoService.deleteComment(accessToken, cid);
+        return mWeiCoService.deleteComment(cid);
     }
 
     @Override
     public Observable<Comment> replyComment(String accessToken, String comment, long cid, long weiboId) {
-        return mWeiBoService.replyComment(accessToken, cid, weiboId, comment);
+        return mWeiCoService.replyComment(cid, weiboId, comment);
     }
 
     @Override
     public Observable<Weibo> repostWeibo(String accessToken, String status, long weiboId) {
-        return mWeiBoService.repostWeibo(accessToken, weiboId, status);
+        return mWeiCoService.repostWeibo(weiboId, status);
     }
 
     @Override
     public Observable<QueryWeiboResponse> getWeiboMentions(String accessToken, long since_id, long max_id, int count, int page) {
-        return mWeiCoService.getWeiboMentions(accessToken, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, since_id, max_id, count, page);
+        return mWeiCoService.getWeiboMentions(since_id, max_id, count, page);
     }
 
     @Override
     public Observable<QueryWeiboCommentResponse> getCommentsMentions(String accessToken, long since_id, long max_id, int count, int page) {
-        return mWeiCoService.getCommentsMentions(accessToken, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, since_id, max_id, count, page);
+        return mWeiCoService.getCommentsMentions(since_id, max_id, count, page);
     }
 
     @Override
     public Observable<QueryWeiboCommentResponse> getPublishComments(String accessToken, long since_id, long max_id, int count, int page) {
-        return mWeiBoService.getPublishComments(accessToken, since_id, max_id, count, page);
+        return mWeiCoService.getPublishComments(since_id, max_id, count, page);
     }
 
     @Override
     public Observable<QueryWeiboCommentResponse> getAcceptComments(String accessToken, long since_id, long max_id, int count, int page) {
-        return mWeiCoService.getAcceptComments(accessToken, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, since_id, max_id, count, page);
+        return mWeiCoService.getAcceptComments(since_id, max_id, count, page);
     }
 
     @Override
-    public Observable<Attitude> attitudesWeibo(String token, String source, String attitude, long weiboId) {
-        return mWeiCoService.attitudesWeibo(token, source, Key.WEICO_APP_FROM, attitude, weiboId);
-//        return mWeiBoService.attitudeWeibo(token, weiboId, attitude);
+    public Observable<Attitude> attitudesWeibo(String token, String attitude, long weiboId) {
+        return mWeiCoService.attitudesWeibo(attitude, weiboId);
     }
 
     @Override
-    public Observable<Response> destoryAttitudesWeibo(String token, String source, String attitude, long weiboId) {
-        return mWeiCoService.destoryAttitudesWeibo(token, source, Key.WEICO_APP_FROM, attitude, weiboId);
-//        return mWeiBoService.destoryAttitudesWeibo(token, attitude, weiboId);
+    public Observable<Response> destoryAttitudesWeibo(String token, String attitude, long weiboId) {
+        return mWeiCoService.destoryAttitudesWeibo(attitude, weiboId);
     }
 
     @Override
-    public Observable<Weibo> getWeiboById(String token, String source, int isGetLongText, long id) {
-        return mWeiCoService.getWeiboById(token, source, Key.WEICO_APP_FROM, id, isGetLongText);
+    public Observable<Weibo> getWeiboById(String token, int isGetLongText, long id) {
+        return mWeiCoService.getWeiboById(id, isGetLongText);
     }
 
     @Override
     public Observable<Weibo> getWeiboById(String token, long id) {
-        return mWeiCoService.getWeiboById(token, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, id, 0);
+        return mWeiCoService.getWeiboById(id, 0);
     }
 
     @Override
     public Observable<QueryWeiboAttitudeResponse> getWeiboAttiyudes(String token, long id, int page, int count) {
-        return mWeiBoService.getWeiboAttitudes(token, id, page, count);
+        return mWeiCoService.getWeiboAttitudes(id, page, count);
     }
 
     @Override
@@ -227,13 +223,13 @@ public class ServerWeiboSource implements WeiboSource{
 
     @Override
     public Observable<QueryWeiboAttitudeResponse> getToMeAttiyudes(String token, long maxId, long sinceId,
-                                                       String source, String from, int page, int count) {
-        return mWeiCoService.getToMeAttitudes(token, sinceId, maxId, source, from, page, count);
+                                                      int page, int count) {
+        return mWeiCoService.getToMeAttitudes(sinceId, maxId, page, count);
     }
 
     @Override
     public Observable<QueryWeiboResponse> getWeibosByIds(String access_token, String ids) {
-        return mWeiCoService.getWeibsoByIds(access_token, Key.WEIBO_APP_ID, Key.WEICO_APP_FROM, ids);
+        return mWeiCoService.getWeibsoByIds(ids);
     }
 
     @Override
@@ -243,16 +239,16 @@ public class ServerWeiboSource implements WeiboSource{
 
     @Override
     public Observable<QueryWeiboResponse> getTopicsByKey(String access_token, String q, int page, int count) {
-        return mWeiBoService.getTopicsByKey(access_token, q, count, page);
+        return mWeiBoService.getTopicsByKey(q, count, page);
     }
 
     @Override
     public Observable<QueryWeiboResponse> getSearchWeibo(String access_token, String q, int page, int count) {
-        return mWeiCoService.searchStatus(access_token, Key.WEICO_APP_ID, Key.WEICO_APP_FROM, q, count, page);
+        return mWeiCoService.searchStatus(q, count, page);
     }
 
     @Override
     public Observable<QueryRepostWeiboResponse> getRepostWeibos(String accessToken, long id, long since_id, long max_id, int count, int page) {
-        return mWeiBoService.getRepostWeibos(accessToken, id, since_id, max_id, count, page);
+        return mWeiCoService.getRepostWeibos(id, since_id, max_id, count, page);
     }
 }
