@@ -61,6 +61,6 @@ public class AppSettings {
 
     public static boolean isNight(Context ctx) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-        return prefs.getBoolean(ctx.getString(R.string.key_setting_theme), true);
+        return prefs.getBoolean(ctx.getString(R.string.key_setting_theme), false);
     }
 }
