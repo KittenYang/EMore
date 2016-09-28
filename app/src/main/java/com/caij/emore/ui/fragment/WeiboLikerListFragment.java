@@ -13,6 +13,7 @@ import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Attitude;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.present.ListPresent;
 import com.caij.emore.present.imp.WeiboAttitudesPresentImp;
 import com.caij.emore.ui.view.WeiboAttitudesView;
@@ -31,7 +32,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/14.
  */
-public class WeiboLikerListFragment extends RecyclerViewFragment<Attitude, ListPresent> implements WeiboAttitudesView {
+public class WeiboLikerListFragment extends RecyclerViewFragment<User, ListPresent> implements WeiboAttitudesView {
 
     public static WeiboLikerListFragment newInstance(long weiboId) {
         Bundle args = new Bundle();
@@ -59,7 +60,7 @@ public class WeiboLikerListFragment extends RecyclerViewFragment<Attitude, ListP
     }
 
     @Override
-    protected BaseAdapter<Attitude, ? extends BaseViewHolder> createRecyclerViewAdapter() {
+    protected BaseAdapter<User, ? extends BaseViewHolder> createRecyclerViewAdapter() {
         return  new AttitudeAdapter(getActivity());
     }
 
@@ -90,18 +91,9 @@ public class WeiboLikerListFragment extends RecyclerViewFragment<Attitude, ListP
 
     @Override
     public void onItemClick(View view, int position) {
-        Attitude attitude = mRecyclerViewAdapter.getItem(position);
-        Intent intent = UserInfoActivity.newIntent(getActivity(), attitude.getUser().getScreen_name());
+        User user = mRecyclerViewAdapter.getItem(position);
+        Intent intent = UserInfoActivity.newIntent(getActivity(), user.getScreen_name());
         startActivity(intent);
     }
 
-    @Override
-    public void onAttitudeSuccess(List<Attitude> attitudes) {
-        mRecyclerViewAdapter.setEntities(attitudes);
-        mRecyclerViewAdapter.notifyItemInserted(0);
-        LinearLayoutManager manager = (LinearLayoutManager) xRecyclerView.getLayoutManager();
-        if (manager.findFirstVisibleItemPosition() < 2) {
-            xRecyclerView.smoothScrollToPosition(0);
-        }
-    }
 }

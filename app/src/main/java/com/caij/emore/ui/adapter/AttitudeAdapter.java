@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.Attitude;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
@@ -19,7 +20,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2016/7/21.
  */
-public class AttitudeAdapter extends BaseAdapter<Attitude, AttitudeAdapter.AttitudeViewHolder> {
+public class AttitudeAdapter extends BaseAdapter<User, AttitudeAdapter.AttitudeViewHolder> {
 
     private final ImageLoader.ImageConfig mImageConfig;
 
@@ -39,9 +40,9 @@ public class AttitudeAdapter extends BaseAdapter<Attitude, AttitudeAdapter.Attit
 
     @Override
     public void onBindViewHolder(AttitudeViewHolder holder, int position) {
-        Attitude attitude = getItem(position);
-        holder.tvName.setText(attitude.getUser().getScreen_name());
-        ImageLoader.loadUrl(mContext, holder.ivAvatar, attitude.getUser().getAvatar_large(),
+        User user = getItem(position);
+        holder.tvName.setText(user.getScreen_name());
+        ImageLoader.loadUrl(mContext, holder.ivAvatar,user.getAvatar_large(),
                 R.drawable.circle_image_placeholder, mImageConfig);
     }
 

@@ -5,15 +5,12 @@ import com.caij.emore.account.Token;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.SinaSearchRecommend;
-import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.MessageImage;
 import com.caij.emore.database.bean.UploadImageResponse;
-import com.caij.emore.database.bean.Weibo;
-import com.caij.emore.utils.okhttp.OkHttpClientProvider;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.rxjava.GosnConverterFactory;
 
@@ -21,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;

@@ -11,11 +11,12 @@ import com.caij.emore.bean.ShortUrl;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
-import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
+import com.caij.emore.bean.response.AttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.bean.response.WeiboAttitudeResponse;
 import com.caij.emore.database.bean.Geo;
 import com.caij.emore.database.bean.LongText;
 import com.caij.emore.database.bean.UploadImageResponse;
@@ -430,7 +431,7 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<QueryWeiboAttitudeResponse> getWeiboAttiyudes(String token, long id, int page, int count) {
+    public Observable<WeiboAttitudeResponse> getWeiboAttiyudes(String token, long id, int page, int count) {
         return null;
     }
 
@@ -445,8 +446,8 @@ public class LocalWeiboSource implements WeiboSource {
     }
 
     @Override
-    public Observable<QueryWeiboAttitudeResponse> getToMeAttiyudes(String token, long maxId,
-                                                                   long sinceId, int page, int count) {
+    public Observable<AttitudeResponse> getToMeAttiyudes(String token, long maxId,
+                                                         long sinceId, int page, int count) {
         return null;
     }
 

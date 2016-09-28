@@ -1,9 +1,8 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.Key;
 import com.caij.emore.account.Account;
 import com.caij.emore.bean.Attitude;
-import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
+import com.caij.emore.bean.response.AttitudeResponse;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.ui.view.RefreshListView;
@@ -20,7 +19,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/4.
@@ -115,10 +113,10 @@ public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshLi
 
     private Observable<List<Attitude>> createGetAttitudeObservable(long maxId, final boolean isRefresh) {
         return mWeiboSource.getToMeAttiyudes(mAccount.getToken().getAccess_token(), maxId, 0, 1, COUNT)
-                .compose(new ErrorCheckerTransformer<QueryWeiboAttitudeResponse>())
-                .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<Attitude>>() {
+                .compose(new ErrorCheckerTransformer<AttitudeResponse>())
+                .flatMap(new Func1<AttitudeResponse, Observable<Attitude>>() {
                     @Override
-                    public Observable<Attitude> call(QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
+                    public Observable<Attitude> call(AttitudeResponse queryWeiboAttitudeResponse) {
                         return Observable.from(queryWeiboAttitudeResponse.getAttitudes());
                     }
                 })

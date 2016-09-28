@@ -2,6 +2,7 @@ package com.caij.emore.api;
 
 import com.caij.emore.AppApplication;
 import com.caij.emore.Key;
+import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Article;
 import com.caij.emore.bean.Attitude;
@@ -11,12 +12,13 @@ import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
-import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
+import com.caij.emore.bean.response.AttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
+import com.caij.emore.bean.response.WeiboAttitudeResponse;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
@@ -41,7 +43,6 @@ import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -105,13 +106,15 @@ public interface WeiCoService {
          */
         static Request interceptRequest(Request request) {
             RequestBody requestBody = request.body();
-            String token = UserPrefs.get(AppApplication.getInstance()).getToken().getAccess_token();
+            Token token = UserPrefs.get(AppApplication.getInstance()).getToken();
+            String accessToken = token == null ? "" : token.getAccess_token();
             if (requestBody == null) {  //get
                 HttpUrl url = request.url().newBuilder()
                         .addQueryParameter(PARAMETER_SOURCE_NAME, Key.WEICO_APP_ID)
                         .addQueryParameter(PARAMETER_FROM_NAME, Key.WEICO_APP_FROM)
-                        .addQueryParameter(PARAMETER_TOKEN_NAME, token)
+                        .addQueryParameter(PARAMETER_TOKEN_NAME, accessToken)
                         .build();
+
                 request = request.newBuilder().url(url).build();
             }else if (requestBody instanceof FormBody) {
                 FormBody formBody = (FormBody) requestBody;
@@ -122,7 +125,7 @@ public interface WeiCoService {
 
                 builder.add(PARAMETER_SOURCE_NAME, Key.WEICO_APP_ID);
                 builder.add(PARAMETER_FROM_NAME, Key.WEICO_APP_FROM);
-                builder.add(PARAMETER_TOKEN_NAME, token);
+                builder.add(PARAMETER_TOKEN_NAME, accessToken);
 
                 formBody = builder.build();
 
@@ -133,7 +136,7 @@ public interface WeiCoService {
                 builder.setType(multipartBody.type());
                 builder.addFormDataPart(PARAMETER_SOURCE_NAME, Key.WEICO_APP_ID);
                 builder.addFormDataPart(PARAMETER_FROM_NAME, Key.WEICO_APP_FROM);
-                builder.addFormDataPart(PARAMETER_TOKEN_NAME, token);
+                builder.addFormDataPart(PARAMETER_TOKEN_NAME, accessToken);
 
                 for (MultipartBody.Part part : multipartBody.parts()) {
                     builder.addPart(part);
@@ -203,8 +206,8 @@ public interface WeiCoService {
                                                               @Query("page") int page);
 
     @GET("/2/like/to_me")
-    Observable<QueryWeiboAttitudeResponse> getToMeAttitudes(@Query("since_id") long since_id, @Query("max_id") long max_id,
-                                                            @Query("page") int page, @Query("count") int count);
+    Observable<AttitudeResponse> getToMeAttitudes(@Query("since_id") long since_id, @Query("max_id") long max_id,
+                                                  @Query("page") int page, @Query("count") int count);
 
     @GET("/2/remind/unread_count")
     Observable<UnReadMessage> getUnreadMessageCount(@Query("uid") long uid);
@@ -317,9 +320,9 @@ public interface WeiCoService {
     @POST("2/statuses/upload")
     Observable<Weibo> publishWeiboOfOneImage(@Part("status") String status, @Part MultipartBody.Part file);
 
-    @GET("2/attitudes/show")
-    Observable<QueryWeiboAttitudeResponse> getWeiboAttitudes(@Query("id") long id, @Query("page") int page,
-                                                             @Query("count") int count);
+    @GET("/2/like/show")
+    Observable<WeiboAttitudeResponse> getWeiboAttitudes(@Query("id") long id, @Query("page") int page,
+                                                        @Query("count") int count);
 
     @FormUrlEncoded
     @POST("2/statuses/update")

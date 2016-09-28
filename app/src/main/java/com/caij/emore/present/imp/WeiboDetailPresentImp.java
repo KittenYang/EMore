@@ -1,13 +1,14 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.Event;
-import com.caij.emore.Key;
 import com.caij.emore.account.Account;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
-import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
+import com.caij.emore.bean.response.AttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
+import com.caij.emore.bean.response.WeiboAttitudeResponse;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboDetailPresent;
 import com.caij.emore.ui.view.WeiboDetailView;
@@ -22,11 +23,9 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func4;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Caij on 2016/7/14.
@@ -135,25 +134,25 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     }
                 });
 
-        Observable<List<Attitude>> observableWeiboAttitude = mServerWeiboSource.getWeiboAttiyudes(token, mWeiboId, 1, 20)
-                .compose(new ErrorCheckerTransformer<QueryWeiboAttitudeResponse>())
-                .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<List<Attitude>>>() {
+        Observable<List<User>> observableWeiboAttitude = mServerWeiboSource.getWeiboAttiyudes(token, mWeiboId, 1, 20)
+                .compose(new ErrorCheckerTransformer<WeiboAttitudeResponse>())
+                .flatMap(new Func1<WeiboAttitudeResponse, Observable<List<User>>>() {
                     @Override
-                    public Observable<List<Attitude>> call(QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
-                        return Observable.just(queryWeiboAttitudeResponse.getAttitudes());
+                    public Observable<List<User>> call(WeiboAttitudeResponse queryWeiboAttitudeResponse) {
+                        return Observable.just(queryWeiboAttitudeResponse.getUsers());
                     }
                 });
 
         Subscription subscription = Observable.zip(weiboObservable, observableRepostWeibo,
                 observableWeiboCommnet, observableWeiboAttitude,
-                new Func4<Weibo, List<Weibo>, List<Comment>, List<Attitude>, Zip>() {
+                new Func4<Weibo, List<Weibo>, List<Comment>, List<User>, Zip>() {
                     @Override
-                    public Zip call(Weibo weibo, List<Weibo> weibos, List<Comment> comments, List<Attitude> attitudes) {
+                    public Zip call(Weibo weibo, List<Weibo> weibos, List<Comment> comments, List<User> users) {
                         Zip zip = new Zip();
                         zip.weibo = weibo;
                         zip.weibos = weibos;
                         zip.comments = comments;
-                        zip.attitudes = attitudes;
+                        zip.users = users;
                         return zip;
                     }
                 })
@@ -174,7 +173,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                         mView.setWeibo(zip.weibo);
                         RxBus.getDefault().post(Event.EVENT_REPOST_WEIBO_REFRESH_COMPLETE, zip.weibos);
                         RxBus.getDefault().post(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE, zip.comments);
-                        RxBus.getDefault().post(Event.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE, zip.attitudes);
+                        RxBus.getDefault().post(Event.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE, zip.users);
                         mView.onRefreshComplete();
                     }
                 });
@@ -197,6 +196,6 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
         Weibo weibo;
         List<Weibo> weibos;
         List<Comment> comments;
-        List<Attitude> attitudes;
+        List<User> users;
     }
 }

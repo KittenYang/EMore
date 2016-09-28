@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/7/21.
  */
-public class QueryWeiboAttitudeResponse extends Response{
+public class AttitudeResponse extends Response{
 
     private boolean hasvisible;
     private long previous_cursor;

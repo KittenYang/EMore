@@ -5,18 +5,17 @@ import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
-import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
+import com.caij.emore.bean.response.AttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.bean.response.WeiboAttitudeResponse;
 import com.caij.emore.database.bean.UploadImageResponse;
-import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 
@@ -86,14 +85,14 @@ public interface WeiboSource {
 
     public Observable<Weibo> getWeiboById(String token, long id);
 
-    public Observable<QueryWeiboAttitudeResponse> getWeiboAttiyudes(String token, long id, int page, int count);
+    public Observable<WeiboAttitudeResponse> getWeiboAttiyudes(String token, long id, int page, int count);
 
     void saveWeibo(String mToken, Weibo weibo);
 
     void saveUploadImageResponse(UploadImageResponse uploadImageResponse);
 
-    public Observable<QueryWeiboAttitudeResponse> getToMeAttiyudes(String token, long maxId, long sinceId,
-                                                       int page, int count);
+    public Observable<AttitudeResponse> getToMeAttiyudes(String token, long maxId, long sinceId,
+                                                         int page, int count);
 
     Observable<QueryWeiboResponse> getWeibosByIds(String access_token, String ids);
 

@@ -8,11 +8,12 @@ import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRepostWeiboResponse;
-import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
+import com.caij.emore.bean.response.AttitudeResponse;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.bean.response.WeiboAttitudeResponse;
 import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.source.WeiboSource;
@@ -207,7 +208,7 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<QueryWeiboAttitudeResponse> getWeiboAttiyudes(String token, long id, int page, int count) {
+    public Observable<WeiboAttitudeResponse> getWeiboAttiyudes(String token, long id, int page, int count) {
         return mWeiCoService.getWeiboAttitudes(id, page, count);
     }
 
@@ -222,8 +223,8 @@ public class ServerWeiboSource implements WeiboSource{
     }
 
     @Override
-    public Observable<QueryWeiboAttitudeResponse> getToMeAttiyudes(String token, long maxId, long sinceId,
-                                                      int page, int count) {
+    public Observable<AttitudeResponse> getToMeAttiyudes(String token, long maxId, long sinceId,
+                                                         int page, int count) {
         return mWeiCoService.getToMeAttitudes(sinceId, maxId, page, count);
     }
 

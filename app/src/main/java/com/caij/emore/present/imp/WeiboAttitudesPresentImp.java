@@ -2,7 +2,9 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.Event;
 import com.caij.emore.bean.Attitude;
-import com.caij.emore.bean.response.QueryWeiboAttitudeResponse;
+import com.caij.emore.bean.response.AttitudeResponse;
+import com.caij.emore.bean.response.WeiboAttitudeResponse;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.ui.view.WeiboAttitudesView;
@@ -22,7 +24,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/6/28.
@@ -36,10 +37,10 @@ public class WeiboAttitudesPresentImp extends AbsBasePresent implements WeiboRep
     WeiboSource mServerWeiboSource;
     WeiboSource mLocalWeiboSource;
     WeiboAttitudesView mView;
-    List<Attitude> mAttitudes;
+    List<User> mAttitudes;
     private int mPage;
-    private Observable<Attitude> mAttitudeObservable;
-    Observable<List<Attitude>> mWeiboRefreshObservable;
+    private Observable<User> mAttitudeObservable;
+    Observable<List<User>> mWeiboRefreshObservable;
 
     public WeiboAttitudesPresentImp(String token, long weiboId,
                                     WeiboSource serverWeiboSource,
@@ -58,32 +59,27 @@ public class WeiboAttitudesPresentImp extends AbsBasePresent implements WeiboRep
      */
     private void initEventListener() {
         mAttitudeObservable = RxBus.getDefault().register(Event.EVENT_ATTITUDE_WEIBO_SUCCESS);
-        mAttitudeObservable.filter(new Func1<Attitude, Boolean>() {
+        mAttitudeObservable.subscribe(new Action1<User>() {
             @Override
-            public Boolean call(Attitude attitude) {
-                return attitude.getStatus().getId() == mWeiboId && !mAttitudes.contains(attitude);
-            }
-        }).subscribe(new Action1<Attitude>() {
-            @Override
-            public void call(Attitude attitude) {
-                mAttitudes.add(0, attitude);
-                mView.onAttitudeSuccess(mAttitudes);
+            public void call(User user) {
+                mAttitudes.add(0, user);
+                mView.setEntities(mAttitudes);
             }
         });
 
         mWeiboRefreshObservable = RxBus.getDefault().register(Event.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE);
-        mWeiboRefreshObservable.filter(new Func1<List<Attitude>, Boolean>() {
+        mWeiboRefreshObservable.filter(new Func1<List<User>, Boolean>() {
             @Override
-            public Boolean call(List<Attitude> attitudes) {
+            public Boolean call(List<User> attitudes) {
                 return attitudes != null && attitudes.size() > 0 && attitudes.get(0).getStatus().getId() == mWeiboId;
             }
         }).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Attitude>>() {
+                .subscribe(new Action1<List<User>>() {
                     @Override
-                    public void call(List<Attitude> attitudes) {
+                    public void call(List<User> users) {
                         LogUtil.d(WeiboAttitudesPresentImp.this, "accept refresh event");
 
-                        addRefreshDate(attitudes);
+                        addRefreshDate(users);
 
                     }
                 });
@@ -94,7 +90,7 @@ public class WeiboAttitudesPresentImp extends AbsBasePresent implements WeiboRep
         initEventListener();
 
         Subscription subscription = createObservable(1, true)
-                .subscribe(new DefaultResponseSubscriber<List<Attitude>>(mView) {
+                .subscribe(new DefaultResponseSubscriber<List<User>>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
                         if (mAttitudes.size() == 0) {
@@ -108,20 +104,19 @@ public class WeiboAttitudesPresentImp extends AbsBasePresent implements WeiboRep
                     }
 
                     @Override
-                    public void onNext(List<Attitude> attitudes) {
-                        addRefreshDate(attitudes);
+                    public void onNext(List<User> users) {
+                        addRefreshDate(users);
                     }
                 });
-
-
+        addSubscription(subscription);
     }
 
-    private void addRefreshDate(List<Attitude> attitudes) {
+    private void addRefreshDate(List<User> users) {
         mAttitudes.clear();
-        mAttitudes.addAll(attitudes);
+        mAttitudes.addAll(users);
         mView.setEntities(mAttitudes);
 
-        mView.onLoadComplete(attitudes.size() >= PAGE_COUNET - 3);
+        mView.onLoadComplete(users.size() >= PAGE_COUNET - 3);
 
         mPage = 2;
     }
@@ -129,7 +124,7 @@ public class WeiboAttitudesPresentImp extends AbsBasePresent implements WeiboRep
     @Override
     public void loadMore() {
         Subscription subscription = createObservable(mPage, false)
-                .subscribe(new DefaultResponseSubscriber<List<Attitude>>(mView) {
+                .subscribe(new DefaultResponseSubscriber<List<User>>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
                     }
@@ -140,10 +135,10 @@ public class WeiboAttitudesPresentImp extends AbsBasePresent implements WeiboRep
                     }
 
                     @Override
-                    public void onNext(List<Attitude> attitudes) {
-                        mAttitudes.addAll(attitudes);
-                        mView.notifyItemRangeInserted(mAttitudes, mAttitudes.size() - attitudes.size(), attitudes.size());
-                        mView.onLoadComplete(attitudes.size() >= 15);
+                    public void onNext(List<User> users) {
+                        mAttitudes.addAll(users);
+                        mView.notifyItemRangeInserted(mAttitudes, mAttitudes.size() - users.size(), users.size());
+                        mView.onLoadComplete(users.size() >= 15);
                         mPage ++;
                     }
                 });
@@ -151,27 +146,27 @@ public class WeiboAttitudesPresentImp extends AbsBasePresent implements WeiboRep
         addSubscription(subscription);
     }
 
-    private  Observable<List<Attitude>> createObservable(int page, final boolean isRefresh) {
+    private  Observable<List<User>> createObservable(int page, final boolean isRefresh) {
         return mServerWeiboSource.getWeiboAttiyudes(mToken, mWeiboId, page, PAGE_COUNET)
-                .compose(new ErrorCheckerTransformer<QueryWeiboAttitudeResponse>())
-                .flatMap(new Func1<QueryWeiboAttitudeResponse, Observable<Attitude>>() {
+                .compose(new ErrorCheckerTransformer<WeiboAttitudeResponse>())
+                .flatMap(new Func1<WeiboAttitudeResponse, Observable<User>>() {
                     @Override
-                    public Observable<Attitude> call(QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
+                    public Observable<User> call(WeiboAttitudeResponse queryWeiboAttitudeResponse) {
                         updateWeiboAttitudeCount(queryWeiboAttitudeResponse);
-                        return Observable.from(queryWeiboAttitudeResponse.getAttitudes());
+                        return Observable.from(queryWeiboAttitudeResponse.getUsers());
                     }
                 })
-                .filter(new Func1<Attitude, Boolean>() {
+                .filter(new Func1<User, Boolean>() {
                     @Override
-                    public Boolean call(Attitude attitude) {
-                        return !mAttitudes.contains(attitude) || isRefresh;
+                    public Boolean call(User user) {
+                        return !mAttitudes.contains(user) || isRefresh;
                     }
                 })
                 .toList()
-                .compose(new SchedulerTransformer<List<Attitude>>());
+                .compose(new SchedulerTransformer<List<User>>());
     }
 
-    private void updateWeiboAttitudeCount(final QueryWeiboAttitudeResponse queryWeiboAttitudeResponse) {
+    private void updateWeiboAttitudeCount(final WeiboAttitudeResponse queryWeiboAttitudeResponse) {
         Subscription subscription = mLocalWeiboSource.getWeiboById(mToken, mWeiboId)
                 .filter(new Func1<Weibo, Boolean>() {
                     @Override
