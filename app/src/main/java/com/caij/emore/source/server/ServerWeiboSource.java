@@ -240,7 +240,7 @@ public class ServerWeiboSource implements WeiboSource{
 
     @Override
     public Observable<QueryWeiboResponse> getTopicsByKey(String access_token, String q, int page, int count) {
-        return mWeiBoService.getTopicsByKey(q, count, page);
+        return mWeiCoService.searchStatus(q, count, page);
     }
 
     @Override

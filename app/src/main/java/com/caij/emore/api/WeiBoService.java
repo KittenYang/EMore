@@ -100,9 +100,7 @@ public interface WeiBoService {
     @GET("/2/short_url/info.json")
     Call<ShortUrlInfo> getShortUrlInfo(@Query("url_short") List<String> url_shorts);
 
-    @GET("2/search/topics.json")
-    public Observable<QueryWeiboResponse> getTopicsByKey(@Query("q") String q, @Query("count") int count,
-                             @Query("page") int page);
+
 
     @GET
     public Observable<SinaSearchRecommend> getSearchRecommend(@Url String url, @Query("where") String where,

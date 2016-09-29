@@ -108,6 +108,12 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
                         return isRefresh || !mWeibos.contains(weibo);
                     }
                 })
+                .doOnNext(new Action1<Weibo>() {
+                    @Override
+                    public void call(Weibo weibo) {
+                        doSpanNext(weibo);
+                    }
+                })
                 .toList()
                 .compose(new SchedulerTransformer<List<Weibo>>());
     }
