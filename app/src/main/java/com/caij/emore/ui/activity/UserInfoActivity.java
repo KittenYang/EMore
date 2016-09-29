@@ -33,6 +33,7 @@ import com.caij.emore.ui.fragment.UserInfoFragment;
 import com.caij.emore.ui.fragment.weibo.UserWeiboFragment;
 import com.caij.emore.utils.CountUtil;
 import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.utils.weibo.ThemeUtils;
 import com.caij.emore.utils.weibo.WeiboUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 
@@ -129,6 +130,12 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
         if (WeicoAuthUtil.checkWeicoLogin(this, true)) {
             doNext();
         }
+    }
+
+    @Override
+    protected void setTheme() {
+        int themePosition = ThemeUtils.getThemePosition(this);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][1]);
     }
 
     @Override
