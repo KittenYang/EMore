@@ -39,6 +39,8 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     Observable<Weibo> mPublishWeiboObservable;
     MessageSource mLocalMessageSource;
 
+    private long mNextCursor;
+
     public FriendWeiboPresentImp(Account account, FriendWeiboView view, WeiboSource serverWeiboSource,
                                  WeiboSource localWeiboSource, MessageSource localMessageSource) {
         super(account, view, serverWeiboSource, localWeiboSource);
@@ -49,7 +51,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     public void onCreate() {
         super.onCreate();
         Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getToken().getAccess_token(), mAccount.getUid(),
-                0, 0, PAGE_COUNT * 2, 1)
+                0, 0, PAGE_COUNT , 1)
                 .flatMap(new Func1<QueryWeiboResponse, Observable<List<Weibo>>>() {
                     @Override
                     public Observable<List<Weibo>> call(QueryWeiboResponse response) {
@@ -78,6 +80,12 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                     public void onNext(List<Weibo> weibos) {
                         mWeibos.addAll(weibos);
                         mView.setEntities(mWeibos);
+
+                        if (weibos.size() > 1) {
+                            mNextCursor = weibos.get(weibos.size() - 1).getId();
+                        }else {
+                            mNextCursor = 0;
+                        }
 
                         if (System.currentTimeMillis() -
                                 SPUtil.getLong(Key.FRIEND_WEIBO_UPDATE_TIME + mAccount.getUsername(), -1) > 60 * 60 * 1000 ||
@@ -153,11 +161,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
 
     @Override
     public void loadMore() {
-        long maxId = 0;
-        if (mWeibos.size() > 0) {
-            maxId = mWeibos.get(mWeibos.size() - 1).getId();
-        }
-        Subscription subscription = createObservable(maxId, false)
+        Subscription subscription = createObservable(mNextCursor, false)
             .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
                         @Override
                         public void onCompleted() {
@@ -186,6 +190,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(QueryWeiboResponse response) {
+                        mNextCursor = response.getNext_cursor();
                         return Observable.from(response.getStatuses());
                     }
                 })

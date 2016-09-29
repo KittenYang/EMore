@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/ll_title">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="@dimen/spacing_medium"
+        android:paddingBottom="@dimen/spacing_medium"
+        android:layout_marginLeft="@dimen/spacing_weibo_item">
+
+        <ImageView
+            android:id="@+id/iv_title_icon"
+            android:layout_width="14dp"
+            android:layout_height="14dp"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_medium_min"
+            android:textColor="@color/text_54"
+            android:layout_marginLeft="@dimen/spacing_medium"
+            android:text="广告"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.66dp"
+        android:background="@color/divider_timeline_item"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

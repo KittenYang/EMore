@@ -51,7 +51,7 @@ public class ShortUrl {
     private boolean result;
     private int need_save_obj;
     private List<String> pic_ids;
-    private HashMap<String, ImageInfo> pic_infos;
+    private HashMap<String, WeiboImageInfo> pic_infos;
 
     public int getPosition() {
         return position;
@@ -154,11 +154,11 @@ public class ShortUrl {
         this.url_type_pic = url_type_pic;
     }
 
-    public HashMap<String, ImageInfo> getPic_infos() {
+    public HashMap<String, WeiboImageInfo> getPic_infos() {
         return pic_infos;
     }
 
-    public void setPic_infos(HashMap<String, ImageInfo> pic_infos) {
+    public void setPic_infos(HashMap<String, WeiboImageInfo> pic_infos) {
         this.pic_infos = pic_infos;
     }
 }

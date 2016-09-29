@@ -13,6 +13,8 @@ public class QueryWeiboResponse extends Response {
 
     private long max_id;
 
+    private long next_cursor;
+
     private long has_unread;
 
     private long interval;
@@ -67,5 +69,13 @@ public class QueryWeiboResponse extends Response {
 
     public void setTotal_number(long total_number) {
         this.total_number = total_number;
+    }
+
+    public long getNext_cursor() {
+        return next_cursor;
+    }
+
+    public void setNext_cursor(long next_cursor) {
+        this.next_cursor = next_cursor;
     }
 }

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.bean.WeiboImageInfo;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.widget.weibo.ImageInterface;
@@ -52,7 +52,7 @@ public class RepostWeiboImageItemView extends RepostWeiboListItemView {
         ImageInterface picsView = null;
         Weibo reWeibo = weibo.getRetweeted_status();
         List<String> picIds = reWeibo.getPic_ids();
-        LinkedHashMap<String, ImageInfo> imageInfoLinkedHashMap = reWeibo.getPic_infos();
+        LinkedHashMap<String, WeiboImageInfo> imageInfoLinkedHashMap = reWeibo.getPic_infos();
         if (picIds == null || picIds.size() == 0) {
             flPicsView.setVisibility(GONE);
         }else if (picIds.size() == 1

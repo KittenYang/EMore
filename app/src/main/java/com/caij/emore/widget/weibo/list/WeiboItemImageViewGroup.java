@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.bean.WeiboImageInfo;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.widget.weibo.ImageInterface;
@@ -30,7 +30,7 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
     public ImageLoader.ImageConfig mLongAndGifImageConfig;
 
     protected int mSpaceWidth;
-    protected LinkedHashMap<String, ImageInfo> mImageInfoLinkedHashMap;
+    protected LinkedHashMap<String, WeiboImageInfo> mImageInfoLinkedHashMap;
     protected List<String> mPicIds;
 
     private Handler mHandler;
@@ -102,7 +102,7 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
         int imageHeight = 0;
         if (child != null && child.getVisibility() != GONE) {
             int imageWidth;
-            ImageInfo imageInfo = mImageInfoLinkedHashMap.get(mPicIds.get(0));
+            WeiboImageInfo imageInfo = mImageInfoLinkedHashMap.get(mPicIds.get(0));
             if (imageInfo.getBmiddle().getHeight() > 0 && imageInfo.getBmiddle().getWidth() > 0) {
                 if (imageInfo.getBmiddle().getWidth() * 1.0f / imageInfo.getBmiddle().getHeight() < MAX_RADIO) { //宽比高小很多  竖着的图
                     imageWidth = (int) (availableWidth * 1.0f / 2);
@@ -195,11 +195,11 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
         disPlayPics(mPicIds, mImageInfoLinkedHashMap);
     }
 
-    protected void disPlayPics(List<String> mPicIds, LinkedHashMap<String, ImageInfo> linkedHashMap) {
+    protected void disPlayPics(List<String> mPicIds, LinkedHashMap<String, WeiboImageInfo> linkedHashMap) {
         for (int i = 0; i < getChildCount(); i++) {
             ItemImageView imgView = (ItemImageView) getChildAt(i);
             if (i < mPicIds.size()) {
-                ImageInfo imageInfo = linkedHashMap.get(mPicIds.get(i));
+                WeiboImageInfo imageInfo = linkedHashMap.get(mPicIds.get(i));
                 String url = imageInfo.getBmiddle().getUrl();
                 imgView.setUrl(imageInfo);
 
@@ -233,7 +233,7 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
         ArrayList<String> paths = new ArrayList<>();
         int position = 0;
         for (int i = 0; i < mPicIds.size(); i ++) {
-            ImageInfo picUrl = mImageInfoLinkedHashMap.get(mPicIds.get(i));
+            WeiboImageInfo picUrl = mImageInfoLinkedHashMap.get(mPicIds.get(i));
             View child = getChildAt(i);
             paths.add(picUrl.getLarge().getUrl());
             if (child == v) {
@@ -245,7 +245,7 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
     }
 
     @Override
-    public void setPics(List<String> pic_ids, LinkedHashMap<String, ImageInfo> imageInfoLinkedHashMap) {
+    public void setPics(List<String> pic_ids, LinkedHashMap<String, WeiboImageInfo> imageInfoLinkedHashMap) {
         if (null == imageInfoLinkedHashMap || imageInfoLinkedHashMap.size() == 0) {
             setVisibility(GONE);
         }else {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import com.caij.emore.R;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.ui.activity.publish.CommentWeiboActivity;
 import com.caij.emore.utils.CountUtil;
+import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.weibo.ImageInterface;
 import com.caij.emore.widget.weibo.WeiboItemView;
 
@@ -33,9 +35,17 @@ public abstract class WeiboListItemView extends WeiboItemView {
     ImageView btnMenus;
     @BindView(R.id.rl_weibo_bottom)
     RelativeLayout rlWeiboBottom;
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
+    @BindView(R.id.ll_title)
+    RelativeLayout llTitle;
+    @BindView(R.id.iv_title_icon)
+    ImageView ivTitleIcon;
 
     private OnClickListener onMenuClickListener;
     private OnClickListener onLikeClickListener;
+
+    private boolean isDetail;
 
     public WeiboListItemView(Context context) {
         super(context);
@@ -56,6 +66,22 @@ public abstract class WeiboListItemView extends WeiboItemView {
     @Override
     public void setWeibo(Weibo weibo) {
         super.setWeibo(weibo);
+
+        if(isDetail) {
+            rlWeiboBottom.setVisibility(GONE);
+            btnMenus.setVisibility(GONE);
+        }else {
+            rlWeiboBottom.setVisibility(VISIBLE);
+            btnMenus.setVisibility(VISIBLE);
+        }
+
+        if (weibo.getTitle() != null && !isDetail) {
+            llTitle.setVisibility(VISIBLE);
+            tvTitle.setText(weibo.getTitle().getText());
+            ImageLoader.load(getContext(), ivTitleIcon, weibo.getTitle().getIcon_url(), R.drawable.circle_image_placeholder);
+        }else {
+            llTitle.setVisibility(GONE);
+        }
 
         tvRepostCount.setText(CountUtil.getCounter(getContext(), weibo.getReposts_count()));
 
@@ -109,8 +135,8 @@ public abstract class WeiboListItemView extends WeiboItemView {
         this.onLikeClickListener = onLikeClickListener;
     }
 
-    public void makeDetail() {
-        rlWeiboBottom.setVisibility(GONE);
-        btnMenus.setVisibility(GONE);
+    public void setDetail(boolean isDetail) {
+        this.isDetail = isDetail;
     }
+
 }

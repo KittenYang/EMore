@@ -2,7 +2,6 @@ package com.caij.emore.widget.weibo.detail;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -11,13 +10,11 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.bumptech.glide.request.target.Target;
-import com.caij.emore.R;
-import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.bean.WeiboImageInfo;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.NavigationUtil;
-import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.widget.weibo.ImageInterface;
 
 import java.io.File;
@@ -32,7 +29,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implements ImageInterface {
 
-    private ImageInfo mImageInfo;
+    private WeiboImageInfo mImageInfo;
     private Handler mMainHandler;
     private WebView mWebView;
 
@@ -108,7 +105,7 @@ public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implemen
         }
     }
 
-    private void disPlayPics(final ImageInfo imageInfo) {
+    private void disPlayPics(final WeiboImageInfo imageInfo) {
         ExecutorServiceUtil.submit(new Runnable() {
             @Override
             public void run() {
@@ -205,7 +202,7 @@ public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implemen
     }
 
     @Override
-    public void setPics(List<String> pic_ids, LinkedHashMap<String, ImageInfo> imageInfoLinkedHashMap) {
+    public void setPics(List<String> pic_ids, LinkedHashMap<String, WeiboImageInfo> imageInfoLinkedHashMap) {
         this.mImageInfo = imageInfoLinkedHashMap.get(pic_ids.get(0));
         requestLayout();
         //因为请求重新绘制requestLayout是通过主线程handler发送消息， 这个再通过handler发送消息展示图片就会在绘制以后

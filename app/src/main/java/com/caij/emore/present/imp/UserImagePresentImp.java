@@ -1,6 +1,6 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.bean.WeiboImageInfo;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.UserWeiboPresent;
@@ -18,7 +18,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/5/31.
@@ -32,7 +31,7 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
     private WeiboSource mServerWeiboSource;
     private List<Weibo> mWeibos;
     private long mUid;
-    private List<ImageInfo> mPicUrl;
+    private List<WeiboImageInfo> mPicUrl;
 
     public UserImagePresentImp(String token, long uid, TimeLineWeiboImageView view, WeiboSource serverWeiboSource) {
         mToken = token;

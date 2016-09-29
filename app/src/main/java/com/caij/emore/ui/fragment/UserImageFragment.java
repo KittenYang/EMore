@@ -12,7 +12,7 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
-import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.bean.WeiboImageInfo;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.present.imp.UserImagePresentImp;
 import com.caij.emore.ui.view.TimeLineWeiboImageView;
@@ -25,7 +25,7 @@ import com.caij.emore.widget.recyclerview.XRecyclerView;
 /**
  * Created by Caij on 2016/6/29.
  */
-public class UserImageFragment extends RecyclerViewFragment<ImageInfo, UserWeiboPresent> implements TimeLineWeiboImageView, XRecyclerView.OnLoadMoreListener {
+public class UserImageFragment extends RecyclerViewFragment<WeiboImageInfo, UserWeiboPresent> implements TimeLineWeiboImageView, XRecyclerView.OnLoadMoreListener {
 
 
     public static UserImageFragment newInstance(long uid) {
@@ -43,7 +43,7 @@ public class UserImageFragment extends RecyclerViewFragment<ImageInfo, UserWeibo
     }
 
     @Override
-    protected BaseAdapter<ImageInfo, ? extends BaseViewHolder> createRecyclerViewAdapter() {
+    protected BaseAdapter<WeiboImageInfo, ? extends BaseViewHolder> createRecyclerViewAdapter() {
         return new UserGridImageAdapter(getActivity());
     }
 

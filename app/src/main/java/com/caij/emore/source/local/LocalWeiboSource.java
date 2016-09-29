@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.bean.WeiboImageInfo;
 import com.caij.emore.bean.PageInfo;
 import com.caij.emore.bean.ShortUrl;
 import com.caij.emore.bean.WeiboIds;
@@ -17,6 +17,8 @@ import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.bean.response.WeiboAttitudeResponse;
+import com.caij.emore.bean.weibo.Button;
+import com.caij.emore.bean.weibo.Title;
 import com.caij.emore.database.bean.Geo;
 import com.caij.emore.database.bean.LongText;
 import com.caij.emore.database.bean.UploadImageResponse;
@@ -160,7 +162,7 @@ public class LocalWeiboSource implements WeiboSource {
            weibo.setPic_ids_json_string(GsonUtils.toJson(picIds));
         }
 
-        LinkedHashMap<String, ImageInfo> pic_infos = weibo.getPic_infos();
+        LinkedHashMap<String, WeiboImageInfo> pic_infos = weibo.getPic_infos();
         if (pic_infos != null && pic_infos.size() > 0) {
             weibo.setPic_infos_json_string(GsonUtils.toJson(pic_infos));
         }
@@ -175,6 +177,18 @@ public class LocalWeiboSource implements WeiboSource {
         if (urlInfos != null && urlInfos.size() > 0) {
             weibo.setUrl_struct_json_string(GsonUtils.toJson(urlInfos));
         }
+
+        List<Button> buttons = weibo.getButtons();
+        if (buttons != null && buttons.size() > 0) {
+            weibo.setUrl_struct_json_string(GsonUtils.toJson(buttons));
+        }
+
+
+        Title title = weibo.getTitle();
+        if (title != null) {
+            weibo.setTitle_json_string(GsonUtils.toJson(title));
+        }
+
 
         PageInfo pageInfo = weibo.getPage_info();
         if (pageInfo != null) {
@@ -209,8 +223,8 @@ public class LocalWeiboSource implements WeiboSource {
             }
 
             if (!TextUtils.isEmpty(weibo.getPic_infos_json_string())) {
-                LinkedHashMap<String, ImageInfo> pic_infos = GsonUtils.fromJson(weibo.getPic_infos_json_string(),
-                        new TypeToken<LinkedHashMap<String, ImageInfo>>(){}.getType());
+                LinkedHashMap<String, WeiboImageInfo> pic_infos = GsonUtils.fromJson(weibo.getPic_infos_json_string(),
+                        new TypeToken<LinkedHashMap<String, WeiboImageInfo>>(){}.getType());
                 weibo.setPic_infos(pic_infos);
             }
 
@@ -236,6 +250,18 @@ public class LocalWeiboSource implements WeiboSource {
                 Weibo repostWeibo = weiboDao.load(weibo.getRetweeted_status_id());
                 selectWeibo(repostWeibo);
                 weibo.setRetweeted_status(repostWeibo);
+            }
+
+            if (!TextUtils.isEmpty(weibo.getTitle_json_string())) {
+                Title title = GsonUtils.fromJson(weibo.getTitle_json_string(), Title.class);
+                weibo.setTitle(title);
+            }
+
+            if (!TextUtils.isEmpty(weibo.getButtons_json_string())) {
+                List<Button> buttons = GsonUtils.fromJson(weibo.getButtons_json_string(),
+                        new TypeToken<List<Button>>() {
+                        }.getType());
+                weibo.setButtons(buttons);
             }
         }
     }

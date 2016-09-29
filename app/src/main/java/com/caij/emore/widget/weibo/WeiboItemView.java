@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.caij.emore.R;
@@ -27,7 +28,7 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/5.
  */
-public abstract class WeiboItemView extends FrameLayout {
+public abstract class WeiboItemView extends RelativeLayout {
 
     @BindView(R.id.sdv_avatar)
     protected ImageView ivAvatar;

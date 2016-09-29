@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.bean.WeiboImageInfo;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.weibo.list.WeiboItemImageViewGroup;
 
@@ -33,7 +33,7 @@ public class WeiboDetailItemImageViewGroup extends WeiboItemImageViewGroup {
     protected int measureChildOnOneImage(int availableWidth) {
         //如果是详情就撑满屏幕
         int imageHeight;
-        ImageInfo picUrl = mImageInfoLinkedHashMap.get(mPicIds.get(0));
+        WeiboImageInfo picUrl = mImageInfoLinkedHashMap.get(mPicIds.get(0));
         View child = getChildAt(0);
         if (picUrl.getBmiddle().getHeight() > 0 && picUrl.getBmiddle().getWidth() > 0) {
             imageHeight = (int) (availableWidth * picUrl.getBmiddle().getHeight() * 1.0f

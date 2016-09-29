@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.bean.WeiboImageInfo;
 import com.caij.emore.utils.ImageUtil;
 
 /**
@@ -21,7 +21,7 @@ public class ItemImageView extends ImageView {
 
     private Bitmap mGifDrawable;
     private Paint paint;
-    private ImageInfo mImageInfo;
+    private WeiboImageInfo mImageInfo;
     private Bitmap mLongImageDrawable;
 
     public ItemImageView(Context context) {
@@ -66,7 +66,7 @@ public class ItemImageView extends ImageView {
         }
     }
 
-    public void setUrl(ImageInfo imageInfo) {
+    public void setUrl(WeiboImageInfo imageInfo) {
         mImageInfo = imageInfo;
     }
 

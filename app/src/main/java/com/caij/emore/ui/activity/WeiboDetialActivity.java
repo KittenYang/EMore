@@ -259,7 +259,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity<WeiboDetailPresent>
                     mWeiboItemView = new RepostWeiboListArticleItemView(this);
                     break;
             }
-            mWeiboItemView.makeDetail();
+            mWeiboItemView.setDetail(true);
             flWeiboItemView.addView(mWeiboItemView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
         }
