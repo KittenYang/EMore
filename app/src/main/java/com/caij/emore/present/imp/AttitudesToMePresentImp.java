@@ -68,6 +68,8 @@ public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshLi
 
                     @Override
                     public void onNext(List<Attitude> attitudes) {
+                        mAttitudes.clear();
+
                         mAttitudes.addAll(attitudes);
                         mView.setEntities(mAttitudes);
 

@@ -219,7 +219,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                     @Override
                     public void onNext(Attitude attitude) {
                         if (attitude != null) {
-                            RxBus.getDefault().post(Event.EVENT_ATTITUDE_WEIBO_SUCCESS, attitude);
+                            RxBus.getDefault().post(Event.EVENT_ATTITUDE_WEIBO_SUCCESS, attitude.getUser());
                         }
                     }
                 });
