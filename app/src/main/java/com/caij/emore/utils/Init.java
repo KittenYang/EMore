@@ -60,7 +60,7 @@ public class Init {
 
     public void start(Context context, long uid) {
         DBManager.initDB(context, uid, BuildConfig.DEBUG);
-        SPUtil.init(context, Key.SP_CONFIG + "_" + uid);
+        SPUtil.DEFAULT_SP_NAME = Key.SP_CONFIG + "_" + uid;
         if (SystemUtil.isMainProcess(context)) {
             initOtherForMainProcess(context);
         }

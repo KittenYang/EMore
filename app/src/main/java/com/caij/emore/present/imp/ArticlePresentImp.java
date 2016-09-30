@@ -27,6 +27,7 @@ import org.jsoup.Jsoup;
 
 import java.util.concurrent.ExecutionException;
 
+import rx.functions.Action0;
 import rx.functions.Action1;
 
 /**
@@ -53,20 +54,25 @@ public class ArticlePresentImp extends AbsBasePresent implements ArticlePresent 
 
     @Override
     public void loadArticleInfo() {
-        mArticleView.showDialogLoading(true);
-
         mServerArticleSource.getArticleInfo(mToken, mContainerid)
                 .compose(new ErrorCheckerTransformer<Article>())
                 .compose(new SchedulerTransformer<Article>())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        mArticleView.showDialogLoading(true);
+                    }
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        mArticleView.showDialogLoading(false);
+                    }
+                })
                 .subscribe(new DefaultResponseSubscriber<Article>(mArticleView) {
                     @Override
                     protected void onFail(Throwable e) {
-                        mArticleView.showDialogLoading(false);
-                    }
 
-                    @Override
-                    public void onCompleted() {
-                        mArticleView.showDialogLoading(false);
                     }
 
                     @Override

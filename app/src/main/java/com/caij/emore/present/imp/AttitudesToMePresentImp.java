@@ -31,7 +31,7 @@ public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshLi
     private WeiboSource mWeiboSource;
     private RefreshListView<Attitude> mView;
     private List<Attitude> mAttitudes;
-    MessageSource mServerMessageSource;
+    private MessageSource mServerMessageSource;
     MessageSource mLocalMessageSource;
 
     public AttitudesToMePresentImp(Account account, WeiboSource weiboSource,

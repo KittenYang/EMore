@@ -23,6 +23,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func4;
@@ -45,7 +46,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
     public void loadWeiboDetail() {
         final String token  = mAccount.getToken().getAccess_token();
         Observable<Weibo> localObservable = mLocalWeiboSource.getWeiboById(token, 1, mWeiboId);
-        mView.showDialogLoading(true);
+
         Observable<Weibo> serverObservable = mServerWeiboSource.getWeiboById(token, 1, mWeiboId)
                 .doOnNext(new Action1<Weibo>() {
                     @Override
@@ -57,8 +58,7 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                 .first(new Func1<Weibo, Boolean>() {
                     @Override
                     public Boolean call(Weibo weibo) {
-                        return weibo != null
-                                && weibo.getUpdate_time() != null
+                        return weibo != null && weibo.getUpdate_time() != null
                                 && System.currentTimeMillis() - weibo.getUpdate_time() < 2 * 60 * 60 * 1000
                                 && (!weibo.getIsLongText() || weibo.getLongText() != null);
                     }
@@ -70,22 +70,29 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                     }
                 })
                 .compose(new ErrorCheckerTransformer<Weibo>())
-                .compose(new SchedulerTransformer<Weibo>())
-                .subscribe(new DefaultResponseSubscriber<Weibo>(mView) {
+                .compose(SchedulerTransformer.<Weibo>create())
+                .doOnSubscribe(new Action0() {
                     @Override
-                    public void onCompleted() {
-
+                    public void call() {
+                        mView.showDialogLoading(true);
                     }
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        mView.showDialogLoading(false);
+                    }
+                })
+                .subscribe(new DefaultResponseSubscriber<Weibo>(mView) {
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mView.showDialogLoading(false);
+
                     }
 
                     @Override
                     public void onNext(Weibo weibo) {
                         mView.setWeibo(weibo);
-                        mView.showDialogLoading(false);
                     }
                 });
         addSubscription(subscription);

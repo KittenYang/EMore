@@ -8,42 +8,24 @@ import android.content.SharedPreferences;
  */
 public class SPUtil {
 
-    private static SharedPreferences sp;
+    public static String DEFAULT_SP_NAME = "default_sp";
 
-    public static void init(Context context, String spName) {
-        sp = context.getSharedPreferences(spName, Context.MODE_PRIVATE);
-    }
+    public static class SPBuilder {
 
-    public static void saveString(String name, String value) {
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString(name, value);
-        editor.commit();
-    }
+        private Context mContext;
 
-    public static void saveLong(String name, long value) {
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putLong(name, value);
-        editor.commit();
-    }
+        public SPBuilder(Context context) {
+            mContext = context;
+        }
 
-    public static String getString(String name, String defaultValue) {
-        return sp.getString(name, defaultValue);
-    }
+        public SharedPreferences open(String name) {
+            return mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+        }
 
-    public static long getLong(String name, long defaultValue) {
-        return sp.getLong(name, defaultValue);
-    }
+        public SharedPreferences openDefault() {
+            return open(DEFAULT_SP_NAME);
+        }
 
-    public static void saveInt(Context context, String spName, String name, int value) {
-        SharedPreferences sp = context.getSharedPreferences(spName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putInt(name, value);
-        editor.commit();
-    }
-
-    public static int getInt(Context context, String spName, String key, int defaultValue) {
-        SharedPreferences sp = context.getSharedPreferences(spName, Context.MODE_PRIVATE);
-        return sp.getInt(key, defaultValue);
     }
 
 

@@ -18,8 +18,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Func1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/4.
@@ -55,16 +55,18 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
 
     @Override
     public void refresh() {
-        Subscription su = createGetCommentObservable(0, true)
-                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
+        Subscription su = getCommentMentionsObservable(0, true)
+                .doOnTerminate(new Action0() {
                     @Override
-                    public void onCompleted() {
-
+                    public void call() {
+                        mMentionView.onRefreshComplete();
                     }
+                })
+                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mMentionView.onRefreshComplete();
+
                     }
 
                     @Override
@@ -72,7 +74,6 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
                         mComments.addAll(comments);
                         mMentionView.setEntities(mComments);
 
-                        mMentionView.onRefreshComplete();
                         mMentionView.onLoadComplete(comments.size() > COUNT - 1);
 
                         MessageUtil.resetUnReadMessage(mAccount.getToken().getAccess_token(),UnReadMessage.TYPE_MENTION_CMT,
@@ -93,7 +94,7 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
         if (mComments != null && mComments.size() > 1) {
             maxId = mComments.get(mComments.size() - 1).getId();
         }
-        Subscription su = createGetCommentObservable(maxId, false)
+        Subscription su = getCommentMentionsObservable(maxId, false)
                 .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
                     @Override
                     public void onCompleted() {
@@ -117,7 +118,7 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
         addSubscription(su);
     }
 
-    private Observable<List<Comment>> createGetCommentObservable(long maxId, final boolean isRefresh) {
+    private Observable<List<Comment>> getCommentMentionsObservable(long maxId, final boolean isRefresh) {
         return mWeiboSource.getCommentsMentions(mAccount.getToken().getAccess_token(), 0, maxId, COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
                 .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {

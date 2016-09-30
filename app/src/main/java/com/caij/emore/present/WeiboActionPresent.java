@@ -16,5 +16,5 @@ public interface WeiboActionPresent  extends BasePresent{
 
     void attitudesWeibo(Weibo weibo);
 
-    void destoryAttitudesWeibo(Weibo weibo);
+    void destroyAttitudesWeibo(Weibo weibo);
 }

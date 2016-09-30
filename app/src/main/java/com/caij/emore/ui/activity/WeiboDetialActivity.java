@@ -180,7 +180,7 @@ public class WeiboDetialActivity extends BaseToolBarActivity<WeiboDetailPresent>
         switch (view.getId()) {
             case R.id.action_star:
                 if (mWeibo.getAttitudes_status() == 1) {
-                    mPresent.destoryAttitudesWeibo(mWeibo);
+                    mPresent.destroyAttitudesWeibo(mWeibo);
                 }else {
                     mPresent.attitudesWeibo(mWeibo);
                 }

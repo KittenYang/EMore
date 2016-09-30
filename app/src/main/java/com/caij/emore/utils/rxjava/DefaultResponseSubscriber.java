@@ -59,4 +59,8 @@ public abstract class DefaultResponseSubscriber<T> extends Subscriber<T> {
 
     protected abstract void onFail(Throwable e);
 
+    @Override
+    public void onCompleted() {
+
+    }
 }

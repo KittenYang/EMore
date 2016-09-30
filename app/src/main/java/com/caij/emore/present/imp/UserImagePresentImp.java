@@ -68,7 +68,7 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
     }
 
     @Override
-    public void destoryAttitudesWeibo(Weibo weibo) {
+    public void destroyAttitudesWeibo(Weibo weibo) {
 
     }
 

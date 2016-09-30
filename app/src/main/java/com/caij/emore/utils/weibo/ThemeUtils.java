@@ -25,11 +25,16 @@ public class ThemeUtils {
 
 
     public static void changeTheme(Context context, int position) {
-        SPUtil.saveInt(context, SP_THEME_NAME, THEME_NAME, position);
+        new SPUtil.SPBuilder(context)
+                .open(SP_THEME_NAME).edit()
+                .putInt(THEME_NAME, position)
+                .apply();
     }
 
     public static int getThemePosition(Context context) {
-        return SPUtil.getInt(context, SP_THEME_NAME, THEME_NAME, 0);
+        return new SPUtil.SPBuilder(context)
+                .open(SP_THEME_NAME)
+                .getInt(THEME_NAME, 0);
     }
 
 }

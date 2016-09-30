@@ -31,7 +31,7 @@ public class AcceptCommentsPresentImp extends AbsBasePresent implements RefreshL
     private WeiboSource mWeiboSource;
     private RefreshListView<Comment> mMentionView;
     private List<Comment> mComments;
-    MessageSource mServerMessageSource;
+    private MessageSource mServerMessageSource;
     MessageSource mLocalMessageSource;
 
     public AcceptCommentsPresentImp(Account account, WeiboSource weiboSource,
@@ -54,7 +54,7 @@ public class AcceptCommentsPresentImp extends AbsBasePresent implements RefreshL
 
     @Override
     public void refresh() {
-        Subscription su =  createGetCommentObservable(0, true)
+        Subscription su =  getCommentObservable(0, true)
                 .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -87,7 +87,7 @@ public class AcceptCommentsPresentImp extends AbsBasePresent implements RefreshL
         if (mComments != null && mComments.size() > 1) {
             maxId = mComments.get(mComments.size() - 1).getId();
         }
-        Subscription subscription = createGetCommentObservable(maxId, false)
+        Subscription subscription = getCommentObservable(maxId, false)
                 .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -111,7 +111,7 @@ public class AcceptCommentsPresentImp extends AbsBasePresent implements RefreshL
         addSubscription(subscription);
     }
 
-    private Observable<List<Comment>> createGetCommentObservable(long maxId, final boolean isRefresh) {
+    private Observable<List<Comment>> getCommentObservable(long maxId, final boolean isRefresh) {
         return mWeiboSource.getAcceptComments(mAccount.getToken().getAccess_token(), 0, maxId, PAGE_COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
                 .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {

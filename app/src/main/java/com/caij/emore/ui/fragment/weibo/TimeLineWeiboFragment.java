@@ -113,7 +113,7 @@ public abstract class TimeLineWeiboFragment<P extends TimeLinePresent> extends S
         if (WeicoAuthUtil.checkWeicoLogin(this, false)) {
             Weibo weibo = mRecyclerViewAdapter.getItem(position);
             if (weibo.getAttitudes_status() == 1) {
-                mPresent.destoryAttitudesWeibo(weibo);
+                mPresent.destroyAttitudesWeibo(weibo);
             }else {
                 mPresent.attitudesWeibo(weibo);
             }
