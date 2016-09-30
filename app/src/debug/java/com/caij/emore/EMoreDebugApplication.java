@@ -18,6 +18,11 @@ public class EMoreDebugApplication extends AppApplication {
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
                         .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
                         .build());
-        LeakCanary.install(this);
+        if (!LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            LeakCanary.install(this);
+        }
+
     }
 }

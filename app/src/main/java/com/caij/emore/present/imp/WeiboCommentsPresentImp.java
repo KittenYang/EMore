@@ -36,10 +36,10 @@ public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboComm
 
     private String mToken;
     private long mWeiboId;
-    WeiboSource mServerCommentSource;
-    WeiboSource mLocalWeiboSource;
-    WeiboCommentsView mWeiboCommentsView;
-    List<Comment> mComments;
+    private WeiboSource mServerCommentSource;
+    private WeiboSource mLocalWeiboSource;
+    private WeiboCommentsView mWeiboCommentsView;
+    private List<Comment> mComments;
     private Observable<Comment> mCommentObservable;
     private Observable<List<Comment>> mWeiboRefreshObservable;
 
@@ -60,11 +60,10 @@ public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboComm
      */
     private void initEventListener() {
         mCommentObservable = RxBus.getDefault().register(Event.EVENT_COMMENT_WEIBO_SUCCESS);
-        mCommentObservable
-                .filter(new Func1<Comment, Boolean>() {
+        mCommentObservable.filter(new Func1<Comment, Boolean>() {
                     @Override
                     public Boolean call(Comment comment) {
-                        return comment.getStatus().getId().longValue() == mWeiboId;
+                        return comment.getStatus().getId() == mWeiboId;
                     }
                 })
                 .doOnNext(new Action1<Comment>() {

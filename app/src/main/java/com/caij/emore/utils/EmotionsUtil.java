@@ -199,6 +199,9 @@ public class EmotionsUtil {
         imageEmotionMap.put("[互粉]", R.mipmap.f_hufen);
         imageEmotionList.add(new Emotion("[互粉]", R.mipmap.f_hufen));
 
+        imageEmotionMap.put("[带着微博去旅行]", R.mipmap.d_travel);
+        imageEmotionList.add(new Emotion("[带着微博去旅行]", R.mipmap.d_travel));
+
         imageEmotionMap.put("[心]", R.mipmap.l_xin);
         imageEmotionList.add(new Emotion("[心]", R.mipmap.l_xin));
 
