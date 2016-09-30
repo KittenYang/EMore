@@ -65,12 +65,12 @@ public class LocalUserSource implements UserSource{
     }
 
     @Override
-    public Observable<User> followUser(String accessToken, String screen_name) {
+    public Observable<User> followUser(String accessToken, String screen_name, long uid) {
         return null;
     }
 
     @Override
-    public Observable<User> unfollowUser(String accessToken, String screen_name) {
+    public Observable<User> unfollowUser(String accessToken, String screen_name, long uid) {
         return null;
     }
 

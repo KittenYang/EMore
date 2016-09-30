@@ -1,6 +1,5 @@
 package com.caij.emore.source.server;
 
-import com.caij.emore.Key;
 import com.caij.emore.api.WeiBoService;
 import com.caij.emore.api.WeiCoService;
 import com.caij.emore.bean.response.FriendshipResponse;
@@ -41,13 +40,13 @@ public class ServerUserSource implements UserSource{
     }
 
     @Override
-    public Observable<User> followUser(String accessToken, String screen_name) {
-        return mWeiCoService.followUser(screen_name);
+    public Observable<User> followUser(String accessToken, String screen_name, long uid) {
+        return mWeiCoService.followUser(screen_name, uid);
     }
 
     @Override
-    public Observable<User> unfollowUser(String accessToken, String screen_name) {
-        return mWeiCoService.unfollowUser(screen_name);
+    public Observable<User> unfollowUser(String accessToken, String screen_name, long uid) {
+        return mWeiCoService.unfollowUser(screen_name, uid);
     }
 
     @Override

@@ -54,7 +54,7 @@ public class AppApplication extends Application{
                     CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
 
                     strategy.setAppChannel(channel);
-                    CrashReport.initCrashReport(getApplicationContext(), Key.BUGLY_KEY, true, strategy);
+                    CrashReport.initCrashReport(getApplicationContext(), Key.BUGLY_KEY, false, strategy);
                     return null;
                 }
             });

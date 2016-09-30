@@ -240,11 +240,11 @@ public interface WeiCoService {
 
     @FormUrlEncoded
     @POST("2/friendships/create")
-    Observable<User> followUser(@Field("screen_name") String screen_name);
+    Observable<User> followUser(@Field("screen_name") String screen_name, @Field("uid") long uid);
 
     @FormUrlEncoded
     @POST("2/friendships/destroy")
-    Observable<User> unfollowUser(@Field("screen_name") String screen_name);
+    Observable<User> unfollowUser(@Field("screen_name") String screen_name, @Field("uid") long uid);
 
     @FormUrlEncoded
     @POST("2/comments/destroy")

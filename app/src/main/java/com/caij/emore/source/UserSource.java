@@ -18,9 +18,9 @@ public interface UserSource {
 
     public void saveWeiboUser(User user);
 
-    Observable<User> followUser(String accessToken, String screen_name);
+    Observable<User> followUser(String accessToken, String screen_name, long uid);
 
-    Observable<User> unfollowUser(String accessToken, String screen_name);
+    Observable<User> unfollowUser(String accessToken, String screen_name, long uid);
 
     Observable<FriendshipResponse> getFriends(String accessToken, long uid, int count, int trim_status, long cursor);
 

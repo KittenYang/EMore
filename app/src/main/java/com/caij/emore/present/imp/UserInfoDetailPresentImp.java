@@ -17,7 +17,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/6/30.
@@ -30,6 +29,8 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     private String mToken;
     private String mName;
     private Observable<User> mUserObservable;
+
+    private User mUser;
 
     public UserInfoDetailPresentImp(String token, String name, DetailUserView userView,
                                     UserSource serverUserSource, UserSource localUserSource) {
@@ -44,7 +45,7 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     @Override
     public void follow() {
         mUserView.showDialogLoading(true);
-        Subscription subscription = mServerUserSource.followUser(mToken, mName)
+        Subscription subscription = mServerUserSource.followUser(mToken, mName, mUser.getId())
                 .compose(new ErrorCheckerTransformer<User>())
                 .doOnNext(new Action1<User>() {
                     @Override
@@ -75,7 +76,7 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     @Override
     public void unFollow() {
         mUserView.showDialogLoading(true);
-        Subscription subscription = mServerUserSource.unfollowUser(mToken, mName)
+        Subscription subscription = mServerUserSource.unfollowUser(mToken, mName, mUser.getId())
                 .compose(new ErrorCheckerTransformer<User>())
                 .doOnNext(new Action1<User>() {
                     @Override
@@ -143,6 +144,7 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
 
                     @Override
                     public void onNext(User user) {
+                        mUser = user;
                         mUserView.setUser(user);
                     }
                 });

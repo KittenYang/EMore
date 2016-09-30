@@ -40,7 +40,7 @@ ext {
     photoViewVersion = "1.2.6"
     jsoupVersion = "1.8.2"
     floatingactionbuttonVersion = "1.10.1"
-    crashreportVersion = "2.1.7"
+    crashreportVersion = "2.3.0"
     nativecrashreportVersion = "2.2.0"
     searchviewVersion = "3.4.1"
 }
