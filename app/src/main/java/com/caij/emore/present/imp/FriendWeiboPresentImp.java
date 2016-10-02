@@ -117,7 +117,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                             mView.toRefresh();
                         }
 
-                        if (weibos.size() > PAGE_COUNT){
+                        if (weibos.size() >= PAGE_COUNT){
                             mView.onLoadComplete(true);
                         }
                     }
