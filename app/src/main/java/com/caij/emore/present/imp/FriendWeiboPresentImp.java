@@ -175,10 +175,6 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     public void loadMore() {
         Subscription subscription = getFriendWeiboObservable(mNextCursor)
             .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
-                        @Override
-                        public void onCompleted() {
-
-                        }
 
                         @Override
                         protected void onFail(Throwable e) {
@@ -213,7 +209,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                         mLocalWeiboSource.saveWeibos(mAccount.getToken().getAccess_token(), weibos);
                     }
                 })
-                .compose(new SchedulerTransformer<List<Weibo>>());
+                .compose(SchedulerTransformer.<List<Weibo>>create());
     }
 
     @Override
