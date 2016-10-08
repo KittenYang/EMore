@@ -39,31 +39,20 @@ public class UserPrefs {
     private void initAccount() {
         List<Account> accounts = mAccountDao.queryBuilder().
                 where(AccountDao.Properties.Status.eq(Account.STATUS_USING)).list();
-        if (accounts != null && accounts.size() > 0) {
+        if (accounts != null && accounts.size() > 0) { //如果存在多个正在使用的账号 直接清除掉 只留一个正在使用的账号
             if (accounts.size() > 1) {
-                throw new IllegalStateException("have multiple account using");
-            }else {
-                mAccount = accounts.get(0);
-                Token token = mTokenDao.load(String.valueOf(mAccount.getUid()));
-                mAccount.setToken(token);
+//                throw new IllegalStateException("have multiple account using");
+                for (int i = 1; i < accounts.size(); i ++) {
+                    Account account = accounts.get(i);
+                    account.setStatus(Account.STATUS_BACKGROUND);
+                    save(account);
+                }
             }
+
+            mAccount = accounts.get(0);
+            Token token = mTokenDao.load(String.valueOf(mAccount.getUid()));
+            mAccount.setToken(token);
         }
-//        Account account = new Account();
-//        account.setUid(2813584522L);
-//        Token emore = new Token();
-//        emore.setAccess_token("2.00WrV6EDP_6nCCcc4d7c35f5Pa1zPC");
-//        emore.setExpires_in(2625519L);
-//        emore.setUid("2813584522");
-//
-//        Token weico = new Token();
-//        weico.setAccess_token("2.00WrV6ED06XASO9c276f3c950k7avt");
-//        weico.setExpires_in(2625519L);
-//        weico.setUid("2813584522");
-//
-//        account.setWeiCoToken(weico);
-//        account.setEmoreToken(emore);
-//
-//        mAccount = account;
     }
 
     public static UserPrefs get(Context context) {
@@ -82,19 +71,6 @@ public class UserPrefs {
             return mAccount.getToken();
         }
         return null;
-    }
-
-    public void commit(Account account) {
-        this.mAccount = account;
-        if (account != null) {
-            for (Account account1 : getAccounts()) {
-                account1.setStatus(Account.STATUS_BACKGROUND);
-                save(account1);
-            }
-
-            account.setStatus(Account.STATUS_USING);
-            save(account);
-        }
     }
 
     private void save(Account account) {
@@ -118,7 +94,14 @@ public class UserPrefs {
     }
 
     public void changeAccount(Account account) {
-        commit(account);
+        if (mAccount != null) {
+            mAccount.setStatus(Account.STATUS_BACKGROUND);
+            save(mAccount);
+        }
+
+        mAccount = account;
+        mAccount.setStatus(Account.STATUS_USING);
+        save(mAccount);
     }
 
     public void deleteAccount(Account account) {
@@ -133,9 +116,9 @@ public class UserPrefs {
         }
     }
 
-    public static class DBHelp extends DaoMaster.OpenHelper {
+    private static class DBHelp extends DaoMaster.OpenHelper {
 
-        public DBHelp(Context context, String name, SQLiteDatabase.CursorFactory factory) {
+        DBHelp(Context context, String name, SQLiteDatabase.CursorFactory factory) {
             super(context, name, factory);
         }
 
