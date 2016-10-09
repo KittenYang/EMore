@@ -212,7 +212,7 @@ public class VideoViewPlayingActivity extends BaseActivity<VideoPlayPresent> imp
     @Override
     protected void setTheme() {
         int themePosition = ThemeUtils.getThemePosition(this);
-        setTheme(ThemeUtils.THEME_ARR[themePosition][3]);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][ThemeUtils.APP_VIDEO_PLAY_THEME_POSITION]);
     }
 
     @Override

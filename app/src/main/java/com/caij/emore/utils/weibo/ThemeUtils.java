@@ -13,6 +13,13 @@ public class ThemeUtils {
     private static final String SP_THEME_NAME = "sp_theme";
     private static final String THEME_NAME = "theme";
 
+    public static final int APP_THEME_POSITION = 0;
+    public static final int APP_MAIN_THEME_POSITION = 1;
+    public static final int APP_IMAGE_PRE_THEME_POSITION = 2;
+    public static final int APP_VIDEO_PLAY_THEME_POSITION = 3;
+    public static final int APP_SPALH_THEME_POSITION = 4;
+    public static final int APP_SEARCH_THEME_POSITION = 5;
+
     public static int[][] THEME_ARR = {
             { R.style.AppTheme_Default, R.style.AppTheme_Default_Main, R.style.AppTheme_Default_ImagePrewActivity, R.style.AppTheme_Default_VideoPlayActivity, R.style.AppTheme_Default_SplashActivity, R.style.AppTheme_Default_SearchActivity },
             { R.style.AppTheme_Pink, R.style.AppTheme_Pink_Main, R.style.AppTheme_Pink_ImagePrewActivity, R.style.AppTheme_Pink_VideoPlayActivity, R.style.AppTheme_Pink_SplashActivity, R.style.AppTheme_Pink_SearchActivity },

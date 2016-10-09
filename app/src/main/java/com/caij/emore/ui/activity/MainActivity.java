@@ -119,7 +119,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
     @Override
     protected void setTheme() {
         int themePosition = ThemeUtils.getThemePosition(this);
-        setTheme(ThemeUtils.THEME_ARR[themePosition][1]);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][ThemeUtils.APP_MAIN_THEME_POSITION]);
     }
 
     private void initContent(Bundle savedInstanceState) {

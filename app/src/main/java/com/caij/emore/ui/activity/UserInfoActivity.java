@@ -135,7 +135,7 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
     @Override
     protected void setTheme() {
         int themePosition = ThemeUtils.getThemePosition(this);
-        setTheme(ThemeUtils.THEME_ARR[themePosition][1]);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][ThemeUtils.APP_MAIN_THEME_POSITION]);
     }
 
     @Override

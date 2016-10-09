@@ -111,7 +111,7 @@ public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent
     @Override
     protected void setTheme() {
         int themePosition = ThemeUtils.getThemePosition(this);
-        setTheme(ThemeUtils.THEME_ARR[themePosition][5]);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][ThemeUtils.APP_SEARCH_THEME_POSITION]);
     }
 
     @Override

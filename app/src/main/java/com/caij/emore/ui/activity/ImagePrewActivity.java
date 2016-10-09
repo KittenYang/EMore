@@ -55,7 +55,7 @@ public class ImagePrewActivity extends BaseActivity {
     @Override
     protected void setTheme() {
         int themePosition = ThemeUtils.getThemePosition(this);
-        setTheme(ThemeUtils.THEME_ARR[themePosition][2]);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][ThemeUtils.APP_IMAGE_PRE_THEME_POSITION]);
     }
 
     @Override

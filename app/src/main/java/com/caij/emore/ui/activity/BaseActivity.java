@@ -37,7 +37,7 @@ public abstract class BaseActivity<P extends BasePresent> extends AppCompatActiv
 
     protected void setTheme() {
         int themePosition = ThemeUtils.getThemePosition(this);
-        setTheme(ThemeUtils.THEME_ARR[themePosition][0]);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][ThemeUtils.APP_THEME_POSITION]);
     }
 
     protected abstract P createPresent();
