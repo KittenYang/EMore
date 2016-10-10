@@ -1,11 +1,12 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.account.Account;
 import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.dao.StatusManager;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboMentionPresent;
+import com.caij.emore.remote.AttitudeApi;
+import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.TimeLineWeiboView;
-import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
@@ -27,10 +28,8 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
     private String mTopic;
     private int page;
 
-    public TopicPresentImp(Account account, String topic, WeiboSource serverWeiboSource,
-                           WeiboSource localWeiboSource,
-                           TimeLineWeiboView timeLineWeiboView) {
-        super(account, timeLineWeiboView, serverWeiboSource, localWeiboSource);
+    public TopicPresentImp(String topic, TimeLineWeiboView view, StatusApi statusApi, StatusManager statusManager, AttitudeApi attitudeApi) {
+        super(view, statusApi, statusManager, attitudeApi);
         mTopic = topic;
     }
 
@@ -94,8 +93,8 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
     }
 
     private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
-        return mServerWeiboSource.getTopicsByKey(mAccount.getToken().getAccess_token(), mTopic, page, COUNT)
-                .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
+        return mStatusApi.getTopicsByKey(mTopic, page, COUNT)
+                .compose(ErrorCheckerTransformer.<QueryWeiboResponse>create())
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(QueryWeiboResponse queryWeiboResponse) {

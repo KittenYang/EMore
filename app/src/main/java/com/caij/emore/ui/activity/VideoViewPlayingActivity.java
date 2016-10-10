@@ -28,10 +28,8 @@ import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.VideoInfo;
-import com.caij.emore.present.VideoPlayPresent;
-import com.caij.emore.present.imp.VideoPlayPresentImp;
+import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.view.VideoPlayView;
-import com.caij.emore.source.server.ServerVideoInfoSource;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.weibo.ThemeUtils;
@@ -39,7 +37,7 @@ import com.caij.emore.utils.weibo.ThemeUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class VideoViewPlayingActivity extends BaseActivity<VideoPlayPresent> implements OnPreparedListener,
+public class VideoViewPlayingActivity extends BaseActivity implements OnPreparedListener,
         OnCompletionListener,
         OnErrorListener,
         OnInfoListener,
@@ -204,9 +202,7 @@ public class VideoViewPlayingActivity extends BaseActivity<VideoPlayPresent> imp
         mMainHandler = new MainHandler();
 
         mVideoSource = getIntent().getStringExtra(Key.PATH);
-        if (TextUtils.isEmpty(mVideoSource)) {
-            mPresent.getVideoInfo();
-        }
+
     }
 
     @Override
@@ -216,9 +212,8 @@ public class VideoViewPlayingActivity extends BaseActivity<VideoPlayPresent> imp
     }
 
     @Override
-    protected VideoPlayPresent createPresent() {
-        long weibiId = getIntent().getLongExtra(Key.ID, -1);
-        return new VideoPlayPresentImp(weibiId, new ServerVideoInfoSource(), this);
+    protected BasePresent createPresent() {
+        return null;
     }
 
     /**

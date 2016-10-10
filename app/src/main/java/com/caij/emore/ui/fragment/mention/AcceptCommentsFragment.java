@@ -8,12 +8,12 @@ import com.caij.emore.account.Account;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Comment;
+import com.caij.emore.dao.imp.NotifyManagerImp;
 import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.present.imp.AcceptCommentsPresentImp;
+import com.caij.emore.remote.imp.CommentApiImp;
+import com.caij.emore.remote.imp.UnReadMessageApiImp;
 import com.caij.emore.ui.view.RefreshListView;
-import com.caij.emore.source.local.LocalMessageSource;
-import com.caij.emore.source.server.ServerMessageSource;
-import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
 import com.caij.emore.ui.adapter.MessageCommentAdapter;
@@ -48,8 +48,8 @@ public class AcceptCommentsFragment extends SwipeRefreshRecyclerViewFragment<Com
 
     protected RefreshListPresent createPresent() {
         Account account = UserPrefs.get(getActivity()).getAccount();
-        return new AcceptCommentsPresentImp(account, new ServerWeiboSource(),
-                new ServerMessageSource(), new LocalMessageSource(), this);
+        return new AcceptCommentsPresentImp(account, new CommentApiImp(),
+                new UnReadMessageApiImp(), new NotifyManagerImp(), this);
     }
 
 

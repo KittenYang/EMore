@@ -7,13 +7,14 @@ import java.io.Serializable;
 /**
  * Created by Caij on 2016/8/9.
  */
-public class MessageResponseEvent implements Serializable {
+public class MessageResponseEvent extends Event {
 
     public long localMessageId;
 
     public DirectMessage message;
 
-    public MessageResponseEvent(long localMessageId, DirectMessage message) {
+    public MessageResponseEvent(String type, long localMessageId, DirectMessage message) {
+        this.type = type;
         this.localMessageId = localMessageId;
         this.message = message;
     }

@@ -1,13 +1,15 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.account.Account;
 import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.dao.NotifyManager;
+import com.caij.emore.dao.StatusManager;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboMentionPresent;
+import com.caij.emore.remote.AttitudeApi;
+import com.caij.emore.remote.StatusApi;
+import com.caij.emore.remote.UnReadMessageApi;
 import com.caij.emore.ui.view.TimeLineWeiboView;
-import com.caij.emore.source.MessageSource;
-import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
@@ -27,17 +29,18 @@ public class WeiboMentionPresentImp extends AbsListTimeLinePresent<TimeLineWeibo
 
     private static final int COUNT = 20;
 
-    MessageSource mServerMessageSource;
-    MessageSource mLocalMessageSource;
+    private long mUid;
 
-    public WeiboMentionPresentImp(Account account, WeiboSource serverWeiboSource,
-                                  WeiboSource localWeiboSource,
-                                  MessageSource serverMessageSource,
-                                  MessageSource localMessageSource,
-                                  TimeLineWeiboView timeLineWeiboView) {
-        super(account, timeLineWeiboView, serverWeiboSource, localWeiboSource);
-        mServerMessageSource = serverMessageSource;
-        mLocalMessageSource = localMessageSource;
+    private UnReadMessageApi mUnReadMessageApi;
+    private NotifyManager mNotifyManager;
+
+    public WeiboMentionPresentImp(long uid, TimeLineWeiboView view, StatusApi statusApi,
+                                  StatusManager statusManager, AttitudeApi attitudeApi,
+                                  UnReadMessageApi unReadMessageApi, NotifyManager notifyManager) {
+        super(view, statusApi, statusManager, attitudeApi);
+        mUid = uid;
+        mUnReadMessageApi = unReadMessageApi;
+        mNotifyManager = notifyManager;
     }
 
     @Override
@@ -67,9 +70,8 @@ public class WeiboMentionPresentImp extends AbsListTimeLinePresent<TimeLineWeibo
                         mView.onRefreshComplete();
                         mView.onLoadComplete(weibos.size() > COUNT - 2);
 
-                        MessageUtil.resetUnReadMessage(mAccount.getToken().getAccess_token(),
-                                UnReadMessage.TYPE_MENTION_STATUS, mAccount.getUid(),
-                                mServerMessageSource, mLocalMessageSource);
+                        MessageUtil.resetUnReadMessage(UnReadMessage.TYPE_MENTION_STATUS, mUid,
+                                mUnReadMessageApi, mNotifyManager);
                     }
                 });
         addSubscription(su);
@@ -105,7 +107,7 @@ public class WeiboMentionPresentImp extends AbsListTimeLinePresent<TimeLineWeibo
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getWeiboMentions(mAccount.getToken().getAccess_token(), 0, maxId, COUNT, 1)
+        return mStatusApi.getWeiboMentions(0, maxId, COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override

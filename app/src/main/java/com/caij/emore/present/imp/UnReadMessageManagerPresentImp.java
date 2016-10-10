@@ -1,7 +1,7 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.AppApplication;
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.account.Token;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.UnReadMessageManagerPresent;
@@ -40,7 +40,7 @@ public class UnReadMessageManagerPresentImp extends AbsBasePresent implements Un
 
     @Override
     public void onCreate() {
-        mIntervalMillisUpdateObservable = RxBus.getDefault().register(Event.INTERVAL_MILLIS_UPDATE);
+        mIntervalMillisUpdateObservable = RxBus.getDefault().register(EventTag.INTERVAL_MILLIS_UPDATE);
         mServerMessageSource = new ServerMessageSource();
         mIntervalMillisUpdateObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
@@ -54,7 +54,7 @@ public class UnReadMessageManagerPresentImp extends AbsBasePresent implements Un
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.getDefault().unregister(Event.INTERVAL_MILLIS_UPDATE, mIntervalMillisUpdateObservable);
+        RxBus.getDefault().unregister(EventTag.INTERVAL_MILLIS_UPDATE, mIntervalMillisUpdateObservable);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class UnReadMessageManagerPresentImp extends AbsBasePresent implements Un
                         @Override
                         public void onNext(UnReadMessage unreadMessage) {
                             notifyMessage(unreadMessage);
-                            RxBus.getDefault().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unreadMessage);
+                            RxBus.getDefault().post(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE, unreadMessage);
                         }
                     });
             addSubscription(subscription);
@@ -113,7 +113,7 @@ public class UnReadMessageManagerPresentImp extends AbsBasePresent implements Un
 
                         if (localUnReadMessage == null ||
                                 (serverUnReadMessage.getDm_single() - localUnReadMessage.getDm_single() > 0)) {
-                            RxBus.getDefault().post(Event.EVENT_HAS_NEW_DM, serverUnReadMessage);
+                            RxBus.getDefault().post(EventTag.EVENT_HAS_NEW_DM, serverUnReadMessage);
                         }
                     }
                 });

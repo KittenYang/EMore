@@ -10,14 +10,14 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.account.UserPrefs;
+import com.caij.emore.dao.imp.StatusManagerImp;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.WeiboAndUserSearchPresent;
 import com.caij.emore.present.imp.WeiboAndUserSearchPresentImp;
+import com.caij.emore.remote.imp.AttitudeApiImp;
+import com.caij.emore.remote.imp.StatusApiImp;
+import com.caij.emore.remote.imp.UserApiImp;
 import com.caij.emore.ui.view.WeiboAndUserSearchView;
-import com.caij.emore.source.local.LocalWeiboSource;
-import com.caij.emore.source.server.ServerUserSource;
-import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.fragment.weibo.TimeLineWeiboFragment;
 import com.caij.emore.utils.ImageLoader;
@@ -59,8 +59,8 @@ public class WeiboAndUserSearchFragment extends TimeLineWeiboFragment<WeiboAndUs
     @Override
     protected WeiboAndUserSearchPresent createPresent() {
         String key = getArguments().getString(Key.ID);
-        return new WeiboAndUserSearchPresentImp(UserPrefs.get(getActivity()).getAccount(), key, this,
-                new ServerWeiboSource(), new LocalWeiboSource(), new ServerUserSource());
+        return new WeiboAndUserSearchPresentImp(key, this,
+                new StatusApiImp(), new StatusManagerImp(), new AttitudeApiImp(), new UserApiImp());
     }
 
     @Override

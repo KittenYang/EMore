@@ -4,8 +4,8 @@ import com.caij.emore.bean.WeiboImageInfo;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.UserWeiboPresent;
+import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.TimeLineWeiboImageView;
-import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 
 import java.util.ArrayList;
@@ -28,16 +28,16 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
 
     private String mToken;
     private TimeLineWeiboImageView mView;
-    private WeiboSource mServerWeiboSource;
+    private StatusApi mStatusApi;
     private List<Weibo> mWeibos;
     private long mUid;
     private List<WeiboImageInfo> mPicUrl;
 
-    public UserImagePresentImp(String token, long uid, TimeLineWeiboImageView view, WeiboSource serverWeiboSource) {
+    public UserImagePresentImp(String token, long uid, TimeLineWeiboImageView view, StatusApi statusApi) {
         mToken = token;
         mView = view;
         mUid = uid;
-        mServerWeiboSource = serverWeiboSource;
+        mStatusApi = statusApi;
         mWeibos = new ArrayList<>();
         mPicUrl = new ArrayList<>();
     }
@@ -79,7 +79,7 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
 
     @Override
     public void refresh() {
-        Subscription subscription = mServerWeiboSource.getUseWeibo(mToken, mUid, 2, 0, 0, PAGE_COUNT, 1)
+        Subscription subscription = mStatusApi.getUseWeibo(mUid, 2, 0, 0, PAGE_COUNT, 1)
                 .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(UserWeiboResponse response) {
@@ -131,7 +131,7 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
         if (mWeibos.size() > 0) {
             maxId = mWeibos.get(mWeibos.size() - 1).getId();
         }
-        Subscription subscription = mServerWeiboSource.getUseWeibo(mToken, mUid, 2, 0, maxId, PAGE_COUNT, 1)
+        Subscription subscription = mStatusApi.getUseWeibo(mUid, 2, 0, maxId, PAGE_COUNT, 1)
                 .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
                     @Override
                     public Observable<Weibo> call(UserWeiboResponse response) {

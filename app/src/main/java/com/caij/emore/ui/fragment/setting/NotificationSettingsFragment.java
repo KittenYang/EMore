@@ -11,7 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.caij.emore.AppSettings;
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.R;
 import com.caij.emore.ui.activity.BaseActivity;
 import com.caij.emore.utils.DateUtil;
@@ -93,7 +93,7 @@ public class NotificationSettingsFragment extends PreferenceFragment
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		if ("pInterval".equals(preference.getKey())) {
 			setMessageIntervalSetting(Integer.parseInt(newValue.toString()));
-			RxBus.getDefault().post(Event.INTERVAL_MILLIS_UPDATE, null);
+			RxBus.getDefault().post(EventTag.INTERVAL_MILLIS_UPDATE, null);
 		}
         else if ("pNotificationEnable".equalsIgnoreCase(preference.getKey())) {
             onCheckedChanged(null, Boolean.parseBoolean(newValue.toString()));

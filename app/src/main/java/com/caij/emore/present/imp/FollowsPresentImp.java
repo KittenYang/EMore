@@ -4,12 +4,13 @@ import com.caij.emore.AppApplication;
 import com.caij.emore.account.Account;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.response.FriendshipResponse;
+import com.caij.emore.dao.NotifyManager;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.FriendshipPresent;
+import com.caij.emore.remote.UnReadMessageApi;
+import com.caij.emore.remote.UserApi;
 import com.caij.emore.ui.view.FriendshipView;
-import com.caij.emore.source.MessageSource;
-import com.caij.emore.source.UserSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
@@ -29,24 +30,23 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
 
     private static final int PAGE_SIZE = 20;
 
-    private Account mAccount;
     private long mUid;
-    private UserSource mUserSource;
     private FriendshipView mFriendshipView;
     private FriendshipResponse mLastFriendshipResponse;
     private List<User> mUsers;
-    MessageSource mServerMessageSource;
-    MessageSource mLocalMessageSource;
 
-    public FollowsPresentImp(Account account, long uid, UserSource userSource,
-                             MessageSource serverMessageSource,
-                             MessageSource localMessageSource,
+    private UserApi mUserApi;
+    private UnReadMessageApi mUnReadMessageApi;
+    private NotifyManager mNotifyManager;
+
+    public FollowsPresentImp(long uid, UserApi userApi,
+                             UnReadMessageApi unReadMessageApi,
+                             NotifyManager notifyManager,
                              FriendshipView friendshipView) {
-        mAccount = account;
         mUid = uid;
-        mUserSource = userSource;
-        mServerMessageSource = serverMessageSource;
-        mLocalMessageSource = localMessageSource;
+        mUserApi = userApi;
+        mUnReadMessageApi = unReadMessageApi;
+        mNotifyManager = notifyManager;
         mFriendshipView = friendshipView;
         mUsers = new ArrayList<>();
     }
@@ -86,8 +86,7 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
     }
 
     public Observable<List<User>> createUsersObservable(long next_cursor, final boolean isRefresh) {
-        return mUserSource.getFollowers(mAccount.getToken().getAccess_token(),
-                mUid, PAGE_SIZE, 0, next_cursor)
+        return mUserApi.getFollowers(mUid, PAGE_SIZE, 0, next_cursor)
                 .compose(new ErrorCheckerTransformer<FriendshipResponse>())
                 .flatMap(new Func1<FriendshipResponse, Observable<User>>() {
                     @Override
@@ -128,10 +127,9 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
                         mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
                         mFriendshipView.onRefreshComplete();
 
-                        if (mUid == Long.parseLong(mAccount.getToken().getUid())) {
-                            MessageUtil.resetUnReadMessage(mAccount.getToken().getAccess_token(),
-                                    UnReadMessage.TYPE_FOLLOWER, mAccount.getUid(),
-                                    mServerMessageSource, mLocalMessageSource);
+                        if (mUid == UserPrefs.get(AppApplication.getInstance()).getAccount().getUid()) {
+                            MessageUtil.resetUnReadMessage(UnReadMessage.TYPE_FOLLOWER, mUid,
+                                    mUnReadMessageApi, mNotifyManager);
                         }
                     }
                 });

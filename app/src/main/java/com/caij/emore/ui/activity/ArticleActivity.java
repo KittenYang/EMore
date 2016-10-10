@@ -19,7 +19,7 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Article;
 import com.caij.emore.present.ArticlePresent;
 import com.caij.emore.present.imp.ArticlePresentImp;
-import com.caij.emore.source.server.SercerArticleSource;
+import com.caij.emore.remote.imp.ArticleApiImp;
 import com.caij.emore.ui.view.ArticleView;
 import com.caij.emore.widget.weibo.html.ArticleHeadView;
 
@@ -75,7 +75,7 @@ public class ArticleActivity extends BaseToolBarActivity<ArticlePresent> impleme
     protected ArticlePresent createPresent() {
         String token = UserPrefs.get(this).getToken().getAccess_token();
         String contentId = getIntent().getStringExtra(Key.ID);
-        return new ArticlePresentImp(token, contentId, new SercerArticleSource(), this);
+        return new ArticlePresentImp(token, contentId, new ArticleApiImp(), this);
     }
 
     @Override

@@ -6,9 +6,8 @@ import android.support.annotation.NonNull;
 
 import com.caij.emore.AppApplication;
 import com.caij.emore.BuildConfig;
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.Key;
-import com.caij.emore.database.dao.DaoSession;
 import com.caij.emore.service.EMoreService;
 import com.caij.emore.service.Pipe;
 import com.caij.emore.service.PipeEvent;
@@ -74,9 +73,9 @@ public class Init {
         mRxBusListener = new RxBus.ListenerAdapter() {
             @Override
             public void onPost(Object tag, @NonNull Object content) {
-                if (tag.equals(Event.PUBLISH_WEIBO)
-                        || tag.equals(Event.SEND_MESSAGE_EVENT)
-                        || tag.equals(Event.INTERVAL_MILLIS_UPDATE)) {
+                if (tag.equals(EventTag.PUBLISH_WEIBO)
+                        || tag.equals(EventTag.SEND_MESSAGE_EVENT)
+                        || tag.equals(EventTag.INTERVAL_MILLIS_UPDATE)) {
                     LogUtil.d(Init.this, "Client post event " + tag.toString() + " to other process");
                     senEventToEMoreServiceProcess(tag, content);
                 }

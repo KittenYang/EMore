@@ -1,0 +1,43 @@
+package com.caij.emore.remote.imp;
+
+import com.caij.emore.api.WeiCoService;
+import com.caij.emore.bean.Attitude;
+import com.caij.emore.bean.response.AttitudeResponse;
+import com.caij.emore.bean.response.Response;
+import com.caij.emore.bean.response.WeiboAttitudeResponse;
+import com.caij.emore.remote.AttitudeApi;
+
+import rx.Observable;
+
+/**
+ * Created by Caij on 2016/10/9.
+ */
+
+public class AttitudeApiImp implements AttitudeApi {
+
+    private WeiCoService mWeiCoService;
+
+    public AttitudeApiImp() {
+        mWeiCoService = WeiCoService.WeiCoFactory.create();
+    }
+
+    @Override
+    public Observable<Attitude> attitudesToWeibo(String attitude, long weiboId) {
+        return mWeiCoService.attitudesWeibo(attitude, weiboId);
+    }
+
+    @Override
+    public Observable<Response> destoryAttitudesWeibo(String attitude, long weiboId) {
+        return mWeiCoService.destoryAttitudesWeibo(attitude, weiboId);
+    }
+
+    @Override
+    public Observable<WeiboAttitudeResponse> getWeiboAttiyudes(long id, int page, int count) {
+        return mWeiCoService.getWeiboAttitudes(id, page, count);
+    }
+
+    @Override
+    public Observable<AttitudeResponse> getToMeAttitudes(long maxId, long sinceId, int page, int count) {
+        return mWeiCoService.getToMeAttitudes(sinceId, maxId, page, count);
+    }
+}

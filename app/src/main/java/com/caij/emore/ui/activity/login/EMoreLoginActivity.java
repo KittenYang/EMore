@@ -11,7 +11,7 @@
 //import com.caij.emore.present.imp.LoginPresentImp;
 //import com.caij.emore.ui.activity.MainActivity;
 //import com.caij.emore.ui.view.LoginView;
-//import com.caij.emore.source.server.LoginSourceImp;
+//import com.caij.emore.remote.imp.LoginApiImp;
 //
 ///**
 // * Created by Caij on 2016/7/8.
@@ -33,7 +33,7 @@
 //
 //    @Override
 //    protected LoginPresent createPresent() {
-//        return new LoginPresentImp(new LoginSourceImp(), this);
+//        return new LoginPresentImp(new LoginApiImp(), this);
 //    }
 //
 //    @Override

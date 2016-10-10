@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.caij.emore.account.UserPrefs;
+import com.caij.emore.dao.imp.StatusManagerImp;
 import com.caij.emore.present.HotWeiboPresent;
 import com.caij.emore.present.imp.HotWeiboPresentImp;
-import com.caij.emore.source.local.LocalWeiboSource;
-import com.caij.emore.source.server.ServerWeiboSource;
+import com.caij.emore.remote.imp.AttitudeApiImp;
+import com.caij.emore.remote.imp.StatusApiImp;
 
 /**
  * Created by Caij on 2016/7/25.
@@ -30,8 +30,7 @@ public class HotWeiboFragment extends TimeLineWeiboFragment<HotWeiboPresent> {
 
     @Override
     protected HotWeiboPresent createPresent() {
-        return new HotWeiboPresentImp(UserPrefs.get(getActivity()).getAccount(), this,
-                new ServerWeiboSource(), new LocalWeiboSource());
+        return new HotWeiboPresentImp(this, new StatusApiImp(), new StatusManagerImp(), new AttitudeApiImp());
     }
 
 }

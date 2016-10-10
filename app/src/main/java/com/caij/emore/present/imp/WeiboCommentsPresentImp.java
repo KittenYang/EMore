@@ -1,12 +1,15 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.bean.Comment;
+import com.caij.emore.bean.event.CommentEvent;
+import com.caij.emore.bean.event.Event;
+import com.caij.emore.bean.event.StatusAttitudeEvent;
+import com.caij.emore.bean.event.StatusRefreshEvent;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
-import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboCommentsPresent;
+import com.caij.emore.remote.CommentApi;
 import com.caij.emore.ui.view.WeiboCommentsView;
-import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -19,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -30,28 +32,26 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Caij on 2016/6/16.
  */
-public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboCommentsPresent {
+public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboCommentsPresent, Action1<Event> {
 
     private static final int PAGE_COUNET = 20;
 
     private String mToken;
     private long mWeiboId;
-    private WeiboSource mServerCommentSource;
-    private WeiboSource mLocalWeiboSource;
     private WeiboCommentsView mWeiboCommentsView;
     private List<Comment> mComments;
-    private Observable<Comment> mCommentObservable;
-    private Observable<List<Comment>> mWeiboRefreshObservable;
+    private Observable<Event> mCommentObservable;
+    private Observable<Event> mWeiboRefreshObservable;
 
     private long mNextCursor;
 
+    private CommentApi mCommentApi;
+
     public WeiboCommentsPresentImp(String token, long weiboId,
-                                   WeiboSource serverCommentSource,
-                                   WeiboSource localWeiboSource,
+                                   CommentApi commentApi,
                                    WeiboCommentsView weiboCommentsView) {
         mToken = token;
-        mServerCommentSource = serverCommentSource;
-        mLocalWeiboSource = localWeiboSource;
+        mCommentApi = commentApi;
         mWeiboCommentsView = weiboCommentsView;
         mWeiboId = weiboId;
         mComments = new ArrayList<>();
@@ -61,43 +61,46 @@ public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboComm
      * 这里是在fist visible 后添加事件的  如果不可见  可见时会自动刷新
      */
     private void registerEvent() {
-        mCommentObservable = RxBus.getDefault().register(Event.EVENT_COMMENT_WEIBO_SUCCESS);
-        mCommentObservable.filter(new Func1<Comment, Boolean>() {
+        mCommentObservable = RxBus.getDefault().register(EventTag.EVENT_COMMENT_WEIBO_SUCCESS);
+        mCommentObservable.subscribe(this);
+
+        mWeiboRefreshObservable = RxBus.getDefault().register(EventTag.EVENT_STATUS_REFRESH);
+        mWeiboRefreshObservable.subscribe(this);
+    }
+
+    @Override
+    public void call(Event event) {
+        if (EventTag.EVENT_COMMENT_WEIBO_SUCCESS.equals(event.type)) {
+            CommentEvent commentEvent = (CommentEvent) event;
+            if (commentEvent.statusId == mWeiboId) {
+                SpannableStringUtil.paraeSpannable(commentEvent.comment);
+                mComments.add(0, commentEvent.comment);
+                mWeiboCommentsView.onCommentSuccess(mComments);
+            }
+        }else if (EventTag.EVENT_STATUS_REFRESH.equals(event.type)) {
+            StatusRefreshEvent statusRefreshEvent = (StatusRefreshEvent) event;
+            if (mWeiboId == statusRefreshEvent.statusId) {
+                refresh();
+            }
+        }
+    }
+
+    private void refresh() {
+        mNextCursor = 0L;
+        Subscription subscription =  getCommentsObservable(mNextCursor)
+                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mWeiboCommentsView) {
+
                     @Override
-                    public Boolean call(Comment comment) {
-                        return comment.getStatus().getId() == mWeiboId;
+                    protected void onFail(Throwable e) {
+
                     }
-                })
-                .doOnNext(new Action1<Comment>() {
+
                     @Override
-                    public void call(Comment comment) {
-                        SpannableStringUtil.paraeSpannable(comment);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Comment>() {
-                    @Override
-                    public void call(Comment comment) {
-                        mComments.add(0, comment);
-                        mWeiboCommentsView.onCommentSuccess(mComments);
+                    public void onNext(List<Comment> comments) {
+                        addRefreshDate(comments);
                     }
                 });
-
-        mWeiboRefreshObservable = RxBus.getDefault().register(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE);
-        mWeiboRefreshObservable.filter(new Func1<List<Comment>, Boolean>() {
-                @Override
-                public Boolean call(List<Comment> comments) {
-                    return comments != null && comments.size() > 0 && comments.get(0).getStatus().getId() == mWeiboId;
-                }
-            }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<List<Comment>>() {
-                @Override
-                public void call(List<Comment> comments) {
-                    LogUtil.d(WeiboCommentsPresentImp.this, "accept refresh event");
-
-                    addRefreshDate(comments);
-                }
-            });
+        addSubscription(subscription);
     }
 
     @Override
@@ -159,13 +162,12 @@ public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboComm
     }
 
     private Observable<List<Comment>> getCommentsObservable(long maxId) {
-        return mServerCommentSource.getCommentsByWeibo(mToken, mWeiboId, 0, maxId, PAGE_COUNET, 1)
+        return mCommentApi.getCommentsByWeibo(mWeiboId, 0, maxId, PAGE_COUNET, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
                 .flatMap(new Func1<QueryWeiboCommentResponse, Observable<List<Comment>>>() {
                     @Override
                     public Observable<List<Comment>> call(QueryWeiboCommentResponse response) {
                         mNextCursor = response.getNext_cursor();
-                        updateWeiboCommentsCount(response);
                         return Observable.just(response.getComments());
                     }
                 })
@@ -182,7 +184,7 @@ public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboComm
 
     @Override
     public void deleteComment(final Comment comment) {
-        Subscription subscription = mServerCommentSource.deleteComment(mToken, comment.getId())
+        Subscription subscription = mCommentApi.deleteComment(comment.getId())
                 .compose(new DefaultTransformer<Comment>())
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -211,40 +213,6 @@ public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboComm
         addSubscription(subscription);
     }
 
-    private void updateWeiboCommentsCount(final QueryWeiboCommentResponse queryWeiboCommentResponse) {
-        Subscription subscription = mLocalWeiboSource.getWeiboById(mToken, mWeiboId)
-                .filter(new Func1<Weibo, Boolean>() {
-                    @Override
-                    public Boolean call(Weibo weibo) {
-                        return weibo != null;
-                    }
-                }).doOnNext(new Action1<Weibo>() {
-                    @Override
-                    public void call(Weibo weibo) {
-                        weibo.setComments_count(queryWeiboCommentResponse.getTotal_number());
-                        weibo.setUpdate_time(System.currentTimeMillis());
-                        mLocalWeiboSource.saveWeibo(mToken, weibo);
-                    }
-                }).subscribe(new Subscriber<Weibo>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Weibo weibo) {
-                        RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
-                    }
-                });
-        addSubscription(subscription);
-    }
-
-
     @Override
     public void onCreate() {
 
@@ -253,8 +221,9 @@ public class WeiboCommentsPresentImp extends AbsBasePresent implements WeiboComm
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.getDefault().unregister(Event.EVENT_COMMENT_WEIBO_SUCCESS, mCommentObservable);
-        RxBus.getDefault().unregister(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE, mWeiboRefreshObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_COMMENT_WEIBO_SUCCESS, mCommentObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_STATUS_REFRESH, mWeiboRefreshObservable);
     }
+
 
 }

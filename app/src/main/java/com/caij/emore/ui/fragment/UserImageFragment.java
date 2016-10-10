@@ -15,8 +15,8 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.WeiboImageInfo;
 import com.caij.emore.present.UserWeiboPresent;
 import com.caij.emore.present.imp.UserImagePresentImp;
+import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.ui.view.TimeLineWeiboImageView;
-import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.adapter.UserGridImageAdapter;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
@@ -73,7 +73,7 @@ public class UserImageFragment extends RecyclerViewFragment<WeiboImageInfo, User
     protected UserWeiboPresent createPresent() {
         Token accessToken = UserPrefs.get(getActivity()).getToken();
         long uid = getArguments().getLong(Key.ID);
-        return new UserImagePresentImp(accessToken.getAccess_token(), uid, this, new ServerWeiboSource());
+        return new UserImagePresentImp(accessToken.getAccess_token(), uid, this, new StatusApiImp());
     }
 
     @Override

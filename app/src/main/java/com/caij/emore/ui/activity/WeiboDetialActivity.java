@@ -17,14 +17,14 @@ import android.widget.FrameLayout;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.account.UserPrefs;
+import com.caij.emore.dao.imp.StatusManagerImp;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboDetailPresent;
 import com.caij.emore.present.imp.WeiboDetailPresentImp;
+import com.caij.emore.remote.imp.AttitudeApiImp;
+import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.ui.adapter.WeiboAdapter;
 import com.caij.emore.ui.view.WeiboDetailView;
-import com.caij.emore.source.local.LocalWeiboSource;
-import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.publish.CommentWeiboActivity;
 import com.caij.emore.ui.activity.publish.RepostWeiboActivity;
 import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
@@ -32,6 +32,7 @@ import com.caij.emore.ui.fragment.BaseFragment;
 import com.caij.emore.ui.fragment.WeiboCommentListFragment;
 import com.caij.emore.ui.fragment.WeiboLikerListFragment;
 import com.caij.emore.ui.fragment.WeiboRepostListFragment;
+import com.caij.emore.utils.CountUtil;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
@@ -109,8 +110,8 @@ public class WeiboDetialActivity extends BaseToolBarActivity<WeiboDetailPresent>
     @Override
     protected WeiboDetailPresent createPresent() {
         mWeiboId = getIntent().getLongExtra(Key.ID, -1);
-        return new WeiboDetailPresentImp(UserPrefs.get(this).getAccount(), mWeiboId,
-                this, new ServerWeiboSource(), new LocalWeiboSource());
+        return new WeiboDetailPresentImp(mWeiboId,
+                this, new StatusApiImp(), new StatusManagerImp(), new AttitudeApiImp());
     }
 
     private void initView(){
@@ -300,6 +301,18 @@ public class WeiboDetialActivity extends BaseToolBarActivity<WeiboDetailPresent>
 
         setTabText(weibo);
         setAttitudeStatus(weibo);
+    }
+
+    @Override
+    public void onStatusAttitudeCountUpdate(int count) {
+        mWeibo.setAttitudes_count(count);
+        tabLayout.getTabAt(2).setText(getString(R.string.attitude) + " " + CountUtil.getCounter(this, count));
+    }
+
+    @Override
+    public void onStatusAttitudeUpdate(boolean isAttitude) {
+        mWeibo.setAttitudes_status(isAttitude ? 1 : 0);
+        actionStar.setSelected(isAttitude);
     }
 
     @Override

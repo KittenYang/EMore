@@ -1,103 +1,100 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.Event;
-import com.caij.emore.Key;
+import com.caij.emore.EventTag;
 import com.caij.emore.R;
-import com.caij.emore.account.Account;
-import com.caij.emore.account.Token;
 import com.caij.emore.bean.Attitude;
-import com.caij.emore.bean.ShortUrlInfo;
+import com.caij.emore.bean.event.Event;
+import com.caij.emore.bean.event.StatusAttitudeCountUpdateEvent;
+import com.caij.emore.bean.event.StatusAttitudeEvent;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.Response;
+import com.caij.emore.dao.StatusManager;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboActionPresent;
-import com.caij.emore.source.UrlSource;
-import com.caij.emore.source.local.LocalUrlSource;
-import com.caij.emore.source.server.ServerUrlSource;
+import com.caij.emore.remote.AttitudeApi;
+import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.WeiboActionView;
-import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.SpannableStringUtil;
-import com.caij.emore.utils.UrlUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.utils.rxjava.DefaultTransformer;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 /**
  * Created by Caij on 2016/7/2.
  */
 public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsBasePresent
-        implements WeiboActionPresent {
+        implements WeiboActionPresent, Action1<Event>{
 
     protected V mView;
-    protected WeiboSource mServerWeiboSource;
-    protected Account mAccount;
-    protected WeiboSource mLocalWeiboSource;
-    protected UrlSource mLocalUrlSource;
-    protected UrlSource mServerUrlSource;
+    protected StatusApi mStatusApi;
+    protected StatusManager mStatusManager;
+    protected AttitudeApi mAttitudeApi;
 
-    private Observable<Weibo> mWeiboUpdateObservable;
+    private Observable<Event> mStatusAttitudeCountObservable;
+    private Observable<Event> mAttitudeObservable;
 
-    public AbsTimeLinePresent(Account account, V view, WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
+    public AbsTimeLinePresent(V view, StatusApi statusApi, StatusManager statusManager, AttitudeApi attitudeApi) {
         super();
         mView = view;
-        mAccount = account;
-        mLocalUrlSource = new LocalUrlSource();
-        mServerUrlSource = new ServerUrlSource();
-        mServerWeiboSource = serverWeiboSource;
-        mLocalWeiboSource = localWeiboSource;
+        mStatusApi = statusApi;
+        mStatusManager = statusManager;
+        mAttitudeApi = attitudeApi;
     }
 
     @Override
     public void onCreate() {
-        mWeiboUpdateObservable = RxBus.getDefault().register(Event.EVENT_WEIBO_UPDATE);
-        mWeiboUpdateObservable
-            .compose(new SchedulerTransformer<Weibo>())
-            .subscribe(new Subscriber<Weibo>() {
-                @Override
-                public void onCompleted() {
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                }
-
-                @Override
-                public void onNext(Weibo weibo) {
-                    onWeiboUpdate(weibo);
-                }
-            });
+       registerEvent();
     }
 
-    protected abstract void onWeiboUpdate(Weibo weibo);
+    private void registerEvent() {
+        mStatusAttitudeCountObservable = RxBus.getDefault().register(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE);
+        mStatusAttitudeCountObservable.subscribe(this);
+
+        mAttitudeObservable = RxBus.getDefault().register(EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS);
+        mAttitudeObservable.subscribe(this);
+    }
+
+    @Override
+    public void call(Event event) {
+        if (EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE.equals(event.type)) {
+            onStatusAttitudeCountUpdate((StatusAttitudeCountUpdateEvent) event);
+        }else if (EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS.equals(event.type)) {
+            onStatusAttitudeUpdate((StatusAttitudeEvent) event);
+        }
+    }
+
+    protected abstract void onStatusAttitudeCountUpdate(StatusAttitudeCountUpdateEvent event);
+
+    protected abstract void onStatusAttitudeUpdate(StatusAttitudeEvent event);
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.getDefault().unregister(Event.EVENT_WEIBO_UPDATE, mWeiboUpdateObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE, mStatusAttitudeCountObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS, mAttitudeObservable);
     }
 
     @Override
     public void deleteWeibo(final Weibo deleteWeibo, final int position) {
         mView.showDialogLoading(true, R.string.deleting);
-        Observable<Weibo> serverObservable = mServerWeiboSource.deleteWeibo(mAccount.getToken().getAccess_token(),
-                deleteWeibo.getId())
-                .compose(new DefaultTransformer<Weibo>());
-
-        Observable<Weibo> localObservable = mLocalWeiboSource.deleteWeibo(mAccount.getToken().getAccess_token(),
-                deleteWeibo.getId());
-        Subscription subscription = Observable.concat(serverObservable, localObservable)
+        Subscription subscription =  mStatusApi.deleteWeibo(deleteWeibo.getId())
+                .compose(ErrorCheckerTransformer.<Weibo>create())
+                .doOnNext(new Action1<Weibo>() {
+                    @Override
+                    public void call(Weibo weibo) {
+                        mStatusManager.deleteWeibo(weibo.getId());
+                    }
+                })
+                .compose(SchedulerTransformer.<Weibo>create())
                 .subscribe(new DefaultResponseSubscriber<Weibo>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -115,20 +112,16 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
     @Override
     public void collectWeibo(final Weibo weibo) {
-        Token accessToken = mAccount.getToken();
-        long uid = Long.parseLong(accessToken.getUid());
-        if (uid == weibo.getUser().getId()) {
-            mView.showHint(R.string.self_weibo_unable_collect);
-            return;
-        }
-
-        Observable<FavoritesCreateResponse> serverObservable = mServerWeiboSource.collectWeibo(mAccount.getToken().getAccess_token(),
-                weibo.getId())
-                .compose(new DefaultTransformer<FavoritesCreateResponse>());
-
-        Observable<FavoritesCreateResponse> localObservable = mLocalWeiboSource.collectWeibo(mAccount.getToken().getAccess_token(),
-                weibo.getId());
-        Subscription subscription = Observable.concat(serverObservable, localObservable)
+        Subscription subscription = mStatusApi.collectWeibo(weibo.getId())
+                .compose(ErrorCheckerTransformer.<FavoritesCreateResponse>create())
+                .doOnNext(new Action1<FavoritesCreateResponse>() {
+                    @Override
+                    public void call(FavoritesCreateResponse favoritesCreateResponse) {
+                        weibo.setFavorited(true);
+                        mStatusManager.saveWeibo(weibo);
+                    }
+                })
+                .compose(SchedulerTransformer.<FavoritesCreateResponse>create())
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -150,7 +143,6 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                     @Override
                     public void onNext(FavoritesCreateResponse favoritesCreateResponse) {
                         mView.onCollectSuccess(weibo);
-
                     }
                 });
         addSubscription(subscription);
@@ -158,13 +150,16 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
     @Override
     public void uncollectWeibo(final Weibo weibo) {
-        Observable<FavoritesCreateResponse> serverObservable = mServerWeiboSource.uncollectWeibo(mAccount.getToken().getAccess_token(),
-                weibo.getId())
-                .compose(new DefaultTransformer<FavoritesCreateResponse>());
-
-        Observable<FavoritesCreateResponse> localObservable = mLocalWeiboSource.uncollectWeibo(mAccount.getToken().getAccess_token(),
-                weibo.getId());
-        Subscription subscription = Observable.concat(serverObservable, localObservable)
+        Subscription subscription = mStatusApi.uncollectWeibo(weibo.getId())
+                .compose(ErrorCheckerTransformer.<FavoritesCreateResponse>create())
+                .doOnNext(new Action1<FavoritesCreateResponse>() {
+                    @Override
+                    public void call(FavoritesCreateResponse favoritesCreateResponse) {
+                        weibo.setFavorited(false);
+                        mStatusManager.saveWeibo(weibo);
+                    }
+                })
+                .compose(SchedulerTransformer.<FavoritesCreateResponse>create())
                 .doOnTerminate(new Action0() {
                     @Override
                     public void call() {
@@ -193,25 +188,16 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
     @Override
     public void attitudesWeibo(final Weibo weibo) {
-        final Token accessToken = mAccount.getToken();
-        long uid = Long.parseLong(accessToken.getUid());
-        if (uid == weibo.getUser().getId()) {
-            mView.showHint(R.string.self_weibo_unable_attitude);
-            return;
-        }
-
-        final String token  = mAccount.getToken().getAccess_token();
-        Observable<Attitude> serverObservable = mServerWeiboSource.attitudesWeibo(token, "smile", weibo.getId())
-                .compose(new DefaultTransformer<Attitude>())
+        Subscription subscription = mAttitudeApi.attitudesToWeibo("smile", weibo.getId())
+                .compose(ErrorCheckerTransformer.<Attitude>create())
                 .doOnNext(new Action1<Attitude>() {
                     @Override
                     public void call(Attitude attitude) {
-                        mLocalWeiboSource.attitudesWeibo(token, "smile", weibo.getId());
-                        postAttitudeWeiboUpdate(attitude);
+                        weibo.setAttitudes_status(1);
+                        mStatusManager.saveWeibo(weibo);
                     }
-                });
-
-        Subscription subscription = serverObservable
+                })
+                .compose(SchedulerTransformer.<Attitude>create())
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -231,50 +217,32 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
                     @Override
                     public void onNext(Attitude attitude) {
-                        if (attitude != null) {
-                            RxBus.getDefault().post(Event.EVENT_ATTITUDE_WEIBO_SUCCESS, attitude.getUser());
-                        }
+                        Event attitudeSuccessEvent = new StatusAttitudeEvent(EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS,
+                                weibo.getId(), true, attitude.getUser());
+                        RxBus.getDefault().post(attitudeSuccessEvent.type, attitudeSuccessEvent);
+
+                        StatusAttitudeCountUpdateEvent statusAttitudeCountUpdateEvent =
+                                new StatusAttitudeCountUpdateEvent(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE, weibo.getId(),
+                                        attitude.getStatus().getAttitudes_count());
+                        RxBus.getDefault().post(statusAttitudeCountUpdateEvent.type, statusAttitudeCountUpdateEvent);
                     }
                 });
         addSubscription(subscription);
     }
 
-    private void postAttitudeWeiboUpdate(Attitude attitude) {
-        final Weibo data = attitude.getStatus();
-        if (data != null) {
-            mLocalWeiboSource.getWeiboById(mAccount.getToken().getAccess_token(), data.getId())
-            .filter(new Func1<Weibo, Boolean>() {
-                @Override
-                public Boolean call(Weibo weibo) {
-                    return weibo != null;
-                }
-            }).doOnNext(new Action1<Weibo>() {
-                @Override
-                public void call(Weibo weibo) {
-                    weibo.setAttitudes_count(data.getAttitudes_count());
-                    weibo.setReposts_count(data.getReposts_count());
-                    weibo.setComments_count(data.getComments_count());
-                    weibo.setUpdate_time(System.currentTimeMillis());
-                    weibo.setAttitudes_status(1);
-                    mLocalWeiboSource.saveWeibo(mAccount.getToken().getAccess_token(), weibo);
-                }
-            }).subscribe(new Action1<Weibo>() {
-                @Override
-                public void call(Weibo weibo) {
-                    RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
-                }
-            });
-        }
-    }
 
     @Override
     public void destroyAttitudesWeibo(final Weibo weibo) {
-        final String token  = mAccount.getToken().getAccess_token();
-        Observable<Response> serverObservable = mServerWeiboSource.destoryAttitudesWeibo(token,
-                "smile", weibo.getId())
-                .compose(new DefaultTransformer<Response>());
-
-        Subscription subscription = serverObservable
+        Subscription subscription = mAttitudeApi.destoryAttitudesWeibo("smile", weibo.getId())
+                .compose(ErrorCheckerTransformer.create())
+                .doOnNext(new Action1<Response>() {
+                    @Override
+                    public void call(Response response) {
+                        weibo.setAttitudes_status(0);
+                        mStatusManager.saveWeibo(weibo);
+                    }
+                })
+                .compose(SchedulerTransformer.<Response>create())
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -287,13 +255,6 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                         mView.showDialogLoading(false, R.string.requesting);
                     }
                 })
-                .doOnNext(new Action1<Response>() {
-                    @Override
-                    public void call(Response response) {
-                        mLocalWeiboSource.destoryAttitudesWeibo(token, "smile", weibo.getId());
-                        weibo.setAttitudes_status(0);
-                    }
-                })
                 .subscribe(new DefaultResponseSubscriber<Response>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -302,7 +263,14 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
                     @Override
                     public void onNext(Response response) {
-                        RxBus.getDefault().post(Event.EVENT_WEIBO_UPDATE, weibo);
+                        StatusAttitudeCountUpdateEvent attitudeCountEvent =
+                                new StatusAttitudeCountUpdateEvent(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE,
+                                        weibo.getId(), weibo.getAttitudes_count() - 1);
+                        RxBus.getDefault().post(attitudeCountEvent.type, attitudeCountEvent);
+
+                        StatusAttitudeEvent attitudeSuccessEvent = new StatusAttitudeEvent(EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS,
+                                weibo.getId(), false, null);
+                        RxBus.getDefault().post(attitudeSuccessEvent.type, attitudeSuccessEvent);
                     }
                 });
         addSubscription(subscription);

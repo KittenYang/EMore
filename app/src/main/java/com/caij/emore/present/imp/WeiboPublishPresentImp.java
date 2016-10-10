@@ -3,20 +3,19 @@ package com.caij.emore.present.imp;
 
 import android.os.AsyncTask;
 
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.account.Account;
 import com.caij.emore.bean.PublishBean;
+import com.caij.emore.dao.DraftManager;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.WeiboPublishPresent;
 import com.caij.emore.ui.view.WeiboPublishView;
-import com.caij.emore.source.DraftSource;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.rxbus.RxBus;
 
 import java.util.ArrayList;
 
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/6/24.
@@ -25,12 +24,12 @@ public class WeiboPublishPresentImp extends AbsBasePresent implements WeiboPubli
 
     private WeiboPublishView mWeiboPublishView;
     private Account mAccount;
-    DraftSource mDraftSource;
+    private DraftManager mDraftManager;
 
-    public WeiboPublishPresentImp(Account account, WeiboPublishView weiboPublishView, DraftSource draftSource) {
+    public WeiboPublishPresentImp(Account account, WeiboPublishView weiboPublishView, DraftManager draftManager) {
         mAccount = account;
         mWeiboPublishView = weiboPublishView;
-        mDraftSource = draftSource;
+        mDraftManager = draftManager;
     }
 
     @Override
@@ -51,7 +50,7 @@ public class WeiboPublishPresentImp extends AbsBasePresent implements WeiboPubli
         publishBean.setId(id);
         publishBean.setText(content);
         publishBean.setPics(imagePaths);
-        RxBus.getDefault().post(Event.PUBLISH_WEIBO, publishBean);
+        RxBus.getDefault().post(EventTag.PUBLISH_WEIBO, publishBean);
 
         saveToDraft(id, content, imagePaths);
 
@@ -71,8 +70,8 @@ public class WeiboPublishPresentImp extends AbsBasePresent implements WeiboPubli
                 draft.setType(Draft.TYPE_WEIBO);
                 draft.setStatus(Draft.STATUS_SAVE);
                 draft.setImage_paths(GsonUtils.toJson(images));
-                mDraftSource.saveDraft(draft);
-                RxBus.getDefault().post(Event.EVENT_DRAFT_UPDATE, draft);
+                mDraftManager.insertDraft(draft);
+                RxBus.getDefault().post(EventTag.EVENT_DRAFT_UPDATE, draft);
                 return null;
             }
         });

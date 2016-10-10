@@ -20,12 +20,12 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
+import com.caij.emore.dao.imp.UserManagerImp;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
 import com.caij.emore.present.imp.UserInfoDetailPresentImp;
+import com.caij.emore.remote.imp.UserApiImp;
 import com.caij.emore.ui.view.DetailUserView;
-import com.caij.emore.source.local.LocalUserSource;
-import com.caij.emore.source.server.ServerUserSource;
 import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
 import com.caij.emore.ui.fragment.UserImageFragment;
@@ -143,7 +143,7 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
         Token token = UserPrefs.get(this).getToken();
         String username = getIntent().getStringExtra(Key.USERNAME);
         return new UserInfoDetailPresentImp(token.getAccess_token(), username, this,
-                new ServerUserSource(), new LocalUserSource());
+                new UserApiImp(), new UserManagerImp());
     }
 
     private void doNext() {

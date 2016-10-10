@@ -3,8 +3,8 @@ package com.caij.emore.present.imp;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.FriendshipPresent;
+import com.caij.emore.remote.UserApi;
 import com.caij.emore.ui.view.FriendshipView;
-import com.caij.emore.source.UserSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
@@ -15,7 +15,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/3.
@@ -26,15 +25,15 @@ public class FriendPresentImp extends AbsBasePresent implements FriendshipPresen
 
     private String mToken;
     private long mUid;
-    private UserSource mUserSource;
+    private UserApi mUserApi;
     private FriendshipView mFriendshipView;
     private FriendshipResponse mLastFriendshipResponse;
     private List<User> mUsers;
 
-    public FriendPresentImp(String token, long uid, UserSource userSource, FriendshipView friendshipView) {
+    public FriendPresentImp(String token, long uid, UserApi userApi, FriendshipView friendshipView) {
         mToken = token;
         mUid = uid;
-        mUserSource = userSource;
+        mUserApi = userApi;
         mFriendshipView = friendshipView;
         mUsers = new ArrayList<>();
     }
@@ -74,7 +73,7 @@ public class FriendPresentImp extends AbsBasePresent implements FriendshipPresen
     }
 
     private Observable<List<User>> createUsersObservable(long next_cursor, final boolean isRefresh) {
-        return mUserSource.getFriends(mToken, mUid, PAGE_SIZE, 0, next_cursor)
+        return mUserApi.getFriends(mUid, PAGE_SIZE, 0, next_cursor)
                 .compose(new ErrorCheckerTransformer<FriendshipResponse>())
                 .flatMap(new Func1<FriendshipResponse, Observable<User>>() {
                     @Override

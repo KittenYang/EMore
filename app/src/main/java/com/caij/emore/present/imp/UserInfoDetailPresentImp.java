@@ -1,19 +1,21 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.R;
+import com.caij.emore.dao.UserManager;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
+import com.caij.emore.remote.UserApi;
 import com.caij.emore.ui.view.DetailUserView;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.source.UserSource;
 import com.caij.emore.utils.rxjava.DefaultTransformer;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -24,8 +26,8 @@ import rx.functions.Func1;
 public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfoDetailPresent {
 
     private DetailUserView mUserView;
-    private UserSource mServerUserSource;
-    private UserSource mLocalUserSource;
+    private UserApi mUserApi;
+    private UserManager mUserManager;
     private String mToken;
     private String mName;
     private Observable<User> mUserObservable;
@@ -33,10 +35,10 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     private User mUser;
 
     public UserInfoDetailPresentImp(String token, String name, DetailUserView userView,
-                                    UserSource serverUserSource, UserSource localUserSource) {
+                                    UserApi userApi, UserManager userManager) {
         mUserView = userView;
-        mServerUserSource = serverUserSource;
-        mLocalUserSource = localUserSource;
+        mUserApi = userApi;
+        mUserManager = userManager;
         mToken = token;
         mName = name;
     }
@@ -45,12 +47,12 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     @Override
     public void follow() {
         mUserView.showDialogLoading(true);
-        Subscription subscription = mServerUserSource.followUser(mToken, mName, mUser.getId())
+        Subscription subscription = mUserApi.followUser(mName, mUser.getId())
                 .compose(new ErrorCheckerTransformer<User>())
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User user) {
-                        mLocalUserSource.saveWeiboUser(user);
+                        mUserManager.saveUser(user);
                     }
                 })
                 .compose(new DefaultTransformer<User>())
@@ -76,12 +78,12 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     @Override
     public void unFollow() {
         mUserView.showDialogLoading(true);
-        Subscription subscription = mServerUserSource.unfollowUser(mToken, mName, mUser.getId())
+        Subscription subscription = mUserApi.unfollowUser(mName, mUser.getId())
                 .compose(new ErrorCheckerTransformer<User>())
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User user) {
-                        mLocalUserSource.saveWeiboUser(user);
+                        mUserManager.saveUser(user);
                     }
                 })
                 .compose(new SchedulerTransformer<User>())
@@ -107,12 +109,18 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     @Override
     public void getWeiboUserInfoByName() {
         mUserView.showDialogLoading(true);
-        Observable<User> localObservable =   mLocalUserSource.getWeiboUserInfoByName(mToken, mName);
-        Observable<User> serverObservable =   mServerUserSource.getWeiboUserInfoByName(mToken, mName)
+        Observable<User> localObservable =  Observable.create(new Observable.OnSubscribe<User>() {
+            @Override
+            public void call(Subscriber<? super User> subscriber) {
+                subscriber.onNext(mUserManager.getUserByName(mName));
+                subscriber.onCompleted();
+            }
+        });
+        Observable<User> serverObservable =  mUserApi.getWeiboUserByName(mName)
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User user) {
-                        mLocalUserSource.saveWeiboUser(user);
+                        mUserManager.saveUser(user);
                     }
                 });
         Subscription subscription = Observable.concat(localObservable, serverObservable)
@@ -153,11 +161,11 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
 
     @Override
     public void onRefresh() {
-        Observable<User> serverObservable = mServerUserSource.getWeiboUserInfoByName(mToken, mName)
+        Observable<User> serverObservable = mUserApi.getWeiboUserByName(mName)
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User user) {
-                        mLocalUserSource.saveWeiboUser(user);
+                        mUserManager.saveUser(user);
                     }
                 });
         Subscription subscription = serverObservable
@@ -191,7 +199,7 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
 
     @Override
     public void onCreate() {
-        mUserObservable =  RxBus.getDefault().register(Event.EVENT_USER_UPDATE);
+        mUserObservable =  RxBus.getDefault().register(EventTag.EVENT_USER_UPDATE);
         mUserObservable.compose(new SchedulerTransformer<User>())
                 .subscribe(new Action1<User>() {
                     @Override
@@ -204,6 +212,6 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.getDefault().unregister(Event.EVENT_USER_UPDATE, mUserObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_USER_UPDATE, mUserObservable);
     }
 }

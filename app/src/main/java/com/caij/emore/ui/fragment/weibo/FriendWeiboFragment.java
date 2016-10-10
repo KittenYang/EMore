@@ -11,16 +11,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
+import com.caij.emore.dao.imp.NotifyManagerImp;
+import com.caij.emore.dao.imp.StatusManagerImp;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.present.imp.FriendWeiboPresentImp;
+import com.caij.emore.remote.imp.AttitudeApiImp;
+import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.ui.view.FriendWeiboView;
-import com.caij.emore.source.local.LocalMessageSource;
-import com.caij.emore.source.local.LocalWeiboSource;
-import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.SearchRecommendActivity;
 import com.caij.emore.ui.activity.publish.PublishWeiboActivity;
@@ -43,7 +44,7 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-        mToolBarDoubleClickobservable = RxBus.getDefault().register(Event.EVENT_TOOL_BAR_DOUBLE_CLICK);
+        mToolBarDoubleClickobservable = RxBus.getDefault().register(EventTag.EVENT_TOOL_BAR_DOUBLE_CLICK);
         mToolBarDoubleClickobservable.subscribe(new Action1<Object>() {
             @Override
             public void call(Object object) {
@@ -56,8 +57,8 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
 
     @Override
     protected FriendWeiboPresent createPresent() {
-       return new FriendWeiboPresentImp(UserPrefs.get(getActivity()).getAccount(), this,
-                new ServerWeiboSource(), new LocalWeiboSource(), new LocalMessageSource());
+       return new FriendWeiboPresentImp(UserPrefs.get(getActivity()).getAccount().getUid(), this,
+                new StatusApiImp(), new StatusManagerImp(), new AttitudeApiImp(), new NotifyManagerImp());
     }
 
     @Override
@@ -129,6 +130,6 @@ public class FriendWeiboFragment extends TimeLineWeiboFragment<FriendWeiboPresen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.getDefault().unregister(Event.EVENT_TOOL_BAR_DOUBLE_CLICK, mToolBarDoubleClickobservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_TOOL_BAR_DOUBLE_CLICK, mToolBarDoubleClickobservable);
     }
 }

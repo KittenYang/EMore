@@ -19,9 +19,8 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.present.WeiboCommentsPresent;
 import com.caij.emore.present.imp.WeiboCommentsPresentImp;
+import com.caij.emore.remote.imp.CommentApiImp;
 import com.caij.emore.ui.view.WeiboCommentsView;
-import com.caij.emore.source.local.LocalWeiboSource;
-import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
 import com.caij.emore.ui.activity.publish.RepostWeiboActivity;
@@ -81,7 +80,7 @@ public class WeiboCommentListFragment extends RecyclerViewFragment<Comment, Weib
         Token token = UserPrefs.get(getActivity()).getToken();
         long weibiId  = getArguments().getLong(Key.ID);
         return new WeiboCommentsPresentImp(token.getAccess_token(), weibiId,
-                new ServerWeiboSource(), new LocalWeiboSource(), this);
+                new CommentApiImp(), this);
     }
 
     @Override

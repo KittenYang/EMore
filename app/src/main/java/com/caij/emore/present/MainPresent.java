@@ -5,6 +5,8 @@ package com.caij.emore.present;
  */
 public interface MainPresent extends BasePresent{
 
-    public void getWeiboUserInfoByUid();
+    public void getUserInfoByUid();
+
+    public void getNotifyInfo();
 
 }

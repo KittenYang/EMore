@@ -16,8 +16,8 @@ import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.Emotion;
 import com.caij.emore.present.ReplyCommentWeiboPresent;
 import com.caij.emore.present.imp.ReplyCommentPresentImp;
+import com.caij.emore.remote.imp.CommentApiImp;
 import com.caij.emore.ui.view.CommentWeiboView;
-import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ToastUtil;
 
@@ -54,7 +54,7 @@ public class ReplyCommentActivity extends PublishActivity<ReplyCommentWeiboPrese
         long weiboId = getIntent().getLongExtra(Key.ID, -1);
         long cid = getIntent().getLongExtra(Key.CID, -1);
         return new ReplyCommentPresentImp(token.getAccess_token(),
-                weiboId , cid, new ServerWeiboSource(), this);
+                weiboId , cid, new CommentApiImp(), this);
     }
 
     @Override

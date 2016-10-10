@@ -3,11 +3,12 @@ package com.caij.emore.present.imp;
 import com.caij.emore.account.Account;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.response.AttitudeResponse;
+import com.caij.emore.dao.NotifyManager;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.RefreshListPresent;
+import com.caij.emore.remote.AttitudeApi;
+import com.caij.emore.remote.UnReadMessageApi;
 import com.caij.emore.ui.view.RefreshListView;
-import com.caij.emore.source.MessageSource;
-import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
@@ -28,22 +29,22 @@ public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshLi
     private static final int COUNT = 20;
 
     private Account mAccount;
-    private WeiboSource mWeiboSource;
     private RefreshListView<Attitude> mView;
     private List<Attitude> mAttitudes;
-    private MessageSource mServerMessageSource;
-    MessageSource mLocalMessageSource;
 
-    public AttitudesToMePresentImp(Account account, WeiboSource weiboSource,
-                                   MessageSource serverMessageSource,
-                                   MessageSource localMessageSource,
+    private AttitudeApi mAttitudeApi;
+    private UnReadMessageApi mUnReadMessageApi;
+    private NotifyManager mNotifyManager;
+
+    public AttitudesToMePresentImp(Account account, AttitudeApi attitudeApi,
+                                   UnReadMessageApi unReadMessageApi, NotifyManager notifyManager,
                                    RefreshListView<Attitude> view) {
         super();
         mAccount = account;
-        mWeiboSource = weiboSource;
+        mAttitudeApi = attitudeApi;
         mView = view;
-        mServerMessageSource = serverMessageSource;
-        mLocalMessageSource = localMessageSource;
+        mUnReadMessageApi = unReadMessageApi;
+        mNotifyManager = notifyManager;
         mAttitudes = new ArrayList<>();
     }
 
@@ -76,8 +77,8 @@ public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshLi
                         mView.onRefreshComplete();
                         mView.onLoadComplete(attitudes.size() > COUNT - 1);
 
-                        MessageUtil.resetUnReadMessage(mAccount.getToken().getAccess_token(), UnReadMessage.TYPE_ATTITUDE,
-                                mAccount.getUid(), mServerMessageSource, mLocalMessageSource);
+                        MessageUtil.resetUnReadMessage(UnReadMessage.TYPE_ATTITUDE,
+                                mAccount.getUid(), mUnReadMessageApi, mNotifyManager);
                     }
                 });
         addSubscription(su);
@@ -114,7 +115,7 @@ public class AttitudesToMePresentImp extends AbsBasePresent implements RefreshLi
     }
 
     private Observable<List<Attitude>> createGetAttitudeObservable(long maxId, final boolean isRefresh) {
-        return mWeiboSource.getToMeAttiyudes(mAccount.getToken().getAccess_token(), maxId, 0, 1, COUNT)
+        return mAttitudeApi.getToMeAttitudes(maxId, 0, 1, COUNT)
                 .compose(new ErrorCheckerTransformer<AttitudeResponse>())
                 .flatMap(new Func1<AttitudeResponse, Observable<Attitude>>() {
                     @Override

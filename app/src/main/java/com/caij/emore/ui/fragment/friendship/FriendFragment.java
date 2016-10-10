@@ -7,7 +7,7 @@ import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.FriendshipPresent;
 import com.caij.emore.present.imp.FriendPresentImp;
-import com.caij.emore.source.server.ServerUserSource;
+import com.caij.emore.remote.imp.UserApiImp;
 
 /**
  * Created by Caij on 2016/7/3.
@@ -26,6 +26,6 @@ public class FriendFragment extends FriendshipFragment<FriendshipPresent> {
     protected FriendshipPresent createPresent() {
         Token accessToken = UserPrefs.get(getActivity()).getToken();
         long uid = getArguments().getLong(Key.ID);
-        return new FriendPresentImp(accessToken.getAccess_token(), uid, new ServerUserSource(), this);
+        return new FriendPresentImp(accessToken.getAccess_token(), uid, new UserApiImp(), this);
     }
 }

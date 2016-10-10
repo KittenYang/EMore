@@ -9,8 +9,8 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.present.PublishCommentsPresent;
 import com.caij.emore.present.imp.PublishCommentsPresentImp;
+import com.caij.emore.remote.imp.CommentApiImp;
 import com.caij.emore.ui.view.MyPublishComentsView;
-import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.WeiboDetialActivity;
 import com.caij.emore.ui.adapter.MyMessageCommentAdapter;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
@@ -32,7 +32,7 @@ public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment<Co
     @Override
     protected PublishCommentsPresent createPresent() {
         Token accessToken = UserPrefs.get(getActivity()).getToken();
-        return new PublishCommentsPresentImp(accessToken.getAccess_token(), new ServerWeiboSource(), this);
+        return new PublishCommentsPresentImp(accessToken.getAccess_token(), new CommentApiImp(), this);
     }
 
     @Override

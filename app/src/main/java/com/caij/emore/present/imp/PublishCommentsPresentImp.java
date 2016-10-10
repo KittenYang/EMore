@@ -4,8 +4,8 @@ import com.caij.emore.R;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
 import com.caij.emore.present.PublishCommentsPresent;
+import com.caij.emore.remote.CommentApi;
 import com.caij.emore.ui.view.MyPublishComentsView;
-import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.DefaultTransformer;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
@@ -17,7 +17,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/4.
@@ -27,13 +26,13 @@ public class PublishCommentsPresentImp extends AbsBasePresent implements Publish
     private static final int COUNT = 20;
 
     private String mToken;
-    private WeiboSource mWeiboSource;
+    private CommentApi mCommentApi;
     private MyPublishComentsView mMentionView;
     private List<Comment> mComments;
 
-    public PublishCommentsPresentImp(String token, WeiboSource weiboSource, MyPublishComentsView mentionView) {
+    public PublishCommentsPresentImp(String token, CommentApi commentApi, MyPublishComentsView mentionView) {
         mToken = token;
-        mWeiboSource = weiboSource;
+        mCommentApi = commentApi;
         mMentionView = mentionView;
         mComments = new ArrayList<>();
     }
@@ -46,7 +45,7 @@ public class PublishCommentsPresentImp extends AbsBasePresent implements Publish
     @Override
     public void deleteComment(final Comment comment, final int position) {
         mMentionView.showDialogLoading(true, R.string.deleting);
-       Subscription subscription = mWeiboSource.deleteComment(mToken, comment.getId())
+       Subscription subscription = mCommentApi.deleteComment(comment.getId())
                 .compose(new DefaultTransformer<Comment>())
                 .subscribe(new DefaultResponseSubscriber<Comment>(mMentionView) {
                     @Override
@@ -129,7 +128,7 @@ public class PublishCommentsPresentImp extends AbsBasePresent implements Publish
     }
 
     private Observable<List<Comment>> createCommentsObservable(long maxId, final boolean isRefresh) {
-        return mWeiboSource.getPublishComments(mToken, 0, maxId, COUNT, 1)
+        return mCommentApi.getPublishComments(0, maxId, COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
                 .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
                     @Override

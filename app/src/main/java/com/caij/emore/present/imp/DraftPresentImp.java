@@ -2,12 +2,12 @@ package com.caij.emore.present.imp;
 
 import android.os.AsyncTask;
 
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.bean.PublishBean;
+import com.caij.emore.dao.DraftManager;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.DraftPresent;
 import com.caij.emore.ui.view.DraftListView;
-import com.caij.emore.source.DraftSource;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -23,7 +23,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/20.
@@ -32,13 +31,14 @@ public class DraftPresentImp extends AbsBasePresent implements DraftPresent {
 
     private static final int PAGE_COUNT = 20;
 
-    private DraftSource mDraftSource;
     private List<Draft> mDrafts;
     private DraftListView mView;
     private Observable<Draft> mDraftObservable;
 
-    public DraftPresentImp(DraftSource draftSource, DraftListView view) {
-        mDraftSource = draftSource;
+    private DraftManager mDraftManager;
+
+    public DraftPresentImp(DraftManager draftManager, DraftListView view) {
+        mDraftManager = draftManager;
         mDrafts = new ArrayList<>();
         mView = view;
     }
@@ -101,7 +101,7 @@ public class DraftPresentImp extends AbsBasePresent implements DraftPresent {
 
         addSubscription(subscription);
 
-        mDraftObservable = RxBus.getDefault().register(Event.EVENT_DRAFT_UPDATE);
+        mDraftObservable = RxBus.getDefault().register(EventTag.EVENT_DRAFT_UPDATE);
         mDraftObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Draft>() {
                     @Override
@@ -132,8 +132,13 @@ public class DraftPresentImp extends AbsBasePresent implements DraftPresent {
                 });
     }
 
-    private Observable<List<Draft>> createDraftObservable(long maxTime) {
-        return mDraftSource.getDrafts(maxTime, PAGE_COUNT, 1)
+    private Observable<List<Draft>> createDraftObservable(final long maxTime) {
+        return Observable.create(new Observable.OnSubscribe<List<Draft>>() {
+            @Override
+            public void call(Subscriber<? super List<Draft>> subscriber) {
+                subscriber.onNext(mDraftManager.getDrafts(maxTime, PAGE_COUNT, 1));
+            }
+        })
                 .flatMap(new Func1<List<Draft>, Observable<Draft>>() {
                     @Override
                     public Observable<Draft> call(List<Draft> drafts) {
@@ -160,7 +165,7 @@ public class DraftPresentImp extends AbsBasePresent implements DraftPresent {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.getDefault().unregister(Event.EVENT_DRAFT_UPDATE, mDraftObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_DRAFT_UPDATE, mDraftObservable);
     }
 
     @Override
@@ -171,7 +176,7 @@ public class DraftPresentImp extends AbsBasePresent implements DraftPresent {
                 publishBean.setText(draft.getContent());
                 publishBean.setPics(draft.getImages());
                 publishBean.setId(draft.getId());
-                RxBus.getDefault().post(Event.PUBLISH_WEIBO, publishBean);
+                RxBus.getDefault().post(EventTag.PUBLISH_WEIBO, publishBean);
                 break;
         }
     }
@@ -181,7 +186,7 @@ public class DraftPresentImp extends AbsBasePresent implements DraftPresent {
         ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
             @Override
             protected Object doInBackground(Object... params) {
-                mDraftSource.deleteDraft(draft);
+                mDraftManager.deleteDraftById(draft.getId());
                 return null;
             }
 

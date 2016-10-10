@@ -1,21 +1,23 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.AppApplication;
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.Key;
-import com.caij.emore.account.Account;
 import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.dao.NotifyManager;
+import com.caij.emore.dao.StatusManager;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.FriendWeiboPresent;
+import com.caij.emore.remote.AttitudeApi;
+import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.FriendWeiboView;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.source.MessageSource;
-import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.SPUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.List;
@@ -36,26 +38,31 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
 
     private final static long WEIBO_REFRESH_INTERVAL = 60 * 60 * 1000;
 
+    private NotifyManager mNotifyManager;
+
     private Observable<Weibo> mPublishWeiboObservable;
-    private MessageSource mLocalMessageSource;
+
+    private long mUid;
 
     private long mNextCursor;
 
-    public FriendWeiboPresentImp(Account account, FriendWeiboView view, WeiboSource serverWeiboSource,
-                                 WeiboSource localWeiboSource, MessageSource localMessageSource) {
-        super(account, view, serverWeiboSource, localWeiboSource);
-        mLocalMessageSource = localMessageSource;
+    public FriendWeiboPresentImp(long uid, FriendWeiboView view, StatusApi statusApi,
+                                 StatusManager statusManager, AttitudeApi attitudeApi,
+                                 NotifyManager notifyManager) {
+        super(view, statusApi, statusManager, attitudeApi);
+        mNotifyManager = notifyManager;
+        mUid = uid;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         initEvent();
-        getLocalFriendWeibos();
+        getLocalFriendStatus();
     }
 
     private void initEvent() {
-        mPublishWeiboObservable = RxBus.getDefault().register(Event.EVENT_PUBLISH_WEIBO_SUCCESS);
+        mPublishWeiboObservable = RxBus.getDefault().register(EventTag.EVENT_PUBLISH_WEIBO_SUCCESS);
         mPublishWeiboObservable.doOnNext(new Action1<Weibo>() {
                 @Override
                 public void call(Weibo weibo) {
@@ -71,57 +78,51 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
             });
     }
 
-    private void getLocalFriendWeibos() {
-        Subscription subscription = mLocalWeiboSource.getFriendWeibo(mAccount.getToken().getAccess_token(), mAccount.getUid(),
-                0, 0, PAGE_COUNT , 1)
-                .flatMap(new Func1<QueryWeiboResponse, Observable<List<Weibo>>>() {
-                    @Override
-                    public Observable<List<Weibo>> call(QueryWeiboResponse response) {
-                        return Observable.just(response.getStatuses());
-                    }
-                })
-                .doOnNext(new Action1<List<Weibo>>() {
-                    @Override
-                    public void call(List<Weibo> weibos) {
-                        doSpanNext(weibos);
-                    }
-                })
-                .compose(new SchedulerTransformer<List<Weibo>>())
-                .subscribe(new Subscriber<List<Weibo>>() {
-                    @Override
-                    public void onCompleted() {
+    private void getLocalFriendStatus() {
+        Subscription subscription = Observable.create(new Observable.OnSubscribe<List<Weibo>>() {
+            @Override
+            public void call(Subscriber<? super List<Weibo>> subscriber) {
+                subscriber.onNext(mStatusManager.getFriendWeibo(mUid, 0, 0, PAGE_COUNT , 1));
+                subscriber.onCompleted();
+            }
+        }).doOnNext(new Action1<List<Weibo>>() {
+            @Override
+            public void call(List<Weibo> weibos) {
+                doSpanNext(weibos);
+            }
+        })
+        .compose(new SchedulerTransformer<List<Weibo>>())
+        .subscribe(new SubscriberAdapter<List<Weibo>>() {
 
-                    }
+            @Override
+            public void onError(Throwable e) {
+                mView.toRefresh();
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.toRefresh();
-                    }
+            @Override
+            public void onNext(List<Weibo> weibos) {
+                mWeibos.addAll(weibos);
+                mView.setEntities(mWeibos);
 
-                    @Override
-                    public void onNext(List<Weibo> weibos) {
-                        mWeibos.addAll(weibos);
-                        mView.setEntities(mWeibos);
+                if (weibos.size() > 1) {
+                    mNextCursor = weibos.get(weibos.size() - 1).getId();
+                }else {
+                    mNextCursor = 0;
+                }
 
-                        if (weibos.size() > 1) {
-                            mNextCursor = weibos.get(weibos.size() - 1).getId();
-                        }else {
-                            mNextCursor = 0;
-                        }
+                long preRefreshTime  = new SPUtil.SPBuilder(AppApplication.getInstance())
+                        .openDefault()
+                        .getLong(Key.FRIEND_WEIBO_UPDATE_TIME, -1);
+                if (System.currentTimeMillis() - preRefreshTime > WEIBO_REFRESH_INTERVAL
+                        || weibos.size() <= 0) {
+                    mView.toRefresh();
+                }
 
-                        long preRefreshTime  = new SPUtil.SPBuilder(AppApplication.getInstance())
-                                .openDefault()
-                                .getLong(Key.FRIEND_WEIBO_UPDATE_TIME, -1);
-                        if (System.currentTimeMillis() - preRefreshTime > WEIBO_REFRESH_INTERVAL
-                                || weibos.size() <= 0) {
-                            mView.toRefresh();
-                        }
-
-                        if (weibos.size() >= PAGE_COUNT){
-                            mView.onLoadComplete(true);
-                        }
-                    }
-                });
+                if (weibos.size() >= PAGE_COUNT){
+                    mView.onLoadComplete(true);
+                }
+            }
+        });
         addSubscription(subscription);
     }
 
@@ -131,10 +132,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                 .doOnNext(new Action1<List<Weibo>>() {
                     @Override
                     public void call(List<Weibo> weibos) {
-                        new SPUtil.SPBuilder(AppApplication.getInstance())
-                                .openDefault().edit()
-                                .putLong(Key.FRIEND_WEIBO_UPDATE_TIME, System.currentTimeMillis())
-                                .apply();
+                       saveStatusRefreshTime();
                     }
                 })
                 .doOnTerminate(new Action0() {
@@ -158,13 +156,18 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
 
                         mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1);
 
-                        MessageUtil.resetLocalUnReadMessage(mAccount.getToken().getAccess_token(),
-                                UnReadMessage.TYPE_STATUS, 0, mAccount.getUid(), mLocalMessageSource);
+                        MessageUtil.resetLocalUnReadMessage(UnReadMessage.TYPE_STATUS, 0, mUid, mNotifyManager);
                     }
                 });
         addSubscription(subscription);
     }
 
+    private void saveStatusRefreshTime() {
+        new SPUtil.SPBuilder(AppApplication.getInstance())
+                .openDefault().edit()
+                .putLong(Key.FRIEND_WEIBO_UPDATE_TIME, System.currentTimeMillis())
+                .apply();
+    }
 
     @Override
     public void userFirstVisible() {
@@ -192,8 +195,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     }
 
     private Observable<List<Weibo>> getFriendWeiboObservable(long maxId) {
-        return mServerWeiboSource.getFriendWeibo(mAccount.getToken().getAccess_token(), mAccount.getUid(),
-                0, maxId, PAGE_COUNT, 1)
+        return mStatusApi.getFriendWeibo(mUid, 0, maxId, PAGE_COUNT, 1)
                 .compose(ErrorCheckerTransformer.<QueryWeiboResponse>create())
                 .flatMap(new Func1<QueryWeiboResponse, Observable<List<Weibo>>>() {
                     @Override
@@ -206,7 +208,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
                     @Override
                     public void call(List<Weibo> weibos) {
                         doSpanNext(weibos);
-                        mLocalWeiboSource.saveWeibos(mAccount.getToken().getAccess_token(), weibos);
+                        mStatusManager.saveWeibos(weibos);
                     }
                 })
                 .compose(SchedulerTransformer.<List<Weibo>>create());
@@ -215,7 +217,7 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.getDefault().unregister(Event.EVENT_PUBLISH_WEIBO_SUCCESS, mPublishWeiboObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_PUBLISH_WEIBO_SUCCESS, mPublishWeiboObservable);
     }
 
 }

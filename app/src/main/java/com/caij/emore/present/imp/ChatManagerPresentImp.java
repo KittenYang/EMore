@@ -1,7 +1,7 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.AppApplication;
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.Key;
 import com.caij.emore.bean.event.MessageResponseEvent;
 import com.caij.emore.database.bean.DirectMessage;
@@ -25,7 +25,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Caij on 2016/7/15.
@@ -43,7 +42,7 @@ public class ChatManagerPresentImp extends AbsBasePresent implements ChatManager
         mToken = token;
         mServerMessageSource = serverMessageSource;
         mLocalMessageSource = localMessageSource;
-        mMessageSendObservable = RxBus.getDefault().register(Event.SEND_MESSAGE_EVENT);
+        mMessageSendObservable = RxBus.getDefault().register(EventTag.SEND_MESSAGE_EVENT);
         mMessageSendObservable.subscribe(new Action1<MessageResponseEvent>() {
             @Override
             public void call(MessageResponseEvent bean) {
@@ -124,15 +123,15 @@ public class ChatManagerPresentImp extends AbsBasePresent implements ChatManager
                     @Override
                     public void onError(Throwable e) {
                         bean.message.setLocal_status(DirectMessage.STATUS_FAIL);
-                        MessageResponseEvent responseEvent = new MessageResponseEvent(bean.localMessageId, bean.message);
-                        RxBus.getDefault().post(Event.EVENT_SEND_MESSAGE_RESULT, responseEvent);
+                        MessageResponseEvent responseEvent = new MessageResponseEvent(EventTag.EVENT_SEND_MESSAGE_RESULT, bean.localMessageId, bean.message);
+                        RxBus.getDefault().post(EventTag.EVENT_SEND_MESSAGE_RESULT, responseEvent);
                         LogUtil.d(ChatManagerPresentImp.this, "message send error " + e.getMessage());
                     }
 
                     @Override
                     public void onNext(DirectMessage directMessage) {
-                        MessageResponseEvent responseEvent = new MessageResponseEvent(bean.localMessageId, directMessage);
-                        RxBus.getDefault().post(Event.EVENT_SEND_MESSAGE_RESULT, responseEvent);
+                        MessageResponseEvent responseEvent = new MessageResponseEvent(EventTag.EVENT_SEND_MESSAGE_RESULT, bean.localMessageId, directMessage);
+                        RxBus.getDefault().post(EventTag.EVENT_SEND_MESSAGE_RESULT, responseEvent);
                         LogUtil.d(ChatManagerPresentImp.this, "message send success");
                     }
                 });
@@ -147,6 +146,6 @@ public class ChatManagerPresentImp extends AbsBasePresent implements ChatManager
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.getDefault().unregister(Event.SEND_MESSAGE_EVENT, mMessageSendObservable);
+        RxBus.getDefault().unregister(EventTag.SEND_MESSAGE_EVENT, mMessageSendObservable);
     }
 }

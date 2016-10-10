@@ -1,17 +1,17 @@
-package com.caij.emore.source.server;
+package com.caij.emore.remote.imp;
 
 import com.caij.emore.account.Token;
 import com.caij.emore.api.WeiBoService;
 import com.caij.emore.api.WeiCoService;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
-import com.caij.emore.source.LoginSource;
+import com.caij.emore.remote.LoginApi;
 
 import rx.Observable;
 
 /**
  * Created by Caij on 2016/5/28.
  */
-public class LoginSourceImp implements LoginSource{
+public class LoginApiImp implements LoginApi{
 
     @Override
     public Observable<Token> getAccessToken(String clientId, String clientSecret,

@@ -4,10 +4,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.account.Token;
 import com.caij.emore.bean.event.MessageResponseEvent;
 import com.caij.emore.bean.response.UserMessageResponse;
+import com.caij.emore.dao.UserManager;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.database.bean.MessageImage;
@@ -16,7 +17,6 @@ import com.caij.emore.database.bean.User;
 import com.caij.emore.present.ChatPresent;
 import com.caij.emore.ui.view.DirectMessageView;
 import com.caij.emore.source.MessageSource;
-import com.caij.emore.source.UserSource;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.ImageUtil;
@@ -55,7 +55,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
     private Token mToken;
     private MessageSource mServerMessageSource;
     private MessageSource mLocalMessageSource;
-    private UserSource mLocalUserSource;
+    private UserManager mUserManager;
     private List<DirectMessage> mDirectMessages;
     private DirectMessageView mDirectMessageView;
     private long mToUserId;
@@ -67,13 +67,13 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
     public ChatPresentImp(Token token, long toUid, long selfUid,
                           MessageSource serverMessageSource,
                           MessageSource localMessageSource,
-                          UserSource localUserSource,
+                          UserManager userManager,
                           DirectMessageView directMessageView) {
         super();
         mToken = token;
         mServerMessageSource = serverMessageSource;
         mLocalMessageSource = localMessageSource;
-        mLocalUserSource = localUserSource;
+        mUserManager = userManager;
         mDirectMessages = new ArrayList<>();
         mDirectMessageView = directMessageView;
         mToUserId = toUid;
@@ -224,7 +224,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
     }
 
     private void initEvent() {
-        mSendMessageObservable = RxBus.getDefault().register(Event.EVENT_SEND_MESSAGE_RESULT);
+        mSendMessageObservable = RxBus.getDefault().register(EventTag.EVENT_SEND_MESSAGE_RESULT);
         mSendMessageObservable.map(new Func1<MessageResponseEvent, MessageResponseEvent>() {
             @Override
             public MessageResponseEvent call(MessageResponseEvent messageResponseEvent) {
@@ -430,7 +430,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.getDefault().unregister(Event.EVENT_SEND_MESSAGE_RESULT, mSendMessageObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_SEND_MESSAGE_RESULT, mSendMessageObservable);
         cancelLooperLoadMessage();
     }
 
@@ -454,16 +454,16 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                MessageResponseEvent responseEvent = new MessageResponseEvent(message.getId(), message);
-                RxBus.getDefault().post(Event.SEND_MESSAGE_EVENT, responseEvent);
+                MessageResponseEvent responseEvent = new MessageResponseEvent(EventTag.SEND_MESSAGE_EVENT, message.getId(), message);
+                RxBus.getDefault().post(EventTag.SEND_MESSAGE_EVENT, responseEvent);
             }
         });
 
     }
 
     private void send(DirectMessage message) {
-        MessageResponseEvent responseEvent = new MessageResponseEvent(message.getId(), message);
-        RxBus.getDefault().post(Event.SEND_MESSAGE_EVENT, responseEvent);
+        MessageResponseEvent responseEvent = new MessageResponseEvent(EventTag.SEND_MESSAGE_EVENT, message.getId(), message);
+        RxBus.getDefault().post(EventTag.SEND_MESSAGE_EVENT, responseEvent);
 
         mDirectMessages.add(message);
         mDirectMessageView.notifyItemRangeInserted(mDirectMessages, mDirectMessages.size() - 1, 1);
@@ -472,8 +472,13 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
 
     @Override
     public void sendTextMessage(final String message) {
-        mLocalUserSource.getWeiboUserInfoByUid(mToken.getAccess_token(), Long.parseLong(mToken.getUid()))
-                .flatMap(new Func1<User, Observable<DirectMessage>>() {
+        Observable.create(new Observable.OnSubscribe<User>() {
+            @Override
+            public void call(Subscriber<? super User> subscriber) {
+                subscriber.onNext(mUserManager.getUserByUid(Long.parseLong(mToken.getUid())));
+                subscriber.onCompleted();
+            }
+        }).flatMap(new Func1<User, Observable<DirectMessage>>() {
                     @Override
                     public Observable<DirectMessage> call(User user) {
                         return Observable.just(buildTextMessage(user, mToUserId, message));
@@ -507,7 +512,13 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
 
     @Override
     public void sendImageMessage(final ArrayList<String> paths) {
-        mLocalUserSource.getWeiboUserInfoByUid(mToken.getAccess_token(), Long.parseLong(mToken.getUid()))
+        Observable.create(new Observable.OnSubscribe<User>() {
+            @Override
+            public void call(Subscriber<? super User> subscriber) {
+                subscriber.onNext(mUserManager.getUserByUid(Long.parseLong(mToken.getUid())));
+                subscriber.onCompleted();
+            }
+        })
                 .flatMap(new Func1<User, Observable<DirectMessage>>() {
                     @Override
                     public Observable<DirectMessage> call(User user) {

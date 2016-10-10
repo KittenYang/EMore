@@ -12,4 +12,8 @@ public interface WeiboDetailView extends WeiboActionView {
     void onRefreshComplete();
 
     void onWeiboUpdate(Weibo weibo);
+
+    void onStatusAttitudeCountUpdate(int count);
+
+    void onStatusAttitudeUpdate(boolean isAttitude);
 }

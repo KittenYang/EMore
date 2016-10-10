@@ -12,13 +12,11 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
-import com.caij.emore.bean.Attitude;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.ListPresent;
 import com.caij.emore.present.imp.WeiboAttitudesPresentImp;
+import com.caij.emore.remote.imp.AttitudeApiImp;
 import com.caij.emore.ui.view.WeiboAttitudesView;
-import com.caij.emore.source.local.LocalWeiboSource;
-import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.adapter.AttitudeAdapter;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
@@ -27,7 +25,6 @@ import com.caij.emore.widget.recyclerview.OnScrollListener;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import java.util.List;
 
 /**
  * Created by Caij on 2016/6/14.
@@ -69,7 +66,7 @@ public class WeiboLikerListFragment extends RecyclerViewFragment<User, ListPrese
         Token token = UserPrefs.get(getActivity()).getToken();
         long weiId = getArguments().getLong(Key.ID);
         return  new WeiboAttitudesPresentImp(token.getAccess_token(), weiId,
-                new ServerWeiboSource(), new LocalWeiboSource(), this);
+                new AttitudeApiImp(), this);
     }
 
     @Override

@@ -15,10 +15,9 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.caij.emore.AppApplication;
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.R;
 import com.caij.emore.bean.ThemeItem;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
@@ -101,7 +100,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 								ThemeUtils.changeTheme(getActivity(), i);
 								if (AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
 									getActivity().recreate();
-									RxBus.getDefault().post(Event.EVENT_MODE_NIGHT_UPDATE, null);
+									RxBus.getDefault().post(EventTag.EVENT_MODE_NIGHT_UPDATE, null);
 								}
 								return;
 							}
@@ -213,7 +212,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 						AppCompatDelegate.MODE_NIGHT_NO);
 			}
 			getActivity().recreate();
-			RxBus.getDefault().post(Event.EVENT_MODE_NIGHT_UPDATE, newValue);
+			RxBus.getDefault().post(EventTag.EVENT_MODE_NIGHT_UPDATE, newValue);
 		}
 		return true;
 	}

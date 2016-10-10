@@ -14,20 +14,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
+import com.caij.emore.dao.imp.DraftManagerImp;
+import com.caij.emore.dao.imp.NotifyManagerImp;
+import com.caij.emore.dao.imp.UserManagerImp;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.MainPresent;
 import com.caij.emore.present.imp.MainPresentImp;
+import com.caij.emore.remote.imp.UnReadMessageApiImp;
+import com.caij.emore.remote.imp.UserApiImp;
 import com.caij.emore.ui.view.MainView;
-import com.caij.emore.source.local.LocalDraftSource;
-import com.caij.emore.source.local.LocalMessageSource;
-import com.caij.emore.source.local.LocalUserSource;
-import com.caij.emore.source.server.ServerUserSource;
 import com.caij.emore.ui.fragment.DraftFragment;
 import com.caij.emore.ui.fragment.MessageUserFragment;
 import com.caij.emore.ui.fragment.weibo.FriendWeiboFragment;
@@ -102,7 +103,8 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
         setViewStatus(mVisibleFragment);
 
-        mPresent.getWeiboUserInfoByUid();
+        mPresent.getUserInfoByUid();
+        mPresent.getNotifyInfo();
     }
 
     @Override
@@ -153,8 +155,10 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
     @Override
     protected MainPresent createPresent() {
         Token token = UserPrefs.get(this).getToken();
-        return new MainPresentImp(token.getAccess_token(), Long.parseLong(token.getUid()),
-                this, new ServerUserSource(), new LocalUserSource(), new LocalMessageSource(), new LocalDraftSource());
+        return new MainPresentImp(Long.parseLong(token.getUid()),
+                this, new UserApiImp(), new UserManagerImp(),
+                new UnReadMessageApiImp(), new NotifyManagerImp(),
+                new DraftManagerImp());
     }
 
 
@@ -280,7 +284,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
                 break;
             }
             case R.id.toolbar:
-                RxBus.getDefault().post(Event.EVENT_TOOL_BAR_DOUBLE_CLICK, mVisibleFragment);
+                RxBus.getDefault().post(EventTag.EVENT_TOOL_BAR_DOUBLE_CLICK, mVisibleFragment);
                 break;
 
             case R.id.rl_draft: {

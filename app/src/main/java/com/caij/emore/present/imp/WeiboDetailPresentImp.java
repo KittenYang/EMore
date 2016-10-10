@@ -1,19 +1,18 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.Event;
-import com.caij.emore.account.Account;
-import com.caij.emore.bean.Attitude;
+import com.caij.emore.EventTag;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.response.QueryRepostWeiboResponse;
-import com.caij.emore.bean.response.AttitudeResponse;
-import com.caij.emore.bean.response.QueryWeiboCommentResponse;
-import com.caij.emore.bean.response.WeiboAttitudeResponse;
+import com.caij.emore.bean.event.Event;
+import com.caij.emore.bean.event.StatusAttitudeCountUpdateEvent;
+import com.caij.emore.bean.event.StatusAttitudeEvent;
+import com.caij.emore.bean.event.StatusRefreshEvent;
+import com.caij.emore.dao.StatusManager;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboDetailPresent;
+import com.caij.emore.remote.AttitudeApi;
+import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.WeiboDetailView;
-import com.caij.emore.source.WeiboSource;
-import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
@@ -22,11 +21,11 @@ import com.caij.emore.utils.rxjava.SchedulerTransformer;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func4;
 
 /**
  * Created by Caij on 2016/7/14.
@@ -35,23 +34,27 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
 
     private long mWeiboId;
 
-    public WeiboDetailPresentImp(Account account, long weiboId, WeiboDetailView view,
-                                 WeiboSource serverWeiboSource,
-                                 WeiboSource localWeiboSource) {
-        super(account, view, serverWeiboSource, localWeiboSource);
+    public WeiboDetailPresentImp(long weiboId, WeiboDetailView view, StatusApi statusApi, StatusManager statusManager, AttitudeApi attitudeApi) {
+        super(view, statusApi, statusManager, attitudeApi);
         mWeiboId = weiboId;
     }
 
     @Override
     public void loadWeiboDetail() {
-        final String token  = mAccount.getToken().getAccess_token();
-        Observable<Weibo> localObservable = mLocalWeiboSource.getWeiboById(token, 1, mWeiboId);
+        Observable<Weibo> localObservable = Observable.<Weibo>create(new Observable.OnSubscribe<Weibo>() {
+            @Override
+            public void call(Subscriber<? super Weibo> subscriber) {
+                subscriber.onNext(mStatusManager.getWeiboById(mWeiboId));
+                subscriber.onCompleted();
+            }
+        });
 
-        Observable<Weibo> serverObservable = mServerWeiboSource.getWeiboById(token, 1, mWeiboId)
+        Observable<Weibo> serverObservable = mStatusApi.getWeiboById(1, mWeiboId)
+                .compose(ErrorCheckerTransformer.<Weibo>create())
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
-                        mLocalWeiboSource.saveWeibo(token, weibo);
+                        mStatusManager.saveWeibo(weibo);
                     }
                 });
         Subscription subscription = Observable.concat(localObservable, serverObservable)
@@ -69,7 +72,6 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
                         doSpanNext(weibo);
                     }
                 })
-                .compose(new ErrorCheckerTransformer<Weibo>())
                 .compose(SchedulerTransformer.<Weibo>create())
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -100,88 +102,38 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
 
     @Override
     public void refreshWeiboDetail() {
-        final String token  = mAccount.getToken().getAccess_token();
-        Observable<Weibo> weiboObservable = mServerWeiboSource.getWeiboById(token, 1, mWeiboId)
+        StatusRefreshEvent event = new StatusRefreshEvent(EventTag.EVENT_STATUS_REFRESH, mWeiboId);
+        RxBus.getDefault().post(event.type, event);
+
+        Subscription subscription = mStatusApi.getWeiboById(1, mWeiboId)
+                .compose(ErrorCheckerTransformer.<Weibo>create())
+                .doOnNext(new Action1<Weibo>() {
+                    @Override
+                    public void call(Weibo weibo) {
+                        mStatusManager.saveWeibo(weibo);
+                    }
+                })
                 .doOnNext(new Action1<Weibo>() {
                     @Override
                     public void call(Weibo weibo) {
                         doSpanNext(weibo);
                     }
-                });
-
-        Observable<List<Weibo>> observableRepostWeibo = mServerWeiboSource.
-                getRepostWeibos(token, mWeiboId, 0, 0, 20, 1)
-                .flatMap(new Func1<QueryRepostWeiboResponse, Observable<List<Weibo>>>() {
-                    @Override
-                    public Observable<List<Weibo>> call(QueryRepostWeiboResponse queryRepostWeiboResponse) {
-                        return Observable.just(queryRepostWeiboResponse.getReposts());
-                    }
                 })
-                .doOnNext(new Action1<List<Weibo>>() {
+                .compose(SchedulerTransformer.<Weibo>create())
+                .doOnTerminate(new Action0() {
                     @Override
-                    public void call(List<Weibo> weibos) {
-                        doSpanNext(weibos);
+                    public void call() {
+                        mView.onRefreshComplete();
                     }
-                });
-
-        Observable<List<Comment>> observableWeiboCommnet = mServerWeiboSource.getCommentsByWeibo(token, mWeiboId, 0, 0, 20, 1)
-                .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
-                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<List<Comment>>>() {
-                    @Override
-                    public Observable<List<Comment>> call(QueryWeiboCommentResponse queryWeiboCommentResponse) {
-                        return Observable.just(queryWeiboCommentResponse.getComments());
-                    }
-                })
-                .doOnNext(new Action1<List<Comment>>() {
-                    @Override
-                    public void call(List<Comment> comments) {
-                        for (Comment comment : comments) {
-                            SpannableStringUtil.paraeSpannable(comment);
-                        }
-                    }
-                });
-
-        Observable<List<User>> observableWeiboAttitude = mServerWeiboSource.getWeiboAttiyudes(token, mWeiboId, 1, 20)
-                .compose(new ErrorCheckerTransformer<WeiboAttitudeResponse>())
-                .flatMap(new Func1<WeiboAttitudeResponse, Observable<List<User>>>() {
-                    @Override
-                    public Observable<List<User>> call(WeiboAttitudeResponse queryWeiboAttitudeResponse) {
-                        return Observable.just(queryWeiboAttitudeResponse.getUsers());
-                    }
-                });
-
-        Subscription subscription = Observable.zip(weiboObservable, observableRepostWeibo,
-                observableWeiboCommnet, observableWeiboAttitude,
-                new Func4<Weibo, List<Weibo>, List<Comment>, List<User>, Zip>() {
-                    @Override
-                    public Zip call(Weibo weibo, List<Weibo> weibos, List<Comment> comments, List<User> users) {
-                        Zip zip = new Zip();
-                        zip.weibo = weibo;
-                        zip.weibos = weibos;
-                        zip.comments = comments;
-                        zip.users = users;
-                        return zip;
-                    }
-                })
-                .compose(new SchedulerTransformer<Zip>())
-                .subscribe(new DefaultResponseSubscriber<Zip>(mView) {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
+                }).subscribe(new DefaultResponseSubscriber<Weibo>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
-                        mView.onRefreshComplete();
+
                     }
 
                     @Override
-                    public void onNext(Zip zip) {
-                        mView.setWeibo(zip.weibo);
-                        RxBus.getDefault().post(Event.EVENT_REPOST_WEIBO_REFRESH_COMPLETE, zip.weibos);
-                        RxBus.getDefault().post(Event.EVENT_WEIBO_COMMENTS_REFRESH_COMPLETE, zip.comments);
-                        RxBus.getDefault().post(Event.EVENT_WEIBO_ATTITUDE_REFRESH_COMPLETE, zip.users);
-                        mView.onRefreshComplete();
+                    public void onNext(Weibo weibo) {
+                        mView.setWeibo(weibo);
                     }
                 });
         addSubscription(subscription);
@@ -193,16 +145,17 @@ public class WeiboDetailPresentImp extends AbsTimeLinePresent<WeiboDetailView> i
     }
 
     @Override
-    protected void onWeiboUpdate(Weibo weibo) {
-        if (weibo.getId() == mWeiboId) {
-            mView.onWeiboUpdate(weibo);
+    protected void onStatusAttitudeCountUpdate(StatusAttitudeCountUpdateEvent event) {
+        if (event.statusId == mWeiboId) {
+            mView.onStatusAttitudeCountUpdate(event.count);
         }
     }
 
-    private static class Zip {
-        Weibo weibo;
-        List<Weibo> weibos;
-        List<Comment> comments;
-        List<User> users;
+    @Override
+    protected void onStatusAttitudeUpdate(StatusAttitudeEvent event) {
+        if (event.statusId == mWeiboId) {
+            mView.onStatusAttitudeUpdate(event.isAttitude);
+        }
     }
+
 }

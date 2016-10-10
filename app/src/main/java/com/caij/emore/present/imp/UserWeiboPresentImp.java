@@ -1,14 +1,15 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.Event;
-import com.caij.emore.account.Account;
+import com.caij.emore.EventTag;
 import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.dao.StatusManager;
+import com.caij.emore.dao.UserManager;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.UserWeiboPresent;
-import com.caij.emore.source.UserSource;
+import com.caij.emore.remote.AttitudeApi;
+import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.TimeLineWeiboView;
-import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
@@ -31,13 +32,14 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
     private int mFeature = 0;
     private long mUid;
 
-    private UserSource mLocalUserSource;
+    private UserManager mUserManager;
 
-    public UserWeiboPresentImp(Account account, long uid, TimeLineWeiboView view,
-                               WeiboSource serverWeiboSource, WeiboSource localWeiboSource, UserSource localUserSource) {
-        super(account, view, serverWeiboSource, localWeiboSource);
+    public UserWeiboPresentImp(long uid, TimeLineWeiboView view, StatusApi statusApi,
+                               StatusManager statusManager, AttitudeApi attitudeApi,
+                               UserManager userManager) {
+        super(view, statusApi, statusManager, attitudeApi);
         mUid = uid;
-        mLocalUserSource = localUserSource;
+        mUserManager = userManager;
     }
 
     @Override
@@ -112,7 +114,7 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
     }
 
     private Observable<List<Weibo>> createObservable(long maxId, final boolean isRefresh) {
-        return mServerWeiboSource.getUseWeibo(mAccount.getToken().getAccess_token(), mUid, mFeature, 0, maxId, PAGE_COUNT, 1)
+        return mStatusApi.getUseWeibo(mUid, mFeature, 0, maxId, PAGE_COUNT, 1)
                 .compose(new ErrorCheckerTransformer<UserWeiboResponse>())
                 .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
                     @Override
@@ -133,8 +135,8 @@ public class UserWeiboPresentImp extends AbsListTimeLinePresent<TimeLineWeiboVie
                         for (Weibo weibo : weibos) {
                             if (weibo.getUser().getId() == mUid) {
                                 User user = weibo.getUser();
-                                mLocalUserSource.saveWeiboUser(user);
-                                RxBus.getDefault().post(Event.EVENT_USER_UPDATE, user);
+                                mUserManager.saveUser(user);
+                                RxBus.getDefault().post(EventTag.EVENT_USER_UPDATE, user);
                                 break;
                             }
                         }

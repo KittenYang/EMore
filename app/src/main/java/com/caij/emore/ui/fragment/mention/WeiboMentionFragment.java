@@ -6,12 +6,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
 import com.caij.emore.account.UserPrefs;
+import com.caij.emore.dao.imp.NotifyManagerImp;
+import com.caij.emore.dao.imp.StatusManagerImp;
 import com.caij.emore.present.WeiboMentionPresent;
 import com.caij.emore.present.imp.WeiboMentionPresentImp;
-import com.caij.emore.source.local.LocalMessageSource;
-import com.caij.emore.source.local.LocalWeiboSource;
-import com.caij.emore.source.server.ServerMessageSource;
-import com.caij.emore.source.server.ServerWeiboSource;
+import com.caij.emore.remote.imp.AttitudeApiImp;
+import com.caij.emore.remote.imp.StatusApiImp;
+import com.caij.emore.remote.imp.UnReadMessageApiImp;
 import com.caij.emore.ui.fragment.weibo.TimeLineWeiboFragment;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
@@ -29,8 +30,9 @@ public class WeiboMentionFragment extends TimeLineWeiboFragment<WeiboMentionPres
 
     @Override
     protected WeiboMentionPresent createPresent() {
-       return new WeiboMentionPresentImp(UserPrefs.get(getActivity()).getAccount(), new ServerWeiboSource(), new LocalWeiboSource(),
-               new ServerMessageSource(), new LocalMessageSource(), this);
+       return new WeiboMentionPresentImp(UserPrefs.get(getActivity()).getAccount().getUid(), this,
+               new StatusApiImp(), new StatusManagerImp(), new AttitudeApiImp(),
+               new UnReadMessageApiImp(), new NotifyManagerImp());
     }
 
     @Override

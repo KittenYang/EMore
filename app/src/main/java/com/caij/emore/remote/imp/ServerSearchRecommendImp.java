@@ -1,20 +1,20 @@
-package com.caij.emore.source.server;
+package com.caij.emore.remote.imp;
 
 import com.caij.emore.Key;
 import com.caij.emore.api.WeiBoService;
 import com.caij.emore.bean.SinaSearchRecommend;
-import com.caij.emore.source.SearchSource;
+import com.caij.emore.remote.SearchRecommendSource;
 
 import rx.Observable;
 
 /**
  * Created by Caij on 2016/7/26.
  */
-public class ServerSearchSource implements SearchSource {
+public class ServerSearchRecommendImp implements SearchRecommendSource {
 
     private WeiBoService mWeiBoService;
 
-    public ServerSearchSource() {
+    public ServerSearchRecommendImp() {
         mWeiBoService = WeiBoService.Factory.create();
     }
 

@@ -3,11 +3,12 @@ package com.caij.emore.present.imp;
 import com.caij.emore.account.Account;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.response.QueryWeiboCommentResponse;
+import com.caij.emore.dao.NotifyManager;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.RefreshListPresent;
+import com.caij.emore.remote.CommentApi;
+import com.caij.emore.remote.UnReadMessageApi;
 import com.caij.emore.ui.view.RefreshListView;
-import com.caij.emore.source.MessageSource;
-import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
@@ -28,24 +29,26 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
 
     private static final int COUNT = 20;
 
-    private Account mAccount;
-    private WeiboSource mWeiboSource;
     private RefreshListView<Comment> mMentionView;
     private List<Comment> mComments;
-    MessageSource mServerMessageSource;
-    MessageSource mLocalMessageSource;
 
-    public CommentMentionPresentImp(Account account, WeiboSource weiboSource,
-                                    MessageSource serverMessageSource,
-                                    MessageSource localMessageSource,
+    private long mUid;
+
+    private CommentApi mCommentApi;
+    private UnReadMessageApi mUnReadMessageApi;
+    private NotifyManager mNotifyManager;
+
+    public CommentMentionPresentImp(long uid, CommentApi commentApi,
+                                    UnReadMessageApi unReadMessageApi,
+                                    NotifyManager notifyManager,
                                     RefreshListView<Comment> mentionView) {
         super();
-        mAccount = account;
-        mWeiboSource = weiboSource;
+        mCommentApi = commentApi;
         mMentionView = mentionView;
-        mServerMessageSource = serverMessageSource;
-        mLocalMessageSource = localMessageSource;
+        mUnReadMessageApi = unReadMessageApi;
+        mNotifyManager = notifyManager;
         mComments = new ArrayList<>();
+        mUid = uid;
     }
 
     @Override
@@ -76,8 +79,8 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
 
                         mMentionView.onLoadComplete(comments.size() > COUNT - 1);
 
-                        MessageUtil.resetUnReadMessage(mAccount.getToken().getAccess_token(),UnReadMessage.TYPE_MENTION_CMT,
-                                mAccount.getUid(), mServerMessageSource, mLocalMessageSource);
+                        MessageUtil.resetUnReadMessage(UnReadMessage.TYPE_MENTION_CMT,
+                                mUid, mUnReadMessageApi, mNotifyManager);
                     }
                 });
         addSubscription(su);
@@ -119,7 +122,7 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
     }
 
     private Observable<List<Comment>> getCommentMentionsObservable(long maxId, final boolean isRefresh) {
-        return mWeiboSource.getCommentsMentions(mAccount.getToken().getAccess_token(), 0, maxId, COUNT, 1)
+        return mCommentApi.getCommentsMentions(0, maxId, COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
                 .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
                     @Override

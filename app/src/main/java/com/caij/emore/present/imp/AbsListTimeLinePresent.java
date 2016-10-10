@@ -1,11 +1,14 @@
 package com.caij.emore.present.imp;
 
 
-import com.caij.emore.account.Account;
+import com.caij.emore.bean.event.StatusAttitudeCountUpdateEvent;
+import com.caij.emore.bean.event.StatusAttitudeEvent;
+import com.caij.emore.dao.StatusManager;
 import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.remote.AttitudeApi;
+import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.ListView;
 import com.caij.emore.ui.view.WeiboActionView;
-import com.caij.emore.source.WeiboSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,20 +20,33 @@ public abstract class AbsListTimeLinePresent<V extends WeiboActionView & ListVie
 
     protected List<Weibo> mWeibos;
 
-    public AbsListTimeLinePresent(Account account, V view, WeiboSource serverWeiboSource, WeiboSource localWeiboSource) {
-        super(account, view, serverWeiboSource, localWeiboSource);
+    public AbsListTimeLinePresent(V view, StatusApi statusApi, StatusManager statusManager, AttitudeApi attitudeApi) {
+        super(view, statusApi, statusManager, attitudeApi);
         mWeibos = new ArrayList<>();
     }
 
     @Override
-    protected void onWeiboUpdate(Weibo weibo) {
+    protected void onStatusAttitudeCountUpdate(StatusAttitudeCountUpdateEvent event) {
         for (int index = 0; index < mWeibos.size(); index++) {
-            Weibo weiboOnList = mWeibos.get(index);
-            if (weiboOnList.equals(weibo)) {
-                weiboOnList.setAttitudes_count(weibo.getAttitudes_count());
-                weiboOnList.setReposts_count(weibo.getReposts_count());
-                weiboOnList.setComments_count(weibo.getComments_count());
-                weiboOnList.setAttitudes_status(weibo.getAttitudes_status());
+            Weibo weibo = mWeibos.get(index);
+            if (weibo.getId() == event.statusId) {
+                weibo.setAttitudes_count(event.count);
+                mView.notifyItemChanged(mWeibos, index);
+                break;
+            }
+        }
+    }
+
+    @Override
+    protected void onStatusAttitudeUpdate(StatusAttitudeEvent event) {
+        for (int index = 0; index < mWeibos.size(); index++) {
+            Weibo weibo = mWeibos.get(index);
+            if (weibo.getId() == event.statusId) {
+                if (event.isAttitude) {
+                    weibo.setAttitudes_status(1);
+                }else {
+                    weibo.setAttitudes_status(0);
+                }
                 mView.notifyItemChanged(mWeibos, index);
                 break;
             }

@@ -19,11 +19,11 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Emotion;
+import com.caij.emore.dao.imp.DraftManagerImp;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.WeiboPublishPresent;
 import com.caij.emore.present.imp.WeiboPublishPresentImp;
 import com.caij.emore.ui.view.WeiboPublishView;
-import com.caij.emore.source.local.LocalDraftSource;
 import com.caij.emore.ui.adapter.PublishImageAdapter;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.NavigationUtil;
@@ -98,7 +98,7 @@ public class PublishWeiboActivity extends PublishActivity<WeiboPublishPresent> i
 
     @Override
     protected WeiboPublishPresent createPresent() {
-        return  new WeiboPublishPresentImp(UserPrefs.get(this).getAccount(), this, new LocalDraftSource());
+        return  new WeiboPublishPresentImp(UserPrefs.get(this).getAccount(), this, new DraftManagerImp());
     }
 
     private void fillData(Draft draft) {

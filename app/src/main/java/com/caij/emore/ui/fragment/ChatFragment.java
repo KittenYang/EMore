@@ -21,19 +21,19 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Emotion;
+import com.caij.emore.dao.imp.UserManagerImp;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.present.ChatPresent;
 import com.caij.emore.present.imp.ChatPresentImp;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.view.DirectMessageView;
 import com.caij.emore.source.local.LocalMessageSource;
-import com.caij.emore.source.local.LocalUserSource;
 import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.ImagePrewActivity;
@@ -110,8 +110,8 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
                 replace(R.id.fl_emotion, new EmotionFragment()).commit();
         initView();
 
-        mEmotionObservable = RxBus.getDefault().register(Event.ON_EMOTION_CLICK);
-        mEmotionDeleteObservable = RxBus.getDefault().register(Event.ON_EMOTION_DELETE_CLICK);
+        mEmotionObservable = RxBus.getDefault().register(EventTag.ON_EMOTION_CLICK);
+        mEmotionDeleteObservable = RxBus.getDefault().register(EventTag.ON_EMOTION_DELETE_CLICK);
         mEmotionObservable.subscribe(new Action1<Emotion>() {
             @Override
             public void call(Emotion emotion) {
@@ -205,7 +205,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
         Token accessToken = UserPrefs.get(getActivity()).getToken();
         long recipientId = getArguments().getLong(Key.ID);
         return new ChatPresentImp(accessToken, recipientId, Long.parseLong(accessToken.getUid()),
-                new ServerMessageSource(), new LocalMessageSource(), new LocalUserSource(), this);
+                new ServerMessageSource(), new LocalMessageSource(), new UserManagerImp(), this);
     }
 
 
@@ -244,8 +244,8 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        RxBus.getDefault().unregister(Event.ON_EMOTION_CLICK, mEmotionObservable);
-        RxBus.getDefault().unregister(Event.ON_EMOTION_DELETE_CLICK, mEmotionDeleteObservable);
+        RxBus.getDefault().unregister(EventTag.ON_EMOTION_CLICK, mEmotionObservable);
+        RxBus.getDefault().unregister(EventTag.ON_EMOTION_DELETE_CLICK, mEmotionDeleteObservable);
     }
 
     @OnClick({R.id.et_content, R.id.iv_emotion, R.id.iv_add, R.id.tv_send})

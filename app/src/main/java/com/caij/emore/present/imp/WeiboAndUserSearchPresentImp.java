@@ -1,13 +1,16 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.account.Account;
+import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.dao.StatusManager;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboAndUserSearchPresent;
+import com.caij.emore.remote.AttitudeApi;
+import com.caij.emore.remote.StatusApi;
+import com.caij.emore.remote.UserApi;
 import com.caij.emore.ui.view.WeiboAndUserSearchView;
-import com.caij.emore.source.UserSource;
-import com.caij.emore.source.WeiboSource;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
@@ -31,15 +34,15 @@ public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAn
 
     private String mKey;
     private int mPage;
-    private UserSource mServerUserSource;
 
-    public WeiboAndUserSearchPresentImp(Account account, String key, WeiboAndUserSearchView view,
-                                        WeiboSource serverWeiboSource,
-                                        WeiboSource localWeiboSource,
-                                        UserSource serverUserSource) {
-        super(account, view, serverWeiboSource, localWeiboSource);
+    private UserApi mUserApi;
+
+    public WeiboAndUserSearchPresentImp(String key, WeiboAndUserSearchView view, StatusApi statusApi,
+                                        StatusManager statusManager, AttitudeApi attitudeApi,
+                                        UserApi userApi) {
+        super(view, statusApi, statusManager, attitudeApi);
         mKey = key;
-        mServerUserSource = serverUserSource;
+        mUserApi = userApi;
     }
 
     @Override
@@ -51,8 +54,12 @@ public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAn
                         doSpanNext(weibos);
                     }
                 });
-        Observable<List<User>> userObservable = mServerUserSource.getSearchUser(mAccount.getToken().getAccess_token(),
-                mKey, 1, PAGE_COUNT);
+        Observable<List<User>> userObservable = mUserApi.searchUser(mKey, 1, PAGE_COUNT).flatMap(new Func1<FriendshipResponse, Observable<List<User>>>() {
+            @Override
+            public Observable<List<User>> call(FriendshipResponse friendshipResponse) {
+                return Observable.just(friendshipResponse.getUsers());
+            }
+        });
 
         Subscription subscription = Observable.zip(weiboObservable, userObservable, new Func2<List<Weibo>, List<User>, Zip>() {
             @Override
@@ -134,7 +141,7 @@ public class WeiboAndUserSearchPresentImp extends AbsListTimeLinePresent<WeiboAn
     }
 
     private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
-        return mServerWeiboSource.getSearchWeibo(mAccount.getToken().getAccess_token(), mKey, page, PAGE_COUNT)
+        return mStatusApi.getSearchWeibo(mKey, page, PAGE_COUNT)
                 .compose(new ErrorCheckerTransformer<QueryWeiboResponse>())
                 .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
                     @Override

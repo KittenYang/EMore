@@ -5,10 +5,10 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.caij.emore.Key;
-import com.caij.emore.account.UserPrefs;
+import com.caij.emore.dao.imp.StatusManagerImp;
 import com.caij.emore.present.imp.TopicPresentImp;
-import com.caij.emore.source.local.LocalWeiboSource;
-import com.caij.emore.source.server.ServerWeiboSource;
+import com.caij.emore.remote.imp.AttitudeApiImp;
+import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.ui.fragment.weibo.TimeLineWeiboFragment;
 
 /**
@@ -32,8 +32,8 @@ public class TopicsFragment extends TimeLineWeiboFragment<TopicPresentImp> {
     @Override
     protected TopicPresentImp createPresent() {
         String key  = getArguments().getString(Key.ID);
-        return new TopicPresentImp(UserPrefs.get(getActivity()).getAccount(), key,
-                new ServerWeiboSource(), new LocalWeiboSource(), this);
+        return new TopicPresentImp(key, this, new StatusApiImp(),
+                new StatusManagerImp(), new AttitudeApiImp());
     }
 
 }

@@ -13,7 +13,7 @@ import com.caij.emore.bean.SinaSearchRecommend;
 import com.caij.emore.present.SearchRecommendPresent;
 import com.caij.emore.present.imp.SearchRecommendPresentImp;
 import com.caij.emore.ui.view.SearchRecommendView;
-import com.caij.emore.source.server.ServerSearchSource;
+import com.caij.emore.remote.imp.ServerSearchRecommendImp;
 import com.caij.emore.ui.adapter.SearchAdapter;
 import com.caij.emore.ui.fragment.WeiboAndUserSearchFragment;
 import com.caij.emore.utils.weibo.ThemeUtils;
@@ -116,7 +116,7 @@ public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent
 
     @Override
     protected SearchRecommendPresent createPresent() {
-        return new SearchRecommendPresentImp(new ServerSearchSource(), this);
+        return new SearchRecommendPresentImp(new ServerSearchRecommendImp(), this);
     }
 
     private void searchTextChange(String newText) {

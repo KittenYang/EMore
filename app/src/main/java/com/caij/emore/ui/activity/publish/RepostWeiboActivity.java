@@ -18,8 +18,8 @@ import com.caij.emore.bean.Emotion;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.RepostWeiboPresent;
 import com.caij.emore.present.imp.RepostWeiboPresentImp;
+import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.ui.view.RepostWeiboView;
-import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.ToastUtil;
@@ -72,7 +72,7 @@ public class RepostWeiboActivity extends PublishActivity<RepostWeiboPresent> imp
         Token accessToken = UserPrefs.get(this).getToken();
         Weibo weibo = (Weibo) getIntent().getSerializableExtra(Key.OBJ);
         return new RepostWeiboPresentImp(accessToken.getAccess_token(), weibo.getId(),
-                new ServerWeiboSource(), this);
+                new StatusApiImp(), this);
     }
 
     @Override

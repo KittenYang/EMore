@@ -33,7 +33,7 @@ import com.caij.emore.database.dao.UnReadMessageDao;
 
 /**
  * {@inheritDoc}
- * 
+ *
  * @see de.greenrobot.dao.AbstractDaoSession
  */
 public class DaoSession extends AbstractDaoSession {
@@ -109,7 +109,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(Draft.class, draftDao);
         registerDao(UnReadMessage.class, unReadMessageDao);
     }
-    
+
     public void clear() {
         userDaoConfig.getIdentityScope().clear();
         localFileDaoConfig.getIdentityScope().clear();

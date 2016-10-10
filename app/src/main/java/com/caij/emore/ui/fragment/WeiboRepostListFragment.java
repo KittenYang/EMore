@@ -10,14 +10,11 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.account.Token;
-import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.present.WeiboRepostsPresent;
 import com.caij.emore.present.imp.WeiboRepostsPresentImp;
+import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.ui.view.WeiboRepostsView;
-import com.caij.emore.source.local.LocalWeiboSource;
-import com.caij.emore.source.server.ServerWeiboSource;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.adapter.RepostAdapter;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
@@ -67,10 +64,9 @@ public class WeiboRepostListFragment extends RecyclerViewFragment<Weibo, WeiboRe
 
     @Override
     protected WeiboRepostsPresent createPresent() {
-        Token token = UserPrefs.get(getActivity()).getToken();
         long weiId = getArguments().getLong(Key.ID);
-        return  new WeiboRepostsPresentImp(token.getAccess_token(), weiId,
-                new ServerWeiboSource(), new LocalWeiboSource(), this);
+        return  new WeiboRepostsPresentImp(weiId,
+                new StatusApiImp(), this);
     }
 
     @Override

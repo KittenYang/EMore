@@ -1,14 +1,17 @@
 package com.caij.emore.utils.weibo;
 
 import com.caij.emore.AppApplication;
-import com.caij.emore.Event;
-import com.caij.emore.Key;
+import com.caij.emore.EventTag;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.response.Response;
+import com.caij.emore.dao.NotifyManager;
 import com.caij.emore.database.bean.UnReadMessage;
+import com.caij.emore.remote.UnReadMessageApi;
 import com.caij.emore.source.MessageSource;
-import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -22,71 +25,53 @@ import rx.schedulers.Schedulers;
  */
 public class MessageUtil {
 
-    public static void resetUnReadMessage(final String token, String type, final long uid,
-                                          MessageSource serverMessageSource, final MessageSource localMessageSource) {
-        Observable<Response> serverObservable = serverMessageSource.resetUnReadMessage(token, uid, type, 0);
-        Observable<Response> localObservable = localMessageSource.resetUnReadMessage(token, uid, type, 0);
-        Observable.concat(serverObservable, localObservable)
-                .filter(new Func1<Response, Boolean>() {
+    public static void resetUnReadMessage(final String type, final long uid, UnReadMessageApi unReadMessageApi,
+                                          final NotifyManager notifyManager) {
+        unReadMessageApi.resetUnReadMessage(uid, type, 0)
+                .compose(ErrorCheckerTransformer.create())
+                .doOnNext(new Action1<Response>() {
                     @Override
-                    public Boolean call(Response response) {
-                        return response != null;
+                    public void call(Response response) {
+                        notifyManager.resetUnReadMessage(uid, type, 0);
                     }
                 })
                 .flatMap(new Func1<Response, Observable<UnReadMessage>>() {
                     @Override
                     public Observable<UnReadMessage> call(Response response) {
-                        return localMessageSource.getUnReadMessage(token, uid);
+                        return Observable.create(new Observable.OnSubscribe<UnReadMessage>() {
+                            @Override
+                            public void call(Subscriber<? super UnReadMessage> subscriber) {
+                                subscriber.onNext(notifyManager.getUnReadMessage(uid));
+                            }
+                        });
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<UnReadMessage>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
+                .compose(SchedulerTransformer.<UnReadMessage>create())
+                .subscribe(new SubscriberAdapter<UnReadMessage>() {
                     @Override
                     public void onNext(UnReadMessage unReadMessage) {
-                        RxBus.getDefault().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
+                        RxBus.getDefault().post(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
                     }
                 });
     }
 
-    public static void resetLocalUnReadMessage(final String token, String type, int value, final long uid, final MessageSource localMessageSource) {
-        Observable<Response> localObservable = localMessageSource.resetUnReadMessage(token, uid, type, value);
-        localObservable.flatMap(new Func1<Response, Observable<UnReadMessage>>() {
-                    @Override
-                    public Observable<UnReadMessage> call(Response response) {
-                        return localMessageSource.getUnReadMessage(token, uid);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<UnReadMessage>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        LogUtil.d("resetLocalUnReadMessage", e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(UnReadMessage unReadMessage) {
-                        if (unReadMessage != null) {
-                            RxBus.getDefault().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
-                        }
-                    }
-                });
+    public static void resetLocalUnReadMessage(final String type, final int value, final long uid, final NotifyManager notifyManager) {
+        Observable.create(new Observable.OnSubscribe<UnReadMessage>() {
+            @Override
+            public void call(Subscriber<? super UnReadMessage> subscriber) {
+                notifyManager.resetUnReadMessage(uid, type, value);
+                subscriber.onNext(notifyManager.getUnReadMessage(uid));
+                subscriber.onCompleted();
+            }
+        }).compose(SchedulerTransformer.<UnReadMessage>create())
+        .subscribe(new SubscriberAdapter<UnReadMessage>() {
+            @Override
+            public void onNext(UnReadMessage unReadMessage) {
+                if (unReadMessage != null) {
+                    RxBus.getDefault().post(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
+                }
+            }
+        });
     }
 
     public static void resetLocalUnReadMessageDisValue(final String token, final String type, final int disValue, final MessageSource localMessageSource) {
@@ -129,7 +114,7 @@ public class MessageUtil {
 
                     @Override
                     public void onNext(UnReadMessage unReadMessage) {
-                        RxBus.getDefault().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
+                        RxBus.getDefault().post(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
                     }
                 });
     }

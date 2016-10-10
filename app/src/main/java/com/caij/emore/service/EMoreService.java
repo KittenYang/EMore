@@ -16,8 +16,7 @@ import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.caij.emore.AppApplication;
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.Key;
 import com.caij.emore.service.manager.ChatManager;
 import com.caij.emore.service.manager.PublishWeiboManager;
@@ -144,11 +143,11 @@ public class EMoreService extends Service {
                 @Override
                 public void onPost(Object tag, @NonNull Object content) {
                     try {
-                        if (tag.equals(Event.EVENT_DRAFT_UPDATE)
-                                || tag.equals(Event.EVENT_PUBLISH_WEIBO_SUCCESS)
-                                || tag.equals(Event.EVENT_UNREAD_MESSAGE_COMPLETE)
-                                || tag.equals(Event.EVENT_HAS_NEW_DM)
-                                || tag.equals(Event.EVENT_SEND_MESSAGE_RESULT)) {
+                        if (tag.equals(EventTag.EVENT_DRAFT_UPDATE)
+                                || tag.equals(EventTag.EVENT_PUBLISH_WEIBO_SUCCESS)
+                                || tag.equals(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE)
+                                || tag.equals(EventTag.EVENT_HAS_NEW_DM)
+                                || tag.equals(EventTag.EVENT_SEND_MESSAGE_RESULT)) {
                             LogUtil.d(PipeHandler.this,"EMoreService send event " + tag.toString() + " to other event");
 
                             if (mClientMessenger != null) {

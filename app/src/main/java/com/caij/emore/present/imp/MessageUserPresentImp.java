@@ -1,6 +1,6 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.Event;
+import com.caij.emore.EventTag;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.UnReadMessage;
@@ -9,7 +9,6 @@ import com.caij.emore.ui.view.MessageUserView;
 import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.utils.rxjava.DefaultTransformer;
 import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.SchedulerTransformer;
 
@@ -129,7 +128,7 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
                     }
                 });
 
-        mUnReadMessageObservable = RxBus.getDefault().register(Event.EVENT_UNREAD_MESSAGE_COMPLETE);
+        mUnReadMessageObservable = RxBus.getDefault().register(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE);
         mUnReadMessageObservable.subscribe(new Action1<UnReadMessage>() {
             @Override
             public void call(UnReadMessage unReadMessage) {
@@ -219,7 +218,7 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
 
                     @Override
                     public void onNext(UnReadMessage unReadMessage) {
-                        RxBus.getDefault().post(Event.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
+                        RxBus.getDefault().post(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
                     }
                 });
     }
@@ -227,7 +226,7 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.getDefault().unregister(Event.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
     }
 
 
