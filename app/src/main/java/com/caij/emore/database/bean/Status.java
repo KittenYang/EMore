@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Entity mapped to table "WEIBO".
  */
-public class Weibo extends Response implements Serializable {
+public class Status extends Response implements Serializable {
 
     private java.util.Date created_at;
     private Long id;
@@ -59,14 +59,14 @@ public class Weibo extends Response implements Serializable {
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
 
-    public Weibo() {
+    public Status() {
     }
 
-    public Weibo(Long id) {
+    public Status(Long id) {
         this.id = id;
     }
 
-    public Weibo(java.util.Date created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, Integer attitudes_status, Boolean isLongText, String geo_json_string, String visible_json_string, String url_struct_json_string, String pic_ids_json_string, String pic_infos_json_string, String long_text_json_string, String page_info_json_string, String buttons_json_string, String title_json_string, Long retweeted_status_id, Long user_id) {
+    public Status(java.util.Date created_at, Long id, Long mid, String idstr, String text, String source, Boolean favorited, Boolean truncated, String in_reply_to_status_id, String in_reply_to_user_id, String in_reply_to_screen_name, String thumbnail_pic, String bmiddle_pic, String original_pic, Integer reposts_count, Integer comments_count, Integer attitudes_count, Integer mlevel, Long update_time, Integer attitudes_status, Boolean isLongText, String geo_json_string, String visible_json_string, String url_struct_json_string, String pic_ids_json_string, String pic_infos_json_string, String long_text_json_string, String page_info_json_string, String buttons_json_string, String title_json_string, Long retweeted_status_id, Long user_id) {
         this.created_at = created_at;
         this.id = id;
         this.mid = mid;
@@ -364,7 +364,7 @@ public class Weibo extends Response implements Serializable {
     private LinkedHashMap<String, WeiboImageInfo> pic_infos;
     private Geo geo;
     private User user;
-    private Weibo retweeted_status;
+    private Status retweeted_status;
     private LongText longText;
     private List<String> pic_ids;
     private List<ShortUrl> url_struct;
@@ -406,11 +406,11 @@ public class Weibo extends Response implements Serializable {
         this.user = user;
     }
 
-    public Weibo getRetweeted_status() {
+    public Status getRetweeted_status() {
         return retweeted_status;
     }
 
-    public void setRetweeted_status(Weibo retweeted_status) {
+    public void setRetweeted_status(Status retweeted_status) {
         this.retweeted_status = retweeted_status;
     }
 
@@ -472,7 +472,7 @@ public class Weibo extends Response implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        Weibo  weibo = (Weibo) o;
+        Status weibo = (Status) o;
         return weibo.id.equals(id);
     }
 
