@@ -114,11 +114,6 @@ public class WeiboAttitudesPresentImp extends AbsBasePresent implements WeiboRep
                     }
 
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
                     public void onNext(List<User> users) {
                         addRefreshDate(users);
                     }
@@ -142,11 +137,6 @@ public class WeiboAttitudesPresentImp extends AbsBasePresent implements WeiboRep
                 .subscribe(new DefaultResponseSubscriber<List<User>>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
-                    }
-
-                    @Override
-                    public void onCompleted() {
-
                     }
 
                     @Override

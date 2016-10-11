@@ -57,11 +57,11 @@ public class FriendWeiboPresentImp extends AbsListTimeLinePresent<FriendWeiboVie
     @Override
     public void onCreate() {
         super.onCreate();
-        initEvent();
+        registerEvent();
         getLocalFriendStatus();
     }
 
-    private void initEvent() {
+    private void registerEvent() {
         mPublishWeiboObservable = RxBus.getDefault().register(EventTag.EVENT_PUBLISH_WEIBO_SUCCESS);
         mPublishWeiboObservable.doOnNext(new Action1<Weibo>() {
                 @Override

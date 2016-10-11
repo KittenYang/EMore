@@ -17,14 +17,12 @@ public class ReplyCommentPresentImp extends AbsBasePresent implements ReplyComme
     private CommentApi mCommentApi;
     private CommentWeiboView mCommentWeiboView;
 
-    private String mToken;
     private long mWeiboId;
     private long mCid;
 
-    public ReplyCommentPresentImp(String token, long weiboId, long cid,
+    public ReplyCommentPresentImp(long weiboId, long cid,
                                   CommentApi commentApi, CommentWeiboView commentWeiboView) {
         mCommentApi = commentApi;
-        mToken = token;
         mCid = cid;
         mWeiboId = weiboId;
         mCommentWeiboView = commentWeiboView;
@@ -44,11 +42,6 @@ public class ReplyCommentPresentImp extends AbsBasePresent implements ReplyComme
                     @Override
                     protected void onFail(Throwable e) {
                         mCommentWeiboView.showDialogLoading(false);
-                    }
-
-                    @Override
-                    public void onCompleted() {
-
                     }
 
                     @Override

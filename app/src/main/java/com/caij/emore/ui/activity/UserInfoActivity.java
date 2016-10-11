@@ -114,7 +114,7 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
         setTitle("");
         tvTitleUserName.setText(mUserName);
 
-        viewRoot.setVisibility(View.GONE);
+//        viewRoot.setVisibility(View.GONE); //魅族导致状态栏出现问题
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeColors(
                 getResources().getColor(R.color.gplus_color_1),
