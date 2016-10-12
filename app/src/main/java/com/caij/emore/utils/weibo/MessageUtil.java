@@ -4,13 +4,13 @@ import com.caij.emore.AppApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.response.Response;
-import com.caij.emore.dao.NotifyManager;
+import com.caij.emore.manager.NotifyManager;
 import com.caij.emore.database.bean.UnReadMessage;
-import com.caij.emore.remote.UnReadMessageApi;
+import com.caij.emore.remote.NotifyApi;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.ErrorCheckerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import rx.Observable;
@@ -25,9 +25,9 @@ import rx.schedulers.Schedulers;
  */
 public class MessageUtil {
 
-    public static void resetUnReadMessage(final String type, final long uid, UnReadMessageApi unReadMessageApi,
+    public static void resetUnReadMessage(final String type, final long uid, NotifyApi notifyApi,
                                           final NotifyManager notifyManager) {
-        unReadMessageApi.resetUnReadMessage(uid, type, 0)
+        notifyApi.resetUnReadMessage(uid, type, 0)
                 .compose(ErrorCheckerTransformer.create())
                 .doOnNext(new Action1<Response>() {
                     @Override

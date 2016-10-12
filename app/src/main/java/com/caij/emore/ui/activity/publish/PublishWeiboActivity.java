@@ -19,11 +19,11 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Emotion;
-import com.caij.emore.dao.imp.DraftManagerImp;
+import com.caij.emore.manager.imp.DraftManagerImp;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.WeiboPublishPresent;
-import com.caij.emore.present.imp.WeiboPublishPresentImp;
-import com.caij.emore.ui.view.WeiboPublishView;
+import com.caij.emore.present.imp.StatusPublishPresentImp;
+import com.caij.emore.ui.view.StatusPublishView;
 import com.caij.emore.ui.adapter.PublishImageAdapter;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.NavigationUtil;
@@ -38,7 +38,7 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/6/22.
  */
-public class PublishWeiboActivity extends PublishActivity<WeiboPublishPresent> implements RecyclerViewOnItemClickListener, WeiboPublishView, TextWatcher {
+public class PublishWeiboActivity extends PublishActivity<WeiboPublishPresent> implements RecyclerViewOnItemClickListener, StatusPublishView, TextWatcher {
 
 
     @BindView(R.id.et_content)
@@ -98,7 +98,7 @@ public class PublishWeiboActivity extends PublishActivity<WeiboPublishPresent> i
 
     @Override
     protected WeiboPublishPresent createPresent() {
-        return  new WeiboPublishPresentImp(UserPrefs.get(this).getAccount(), this, new DraftManagerImp());
+        return  new StatusPublishPresentImp(UserPrefs.get(this).getAccount(), this, new DraftManagerImp());
     }
 
     private void fillData(Draft draft) {
@@ -142,7 +142,7 @@ public class PublishWeiboActivity extends PublishActivity<WeiboPublishPresent> i
     @Override
     protected void onSendClick() {
         long id = mDraft != null ? mDraft.getId() : System.currentTimeMillis();
-        mPresent.publishWeibo(id, etContent.getText().toString(), (ArrayList<String>) mPublishImageAdapter.getEntities());
+        mPresent.publishStatus(id, etContent.getText().toString(), (ArrayList<String>) mPublishImageAdapter.getEntities());
     }
 
     @Override

@@ -11,7 +11,7 @@ import de.greenrobot.dao.internal.DaoConfig;
 
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.LocalFile;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.MessageImage;
 import com.caij.emore.database.bean.UrlInfo;
@@ -21,7 +21,7 @@ import com.caij.emore.database.bean.UnReadMessage;
 
 import com.caij.emore.database.dao.UserDao;
 import com.caij.emore.database.dao.LocalFileDao;
-import com.caij.emore.database.dao.WeiboDao;
+import com.caij.emore.database.dao.StatusDao;
 import com.caij.emore.database.dao.DirectMessageDao;
 import com.caij.emore.database.dao.MessageImageDao;
 import com.caij.emore.database.dao.UrlInfoDao;
@@ -33,14 +33,14 @@ import com.caij.emore.database.dao.UnReadMessageDao;
 
 /**
  * {@inheritDoc}
- *
+ * 
  * @see de.greenrobot.dao.AbstractDaoSession
  */
 public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig userDaoConfig;
     private final DaoConfig localFileDaoConfig;
-    private final DaoConfig weiboDaoConfig;
+    private final DaoConfig statusDaoConfig;
     private final DaoConfig directMessageDaoConfig;
     private final DaoConfig messageImageDaoConfig;
     private final DaoConfig urlInfoDaoConfig;
@@ -50,7 +50,7 @@ public class DaoSession extends AbstractDaoSession {
 
     private final UserDao userDao;
     private final LocalFileDao localFileDao;
-    private final WeiboDao weiboDao;
+    private final StatusDao statusDao;
     private final DirectMessageDao directMessageDao;
     private final MessageImageDao messageImageDao;
     private final UrlInfoDao urlInfoDao;
@@ -68,8 +68,8 @@ public class DaoSession extends AbstractDaoSession {
         localFileDaoConfig = daoConfigMap.get(LocalFileDao.class).clone();
         localFileDaoConfig.initIdentityScope(type);
 
-        weiboDaoConfig = daoConfigMap.get(WeiboDao.class).clone();
-        weiboDaoConfig.initIdentityScope(type);
+        statusDaoConfig = daoConfigMap.get(StatusDao.class).clone();
+        statusDaoConfig.initIdentityScope(type);
 
         directMessageDaoConfig = daoConfigMap.get(DirectMessageDao.class).clone();
         directMessageDaoConfig.initIdentityScope(type);
@@ -91,7 +91,7 @@ public class DaoSession extends AbstractDaoSession {
 
         userDao = new UserDao(userDaoConfig, this);
         localFileDao = new LocalFileDao(localFileDaoConfig, this);
-        weiboDao = new WeiboDao(weiboDaoConfig, this);
+        statusDao = new StatusDao(statusDaoConfig, this);
         directMessageDao = new DirectMessageDao(directMessageDaoConfig, this);
         messageImageDao = new MessageImageDao(messageImageDaoConfig, this);
         urlInfoDao = new UrlInfoDao(urlInfoDaoConfig, this);
@@ -101,7 +101,7 @@ public class DaoSession extends AbstractDaoSession {
 
         registerDao(User.class, userDao);
         registerDao(LocalFile.class, localFileDao);
-        registerDao(Weibo.class, weiboDao);
+        registerDao(Status.class, statusDao);
         registerDao(DirectMessage.class, directMessageDao);
         registerDao(MessageImage.class, messageImageDao);
         registerDao(UrlInfo.class, urlInfoDao);
@@ -109,11 +109,11 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(Draft.class, draftDao);
         registerDao(UnReadMessage.class, unReadMessageDao);
     }
-
+    
     public void clear() {
         userDaoConfig.getIdentityScope().clear();
         localFileDaoConfig.getIdentityScope().clear();
-        weiboDaoConfig.getIdentityScope().clear();
+        statusDaoConfig.getIdentityScope().clear();
         directMessageDaoConfig.getIdentityScope().clear();
         messageImageDaoConfig.getIdentityScope().clear();
         urlInfoDaoConfig.getIdentityScope().clear();
@@ -130,8 +130,8 @@ public class DaoSession extends AbstractDaoSession {
         return localFileDao;
     }
 
-    public WeiboDao getWeiboDao() {
-        return weiboDao;
+    public StatusDao getStatusDao() {
+        return statusDao;
     }
 
     public DirectMessageDao getDirectMessageDao() {

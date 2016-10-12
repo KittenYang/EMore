@@ -5,7 +5,7 @@ import android.text.Html;
 import android.view.ViewGroup;
 
 import com.caij.emore.R;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
@@ -13,7 +13,7 @@ import com.caij.emore.widget.recyclerview.BaseAdapter;
 /**
  * Created by Caij on 2016/6/16.
  */
-public class RepostAdapter extends BaseAdapter<Weibo, CommentAdapter.CommentViewHolder> {
+public class RepostAdapter extends BaseAdapter<Status, CommentAdapter.CommentViewHolder> {
 
     ImageLoader.ImageConfig mAvatarImageConfig;
 
@@ -29,7 +29,7 @@ public class RepostAdapter extends BaseAdapter<Weibo, CommentAdapter.CommentView
 
     @Override
     public void onBindViewHolder(CommentAdapter.CommentViewHolder holder, int position) {
-        Weibo weibo = getItem(position);
+        Status weibo = getItem(position);
         holder.txtContent.setText(weibo.getContentSpannableString());
 
         String createAt = DateUtil.convWeiboDate(holder.txtContent.getContext(), weibo.getCreated_at().getTime());

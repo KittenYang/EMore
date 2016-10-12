@@ -4,14 +4,14 @@ import android.os.AsyncTask;
 
 import com.caij.emore.EventTag;
 import com.caij.emore.bean.PublishBean;
-import com.caij.emore.dao.DraftManager;
+import com.caij.emore.manager.DraftManager;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.DraftPresent;
 import com.caij.emore.ui.view.DraftListView;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;

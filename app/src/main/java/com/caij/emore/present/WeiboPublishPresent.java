@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public interface WeiboPublishPresent extends BasePresent {
 
-    public void publishWeibo(long id, final String content, ArrayList<String> imagePaths);
+    public void publishStatus(long id, final String content, ArrayList<String> imagePaths);
 
     void saveToDraft(final long id, String content, ArrayList<String> images);
 }

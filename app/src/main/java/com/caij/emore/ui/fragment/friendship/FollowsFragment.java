@@ -5,10 +5,10 @@ import android.os.Bundle;
 import com.caij.emore.Key;
 import com.caij.emore.account.Account;
 import com.caij.emore.account.UserPrefs;
-import com.caij.emore.dao.imp.NotifyManagerImp;
+import com.caij.emore.manager.imp.NotifyManagerImp;
 import com.caij.emore.present.FriendshipPresent;
 import com.caij.emore.present.imp.FollowsPresentImp;
-import com.caij.emore.remote.imp.UnReadMessageApiImp;
+import com.caij.emore.remote.imp.NotifyApiImp;
 import com.caij.emore.remote.imp.UserApiImp;
 
 /**
@@ -29,7 +29,7 @@ public class FollowsFragment extends FriendshipFragment<FriendshipPresent> {
         Account account = UserPrefs.get(getActivity()).getAccount();
         long uid = getArguments().getLong(Key.ID);
         return new FollowsPresentImp(uid, new UserApiImp(),
-                new UnReadMessageApiImp(), new NotifyManagerImp(), this);
+                new NotifyApiImp(), new NotifyManagerImp(), this);
     }
 
 }

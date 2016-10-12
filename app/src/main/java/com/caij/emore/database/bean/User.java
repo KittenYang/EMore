@@ -391,13 +391,13 @@ public class User  extends Response implements Serializable {
     // KEEP METHODS - put your custom methods here
     // KEEP METHODS END
 
-    private Weibo status;
+    private Status status;
 
-    public Weibo getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Weibo status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

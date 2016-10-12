@@ -18,6 +18,8 @@ public interface EventTag {
     String EVENT_ATTITUDE_WEIBO_SUCCESS = "event_attitude_weibo_success";
     String EVENT_DRAFT_UPDATE = "event_draft_update";
     String EVENT_STATUS_ATTITUDE_COUNT_UPDATE = "event_status_attitude_count_update";
+    String EVENT_STATUS_COMMENT_COUNT_UPDATE = "event_status_comment_count_update";
+    String EVENT_STATUS_RELAY_COUNT_UPDATE = "event_status_relay_count_update";
 
     String EVENT_UNREAD_MESSAGE_COMPLETE = "event_unread_message_complete";
     String EVENT_HAS_NEW_DM = "event_has_new_dm";

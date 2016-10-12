@@ -8,11 +8,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.caij.emore.R;
-import com.caij.emore.database.bean.Weibo;
-import com.caij.emore.ui.activity.WeiboDetialActivity;
-import com.caij.emore.utils.LogUtil;
+import com.caij.emore.database.bean.Status;
+import com.caij.emore.ui.activity.StatusDetailActivity;
 import com.caij.emore.utils.ToastUtil;
-import com.caij.emore.widget.weibo.ImageInterface;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -44,10 +42,10 @@ public abstract class RepostWeiboListItemView extends WeiboListItemView {
     }
 
     @Override
-    public void setWeibo(Weibo weibo) {
+    public void setWeibo(Status weibo) {
         super.setWeibo(weibo);
         // reContent
-        Weibo reWeibo = weibo.getRetweeted_status();
+        Status reWeibo = weibo.getRetweeted_status();
         llRe.setTag(reWeibo);
 
         tvReContent.setText(reWeibo.getContentSpannableString());
@@ -56,9 +54,9 @@ public abstract class RepostWeiboListItemView extends WeiboListItemView {
 
     @OnClick(R.id.ll_re)
     public void onReLineaLayoutClick(View view) {
-        Weibo weibo = (Weibo) view.getTag();
+        Status weibo = (Status) view.getTag();
         if (weibo.getUser() != null) {
-            Intent intent = WeiboDetialActivity.newIntent(getContext(), weibo.getId());
+            Intent intent = StatusDetailActivity.newIntent(getContext(), weibo.getId());
             getContext().startActivity(intent);
         }else {
             ToastUtil.show(getContext(), getContext().getString(R.string.weibo_deleted));

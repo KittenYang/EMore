@@ -15,10 +15,10 @@ import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
-import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
+import com.caij.emore.ui.adapter.StatusFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
 import com.caij.emore.ui.fragment.mention.CommentMentionFragment;
-import com.caij.emore.ui.fragment.mention.WeiboMentionFragment;
+import com.caij.emore.ui.fragment.mention.StatusMentionFragment;
 import com.caij.emore.utils.DialogUtil;
 
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class MentionActivity extends BaseToolBarActivity {
 
     private void doNext() {
         List<BaseFragment> fragments = new ArrayList<>();
-        fragments.add(new WeiboMentionFragment());
+        fragments.add(new StatusMentionFragment());
         fragments.add(new CommentMentionFragment());
 
         List<String> titles = new ArrayList<>();
@@ -91,7 +91,7 @@ public class MentionActivity extends BaseToolBarActivity {
         return R.layout.activity_friendship;
     }
 
-    private class FriendshipPageAdapter extends WeiboFragmentPagerAdapter {
+    private class FriendshipPageAdapter extends StatusFragmentPagerAdapter {
 
         public FriendshipPageAdapter(FragmentManager fm, List<BaseFragment> fragments, List<String> titles) {
             super(fm, fragments, titles);

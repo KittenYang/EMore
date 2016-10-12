@@ -2,7 +2,7 @@ package com.caij.emore.bean;
 
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.User;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 
 /**
  * Created by Caij on 2016/7/21.
@@ -14,7 +14,7 @@ public class Attitude extends Response {
 //            "last_attitude": "",
 //            "source": "<a href=\"http://weibo.com/\" rel=\"nofollow\">新浪微博</a>",
     private User user;
-    private Weibo status;
+    private Status status;
     private long id;
     private String created_at;
     private String attitude;
@@ -31,11 +31,11 @@ public class Attitude extends Response {
         this.user = user;
     }
 
-    public Weibo getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Weibo status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

@@ -1,11 +1,10 @@
 package com.caij.emore.bean;
 
 import android.text.Spannable;
-import android.text.SpannableString;
 
 import com.caij.emore.bean.response.Response;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.database.bean.User;
-import com.caij.emore.database.bean.Weibo;
 
 import java.io.Serializable;
 
@@ -20,7 +19,7 @@ public class Comment extends Response implements Serializable {
     private String source;
     private User user;
     private Comment reply_comment;
-    private Weibo status;
+    private Status status;
 
     private transient Spannable textSpannableString;
 
@@ -80,11 +79,11 @@ public class Comment extends Response implements Serializable {
         this.textSpannableString = textSpannableString;
     }
 
-    public Weibo getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Weibo status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

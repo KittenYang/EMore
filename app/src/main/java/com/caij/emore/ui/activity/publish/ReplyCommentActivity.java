@@ -17,7 +17,7 @@ import com.caij.emore.bean.Emotion;
 import com.caij.emore.present.ReplyCommentWeiboPresent;
 import com.caij.emore.present.imp.ReplyCommentPresentImp;
 import com.caij.emore.remote.imp.CommentApiImp;
-import com.caij.emore.ui.view.CommentWeiboView;
+import com.caij.emore.ui.view.CommentStatusView;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ToastUtil;
 
@@ -28,7 +28,7 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/7/2.
  */
-public class ReplyCommentActivity extends PublishActivity<ReplyCommentWeiboPresent> implements CommentWeiboView {
+public class ReplyCommentActivity extends PublishActivity<ReplyCommentWeiboPresent> implements CommentStatusView {
 
     @BindView(R.id.et_content)
     EditText etContent;

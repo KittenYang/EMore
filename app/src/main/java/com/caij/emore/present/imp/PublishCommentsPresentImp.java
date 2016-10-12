@@ -1,21 +1,22 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.R;
+import com.caij.emore.api.ex.ResponseSubscriber;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.response.QueryWeiboCommentResponse;
+import com.caij.emore.bean.response.QueryStatusCommentResponse;
 import com.caij.emore.present.PublishCommentsPresent;
 import com.caij.emore.remote.CommentApi;
-import com.caij.emore.ui.view.MyPublishComentsView;
-import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.utils.rxjava.DefaultTransformer;
-import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.ui.view.MyPublishCommentsView;
+import com.caij.emore.api.ex.DefaultTransformer;
+import com.caij.emore.api.ex.ErrorCheckerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Func1;
 
 /**
@@ -25,13 +26,11 @@ public class PublishCommentsPresentImp extends AbsBasePresent implements Publish
 
     private static final int COUNT = 20;
 
-    private String mToken;
     private CommentApi mCommentApi;
-    private MyPublishComentsView mMentionView;
+    private MyPublishCommentsView mMentionView;
     private List<Comment> mComments;
 
-    public PublishCommentsPresentImp(String token, CommentApi commentApi, MyPublishComentsView mentionView) {
-        mToken = token;
+    public PublishCommentsPresentImp(CommentApi commentApi, MyPublishCommentsView mentionView) {
         mCommentApi = commentApi;
         mMentionView = mentionView;
         mComments = new ArrayList<>();
@@ -44,18 +43,25 @@ public class PublishCommentsPresentImp extends AbsBasePresent implements Publish
 
     @Override
     public void deleteComment(final Comment comment, final int position) {
-        mMentionView.showDialogLoading(true, R.string.deleting);
+
        Subscription subscription = mCommentApi.deleteComment(comment.getId())
                 .compose(new DefaultTransformer<Comment>())
-                .subscribe(new DefaultResponseSubscriber<Comment>(mMentionView) {
-                    @Override
-                    public void onCompleted() {
-                        mMentionView.showDialogLoading(false, R.string.deleting);
-                    }
+               .doOnSubscribe(new Action0() {
+                   @Override
+                   public void call() {
+                       mMentionView.showDialogLoading(true, R.string.deleting);
+                   }
+               })
+               .doOnTerminate(new Action0() {
+                   @Override
+                   public void call() {
+                       mMentionView.showDialogLoading(false, R.string.deleting);
+                   }
+               })
+                .subscribe(new ResponseSubscriber<Comment>(mMentionView) {
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mMentionView.showDialogLoading(false, R.string.deleting);
                     }
 
                     @Override
@@ -69,11 +75,7 @@ public class PublishCommentsPresentImp extends AbsBasePresent implements Publish
     @Override
     public void refresh() {
         Subscription su =  createCommentsObservable(0, true)
-                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                .subscribe(new ResponseSubscriber<List<Comment>>(mMentionView) {
 
                     @Override
                     protected void onFail(Throwable e) {
@@ -104,7 +106,7 @@ public class PublishCommentsPresentImp extends AbsBasePresent implements Publish
             maxId = mComments.get(mComments.size() - 1).getId();
         }
         Subscription su = createCommentsObservable(maxId, false)
-                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
+                .subscribe(new ResponseSubscriber<List<Comment>>(mMentionView) {
                     @Override
                     public void onCompleted() {
 
@@ -129,10 +131,10 @@ public class PublishCommentsPresentImp extends AbsBasePresent implements Publish
 
     private Observable<List<Comment>> createCommentsObservable(long maxId, final boolean isRefresh) {
         return mCommentApi.getPublishComments(0, maxId, COUNT, 1)
-                .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
-                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
+                .compose(new ErrorCheckerTransformer<QueryStatusCommentResponse>())
+                .flatMap(new Func1<QueryStatusCommentResponse, Observable<Comment>>() {
                     @Override
-                    public Observable<Comment> call(QueryWeiboCommentResponse response) {
+                    public Observable<Comment> call(QueryStatusCommentResponse response) {
                         return Observable.from(response.getComments());
                     }
                 })

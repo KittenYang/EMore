@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.caij.emore.R;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.widget.weibo.ImageInterface;
 
 import butterknife.BindView;
@@ -34,12 +34,12 @@ public class WeiboListImageItemView extends WeiboListItemView {
     }
 
     @Override
-    public void setWeibo(Weibo weibo) {
+    public void setWeibo(Status weibo) {
         super.setWeibo(weibo);
         setImages(weibo, picsView);
     }
 
-    protected void setImages(Weibo weibo, ImageInterface picsView) {
+    protected void setImages(Status weibo, ImageInterface picsView) {
         picsView.setPics(weibo.getPic_ids(), weibo.getPic_infos());
     }
 

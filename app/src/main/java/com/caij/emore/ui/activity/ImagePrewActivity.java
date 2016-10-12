@@ -3,7 +3,6 @@ package com.caij.emore.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -12,7 +11,7 @@ import android.widget.TextView;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.present.imp.AbsBasePresent;
-import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
+import com.caij.emore.ui.adapter.StatusFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
 import com.caij.emore.ui.fragment.ImagePrewFragment;
 import com.caij.emore.utils.weibo.ThemeUtils;
@@ -98,7 +97,7 @@ public class ImagePrewActivity extends BaseActivity {
         });
     }
 
-    private static class ImageFragmentAdapter extends WeiboFragmentPagerAdapter {
+    private static class ImageFragmentAdapter extends StatusFragmentPagerAdapter {
 
         public ImageFragmentAdapter(FragmentManager fm, List<BaseFragment> fragments, List<String> titles) {
             super(fm, fragments, titles);

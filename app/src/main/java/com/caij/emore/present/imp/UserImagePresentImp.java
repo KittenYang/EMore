@@ -1,12 +1,13 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.bean.WeiboImageInfo;
 import com.caij.emore.bean.response.UserWeiboResponse;
-import com.caij.emore.database.bean.Weibo;
-import com.caij.emore.present.UserWeiboPresent;
+import com.caij.emore.database.bean.Status;
+import com.caij.emore.present.UserStatusPresent;
 import com.caij.emore.remote.StatusApi;
-import com.caij.emore.ui.view.TimeLineWeiboImageView;
-import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
+import com.caij.emore.ui.view.TimeLineStatusImageView;
+import com.caij.emore.api.ex.ResponseSubscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,23 +23,21 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPresent {
+public class UserImagePresentImp extends AbsBasePresent implements UserStatusPresent {
 
     private final static int PAGE_COUNT = 20;
 
-    private String mToken;
-    private TimeLineWeiboImageView mView;
+    private TimeLineStatusImageView mView;
     private StatusApi mStatusApi;
-    private List<Weibo> mWeibos;
+    private List<Status> mStatuses;
     private long mUid;
     private List<WeiboImageInfo> mPicUrl;
 
-    public UserImagePresentImp(String token, long uid, TimeLineWeiboImageView view, StatusApi statusApi) {
-        mToken = token;
+    public UserImagePresentImp(long uid, TimeLineStatusImageView view, StatusApi statusApi) {
         mView = view;
         mUid = uid;
         mStatusApi = statusApi;
-        mWeibos = new ArrayList<>();
+        mStatuses = new ArrayList<>();
         mPicUrl = new ArrayList<>();
     }
 
@@ -48,27 +47,27 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
     }
 
     @Override
-    public void deleteWeibo(Weibo weibo, int position) {
+    public void deleteStatus(Status status, int position) {
 
     }
 
     @Override
-    public void collectWeibo(Weibo weibo) {
+    public void collectStatus(Status status) {
 
     }
 
     @Override
-    public void uncollectWeibo(Weibo weibo) {
+    public void unCollectStatus(Status status) {
 
     }
 
     @Override
-    public void attitudesWeibo(Weibo weibo) {
+    public void attitudeStatus(Status status) {
 
     }
 
     @Override
-    public void destroyAttitudesWeibo(Weibo weibo) {
+    public void destroyAttitudeStatus(Status status) {
 
     }
 
@@ -80,15 +79,15 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
     @Override
     public void refresh() {
         Subscription subscription = mStatusApi.getUseWeibo(mUid, 2, 0, 0, PAGE_COUNT, 1)
-                .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
+                .flatMap(new Func1<UserWeiboResponse, Observable<Status>>() {
                     @Override
-                    public Observable<Weibo> call(UserWeiboResponse response) {
+                    public Observable<Status> call(UserWeiboResponse response) {
                         return Observable.from(response.getStatuses());
                     }
                 })
-                .doOnNext(new Action1<Weibo>() {
+                .doOnNext(new Action1<Status>() {
                     @Override
-                    public void call(Weibo weibo) {
+                    public void call(Status weibo) {
                         // TODO: 2016/8/25 图片加载
                         mPicUrl.clear();
                         for (String picId : weibo.getPic_ids()) {
@@ -99,22 +98,19 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
-                    @Override
-                    public void onCompleted() {
-                    }
+                .subscribe(new ResponseSubscriber<List<Status>>(mView) {
 
                     @Override
                     protected void onFail(Throwable e) {
                     }
 
                     @Override
-                    public void onNext(List<Weibo> weibos) {
-                        mWeibos.clear();
-                        mWeibos.addAll(weibos);
+                    public void onNext(List<Status> statuses) {
+                        mStatuses.clear();
+                        mStatuses.addAll(statuses);
                         mView.setEntities(mPicUrl);
 
-                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT);
+                        mView.onLoadComplete(statuses.size() >= PAGE_COUNT);
                     }
                 });
         addSubscription(subscription);
@@ -128,50 +124,44 @@ public class UserImagePresentImp extends AbsBasePresent implements UserWeiboPres
     @Override
     public void loadMore() {
         long maxId = 0;
-        if (mWeibos.size() > 0) {
-            maxId = mWeibos.get(mWeibos.size() - 1).getId();
+        if (mStatuses.size() > 0) {
+            maxId = mStatuses.get(mStatuses.size() - 1).getId();
         }
         Subscription subscription = mStatusApi.getUseWeibo(mUid, 2, 0, maxId, PAGE_COUNT, 1)
-                .flatMap(new Func1<UserWeiboResponse, Observable<Weibo>>() {
+                .flatMap(new Func1<UserWeiboResponse, Observable<Status>>() {
                     @Override
-                    public Observable<Weibo> call(UserWeiboResponse response) {
+                    public Observable<Status> call(UserWeiboResponse response) {
                         return Observable.from(response.getStatuses());
                     }
                 })
-                .filter(new Func1<Weibo, Boolean>() {
+                .filter(new Func1<Status, Boolean>() {
                     @Override
-                    public Boolean call(Weibo weibo) {
-                        return !mWeibos.contains(weibo);
+                    public Boolean call(Status weibo) {
+                        return !mStatuses.contains(weibo);
                     }
                 })
-                .doOnNext(new Action1<Weibo>() {
+                .doOnNext(new Action1<Status>() {
                     @Override
-                    public void call(Weibo weibo) {
+                    public void call(Status weibo) {
                         for (String picId : weibo.getPic_ids()) {
                             mPicUrl.add(weibo.getPic_infos().get(picId));
                         }
                     }
                 })
                 .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Weibo>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                .compose(SchedulerTransformer.<List<Status>>create())
+                .subscribe(new ResponseSubscriber<List<Status>>(mView) {
 
                     @Override
-                    public void onError(Throwable e) {
-                        mView.onDefaultLoadError();
+                    protected void onFail(Throwable e) {
                         mView.onLoadComplete(true);
                     }
 
                     @Override
-                    public void onNext(List<Weibo> weibos) {
-                        mWeibos.addAll(weibos);
+                    public void onNext(List<Status> statuses) {
+                        mStatuses.addAll(statuses);
                         mView.setEntities(mPicUrl);
-                        mView.onLoadComplete(weibos.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
+                        mView.onLoadComplete(statuses.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
                     }
                 });
         addSubscription(subscription);

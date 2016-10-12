@@ -3,11 +3,11 @@ package com.caij.emore.remote.imp;
 import com.caij.emore.api.WeiBoService;
 import com.caij.emore.api.WeiCoService;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
-import com.caij.emore.bean.response.QueryRepostWeiboResponse;
-import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.bean.response.QueryRelayStatusResponse;
+import com.caij.emore.bean.response.QueryStatusResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.database.bean.UploadImageResponse;
-import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.remote.StatusApi;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
@@ -37,7 +37,7 @@ public class StatusApiImp implements StatusApi {
     }
 
     @Override
-    public Observable<QueryWeiboResponse> getFriendWeibo(long uid, long sinceId, long maxId, int count, int page) {
+    public Observable<QueryStatusResponse> getFriendWeibo(long uid, long sinceId, long maxId, int count, int page) {
         return mWeiCoService.getFriendsWeibo(sinceId, maxId, count, page);
     }
 
@@ -47,12 +47,12 @@ public class StatusApiImp implements StatusApi {
     }
 
     @Override
-    public Observable<Weibo> publishWeiboOfText(String content) {
+    public Observable<Status> publishWeiboOfText(String content) {
         return mWeiCoService.publishWeiboOfOnlyText(content);
     }
 
     @Override
-    public Observable<Weibo> publishWeiboOfOneImage(final String content, String imagePath) {
+    public Observable<Status> publishWeiboOfOneImage(final String content, String imagePath) {
         final File file = new File(imagePath);
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
@@ -66,9 +66,9 @@ public class StatusApiImp implements StatusApi {
                     subscriber.onError(e);
                 }
             }
-        }).flatMap(new Func1<String, Observable<Weibo>>() {
+        }).flatMap(new Func1<String, Observable<Status>>() {
             @Override
-            public Observable<Weibo> call(String type) {
+            public Observable<Status> call(String type) {
                 RequestBody requestFile =
                         RequestBody.create(MediaType.parse("image/" + type), file);
                 MultipartBody.Part body =
@@ -107,12 +107,12 @@ public class StatusApiImp implements StatusApi {
     }
 
     @Override
-    public Observable<Weibo> publishWeiboOfMultiImage(String status, String picIds) {
+    public Observable<Status> publishWeiboOfMultiImage(String status, String picIds) {
         return mWeiCoService.publishWeiboOfMultiImage(status, picIds);
     }
 
     @Override
-    public Observable<Weibo> deleteWeibo(long id) {
+    public Observable<Status> deleteWeibo(long id) {
         return mWeiCoService.statusesDestroy(id);
     }
 
@@ -127,37 +127,37 @@ public class StatusApiImp implements StatusApi {
     }
 
     @Override
-    public Observable<Weibo> repostWeibo(String status, long weiboId) {
+    public Observable<Status> repostWeibo(String status, long weiboId) {
         return mWeiCoService.repostWeibo(weiboId, status);
     }
 
     @Override
-    public Observable<QueryWeiboResponse> getWeiboMentions(long since_id, long max_id, int count, int page) {
+    public Observable<QueryStatusResponse> getWeiboMentions(long since_id, long max_id, int count, int page) {
         return mWeiCoService.getWeiboMentions(since_id, max_id, count, page);
     }
 
     @Override
-    public Observable<Weibo> getWeiboById(int isGetLongText, long id) {
+    public Observable<Status> getWeiboById(int isGetLongText, long id) {
         return mWeiCoService.getWeiboById(id, isGetLongText);
     }
 
     @Override
-    public Observable<QueryWeiboResponse> getWeibosByIds(String ids) {
+    public Observable<QueryStatusResponse> getWeibosByIds(String ids) {
         return mWeiCoService.getWeibsoByIds(ids);
     }
 
     @Override
-    public Observable<QueryWeiboResponse> getTopicsByKey(String q, int page, int count) {
+    public Observable<QueryStatusResponse> getTopicsByKey(String q, int page, int count) {
         return mWeiCoService.searchStatus(q, count, page);
     }
 
     @Override
-    public Observable<QueryWeiboResponse> getSearchWeibo(String q, int page, int count) {
+    public Observable<QueryStatusResponse> getSearchWeibo(String q, int page, int count) {
         return mWeiCoService.searchStatus(q, count, page);
     }
 
     @Override
-    public Observable<QueryRepostWeiboResponse> getRepostWeibos(long id, long since_id, long max_id, int count, int page) {
+    public Observable<QueryRelayStatusResponse> getRepostWeibos(long id, long since_id, long max_id, int count, int page) {
         return mWeiCoService.getRepostWeibos(id, since_id, max_id, count, page);
     }
 

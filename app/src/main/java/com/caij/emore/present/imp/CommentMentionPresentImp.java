@@ -1,17 +1,16 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.account.Account;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.response.QueryWeiboCommentResponse;
-import com.caij.emore.dao.NotifyManager;
+import com.caij.emore.bean.response.QueryStatusCommentResponse;
+import com.caij.emore.manager.NotifyManager;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.remote.CommentApi;
-import com.caij.emore.remote.UnReadMessageApi;
+import com.caij.emore.remote.NotifyApi;
 import com.caij.emore.ui.view.RefreshListView;
-import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.ResponseSubscriber;
+import com.caij.emore.api.ex.ErrorCheckerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
@@ -35,17 +34,17 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
     private long mUid;
 
     private CommentApi mCommentApi;
-    private UnReadMessageApi mUnReadMessageApi;
+    private NotifyApi mNotifyApi;
     private NotifyManager mNotifyManager;
 
     public CommentMentionPresentImp(long uid, CommentApi commentApi,
-                                    UnReadMessageApi unReadMessageApi,
+                                    NotifyApi notifyApi,
                                     NotifyManager notifyManager,
                                     RefreshListView<Comment> mentionView) {
         super();
         mCommentApi = commentApi;
         mMentionView = mentionView;
-        mUnReadMessageApi = unReadMessageApi;
+        mNotifyApi = notifyApi;
         mNotifyManager = notifyManager;
         mComments = new ArrayList<>();
         mUid = uid;
@@ -65,7 +64,7 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
                         mMentionView.onRefreshComplete();
                     }
                 })
-                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
+                .subscribe(new ResponseSubscriber<List<Comment>>(mMentionView) {
 
                     @Override
                     protected void onFail(Throwable e) {
@@ -80,7 +79,7 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
                         mMentionView.onLoadComplete(comments.size() > COUNT - 1);
 
                         MessageUtil.resetUnReadMessage(UnReadMessage.TYPE_MENTION_CMT,
-                                mUid, mUnReadMessageApi, mNotifyManager);
+                                mUid, mNotifyApi, mNotifyManager);
                     }
                 });
         addSubscription(su);
@@ -98,7 +97,7 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
             maxId = mComments.get(mComments.size() - 1).getId();
         }
         Subscription su = getCommentMentionsObservable(maxId, false)
-                .subscribe(new DefaultResponseSubscriber<List<Comment>>(mMentionView) {
+                .subscribe(new ResponseSubscriber<List<Comment>>(mMentionView) {
                     @Override
                     public void onCompleted() {
 
@@ -123,10 +122,10 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
 
     private Observable<List<Comment>> getCommentMentionsObservable(long maxId, final boolean isRefresh) {
         return mCommentApi.getCommentsMentions(0, maxId, COUNT, 1)
-                .compose(new ErrorCheckerTransformer<QueryWeiboCommentResponse>())
-                .flatMap(new Func1<QueryWeiboCommentResponse, Observable<Comment>>() {
+                .compose(new ErrorCheckerTransformer<QueryStatusCommentResponse>())
+                .flatMap(new Func1<QueryStatusCommentResponse, Observable<Comment>>() {
                     @Override
-                    public Observable<Comment> call(QueryWeiboCommentResponse response) {
+                    public Observable<Comment> call(QueryStatusCommentResponse response) {
                         return Observable.from(response.getComments());
                     }
                 })

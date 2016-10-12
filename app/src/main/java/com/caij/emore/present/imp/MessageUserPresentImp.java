@@ -1,16 +1,16 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.EventTag;
+import com.caij.emore.api.ex.ResponseSubscriber;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.present.MessageUserPresent;
 import com.caij.emore.ui.view.MessageUserView;
-import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
 import com.caij.emore.source.MessageSource;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.ErrorCheckerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
     @Override
     public void refresh() {
         Subscription subscription = createMessageObservable(0, true)
-                .subscribe(new DefaultResponseSubscriber<List<MessageUser.UserListBean>>(mMessageUserView) {
+                .subscribe(new ResponseSubscriber<List<MessageUser.UserListBean>>(mMessageUserView) {
                     @Override
                     protected void onFail(Throwable e) {
                         mMessageUserView.onRefreshComplete();
@@ -84,7 +84,7 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
     public void loadMore() {
         long cursor = mMessageUser == null ? 0 : mMessageUser.getNext_cursor();
         Subscription subscription = createMessageObservable(cursor, false)
-                .subscribe(new DefaultResponseSubscriber<List<MessageUser.UserListBean>>(mMessageUserView) {
+                .subscribe(new ResponseSubscriber<List<MessageUser.UserListBean>>(mMessageUserView) {
                     @Override
                     protected void onFail(Throwable e) {
                         mMessageUserView.onLoadComplete(true);
@@ -170,7 +170,7 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
                     }
                 })
                 .compose(new SchedulerTransformer<Response>())
-                .subscribe(new DefaultResponseSubscriber<Response>(mMessageUserView) {
+                .subscribe(new ResponseSubscriber<Response>(mMessageUserView) {
                     @Override
                     public void onCompleted() {
 

@@ -18,19 +18,17 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.account.Token;
-import com.caij.emore.account.UserPrefs;
-import com.caij.emore.dao.imp.UserManagerImp;
+import com.caij.emore.manager.imp.UserManagerImp;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
 import com.caij.emore.present.imp.UserInfoDetailPresentImp;
 import com.caij.emore.remote.imp.UserApiImp;
 import com.caij.emore.ui.view.DetailUserView;
-import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
+import com.caij.emore.ui.adapter.StatusFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
 import com.caij.emore.ui.fragment.UserImageFragment;
 import com.caij.emore.ui.fragment.UserInfoFragment;
-import com.caij.emore.ui.fragment.weibo.UserWeiboFragment;
+import com.caij.emore.ui.fragment.weibo.UserStatusFragment;
 import com.caij.emore.utils.CountUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.weibo.ThemeUtils;
@@ -92,7 +90,6 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
     private User mUser;
     private MenuItem menuItem;
     private ArrayList<String> mTabTitles;
-    private String mUserName;
 
     public static Intent newIntent(Context context, String name) {
         Intent intent = new Intent(context, UserInfoActivity.class);
@@ -107,12 +104,12 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        mUserName = intent.getStringExtra(Key.USERNAME);
+        String userName = intent.getStringExtra(Key.USERNAME);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("");
-        tvTitleUserName.setText(mUserName);
+        tvTitleUserName.setText(userName);
 
 //        viewRoot.setVisibility(View.GONE); //魅族导致状态栏出现问题
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -140,14 +137,13 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
 
     @Override
     protected UserInfoDetailPresent createPresent() {
-        Token token = UserPrefs.get(this).getToken();
         String username = getIntent().getStringExtra(Key.USERNAME);
-        return new UserInfoDetailPresentImp(token.getAccess_token(), username, this,
+        return new UserInfoDetailPresentImp(username, this,
                 new UserApiImp(), new UserManagerImp());
     }
 
     private void doNext() {
-        mPresent.getWeiboUserInfoByName();
+        mPresent.getUserInfoByName();
     }
 
     private void initContent(User user) {
@@ -158,9 +154,9 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
         if (viewPager.getAdapter() == null) {
             List<BaseFragment> fragments = new ArrayList<>(3);
             fragments.add(UserInfoFragment.newInstance(user));
-            fragments.add(UserWeiboFragment.newInstance(user.getId()));
+            fragments.add(UserStatusFragment.newInstance(user.getId()));
             fragments.add(UserImageFragment.newInstance(user.getId()));
-            WeiboFragmentPagerAdapter adapter = new WeiboFragmentPagerAdapter(getSupportFragmentManager(),
+            StatusFragmentPagerAdapter adapter = new StatusFragmentPagerAdapter(getSupportFragmentManager(),
                     fragments, mTabTitles);
             viewPager.setAdapter(adapter);
             viewPager.setCurrentItem(1);
@@ -272,7 +268,7 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
     }
 
     @Override
-    public void onUnfollowSuccess() {
+    public void onUnFollowSuccess() {
         mUser.setFollowing(false);
         updateMenu(mUser, menuItem);
     }

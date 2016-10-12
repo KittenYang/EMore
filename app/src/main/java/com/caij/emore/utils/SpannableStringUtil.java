@@ -15,9 +15,8 @@ import com.caij.emore.AppApplication;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.ShortUrl;
 import com.caij.emore.database.bean.DirectMessage;
-import com.caij.emore.database.bean.LongText;
 import com.caij.emore.database.bean.User;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.widget.span.CenteredImageSpan;
 import com.caij.emore.widget.span.MyURLSpan;
 import com.caij.emore.widget.span.TopicSpan;
@@ -251,12 +250,12 @@ public class SpannableStringUtil {
         SpannableStringUtil.praseSoftEmotions(text);
     }
 
-    public static void paraeSpannable(Weibo weibo) {
+    public static void paraeSpannable(Status weibo) {
         paraeSpannable(weibo, false);
     }
 
 
-    public static void paraeSpannable(Weibo weibo, boolean isLongText) {
+    public static void paraeSpannable(Status weibo, boolean isLongText) {
         String text;
         if (isLongText && weibo.getIsLongText() && weibo.getLongText() != null
                 && !TextUtils.isEmpty(weibo.getLongText().getContent())) {
@@ -271,7 +270,7 @@ public class SpannableStringUtil {
         SpannableStringUtil.praseSoftEmotions(contentSpannableString);
         weibo.setContentSpannableString(contentSpannableString);
 
-        Weibo reWeibo = weibo.getRetweeted_status();
+        Status reWeibo = weibo.getRetweeted_status();
         if (reWeibo != null) {
             String reUserName = "";
             User reUser = reWeibo.getUser();

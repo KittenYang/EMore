@@ -1,8 +1,6 @@
 package com.orientationchangedemo.caij.weiyo;
 
-import com.caij.emore.api.WeiBoService;
-import com.caij.emore.bean.response.QueryWeiboResponse;
-import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.bean.response.QueryStatusResponse;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.source.UserSource;
 import com.caij.emore.source.WeiboSource;
@@ -43,7 +41,7 @@ public class WeiboUnitTest {
     @Test
     public void loadFriendWeibo() throws Exception {
         WeiboSource weiboSource = new ServerWeiboSource();
-        weiboSource.getFriendWeibo(Key.token, 0, 0, 0, 20, 1).subscribe(new Subscriber<QueryWeiboResponse>() {
+        weiboSource.getFriendWeibo(Key.token, 0, 0, 0, 20, 1).subscribe(new Subscriber<QueryStatusResponse>() {
             @Override
             public void onCompleted() {
 
@@ -55,7 +53,7 @@ public class WeiboUnitTest {
             }
 
             @Override
-            public void onNext(QueryWeiboResponse response) {
+            public void onNext(QueryStatusResponse response) {
 
             }
         });

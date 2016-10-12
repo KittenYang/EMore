@@ -1,9 +1,8 @@
 package com.caij.emore.remote.imp;
 
-import com.caij.emore.api.WeiBoService;
 import com.caij.emore.api.WeiCoService;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.bean.response.QueryWeiboCommentResponse;
+import com.caij.emore.bean.response.QueryStatusCommentResponse;
 import com.caij.emore.remote.CommentApi;
 
 import rx.Observable;
@@ -21,7 +20,7 @@ public class CommentApiImp implements CommentApi {
     }
 
     @Override
-    public Observable<QueryWeiboCommentResponse> getCommentsByWeibo(long id, long since_id, long max_id, int count, int page) {
+    public Observable<QueryStatusCommentResponse> getCommentsByWeibo(long id, long since_id, long max_id, int count, int page) {
         return mWeiCoService.getCommentsByWeibo(id, since_id, max_id, count, page);
     }
 
@@ -41,17 +40,17 @@ public class CommentApiImp implements CommentApi {
     }
 
     @Override
-    public Observable<QueryWeiboCommentResponse> getCommentsMentions(long since_id, long max_id, int count, int page) {
+    public Observable<QueryStatusCommentResponse> getCommentsMentions(long since_id, long max_id, int count, int page) {
         return mWeiCoService.getCommentsMentions(since_id, max_id, count, page);
     }
 
     @Override
-    public Observable<QueryWeiboCommentResponse> getPublishComments(long since_id, long max_id, int count, int page) {
+    public Observable<QueryStatusCommentResponse> getPublishComments(long since_id, long max_id, int count, int page) {
         return mWeiCoService.getPublishComments(since_id, max_id, count, page);
     }
 
     @Override
-    public Observable<QueryWeiboCommentResponse> getAcceptComments(long since_id, long max_id, int count, int page) {
+    public Observable<QueryStatusCommentResponse> getAcceptComments(long since_id, long max_id, int count, int page) {
         return mWeiCoService.getAcceptComments(since_id, max_id, count, page);
     }
 }

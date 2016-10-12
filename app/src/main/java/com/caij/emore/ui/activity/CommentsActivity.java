@@ -7,7 +7,7 @@ import android.support.v4.view.ViewPager;
 
 import com.caij.emore.R;
 import com.caij.emore.present.imp.AbsBasePresent;
-import com.caij.emore.ui.adapter.WeiboFragmentPagerAdapter;
+import com.caij.emore.ui.adapter.StatusFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
 import com.caij.emore.ui.fragment.mention.AcceptCommentsFragment;
 import com.caij.emore.ui.fragment.mention.PublishCommentsFragment;
@@ -60,7 +60,7 @@ public class CommentsActivity extends BaseToolBarActivity {
         return R.layout.activity_friendship;
     }
 
-    private class FriendshipPageAdapter extends WeiboFragmentPagerAdapter {
+    private class FriendshipPageAdapter extends StatusFragmentPagerAdapter {
 
         public FriendshipPageAdapter(FragmentManager fm, List<BaseFragment> fragments, List<String> titles) {
             super(fm, fragments, titles);

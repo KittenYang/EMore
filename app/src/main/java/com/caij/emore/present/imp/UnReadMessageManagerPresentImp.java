@@ -11,7 +11,7 @@ import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
 
 import rx.Observable;
 import rx.Subscriber;

@@ -12,9 +12,8 @@ import android.view.View;
 import com.caij.emore.AppSettings;
 import com.caij.emore.R;
 import com.caij.emore.bean.ShortUrl;
-import com.caij.emore.database.bean.Weibo;
-import com.caij.emore.ui.activity.VideoViewPlayingActivity;
-import com.caij.emore.ui.activity.WeiboDetialActivity;
+import com.caij.emore.database.bean.Status;
+import com.caij.emore.ui.activity.StatusDetailActivity;
 import com.caij.emore.utils.SpannableStringUtil;
 
 /**
@@ -62,9 +61,9 @@ public class MyURLSpan extends URLSpan implements ParcelableSpan {
         }else {
             //这里有两种情况 一种是网页 一种是全文
             if (getURL().startsWith(SpannableStringUtil.FULL_TEXT_SCHEME)) {
-                if (widget.getTag() instanceof Weibo) {
-                    Weibo weibo = (Weibo) widget.getTag();
-                    Intent intent = WeiboDetialActivity.newIntent(context, weibo.getId());
+                if (widget.getTag() instanceof Status) {
+                    Status weibo = (Status) widget.getTag();
+                    Intent intent = StatusDetailActivity.newIntent(context, weibo.getId());
                     context.startActivity(intent);
                 }
             }else {

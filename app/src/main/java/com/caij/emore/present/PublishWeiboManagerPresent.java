@@ -7,5 +7,5 @@ import com.caij.emore.bean.PublishBean;
  */
 public interface PublishWeiboManagerPresent extends BasePresent {
 
-    void publishWeibo(PublishBean publishBean);
+    void publishStatus(PublishBean publishBean);
 }

@@ -2,22 +2,22 @@ package com.caij.emore.present.imp;
 
 
 import com.caij.emore.EventTag;
-import com.caij.emore.dao.DraftManager;
-import com.caij.emore.dao.NotifyManager;
-import com.caij.emore.dao.UserManager;
+import com.caij.emore.manager.DraftManager;
+import com.caij.emore.manager.NotifyManager;
+import com.caij.emore.manager.UserManager;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.MainPresent;
-import com.caij.emore.remote.UnReadMessageApi;
+import com.caij.emore.remote.NotifyApi;
 import com.caij.emore.remote.UserApi;
 import com.caij.emore.ui.view.MainView;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
+import com.caij.emore.utils.rxjava.RxUtil;
 import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -35,7 +35,7 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
 
     private UserApi mUserApi;
     private UserManager mUserManager;
-    private UnReadMessageApi mUnReadMessageApi;
+    private NotifyApi mNotifyApi;
     private NotifyManager mNotifyManager;
     private DraftManager mDraftManager;
 
@@ -44,13 +44,13 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
     private Observable<Boolean> mModeNightUpdate;
 
     public MainPresentImp(long uid, MainView userView, UserApi userApi, UserManager userManager,
-                          UnReadMessageApi unReadMessageApi, NotifyManager notifyManager,
+                          NotifyApi notifyApi, NotifyManager notifyManager,
                           DraftManager draftManager) {
         mUid = uid;
         mUserView = userView;
         mUserApi = userApi;
         mUserManager = userManager;
-        mUnReadMessageApi = unReadMessageApi;
+        mNotifyApi = notifyApi;
         mNotifyManager = notifyManager;
         mDraftManager = draftManager;
     }
@@ -86,8 +86,19 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
 
     @Override
     public void getUserInfoByUid() {
-        Observable<User> serverObservable = mUserApi.getWeiboUserByUid(mUid);
-        Observable<User> localObservable = createLocalGetUserByUidObservable();
+        Observable<User> serverObservable = mUserApi.getWeiboUserByUid(mUid)
+                .doOnNext(new Action1<User>() {
+                    @Override
+                    public void call(User user) {
+                        mUserManager.saveUser(user);
+                    }
+                });
+        Observable<User> localObservable = RxUtil.createDataObservable(new RxUtil.Provider<User>() {
+            @Override
+            public User getData() {
+                return mUserManager.getUserByUid(mUid);
+            }
+        });
         Subscription subscription = Observable.concat(localObservable, serverObservable)
                 .first(new Func1<User, Boolean>() {
                     @Override
@@ -106,16 +117,6 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
         addSubscription(subscription);
     }
 
-    private Observable<User> createLocalGetUserByUidObservable() {
-        return Observable.create(new Observable.OnSubscribe<User>() {
-            @Override
-            public void call(Subscriber<? super User> subscriber) {
-                subscriber.onNext(mUserManager.getUserByUid(mUid));
-                subscriber.onCompleted();
-            }
-        });
-    }
-
     @Override
     public void getNotifyInfo() {
         loadMessageCount();
@@ -123,13 +124,14 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
     }
 
     private void loadDrafts() {
-        Observable.create(new Observable.OnSubscribe<Long>() {
+        RxUtil.createDataObservable(new RxUtil.Provider<Long>() {
             @Override
-            public void call(Subscriber<? super Long> subscriber) {
-                subscriber.onNext(mDraftManager.getDraftsCount());
-                subscriber.onCompleted();
+            public Long getData() {
+                return mDraftManager.getDraftsCount();
             }
-        }).compose(SchedulerTransformer.<Long>create()).subscribe(new SubscriberAdapter<Long>() {
+        })
+        .compose(SchedulerTransformer.<Long>create())
+        .subscribe(new SubscriberAdapter<Long>() {
             @Override
             public void onNext(Long integer) {
                 mUserView.setDraftCount(integer.intValue());
@@ -138,12 +140,11 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
     }
 
     private void loadMessageCount() {
-        Observable<UnReadMessage> serverObservable = mUnReadMessageApi.getUnReadMessage(mUid);
-        Observable<UnReadMessage> localObservable = Observable.create(new Observable.OnSubscribe<UnReadMessage>() {
+        Observable<UnReadMessage> serverObservable = mNotifyApi.getUnReadMessage(mUid);
+        Observable<UnReadMessage> localObservable = RxUtil.createDataObservable(new RxUtil.Provider<UnReadMessage>() {
             @Override
-            public void call(Subscriber<? super UnReadMessage> subscriber) {
-                subscriber.onNext(mNotifyManager.getUnReadMessage(mUid));
-                subscriber.onCompleted();
+            public UnReadMessage getData() {
+                return mNotifyManager.getUnReadMessage(mUid);
             }
         });
         Subscription subscription = Observable.concat(localObservable, serverObservable)

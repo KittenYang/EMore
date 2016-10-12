@@ -8,6 +8,7 @@ import com.caij.emore.database.dao.DaoMaster;
 import com.caij.emore.database.dao.DaoSession;
 
 import de.greenrobot.dao.identityscope.IdentityScopeType;
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * Created by Caij on 2016/7/13.

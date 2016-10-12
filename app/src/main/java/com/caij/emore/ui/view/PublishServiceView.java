@@ -3,7 +3,7 @@ package com.caij.emore.ui.view;
 import android.content.Context;
 
 import com.caij.emore.bean.PublishBean;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 
 
 /**
@@ -15,7 +15,7 @@ public interface PublishServiceView extends BaseView {
 
     void onPublishFail();
 
-    void onPublishSuccess(Weibo weibo);
+    void onPublishSuccess(Status weibo);
 
     Context getContent();
 

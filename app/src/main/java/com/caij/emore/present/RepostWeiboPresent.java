@@ -5,5 +5,5 @@ package com.caij.emore.present;
  */
 public interface RepostWeiboPresent extends BasePresent  {
 
-    public void repostWeibo(String status);
+    public void relayStatus(String status);
 }

@@ -1,10 +1,10 @@
 package com.caij.emore.present.imp;
 
 
-import com.caij.emore.bean.event.StatusAttitudeCountUpdateEvent;
+import com.caij.emore.bean.event.StatusActionCountUpdateEvent;
 import com.caij.emore.bean.event.StatusAttitudeEvent;
-import com.caij.emore.dao.StatusManager;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.manager.StatusManager;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.remote.AttitudeApi;
 import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.ListView;
@@ -16,22 +16,46 @@ import java.util.List;
 /**
  * Created by Caij on 2016/8/12.
  */
-public abstract class AbsListTimeLinePresent<V extends WeiboActionView & ListView<Weibo>> extends AbsTimeLinePresent<V> {
+public abstract class AbsListTimeLinePresent<V extends WeiboActionView & ListView<Status>> extends AbsTimeLinePresent<V> {
 
-    protected List<Weibo> mWeibos;
+    protected List<Status> mStatuses;
 
     public AbsListTimeLinePresent(V view, StatusApi statusApi, StatusManager statusManager, AttitudeApi attitudeApi) {
         super(view, statusApi, statusManager, attitudeApi);
-        mWeibos = new ArrayList<>();
+        mStatuses = new ArrayList<>();
     }
 
     @Override
-    protected void onStatusAttitudeCountUpdate(StatusAttitudeCountUpdateEvent event) {
-        for (int index = 0; index < mWeibos.size(); index++) {
-            Weibo weibo = mWeibos.get(index);
-            if (weibo.getId() == event.statusId) {
-                weibo.setAttitudes_count(event.count);
-                mView.notifyItemChanged(mWeibos, index);
+    protected void onStatusAttitudeCountUpdate(StatusActionCountUpdateEvent event) {
+        for (int index = 0; index < mStatuses.size(); index++) {
+            Status status = mStatuses.get(index);
+            if (status.getId() == event.statusId) {
+                status.setAttitudes_count(event.count);
+                mView.notifyItemChanged(mStatuses, index);
+                break;
+            }
+        }
+    }
+
+    @Override
+    protected void onStatusCommentCountUpdate(StatusActionCountUpdateEvent event) {
+        for (int index = 0; index < mStatuses.size(); index++) {
+            Status status = mStatuses.get(index);
+            if (status.getId() == event.statusId) {
+                status.setComments_count(event.count);
+                mView.notifyItemChanged(mStatuses, index);
+                break;
+            }
+        }
+    }
+
+    @Override
+    protected void onStatusRelayCountUpdate(StatusActionCountUpdateEvent event) {
+        for (int index = 0; index < mStatuses.size(); index++) {
+            Status status = mStatuses.get(index);
+            if (status.getId() == event.statusId) {
+                status.setReposts_count(event.count);
+                mView.notifyItemChanged(mStatuses, index);
                 break;
             }
         }
@@ -39,15 +63,15 @@ public abstract class AbsListTimeLinePresent<V extends WeiboActionView & ListVie
 
     @Override
     protected void onStatusAttitudeUpdate(StatusAttitudeEvent event) {
-        for (int index = 0; index < mWeibos.size(); index++) {
-            Weibo weibo = mWeibos.get(index);
-            if (weibo.getId() == event.statusId) {
+        for (int index = 0; index < mStatuses.size(); index++) {
+            Status status = mStatuses.get(index);
+            if (status.getId() == event.statusId) {
                 if (event.isAttitude) {
-                    weibo.setAttitudes_status(1);
+                    status.setAttitudes_status(1);
                 }else {
-                    weibo.setAttitudes_status(0);
+                    status.setAttitudes_status(0);
                 }
-                mView.notifyItemChanged(mWeibos, index);
+                mView.notifyItemChanged(mStatuses, index);
                 break;
             }
         }

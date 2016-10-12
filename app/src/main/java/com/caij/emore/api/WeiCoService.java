@@ -11,20 +11,20 @@ import com.caij.emore.bean.VideoInfo;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.FriendshipResponse;
-import com.caij.emore.bean.response.QueryRepostWeiboResponse;
+import com.caij.emore.bean.response.QueryRelayStatusResponse;
 import com.caij.emore.bean.response.AttitudeResponse;
-import com.caij.emore.bean.response.QueryWeiboCommentResponse;
-import com.caij.emore.bean.response.QueryWeiboResponse;
+import com.caij.emore.bean.response.QueryStatusResponse;
+import com.caij.emore.bean.response.QueryStatusCommentResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
-import com.caij.emore.bean.response.WeiboAttitudeResponse;
+import com.caij.emore.bean.response.StatusAttitudesResponse;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
-import com.caij.emore.database.bean.Weibo;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
-import com.caij.emore.utils.rxjava.GosnConverterFactory;
+import com.caij.emore.api.ex.GsonConverterFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -70,7 +70,7 @@ public interface WeiCoService {
             if (sWeiCoService == null) {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(Key.WEICO_BASE_URL)
-                        .addConverterFactory(GosnConverterFactory.create(GsonUtils.getGson()))
+                        .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
                         .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                         .callFactory(createOkHttpClient())
                         .build();
@@ -155,11 +155,11 @@ public interface WeiCoService {
                                                                 @Field("getcookie") String getcookie);
 
     @GET("2/statuses/friends_timeline")
-    Observable<QueryWeiboResponse> getFriendsWeibo(@Query("since_id") long since_id, @Query("max_id") long max_id,
-                                                   @Query("count") int count, @Query("page") int page);
+    Observable<QueryStatusResponse> getFriendsWeibo(@Query("since_id") long since_id, @Query("max_id") long max_id,
+                                                    @Query("count") int count, @Query("page") int page);
 
     @GET("/2/statuses/show")
-    Observable<Weibo> getWeiboById(@Query("id") long id, @Query("isGetLongText") int isGetLongText);
+    Observable<Status> getWeiboById(@Query("id") long id, @Query("isGetLongText") int isGetLongText);
 
     @GET("2/statuses/user_timeline")
     Observable<UserWeiboResponse> getUserWeibos(@Query("uid") long uid, @Query("feature") int feature,
@@ -171,15 +171,15 @@ public interface WeiCoService {
     public Observable<Attitude> attitudesWeibo(@Field("attitude") String attitude, @Field("id") long weiboId);
 
     @GET("2/comments/to_me")
-    Observable<QueryWeiboCommentResponse> getAcceptComments(@Query("since_id") long since_id, @Query("max_id") long max_id,
-                                                            @Query("count") int count, @Query("page") int page);
+    Observable<QueryStatusCommentResponse> getAcceptComments(@Query("since_id") long since_id, @Query("max_id") long max_id,
+                                                             @Query("count") int count, @Query("page") int page);
 
     @FormUrlEncoded
     @POST("/2/like/cancel_like")
     public Observable<Response> destoryAttitudesWeibo(@Field("attitude") String attitude, @Field("id") long weiboId);
 
 //    @GET("/2/statuses/show")
-//    public Observable<Weibo> getWeiboById(@Query("access_token") String access_token,
+//    public Observable<Status> getStatusById(@Query("access_token") String access_token,
 //                                          @Query("isGetLongText") int isGetLongText,
 //                                          @Query("source") String source, @Query("id") long weiboId);
 
@@ -193,17 +193,17 @@ public interface WeiCoService {
                                                 @Field("object_type") String type);
 
     @GET("2/statuses/mentions")
-    Observable<QueryWeiboResponse> getWeiboMentions(@Query("since_id") long since_id, @Query("max_id") long max_id,
-                                                    @Query("count") int count, @Query("page") int page);
+    Observable<QueryStatusResponse> getWeiboMentions(@Query("since_id") long since_id, @Query("max_id") long max_id,
+                                                     @Query("count") int count, @Query("page") int page);
 
     @GET("2/statuses/show_batch")
-    Observable<QueryWeiboResponse> getWeibsoByIds(@Query("ids") String ids);
+    Observable<QueryStatusResponse> getWeibsoByIds(@Query("ids") String ids);
 
     @GET("2/comments/mentions")
-    Observable<QueryWeiboCommentResponse> getCommentsMentions(@Query("since_id") long since_id,
-                                                              @Query("max_id") long max_id,
-                                                              @Query("count") int count,
-                                                              @Query("page") int page);
+    Observable<QueryStatusCommentResponse> getCommentsMentions(@Query("since_id") long since_id,
+                                                               @Query("max_id") long max_id,
+                                                               @Query("count") int count,
+                                                               @Query("page") int page);
 
     @GET("/2/like/to_me")
     Observable<AttitudeResponse> getToMeAttitudes(@Query("since_id") long since_id, @Query("max_id") long max_id,
@@ -221,8 +221,8 @@ public interface WeiCoService {
                                                @Query("catlog_id") String catlog_id, @Query("page") int page);
 
     @GET("/2/search/statuses")
-    public Observable<QueryWeiboResponse> searchStatus(@Query("q") String q, @Query("count") int count,
-                                                       @Query("page") int page);
+    public Observable<QueryStatusResponse> searchStatus(@Query("q") String q, @Query("count") int count,
+                                                        @Query("page") int page);
 
 
     @GET("/2/search/users")
@@ -265,8 +265,8 @@ public interface WeiCoService {
                                                 @Query("trim_status") int trim_status, @Query("cursor") long cursor);
 
     @GET("2/comments/by_me")
-    Observable<QueryWeiboCommentResponse> getPublishComments(@Query("since_id") long since_id, @Query("max_id") long max_id,
-                                                             @Query("count") int count, @Query("page") int page);
+    Observable<QueryStatusCommentResponse> getPublishComments(@Query("since_id") long since_id, @Query("max_id") long max_id,
+                                                              @Query("count") int count, @Query("page") int page);
 
 
     @GET("2/users/show")
@@ -286,16 +286,16 @@ public interface WeiCoService {
     Observable<Comment> createCommentForWeibo(@Field("comment") String comment, @Field("id") long id);
 
     @GET("2/comments/show")
-    Observable<QueryWeiboCommentResponse> getCommentsByWeibo(@Query("id") long id, @Query("since_id") long since_id,
-                                                             @Query("max_id") long max_id, @Query("count") int count,
-                                                             @Query("page") int page);
+    Observable<QueryStatusCommentResponse> getCommentsByWeibo(@Query("id") long id, @Query("since_id") long since_id,
+                                                              @Query("max_id") long max_id, @Query("count") int count,
+                                                              @Query("page") int page);
 
     @FormUrlEncoded
     @POST("2/statuses/repost")
-    Observable<Weibo> repostWeibo(@Field("id") long id, @Field("status") String status);
+    Observable<Status> repostWeibo(@Field("id") long id, @Field("status") String status);
 
     @GET("2/statuses/repost_timeline")
-    Observable<QueryRepostWeiboResponse> getRepostWeibos(@Query("id") long id, @Query("since_id") long since_id,
+    Observable<QueryRelayStatusResponse> getRepostWeibos(@Query("id") long id, @Query("since_id") long since_id,
                                                          @Query("max_id") long max_id, @Query("count") int count,
                                                          @Query("page") int page);
 
@@ -309,23 +309,23 @@ public interface WeiCoService {
 
     @FormUrlEncoded
     @POST("2/statuses/destroy")
-    Observable<Weibo> statusesDestroy(@Field("id") long id);
+    Observable<Status> statusesDestroy(@Field("id") long id);
 
     //    已经上传的图片pid，多个时使用英文半角逗号符分隔，最多不超过9个。
     @FormUrlEncoded
     @POST("2/statuses/upload_url_text")
-    Observable<Weibo> publishWeiboOfMultiImage(@Field("status") String status, @Field("pic_id") String picIds);
+    Observable<Status> publishWeiboOfMultiImage(@Field("status") String status, @Field("pic_id") String picIds);
 
     @Multipart
     @POST("2/statuses/upload")
-    Observable<Weibo> publishWeiboOfOneImage(@Part("status") String status, @Part MultipartBody.Part file);
+    Observable<Status> publishWeiboOfOneImage(@Part("status") String status, @Part MultipartBody.Part file);
 
     @GET("/2/like/show")
-    Observable<WeiboAttitudeResponse> getWeiboAttitudes(@Query("id") long id, @Query("page") int page,
-                                                        @Query("count") int count);
+    Observable<StatusAttitudesResponse> getWeiboAttitudes(@Query("id") long id, @Query("page") int page,
+                                                          @Query("count") int count);
 
     @FormUrlEncoded
     @POST("2/statuses/update")
-    Observable<Weibo> publishWeiboOfOnlyText(@Field("status") String status);
+    Observable<Status> publishWeiboOfOnlyText(@Field("status") String status);
 
 }

@@ -12,10 +12,10 @@ import com.caij.emore.R;
 import com.caij.emore.bean.SinaSearchRecommend;
 import com.caij.emore.present.SearchRecommendPresent;
 import com.caij.emore.present.imp.SearchRecommendPresentImp;
+import com.caij.emore.ui.fragment.StatusAndUserSearchFragment;
 import com.caij.emore.ui.view.SearchRecommendView;
 import com.caij.emore.remote.imp.ServerSearchRecommendImp;
 import com.caij.emore.ui.adapter.SearchAdapter;
-import com.caij.emore.ui.fragment.WeiboAndUserSearchFragment;
 import com.caij.emore.utils.weibo.ThemeUtils;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 import com.lapism.searchview.SearchView;
@@ -135,7 +135,7 @@ public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent
     private void searchTextSubmit(String query) {
         Bundle bundle = new Bundle();
         bundle.putString(Key.ID, query);
-        Intent intent = DefaultFragmentActivity.starFragmentV4(this, "搜索结果", WeiboAndUserSearchFragment.class, bundle);
+        Intent intent = DefaultFragmentActivity.starFragmentV4(this, "搜索结果", StatusAndUserSearchFragment.class, bundle);
         startActivity(intent);
     }
 
@@ -163,7 +163,7 @@ public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent
         SinaSearchRecommend.RecommendData data = mSearchAdapter.getItem(position);
         Bundle bundle = new Bundle();
         bundle.putString(Key.ID, data.getKey());
-        Intent intent = DefaultFragmentActivity.starFragmentV4(this, "搜索结果", WeiboAndUserSearchFragment.class, bundle);
+        Intent intent = DefaultFragmentActivity.starFragmentV4(this, "搜索结果", StatusAndUserSearchFragment.class, bundle);
         startActivity(intent);
     }
 

@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.WeiboImageInfo;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.widget.weibo.ImageInterface;
 import com.caij.emore.widget.weibo.list.WeiboListItemView;
@@ -44,7 +44,7 @@ public class WeiboImageItemView extends WeiboListItemView {
     }
 
     @Override
-    public void setWeibo(Weibo weibo) {
+    public void setWeibo(Status weibo) {
         super.setWeibo(weibo);
         List<String> picIds = weibo.getPic_ids();
         LinkedHashMap<String, WeiboImageInfo> imageInfoLinkedHashMap = weibo.getPic_infos();
@@ -69,7 +69,7 @@ public class WeiboImageItemView extends WeiboListItemView {
         }
     }
 
-    protected void setImages(Weibo weibo, ImageInterface picsView) {
+    protected void setImages(Status weibo, ImageInterface picsView) {
         picsView.setPics(weibo.getPic_ids(), weibo.getPic_infos());
     }
 

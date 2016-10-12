@@ -5,16 +5,14 @@ import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.caij.emore.R;
-import com.caij.emore.database.bean.Weibo;
-import com.caij.emore.ui.activity.publish.CommentWeiboActivity;
+import com.caij.emore.database.bean.Status;
+import com.caij.emore.ui.activity.publish.CommentStatusActivity;
 import com.caij.emore.utils.CountUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.widget.weibo.ImageInterface;
 import com.caij.emore.widget.weibo.WeiboItemView;
 
 import butterknife.BindView;
@@ -64,7 +62,7 @@ public abstract class WeiboListItemView extends WeiboItemView {
     }
 
     @Override
-    public void setWeibo(Weibo weibo) {
+    public void setWeibo(Status weibo) {
         super.setWeibo(weibo);
 
         if(isDetail) {
@@ -112,8 +110,8 @@ public abstract class WeiboListItemView extends WeiboItemView {
                 }
                 break;
             case R.id.tv_comment_count: {
-                Weibo weibo = (Weibo) view.getTag();
-                Intent intent = CommentWeiboActivity.newIntent(getContext(), weibo.getId());
+                Status weibo = (Status) view.getTag();
+                Intent intent = CommentStatusActivity.newIntent(getContext(), weibo.getId());
                 getContext().startActivity(intent);
                 break;
             }

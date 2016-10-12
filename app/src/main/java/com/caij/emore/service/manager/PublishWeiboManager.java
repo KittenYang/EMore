@@ -10,12 +10,12 @@ import android.content.Intent;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.PublishBean;
-import com.caij.emore.dao.imp.DraftManagerImp;
-import com.caij.emore.dao.imp.StatusManagerImp;
-import com.caij.emore.dao.imp.StatusUploadImageManagerImp;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.manager.imp.DraftManagerImp;
+import com.caij.emore.manager.imp.StatusManagerImp;
+import com.caij.emore.manager.imp.StatusUploadImageManagerImp;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.present.PublishWeiboManagerPresent;
-import com.caij.emore.present.imp.PublishWeiboManagerPresentImp;
+import com.caij.emore.present.imp.PublishStatusManagerPresentImp;
 import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.ui.view.PublishServiceView;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
@@ -45,8 +45,7 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
 
     @Override
     protected void doOnCreate() {
-        mPublishWeiboManagerPresent = new PublishWeiboManagerPresentImp(UserPrefs.get(ctx).getAccount(),
-                new StatusApiImp(),
+        mPublishWeiboManagerPresent = new PublishStatusManagerPresentImp(new StatusApiImp(),
                 new StatusManagerImp(), new DraftManagerImp(), new StatusUploadImageManagerImp(), this);
         mPublishWeiboManagerPresent.onCreate();
         mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -104,7 +103,7 @@ public class PublishWeiboManager extends IManager implements PublishServiceView 
     }
 
     @Override
-    public void onPublishSuccess(Weibo weibo) {
+    public void onPublishSuccess(Status weibo) {
         notifyPublishSuccessNotification();
     }
 

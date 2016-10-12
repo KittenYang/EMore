@@ -73,7 +73,7 @@ public class DbDaoGenerator {
     }
 
     private static void createWeibo(Schema sch) {
-        Entity entity = sch.addEntity("Weibo");
+        Entity entity = sch.addEntity("Status");
         entity.addDateProperty("created_at");
         entity.addLongProperty("id").primaryKey();
         entity.addLongProperty("mid");

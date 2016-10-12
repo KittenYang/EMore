@@ -1,7 +1,7 @@
 package com.caij.emore.bean.response;
 
 
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 
 import java.util.List;
 
@@ -10,13 +10,13 @@ import java.util.List;
  */
 public class UserWeiboResponse extends Response {
 
-    private List<Weibo> statuses;
+    private List<Status> statuses;
 
-    public List<Weibo> getStatuses() {
+    public List<Status> getStatuses() {
         return statuses;
     }
 
-    public void setStatuses(List<Weibo> statuses) {
+    public void setStatuses(List<Status> statuses) {
         this.statuses = statuses;
     }
 }

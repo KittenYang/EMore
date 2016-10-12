@@ -74,7 +74,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.caij.emore.ui.activity.WeiboDetialActivity"
+        <activity android:name="com.caij.emore.ui.activity.StatusDetailActivity"
             android:screenOrientation="portrait"/>
 
         <activity android:name="com.caij.emore.ui.activity.publish.PublishWeiboActivity"
@@ -88,11 +88,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme_Default.ImagePrewActivity" />
 
-        <activity android:name="com.caij.emore.ui.activity.publish.CommentWeiboActivity"
+        <activity android:name="com.caij.emore.ui.activity.publish.CommentStatusActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity android:name="com.caij.emore.ui.activity.publish.RepostWeiboActivity"
+        <activity android:name="com.caij.emore.ui.activity.publish.RelayStatusActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 

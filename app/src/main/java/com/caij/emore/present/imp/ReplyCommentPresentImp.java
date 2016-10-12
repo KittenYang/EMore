@@ -3,9 +3,9 @@ package com.caij.emore.present.imp;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.present.ReplyCommentWeiboPresent;
 import com.caij.emore.remote.CommentApi;
-import com.caij.emore.ui.view.CommentWeiboView;
-import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.utils.rxjava.DefaultTransformer;
+import com.caij.emore.ui.view.CommentStatusView;
+import com.caij.emore.api.ex.ResponseSubscriber;
+import com.caij.emore.api.ex.DefaultTransformer;
 
 import rx.Subscription;
 
@@ -15,17 +15,17 @@ import rx.Subscription;
 public class ReplyCommentPresentImp extends AbsBasePresent implements ReplyCommentWeiboPresent {
 
     private CommentApi mCommentApi;
-    private CommentWeiboView mCommentWeiboView;
+    private CommentStatusView mCommentStatusView;
 
     private long mWeiboId;
     private long mCid;
 
     public ReplyCommentPresentImp(long weiboId, long cid,
-                                  CommentApi commentApi, CommentWeiboView commentWeiboView) {
+                                  CommentApi commentApi, CommentStatusView commentStatusView) {
         mCommentApi = commentApi;
         mCid = cid;
         mWeiboId = weiboId;
-        mCommentWeiboView = commentWeiboView;
+        mCommentStatusView = commentStatusView;
     }
 
     @Override
@@ -35,19 +35,19 @@ public class ReplyCommentPresentImp extends AbsBasePresent implements ReplyComme
 
     @Override
     public void toReplyComment(String comment) {
-        mCommentWeiboView.showDialogLoading(true);
+        mCommentStatusView.showDialogLoading(true);
         Subscription subscription = mCommentApi.replyComment(comment, mCid, mWeiboId)
                 .compose(new DefaultTransformer<Comment>())
-                .subscribe(new DefaultResponseSubscriber<Comment>(mCommentWeiboView) {
+                .subscribe(new ResponseSubscriber<Comment>(mCommentStatusView) {
                     @Override
                     protected void onFail(Throwable e) {
-                        mCommentWeiboView.showDialogLoading(false);
+                        mCommentStatusView.showDialogLoading(false);
                     }
 
                     @Override
                     public void onNext(Comment response) {
-                        mCommentWeiboView.showDialogLoading(false);
-                        mCommentWeiboView.onCommentSuccess(response);
+                        mCommentStatusView.showDialogLoading(false);
+                        mCommentStatusView.onCommentSuccess(response);
                     }
                 });
         addSubscription(subscription);

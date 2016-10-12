@@ -4,7 +4,7 @@ import com.caij.emore.api.WeiCoService;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.response.AttitudeResponse;
 import com.caij.emore.bean.response.Response;
-import com.caij.emore.bean.response.WeiboAttitudeResponse;
+import com.caij.emore.bean.response.StatusAttitudesResponse;
 import com.caij.emore.remote.AttitudeApi;
 
 import rx.Observable;
@@ -32,7 +32,7 @@ public class AttitudeApiImp implements AttitudeApi {
     }
 
     @Override
-    public Observable<WeiboAttitudeResponse> getWeiboAttiyudes(long id, int page, int count) {
+    public Observable<StatusAttitudesResponse> getWeiboAttiyudes(long id, int page, int count) {
         return mWeiCoService.getWeiboAttitudes(id, page, count);
     }
 

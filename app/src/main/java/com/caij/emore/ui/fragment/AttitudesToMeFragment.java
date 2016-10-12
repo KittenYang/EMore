@@ -6,15 +6,14 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.caij.emore.account.Account;
-import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Attitude;
-import com.caij.emore.dao.imp.NotifyManagerImp;
+import com.caij.emore.manager.imp.NotifyManagerImp;
 import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.present.imp.AttitudesToMePresentImp;
 import com.caij.emore.remote.imp.AttitudeApiImp;
-import com.caij.emore.remote.imp.UnReadMessageApiImp;
-import com.caij.emore.ui.activity.WeiboDetialActivity;
+import com.caij.emore.remote.imp.NotifyApiImp;
+import com.caij.emore.ui.activity.StatusDetailActivity;
 import com.caij.emore.ui.adapter.ToMeAttitudeAdapter;
 
 
@@ -42,13 +41,13 @@ public class AttitudesToMeFragment extends SwipeRefreshRecyclerViewFragment<Atti
     protected RefreshListPresent createPresent() {
         Account account = UserPrefs.get(getActivity()).getAccount();
         return new AttitudesToMePresentImp(account, new AttitudeApiImp(),
-                new UnReadMessageApiImp(), new NotifyManagerImp(), this);
+                new NotifyApiImp(), new NotifyManagerImp(), this);
     }
 
 
     @Override
     public void onItemClick(View view, final int position) {
-        Intent intent = WeiboDetialActivity.newIntent(getActivity(),
+        Intent intent = StatusDetailActivity.newIntent(getActivity(),
                 mRecyclerViewAdapter.getItem(position).getStatus().getId());
         startActivity(intent);
     }

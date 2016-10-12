@@ -1,24 +1,22 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.EventTag;
 import com.caij.emore.R;
-import com.caij.emore.dao.UserManager;
+import com.caij.emore.api.ex.ResponseSubscriber;
+import com.caij.emore.manager.UserManager;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
 import com.caij.emore.remote.UserApi;
 import com.caij.emore.ui.view.DetailUserView;
-import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.utils.rxjava.DefaultTransformer;
-import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.DefaultTransformer;
+import com.caij.emore.api.ex.ErrorCheckerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
+import com.caij.emore.utils.rxjava.RxUtil;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 /**
  * Created by Caij on 2016/6/30.
@@ -28,21 +26,17 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     private DetailUserView mUserView;
     private UserApi mUserApi;
     private UserManager mUserManager;
-    private String mToken;
     private String mName;
-    private Observable<User> mUserObservable;
 
     private User mUser;
 
-    public UserInfoDetailPresentImp(String token, String name, DetailUserView userView,
+    public UserInfoDetailPresentImp(String name, DetailUserView userView,
                                     UserApi userApi, UserManager userManager) {
         mUserView = userView;
         mUserApi = userApi;
         mUserManager = userManager;
-        mToken = token;
         mName = name;
     }
-
 
     @Override
     public void follow() {
@@ -56,7 +50,7 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
                     }
                 })
                 .compose(new DefaultTransformer<User>())
-                .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
+                .subscribe(new ResponseSubscriber<User>(mUserView) {
                     @Override
                     public void onCompleted() {
                         mUserView.showDialogLoading(false);
@@ -77,7 +71,6 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
 
     @Override
     public void unFollow() {
-        mUserView.showDialogLoading(true);
         Subscription subscription = mUserApi.unfollowUser(mName, mUser.getId())
                 .compose(new ErrorCheckerTransformer<User>())
                 .doOnNext(new Action1<User>() {
@@ -86,34 +79,40 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
                         mUserManager.saveUser(user);
                     }
                 })
-                .compose(new SchedulerTransformer<User>())
-                .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
+                .compose(SchedulerTransformer.<User>create())
+                .doOnSubscribe(new Action0() {
                     @Override
-                    public void onCompleted() {
+                    public void call() {
+                        mUserView.showDialogLoading(true);
+                    }
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
                         mUserView.showDialogLoading(false);
                     }
+                })
+                .subscribe(new ResponseSubscriber<User>(mUserView) {
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mUserView.showDialogLoading(false);
                     }
 
                     @Override
                     public void onNext(User user) {
-                        mUserView.onUnfollowSuccess();
+                        mUserView.onUnFollowSuccess();
                     }
                 });
         addSubscription(subscription);
     }
 
     @Override
-    public void getWeiboUserInfoByName() {
+    public void getUserInfoByName() {
         mUserView.showDialogLoading(true);
-        Observable<User> localObservable =  Observable.create(new Observable.OnSubscribe<User>() {
+        Observable<User> localObservable = RxUtil.createDataObservable(new RxUtil.Provider<User>() {
             @Override
-            public void call(Subscriber<? super User> subscriber) {
-                subscriber.onNext(mUserManager.getUserByName(mName));
-                subscriber.onCompleted();
+            public User getData() {
+                return mUserManager.getUserByName(mName);
             }
         });
         Observable<User> serverObservable =  mUserApi.getWeiboUserByName(mName)
@@ -124,14 +123,8 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
                     }
                 });
         Subscription subscription = Observable.concat(localObservable, serverObservable)
-                .first(new Func1<User, Boolean>() {
-                    @Override
-                    public Boolean call(User user) {
-                        return user != null;
-                    }
-                })
                 .compose(new DefaultTransformer<User>())
-                .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
+                .subscribe(new ResponseSubscriber<User>(mUserView) {
                     @Override
                     public void onCompleted() {
                         mUserView.showDialogLoading(false);
@@ -161,16 +154,15 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
 
     @Override
     public void onRefresh() {
-        Observable<User> serverObservable = mUserApi.getWeiboUserByName(mName)
+        Subscription subscription = mUserApi.getWeiboUserByName(mName)
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User user) {
                         mUserManager.saveUser(user);
                     }
-                });
-        Subscription subscription = serverObservable
+                })
                 .compose(new DefaultTransformer<User>())
-                .subscribe(new DefaultResponseSubscriber<User>(mUserView) {
+                .subscribe(new ResponseSubscriber<User>(mUserView) {
                     @Override
                     public void onCompleted() {
                         mUserView.onRefreshComplete();
@@ -199,19 +191,11 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
 
     @Override
     public void onCreate() {
-        mUserObservable =  RxBus.getDefault().register(EventTag.EVENT_USER_UPDATE);
-        mUserObservable.compose(new SchedulerTransformer<User>())
-                .subscribe(new Action1<User>() {
-                    @Override
-                    public void call(User user) {
-                        mUserView.setUser(user);
-                    }
-                });
+
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.getDefault().unregister(EventTag.EVENT_USER_UPDATE, mUserObservable);
     }
 }

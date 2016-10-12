@@ -1,13 +1,13 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.api.ex.ResponseSubscriber;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.FriendshipPresent;
 import com.caij.emore.remote.UserApi;
 import com.caij.emore.ui.view.FriendshipView;
-import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.ErrorCheckerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +23,13 @@ public class FriendPresentImp extends AbsBasePresent implements FriendshipPresen
 
     private static final int PAGE_SIZE = 20;
 
-    private String mToken;
     private long mUid;
     private UserApi mUserApi;
     private FriendshipView mFriendshipView;
     private FriendshipResponse mLastFriendshipResponse;
     private List<User> mUsers;
 
-    public FriendPresentImp(String token, long uid, UserApi userApi, FriendshipView friendshipView) {
-        mToken = token;
+    public FriendPresentImp(long uid, UserApi userApi, FriendshipView friendshipView) {
         mUid = uid;
         mUserApi = userApi;
         mFriendshipView = friendshipView;
@@ -51,7 +49,7 @@ public class FriendPresentImp extends AbsBasePresent implements FriendshipPresen
     @Override
     public void loadMore() {
         Subscription subscription = createUsersObservable(mLastFriendshipResponse.getNext_cursor(), false)
-                .subscribe(new DefaultResponseSubscriber<List<User>>(mFriendshipView) {
+                .subscribe(new ResponseSubscriber<List<User>>(mFriendshipView) {
                     @Override
                     protected void onFail(Throwable e) {
                         mFriendshipView.onLoadComplete(true);
@@ -95,7 +93,7 @@ public class FriendPresentImp extends AbsBasePresent implements FriendshipPresen
     @Override
     public void refresh() {
         Subscription subscription = createUsersObservable(0, true)
-                .subscribe(new DefaultResponseSubscriber<List<User>>(mFriendshipView) {
+                .subscribe(new ResponseSubscriber<List<User>>(mFriendshipView) {
                     @Override
                     protected void onFail(Throwable e) {
                         mFriendshipView.onRefreshComplete();

@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.Comment;
-import com.caij.emore.database.bean.Weibo;
-import com.caij.emore.ui.activity.WeiboDetialActivity;
+import com.caij.emore.database.bean.Status;
+import com.caij.emore.ui.activity.StatusDetailActivity;
 import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
@@ -42,7 +42,7 @@ public class MessageCommentAdapter extends BaseAdapter<Comment, MessageCommentAd
         return new CommentMentionViewHolder(view, mOnItemClickListener, new RecyclerViewOnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = WeiboDetialActivity.newIntent(mContext, getItem(position).getStatus().getId());
+                Intent intent = StatusDetailActivity.newIntent(mContext, getItem(position).getStatus().getId());
                 mContext.startActivity(intent);
             }
         }, new RecyclerViewOnItemClickListener() {
@@ -63,7 +63,7 @@ public class MessageCommentAdapter extends BaseAdapter<Comment, MessageCommentAd
         holder.tvHeadName.setText(comment.getUser().getName());
         holder.tvComment.setText(comment.getText());
 
-        Weibo weibo = comment.getStatus();
+        Status weibo = comment.getStatus();
         holder.tvBottomName.setText("@" + weibo.getUser().getName());
         holder.tvWeibo.setText(weibo.getText());
         ImageLoader.load(mContext, holder.imageView,

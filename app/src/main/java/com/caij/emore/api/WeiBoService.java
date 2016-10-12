@@ -5,14 +5,13 @@ import com.caij.emore.account.Token;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.ShortUrlInfo;
 import com.caij.emore.bean.SinaSearchRecommend;
-import com.caij.emore.bean.response.QueryWeiboResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.MessageImage;
 import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.utils.GsonUtils;
-import com.caij.emore.utils.rxjava.GosnConverterFactory;
+import com.caij.emore.api.ex.GsonConverterFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,7 @@ public interface WeiBoService {
             if (sWeiBoService == null) {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(Key.WEIBO_BASE_URL)
-                        .addConverterFactory(GosnConverterFactory.create(GsonUtils.getGson()))
+                        .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
                         .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                         .callFactory(WeiCoService.WeiCoFactory.createOkHttpClient())
                         .build();

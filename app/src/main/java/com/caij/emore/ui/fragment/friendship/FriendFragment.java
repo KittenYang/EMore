@@ -24,8 +24,7 @@ public class FriendFragment extends FriendshipFragment<FriendshipPresent> {
 
     @Override
     protected FriendshipPresent createPresent() {
-        Token accessToken = UserPrefs.get(getActivity()).getToken();
         long uid = getArguments().getLong(Key.ID);
-        return new FriendPresentImp(accessToken.getAccess_token(), uid, new UserApiImp(), this);
+        return new FriendPresentImp(uid, new UserApiImp(), this);
     }
 }

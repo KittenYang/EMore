@@ -27,7 +27,7 @@ import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Emotion;
-import com.caij.emore.dao.imp.UserManagerImp;
+import com.caij.emore.manager.imp.UserManagerImp;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.present.ChatPresent;
 import com.caij.emore.present.imp.ChatPresentImp;

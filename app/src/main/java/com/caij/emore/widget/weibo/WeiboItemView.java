@@ -8,14 +8,13 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.database.bean.User;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
@@ -69,7 +68,7 @@ public abstract class WeiboItemView extends RelativeLayout {
 
     protected abstract int getLayoutId();
 
-    public void setWeibo(Weibo weibo) {
+    public void setWeibo(Status weibo) {
         if (TextUtils.isEmpty(weibo.getUser().getRemark())) {
             tvName.setText(weibo.getUser().getName());
         }else {

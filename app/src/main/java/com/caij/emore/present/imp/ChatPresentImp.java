@@ -8,7 +8,7 @@ import com.caij.emore.EventTag;
 import com.caij.emore.account.Token;
 import com.caij.emore.bean.event.MessageResponseEvent;
 import com.caij.emore.bean.response.UserMessageResponse;
-import com.caij.emore.dao.UserManager;
+import com.caij.emore.manager.UserManager;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.database.bean.MessageImage;
@@ -23,7 +23,7 @@ import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.io.File;

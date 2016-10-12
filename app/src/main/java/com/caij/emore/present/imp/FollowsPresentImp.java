@@ -1,19 +1,18 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.AppApplication;
-import com.caij.emore.account.Account;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.response.FriendshipResponse;
-import com.caij.emore.dao.NotifyManager;
+import com.caij.emore.manager.NotifyManager;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.FriendshipPresent;
-import com.caij.emore.remote.UnReadMessageApi;
+import com.caij.emore.remote.NotifyApi;
 import com.caij.emore.remote.UserApi;
 import com.caij.emore.ui.view.FriendshipView;
-import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.ResponseSubscriber;
+import com.caij.emore.api.ex.ErrorCheckerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.util.ArrayList;
@@ -36,16 +35,16 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
     private List<User> mUsers;
 
     private UserApi mUserApi;
-    private UnReadMessageApi mUnReadMessageApi;
+    private NotifyApi mNotifyApi;
     private NotifyManager mNotifyManager;
 
     public FollowsPresentImp(long uid, UserApi userApi,
-                             UnReadMessageApi unReadMessageApi,
+                             NotifyApi notifyApi,
                              NotifyManager notifyManager,
                              FriendshipView friendshipView) {
         mUid = uid;
         mUserApi = userApi;
-        mUnReadMessageApi = unReadMessageApi;
+        mNotifyApi = notifyApi;
         mNotifyManager = notifyManager;
         mFriendshipView = friendshipView;
         mUsers = new ArrayList<>();
@@ -64,7 +63,7 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
     @Override
     public void loadMore() {
         Subscription subscription = createUsersObservable(mLastFriendshipResponse.getNext_cursor(), false)
-                .subscribe(new DefaultResponseSubscriber<List<User>>(mFriendshipView) {
+                .subscribe(new ResponseSubscriber<List<User>>(mFriendshipView) {
                     @Override
                     protected void onFail(Throwable e) {
                         mFriendshipView.onLoadComplete(true);
@@ -108,7 +107,7 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
     @Override
     public void refresh() {
         Subscription subscription = createUsersObservable(0, true)
-                .subscribe(new DefaultResponseSubscriber<List<User>>(mFriendshipView) {
+                .subscribe(new ResponseSubscriber<List<User>>(mFriendshipView) {
                     @Override
                     protected void onFail(Throwable e) {
                         mFriendshipView.onRefreshComplete();
@@ -129,7 +128,7 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
 
                         if (mUid == UserPrefs.get(AppApplication.getInstance()).getAccount().getUid()) {
                             MessageUtil.resetUnReadMessage(UnReadMessage.TYPE_FOLLOWER, mUid,
-                                    mUnReadMessageApi, mNotifyManager);
+                                    mNotifyApi, mNotifyManager);
                         }
                     }
                 });

@@ -5,16 +5,16 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.caij.emore.Key;
-import com.caij.emore.dao.imp.StatusManagerImp;
+import com.caij.emore.manager.imp.StatusManagerImp;
 import com.caij.emore.present.imp.TopicPresentImp;
 import com.caij.emore.remote.imp.AttitudeApiImp;
 import com.caij.emore.remote.imp.StatusApiImp;
-import com.caij.emore.ui.fragment.weibo.TimeLineWeiboFragment;
+import com.caij.emore.ui.fragment.weibo.TimeLineStatusFragment;
 
 /**
  * Created by Caij on 2016/7/25.
  */
-public class TopicsFragment extends TimeLineWeiboFragment<TopicPresentImp> {
+public class TopicsFragment extends TimeLineStatusFragment<TopicPresentImp> {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

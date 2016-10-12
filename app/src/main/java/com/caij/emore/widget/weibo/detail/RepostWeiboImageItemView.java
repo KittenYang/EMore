@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.WeiboImageInfo;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.widget.weibo.ImageInterface;
 import com.caij.emore.widget.weibo.list.RepostWeiboListItemView;
@@ -47,10 +47,10 @@ public class RepostWeiboImageItemView extends RepostWeiboListItemView {
     }
 
     @Override
-    public void setWeibo(Weibo weibo) {
+    public void setWeibo(Status weibo) {
         super.setWeibo(weibo);
         ImageInterface picsView = null;
-        Weibo reWeibo = weibo.getRetweeted_status();
+        Status reWeibo = weibo.getRetweeted_status();
         List<String> picIds = reWeibo.getPic_ids();
         LinkedHashMap<String, WeiboImageInfo> imageInfoLinkedHashMap = reWeibo.getPic_infos();
         if (picIds == null || picIds.size() == 0) {
@@ -73,7 +73,7 @@ public class RepostWeiboImageItemView extends RepostWeiboListItemView {
         }
     }
 
-    protected void setImages(Weibo weibo, ImageInterface picsView) {
+    protected void setImages(Status weibo, ImageInterface picsView) {
         picsView.setPics(weibo.getRetweeted_status().getPic_ids(), weibo.getRetweeted_status().getPic_infos());
     }
 

@@ -1,34 +1,33 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.bean.response.QueryWeiboResponse;
-import com.caij.emore.dao.StatusManager;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.api.ex.ResponseSubscriber;
+import com.caij.emore.bean.response.QueryStatusResponse;
+import com.caij.emore.manager.StatusManager;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.present.WeiboMentionPresent;
 import com.caij.emore.remote.AttitudeApi;
 import com.caij.emore.remote.StatusApi;
-import com.caij.emore.ui.view.TimeLineWeiboView;
-import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.ui.view.TimeLineStatusView;
+import com.caij.emore.api.ex.ErrorCheckerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
 
 import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
  * Created by Caij on 2016/7/4.
  */
-public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> implements WeiboMentionPresent {
+public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineStatusView> implements WeiboMentionPresent {
 
     private static final int COUNT = 20;
 
     private String mTopic;
     private int page;
 
-    public TopicPresentImp(String topic, TimeLineWeiboView view, StatusApi statusApi, StatusManager statusManager, AttitudeApi attitudeApi) {
+    public TopicPresentImp(String topic, TimeLineStatusView view, StatusApi statusApi, StatusManager statusManager, AttitudeApi attitudeApi) {
         super(view, statusApi, statusManager, attitudeApi);
         mTopic = topic;
     }
@@ -40,11 +39,7 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
     @Override
     public void refresh() {
         Subscription su = createObservable(1, true)
-                .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                .subscribe(new ResponseSubscriber<List<Status>>(mView) {
 
                     @Override
                     protected void onFail(Throwable e) {
@@ -52,12 +47,12 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
                     }
 
                     @Override
-                    public void onNext(List<Weibo> weibos) {
-                        mWeibos.addAll(weibos);
-                        mView.setEntities(mWeibos);
+                    public void onNext(List<Status> statuses) {
+                        mStatuses.addAll(statuses);
+                        mView.setEntities(mStatuses);
 
                         mView.onRefreshComplete();
-                        mView.onLoadComplete(weibos.size() > COUNT - 1);
+                        mView.onLoadComplete(statuses.size() >= COUNT );
 
                         page = 2;
                     }
@@ -68,11 +63,7 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
     @Override
     public void loadMore() {
         Subscription su = createObservable(page, false)
-                .subscribe(new DefaultResponseSubscriber<List<Weibo>>(mView) {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                .subscribe(new ResponseSubscriber<List<Status>>(mView) {
 
                     @Override
                     protected void onFail(Throwable e) {
@@ -80,11 +71,11 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
                     }
 
                     @Override
-                    public void onNext(List<Weibo> weibos) {
-                        mWeibos.addAll(weibos);
-                        mView.notifyItemRangeInserted(mWeibos, mWeibos.size() - weibos.size(), weibos.size());
+                    public void onNext(List<Status> statuses) {
+                        mStatuses.addAll(statuses);
+                        mView.notifyItemRangeInserted(mStatuses, mStatuses.size() - statuses.size(), statuses.size());
 
-                        mView.onLoadComplete(weibos.size() > COUNT - 1);
+                        mView.onLoadComplete(statuses.size() > COUNT - 1);
 
                         page++;
                     }
@@ -92,29 +83,24 @@ public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineWeiboView> i
         addSubscription(su);
     }
 
-    private Observable<List<Weibo>> createObservable(int page, final boolean isRefresh) {
+    private Observable<List<Status>> createObservable(int page, final boolean isRefresh) {
         return mStatusApi.getTopicsByKey(mTopic, page, COUNT)
-                .compose(ErrorCheckerTransformer.<QueryWeiboResponse>create())
-                .flatMap(new Func1<QueryWeiboResponse, Observable<Weibo>>() {
+                .compose(ErrorCheckerTransformer.<QueryStatusResponse>create())
+                .flatMap(new Func1<QueryStatusResponse, Observable<Status>>() {
                     @Override
-                    public Observable<Weibo> call(QueryWeiboResponse queryWeiboResponse) {
+                    public Observable<Status> call(QueryStatusResponse queryWeiboResponse) {
                         return Observable.from(queryWeiboResponse.getStatuses());
                     }
                 })
-                .filter(new Func1<Weibo, Boolean>() {
+                .filter(new Func1<Status, Boolean>() {
                     @Override
-                    public Boolean call(Weibo weibo) {
-                        return isRefresh || !mWeibos.contains(weibo);
+                    public Boolean call(Status status) {
+                        return isRefresh || !mStatuses.contains(status);
                     }
                 })
-                .doOnNext(new Action1<Weibo>() {
-                    @Override
-                    public void call(Weibo weibo) {
-                        doSpanNext(weibo);
-                    }
-                })
+                .compose(StatusContentSpannableConvertTransformer.create(false))
                 .toList()
-                .compose(new SchedulerTransformer<List<Weibo>>());
+                .compose(new SchedulerTransformer<List<Status>>());
     }
 
 

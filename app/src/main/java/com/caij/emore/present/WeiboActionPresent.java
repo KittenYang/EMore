@@ -1,6 +1,6 @@
 package com.caij.emore.present;
 
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 
 /**
  * Created by Caij on 2016/7/14.
@@ -8,13 +8,13 @@ import com.caij.emore.database.bean.Weibo;
 public interface WeiboActionPresent  extends BasePresent{
 
 
-    void deleteWeibo(Weibo weibo, int position);
+    void deleteStatus(Status weibo, int position);
 
-    void collectWeibo(Weibo weibo);
+    void collectStatus(Status weibo);
 
-    void uncollectWeibo(Weibo weibo);
+    void unCollectStatus(Status weibo);
 
-    void attitudesWeibo(Weibo weibo);
+    void attitudeStatus(Status weibo);
 
-    void destroyAttitudesWeibo(Weibo weibo);
+    void destroyAttitudeStatus(Status weibo);
 }

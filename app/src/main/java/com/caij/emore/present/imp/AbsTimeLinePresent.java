@@ -2,26 +2,24 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.EventTag;
 import com.caij.emore.R;
+import com.caij.emore.api.ex.ResponseSubscriber;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.event.Event;
-import com.caij.emore.bean.event.StatusAttitudeCountUpdateEvent;
+import com.caij.emore.bean.event.StatusActionCountUpdateEvent;
 import com.caij.emore.bean.event.StatusAttitudeEvent;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.Response;
-import com.caij.emore.dao.StatusManager;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.manager.StatusManager;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.present.WeiboActionPresent;
 import com.caij.emore.remote.AttitudeApi;
 import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.WeiboActionView;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.utils.rxjava.ErrorCheckerTransformer;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.ErrorCheckerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
 
-
-import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
@@ -36,11 +34,14 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
     protected V mView;
     protected StatusApi mStatusApi;
-    protected StatusManager mStatusManager;
-    protected AttitudeApi mAttitudeApi;
 
-    private Observable<Event> mStatusAttitudeCountObservable;
+    private AttitudeApi mAttitudeApi;
+    StatusManager mStatusManager;
+
     private Observable<Event> mAttitudeObservable;
+    private Observable<StatusActionCountUpdateEvent> mStatusAttitudeCountObservable;
+    private Observable<StatusActionCountUpdateEvent> mStatusCommentCountObservable;
+    private Observable<StatusActionCountUpdateEvent> mStatusRelayCountObservable;
 
     public AbsTimeLinePresent(V view, StatusApi statusApi, StatusManager statusManager, AttitudeApi attitudeApi) {
         super();
@@ -56,54 +57,97 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
     }
 
     private void registerEvent() {
-        mStatusAttitudeCountObservable = RxBus.getDefault().register(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE);
-        mStatusAttitudeCountObservable.subscribe(this);
-
         mAttitudeObservable = RxBus.getDefault().register(EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS);
         mAttitudeObservable.subscribe(this);
+
+        mStatusAttitudeCountObservable = RxBus.getDefault().register(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE);
+        mStatusAttitudeCountObservable.doOnNext(new Action1<StatusActionCountUpdateEvent>() {
+            @Override
+            public void call(StatusActionCountUpdateEvent statusActionCountUpdateEvent) {
+                Status status = mStatusManager.getStatusById(statusActionCountUpdateEvent.statusId);
+                if (status != null) {
+                    status.setAttitudes_count(statusActionCountUpdateEvent.count);
+                    mStatusManager.saveStatus(status);
+                }
+            }
+        }).compose(SchedulerTransformer.<Event>create()).subscribe(this);
+
+        mStatusCommentCountObservable = RxBus.getDefault().register(EventTag.EVENT_STATUS_COMMENT_COUNT_UPDATE);
+        mStatusCommentCountObservable.doOnNext(new Action1<StatusActionCountUpdateEvent>() {
+            @Override
+            public void call(StatusActionCountUpdateEvent statusActionCountUpdateEvent) {
+                Status status = mStatusManager.getStatusById(statusActionCountUpdateEvent.statusId);
+                if (status != null) {
+                    status.setComments_count(statusActionCountUpdateEvent.count);
+                    mStatusManager.saveStatus(status);
+                }
+            }
+        }).compose(SchedulerTransformer.<StatusActionCountUpdateEvent>create()).subscribe(this);
+
+        mStatusRelayCountObservable = RxBus.getDefault().register(EventTag.EVENT_STATUS_RELAY_COUNT_UPDATE);
+        mStatusRelayCountObservable.doOnNext(new Action1<StatusActionCountUpdateEvent>() {
+            @Override
+            public void call(StatusActionCountUpdateEvent statusActionCountUpdateEvent) {
+                Status status = mStatusManager.getStatusById(statusActionCountUpdateEvent.statusId);
+                if (status != null) {
+                    status.setReposts_count(statusActionCountUpdateEvent.count);
+                    mStatusManager.saveStatus(status);
+                }
+            }
+        }).compose(SchedulerTransformer.<StatusActionCountUpdateEvent>create()).subscribe(this);
     }
 
     @Override
     public void call(Event event) {
         if (EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE.equals(event.type)) {
-            onStatusAttitudeCountUpdate((StatusAttitudeCountUpdateEvent) event);
+            onStatusAttitudeCountUpdate((StatusActionCountUpdateEvent) event);
         }else if (EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS.equals(event.type)) {
             onStatusAttitudeUpdate((StatusAttitudeEvent) event);
+        }else if (EventTag.EVENT_STATUS_COMMENT_COUNT_UPDATE.equals(event.type)) {
+            onStatusCommentCountUpdate((StatusActionCountUpdateEvent) event);
+        }else if (EventTag.EVENT_STATUS_RELAY_COUNT_UPDATE.equals(event.type)) {
+            onStatusRelayCountUpdate((StatusActionCountUpdateEvent) event);
         }
     }
 
-    protected abstract void onStatusAttitudeCountUpdate(StatusAttitudeCountUpdateEvent event);
+    protected abstract void onStatusAttitudeCountUpdate(StatusActionCountUpdateEvent event);
 
     protected abstract void onStatusAttitudeUpdate(StatusAttitudeEvent event);
+
+    protected abstract void onStatusCommentCountUpdate(StatusActionCountUpdateEvent event);
+
+    protected abstract void onStatusRelayCountUpdate(StatusActionCountUpdateEvent event);
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         RxBus.getDefault().unregister(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE, mStatusAttitudeCountObservable);
         RxBus.getDefault().unregister(EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS, mAttitudeObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_STATUS_COMMENT_COUNT_UPDATE, mStatusCommentCountObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_STATUS_RELAY_COUNT_UPDATE, mStatusRelayCountObservable);
     }
 
     @Override
-    public void deleteWeibo(final Weibo deleteWeibo, final int position) {
+    public void deleteStatus(final Status deleteStatus, final int position) {
         mView.showDialogLoading(true, R.string.deleting);
-        Subscription subscription =  mStatusApi.deleteWeibo(deleteWeibo.getId())
-                .compose(ErrorCheckerTransformer.<Weibo>create())
-                .doOnNext(new Action1<Weibo>() {
+        Subscription subscription =  mStatusApi.deleteWeibo(deleteStatus.getId())
+                .compose(ErrorCheckerTransformer.<Status>create())
+                .doOnNext(new Action1<Status>() {
                     @Override
-                    public void call(Weibo weibo) {
-                        mStatusManager.deleteWeibo(weibo.getId());
+                    public void call(Status weibo) {
+                        mStatusManager.deleteStatus(weibo.getId());
                     }
                 })
-                .compose(SchedulerTransformer.<Weibo>create())
-                .subscribe(new DefaultResponseSubscriber<Weibo>(mView) {
+                .compose(SchedulerTransformer.<Status>create())
+                .subscribe(new ResponseSubscriber<Status>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
                         mView.showDialogLoading(false, R.string.deleting);
                     }
 
                     @Override
-                    public void onNext(Weibo weibo) {
-                        mView.onDeleteWeiboSuccess(deleteWeibo, position);
+                    public void onNext(Status status) {
+                        mView.onDeleteStatusSuccess(deleteStatus, position);
                         mView.showDialogLoading(false, R.string.deleting);
                     }
                 });
@@ -111,14 +155,14 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
     }
 
     @Override
-    public void collectWeibo(final Weibo weibo) {
-        Subscription subscription = mStatusApi.collectWeibo(weibo.getId())
+    public void collectStatus(final Status status) {
+        Subscription subscription = mStatusApi.collectWeibo(status.getId())
                 .compose(ErrorCheckerTransformer.<FavoritesCreateResponse>create())
                 .doOnNext(new Action1<FavoritesCreateResponse>() {
                     @Override
                     public void call(FavoritesCreateResponse favoritesCreateResponse) {
-                        weibo.setFavorited(true);
-                        mStatusManager.saveWeibo(weibo);
+                        status.setFavorited(true);
+                        mStatusManager.saveStatus(status);
                     }
                 })
                 .compose(SchedulerTransformer.<FavoritesCreateResponse>create())
@@ -134,7 +178,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                         mView.showDialogLoading(false, R.string.collecting);
                     }
                 })
-                .subscribe(new DefaultResponseSubscriber<FavoritesCreateResponse>(mView) {
+                .subscribe(new ResponseSubscriber<FavoritesCreateResponse>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
 
@@ -142,21 +186,21 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
                     @Override
                     public void onNext(FavoritesCreateResponse favoritesCreateResponse) {
-                        mView.onCollectSuccess(weibo);
+                        mView.onCollectSuccess(status);
                     }
                 });
         addSubscription(subscription);
     }
 
     @Override
-    public void uncollectWeibo(final Weibo weibo) {
-        Subscription subscription = mStatusApi.uncollectWeibo(weibo.getId())
+    public void unCollectStatus(final Status status) {
+        Subscription subscription = mStatusApi.uncollectWeibo(status.getId())
                 .compose(ErrorCheckerTransformer.<FavoritesCreateResponse>create())
                 .doOnNext(new Action1<FavoritesCreateResponse>() {
                     @Override
                     public void call(FavoritesCreateResponse favoritesCreateResponse) {
-                        weibo.setFavorited(false);
-                        mStatusManager.saveWeibo(weibo);
+                        status.setFavorited(false);
+                        mStatusManager.saveStatus(status);
                     }
                 })
                 .compose(SchedulerTransformer.<FavoritesCreateResponse>create())
@@ -172,7 +216,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                         mView.showDialogLoading(false, R.string.uncollecting);
                     }
                 })
-                .subscribe(new DefaultResponseSubscriber<FavoritesCreateResponse>(mView) {
+                .subscribe(new ResponseSubscriber<FavoritesCreateResponse>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
 
@@ -180,21 +224,21 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
                     @Override
                     public void onNext(FavoritesCreateResponse favoritesCreateResponse) {
-                        mView.onUncollectSuccess(weibo);
+                        mView.onUnCollectSuccess(status);
                     }
                 });
         addSubscription(subscription);
     }
 
     @Override
-    public void attitudesWeibo(final Weibo weibo) {
-        Subscription subscription = mAttitudeApi.attitudesToWeibo("smile", weibo.getId())
+    public void attitudeStatus(final Status status) {
+        Subscription subscription = mAttitudeApi.attitudesToWeibo("smile", status.getId())
                 .compose(ErrorCheckerTransformer.<Attitude>create())
                 .doOnNext(new Action1<Attitude>() {
                     @Override
                     public void call(Attitude attitude) {
-                        weibo.setAttitudes_status(1);
-                        mStatusManager.saveWeibo(weibo);
+                        status.setAttitudes_status(1);
+                        mStatusManager.saveStatus(status);
                     }
                 })
                 .compose(SchedulerTransformer.<Attitude>create())
@@ -210,7 +254,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                         mView.showDialogLoading(false, R.string.requesting);
                     }
                 })
-                .subscribe(new DefaultResponseSubscriber<Attitude>(mView) {
+                .subscribe(new ResponseSubscriber<Attitude>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
                     }
@@ -218,13 +262,13 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                     @Override
                     public void onNext(Attitude attitude) {
                         Event attitudeSuccessEvent = new StatusAttitudeEvent(EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS,
-                                weibo.getId(), true, attitude.getUser());
+                                status.getId(), true, attitude.getUser());
                         RxBus.getDefault().post(attitudeSuccessEvent.type, attitudeSuccessEvent);
 
-                        StatusAttitudeCountUpdateEvent statusAttitudeCountUpdateEvent =
-                                new StatusAttitudeCountUpdateEvent(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE, weibo.getId(),
+                        StatusActionCountUpdateEvent statusActionCountUpdateEvent =
+                                new StatusActionCountUpdateEvent(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE, status.getId(),
                                         attitude.getStatus().getAttitudes_count());
-                        RxBus.getDefault().post(statusAttitudeCountUpdateEvent.type, statusAttitudeCountUpdateEvent);
+                        RxBus.getDefault().post(statusActionCountUpdateEvent.type, statusActionCountUpdateEvent);
                     }
                 });
         addSubscription(subscription);
@@ -232,14 +276,14 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
 
     @Override
-    public void destroyAttitudesWeibo(final Weibo weibo) {
-        Subscription subscription = mAttitudeApi.destoryAttitudesWeibo("smile", weibo.getId())
+    public void destroyAttitudeStatus(final Status status) {
+        Subscription subscription = mAttitudeApi.destoryAttitudesWeibo("smile", status.getId())
                 .compose(ErrorCheckerTransformer.create())
                 .doOnNext(new Action1<Response>() {
                     @Override
                     public void call(Response response) {
-                        weibo.setAttitudes_status(0);
-                        mStatusManager.saveWeibo(weibo);
+                        status.setAttitudes_status(0);
+                        mStatusManager.saveStatus(status);
                     }
                 })
                 .compose(SchedulerTransformer.<Response>create())
@@ -255,7 +299,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                         mView.showDialogLoading(false, R.string.requesting);
                     }
                 })
-                .subscribe(new DefaultResponseSubscriber<Response>(mView) {
+                .subscribe(new ResponseSubscriber<Response>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
 
@@ -263,32 +307,42 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
                     @Override
                     public void onNext(Response response) {
-                        StatusAttitudeCountUpdateEvent attitudeCountEvent =
-                                new StatusAttitudeCountUpdateEvent(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE,
-                                        weibo.getId(), weibo.getAttitudes_count() - 1);
+                        StatusActionCountUpdateEvent attitudeCountEvent =
+                                new StatusActionCountUpdateEvent(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE,
+                                        status.getId(), status.getAttitudes_count() - 1);
                         RxBus.getDefault().post(attitudeCountEvent.type, attitudeCountEvent);
 
                         StatusAttitudeEvent attitudeSuccessEvent = new StatusAttitudeEvent(EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS,
-                                weibo.getId(), false, null);
+                                status.getId(), false, null);
                         RxBus.getDefault().post(attitudeSuccessEvent.type, attitudeSuccessEvent);
                     }
                 });
         addSubscription(subscription);
     }
 
-    protected void doSpanNext(List<Weibo> weibos) {
-        for (Weibo weibo : weibos) {
-            SpannableStringUtil.paraeSpannable(weibo);
+    public static class StatusContentSpannableConvertTransformer
+            implements Observable.Transformer<Status, Status> {
+
+        private boolean isLongText;
+
+        public static StatusContentSpannableConvertTransformer create(boolean isLongText) {
+            return new StatusContentSpannableConvertTransformer(isLongText);
+        }
+
+        public StatusContentSpannableConvertTransformer( boolean isLongText) {
+            this.isLongText = isLongText;
+        }
+
+        @Override
+        public Observable<Status> call(Observable<Status> statusObservable) {
+            return statusObservable.doOnNext(new Action1<Status>() {
+                @Override
+                public void call(Status status) {
+                    SpannableStringUtil.paraeSpannable(status, isLongText);
+                }
+            });
         }
     }
 
-    protected void doSpanNext(Weibo weibo) {
-        doSpanNext(weibo, false);
-    }
-
-
-    protected void doSpanNext(Weibo weibo, boolean isLongText) {
-        SpannableStringUtil.paraeSpannable(weibo, isLongText);
-    }
 
 }

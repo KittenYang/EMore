@@ -19,20 +19,20 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
-import com.caij.emore.dao.imp.DraftManagerImp;
-import com.caij.emore.dao.imp.NotifyManagerImp;
-import com.caij.emore.dao.imp.UserManagerImp;
+import com.caij.emore.manager.imp.DraftManagerImp;
+import com.caij.emore.manager.imp.NotifyManagerImp;
+import com.caij.emore.manager.imp.UserManagerImp;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.MainPresent;
 import com.caij.emore.present.imp.MainPresentImp;
-import com.caij.emore.remote.imp.UnReadMessageApiImp;
+import com.caij.emore.remote.imp.NotifyApiImp;
 import com.caij.emore.remote.imp.UserApiImp;
+import com.caij.emore.ui.fragment.weibo.FriendStatusFragment;
+import com.caij.emore.ui.fragment.weibo.HotStatusFragment;
 import com.caij.emore.ui.view.MainView;
 import com.caij.emore.ui.fragment.DraftFragment;
 import com.caij.emore.ui.fragment.MessageUserFragment;
-import com.caij.emore.ui.fragment.weibo.FriendWeiboFragment;
-import com.caij.emore.ui.fragment.weibo.HotWeiboFragment;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -127,7 +127,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
     private void initContent(Bundle savedInstanceState) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
-            mFriendWeiboFragment = new FriendWeiboFragment();
+            mFriendWeiboFragment = new FriendStatusFragment();
             mMessageFragment = new MessageUserFragment();
             transaction.add(R.id.attach_container,
                     mFriendWeiboFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG).commit();
@@ -136,7 +136,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         } else {
             mFriendWeiboFragment = getSupportFragmentManager().findFragmentByTag(Key.FRIEND_WEIBO_FRAGMENT_TAG);
             if (mFriendWeiboFragment == null) {
-                mFriendWeiboFragment = new FriendWeiboFragment();
+                mFriendWeiboFragment = new FriendStatusFragment();
             }
             mMessageFragment = getSupportFragmentManager().findFragmentByTag(Key.MESSAGE_FRAGMENT_TAG);
             if (mMessageFragment == null) {
@@ -157,7 +157,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         Token token = UserPrefs.get(this).getToken();
         return new MainPresentImp(Long.parseLong(token.getUid()),
                 this, new UserApiImp(), new UserManagerImp(),
-                new UnReadMessageApiImp(), new NotifyManagerImp(),
+                new NotifyApiImp(), new NotifyManagerImp(),
                 new DraftManagerImp());
     }
 
@@ -310,7 +310,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
             case R.id.tv_hot_weibo: {
                 Intent intent = DefaultFragmentActivity.starFragmentV4(this, getString(R.string.hot_weibo),
-                        HotWeiboFragment.class, null);
+                        HotStatusFragment.class, null);
                 startActivity(intent);
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;

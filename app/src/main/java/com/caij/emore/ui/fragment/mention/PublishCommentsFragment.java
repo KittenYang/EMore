@@ -10,8 +10,8 @@ import com.caij.emore.bean.Comment;
 import com.caij.emore.present.PublishCommentsPresent;
 import com.caij.emore.present.imp.PublishCommentsPresentImp;
 import com.caij.emore.remote.imp.CommentApiImp;
-import com.caij.emore.ui.view.MyPublishComentsView;
-import com.caij.emore.ui.activity.WeiboDetialActivity;
+import com.caij.emore.ui.activity.StatusDetailActivity;
+import com.caij.emore.ui.view.MyPublishCommentsView;
 import com.caij.emore.ui.adapter.MyMessageCommentAdapter;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
@@ -22,7 +22,7 @@ import com.caij.emore.widget.recyclerview.XRecyclerView;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment<Comment, PublishCommentsPresent> implements XRecyclerView.OnLoadMoreListener,  MyPublishComentsView {
+public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment<Comment, PublishCommentsPresent> implements XRecyclerView.OnLoadMoreListener, MyPublishCommentsView {
 
     @Override
     protected BaseAdapter<Comment, ? extends BaseViewHolder> createRecyclerViewAdapter() {
@@ -31,8 +31,7 @@ public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment<Co
 
     @Override
     protected PublishCommentsPresent createPresent() {
-        Token accessToken = UserPrefs.get(getActivity()).getToken();
-        return new PublishCommentsPresentImp(accessToken.getAccess_token(), new CommentApiImp(), this);
+        return new PublishCommentsPresentImp(new CommentApiImp(), this);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class PublishCommentsFragment extends SwipeRefreshRecyclerViewFragment<Co
                 if (which == 0) {
                     mPresent.deleteComment(mRecyclerViewAdapter.getItem(position), position);
                 }else if (which == 1) {
-                    Intent intent = WeiboDetialActivity.newIntent(getActivity(),
+                    Intent intent = StatusDetailActivity.newIntent(getActivity(),
                             mRecyclerViewAdapter.getItem(position).getStatus().getId());
                     startActivity(intent);
                 }

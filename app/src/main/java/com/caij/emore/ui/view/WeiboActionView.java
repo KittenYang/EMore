@@ -1,16 +1,16 @@
 package com.caij.emore.ui.view;
 
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 
 /**
  * Created by Caij on 2016/7/14.
  */
 public interface WeiboActionView extends BaseView{
 
-    void onDeleteWeiboSuccess(Weibo weibo, int position);
+    void onDeleteStatusSuccess(Status weibo, int position);
 
-    void onCollectSuccess(Weibo weibo);
+    void onCollectSuccess(Status weibo);
 
-    void onUncollectSuccess(Weibo weibo);
+    void onUnCollectSuccess(Status weibo);
 
 }

@@ -10,7 +10,7 @@ import de.greenrobot.dao.identityscope.IdentityScopeType;
 
 import com.caij.emore.database.dao.UserDao;
 import com.caij.emore.database.dao.LocalFileDao;
-import com.caij.emore.database.dao.WeiboDao;
+import com.caij.emore.database.dao.StatusDao;
 import com.caij.emore.database.dao.DirectMessageDao;
 import com.caij.emore.database.dao.MessageImageDao;
 import com.caij.emore.database.dao.UrlInfoDao;
@@ -29,7 +29,7 @@ public class DaoMaster extends AbstractDaoMaster {
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
         UserDao.createTable(db, ifNotExists);
         LocalFileDao.createTable(db, ifNotExists);
-        WeiboDao.createTable(db, ifNotExists);
+        StatusDao.createTable(db, ifNotExists);
         DirectMessageDao.createTable(db, ifNotExists);
         MessageImageDao.createTable(db, ifNotExists);
         UrlInfoDao.createTable(db, ifNotExists);
@@ -42,7 +42,7 @@ public class DaoMaster extends AbstractDaoMaster {
     public static void dropAllTables(SQLiteDatabase db, boolean ifExists) {
         UserDao.dropTable(db, ifExists);
         LocalFileDao.dropTable(db, ifExists);
-        WeiboDao.dropTable(db, ifExists);
+        StatusDao.dropTable(db, ifExists);
         DirectMessageDao.dropTable(db, ifExists);
         MessageImageDao.dropTable(db, ifExists);
         UrlInfoDao.dropTable(db, ifExists);
@@ -82,7 +82,7 @@ public class DaoMaster extends AbstractDaoMaster {
         super(db, SCHEMA_VERSION);
         registerDaoClass(UserDao.class);
         registerDaoClass(LocalFileDao.class);
-        registerDaoClass(WeiboDao.class);
+        registerDaoClass(StatusDao.class);
         registerDaoClass(DirectMessageDao.class);
         registerDaoClass(MessageImageDao.class);
         registerDaoClass(UrlInfoDao.class);

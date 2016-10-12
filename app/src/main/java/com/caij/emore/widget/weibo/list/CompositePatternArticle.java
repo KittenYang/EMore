@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.PageInfo;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.ui.activity.ArticleActivity;
 import com.caij.emore.utils.ImageLoader;
 
@@ -42,7 +42,7 @@ public class CompositePatternArticle {
                 .build();
     }
 
-    public void setWeibo(Weibo weibo, Context context) {
+    public void setWeibo(Status weibo, Context context) {
         PageInfo pageInfo = weibo.getPage_info();
 
         PageInfo.Card card1 = pageInfo.getCards().get(0);
@@ -62,7 +62,7 @@ public class CompositePatternArticle {
 
     @OnClick(R.id.rl_article)
     public void onArticleClick() {
-        Weibo weibo = (Weibo) mRlArticle.getTag();
+        Status weibo = (Status) mRlArticle.getTag();
         PageInfo pageInfo = weibo.getPage_info();
         Intent intent = ArticleActivity.newIntent(mRlArticle.getContext(), pageInfo.getPage_id());
         mRlArticle.getContext().startActivity(intent);

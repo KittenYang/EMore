@@ -8,8 +8,8 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.remote.LoginApi;
 import com.caij.emore.ui.view.LoginView;
-import com.caij.emore.utils.rxjava.DefaultResponseSubscriber;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.ResponseSubscriber;
+import com.caij.emore.api.ex.SchedulerTransformer;
 
 import rx.Subscription;
 import rx.functions.Action1;
@@ -47,7 +47,7 @@ public class LoginPresentImp extends AbsBasePresent implements LoginPresent{
                     }
                 })
                 .compose(new SchedulerTransformer<Token>())
-                .subscribe(new DefaultResponseSubscriber<Token>(mLoginView) {
+                .subscribe(new ResponseSubscriber<Token>(mLoginView) {
                     @Override
                     public void onCompleted() {
                         mLoginView.showDialogLoading(false, R.string.logining);

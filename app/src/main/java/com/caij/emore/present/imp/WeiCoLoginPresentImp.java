@@ -8,7 +8,7 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.remote.LoginApi;
 import com.caij.emore.ui.view.WeiCoLoginView;
-import com.caij.emore.utils.rxjava.SchedulerTransformer;
+import com.caij.emore.api.ex.SchedulerTransformer;
 
 import rx.Subscriber;
 import rx.Subscription;

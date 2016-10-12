@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.PageInfo;
-import com.caij.emore.database.bean.Weibo;
+import com.caij.emore.database.bean.Status;
 import com.caij.emore.ui.activity.VideoViewPlayingActivity;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
@@ -42,7 +41,7 @@ public class CompositePatternVideo {
                 .build();
     }
 
-    public void setWeibo(Weibo weibo, Context context) {
+    public void setWeibo(Status weibo, Context context) {
         PageInfo pageInfo = weibo.getPage_info();
         ImageLoader.loadUrl(context, mIvVideo, pageInfo.getPage_pic(),
                 R.drawable.weibo_image_placeholder, mVideoImageConfig);
@@ -59,7 +58,7 @@ public class CompositePatternVideo {
 
     @OnClick(R.id.rl_video)
     public void onVideoClick() {
-        Weibo weibo = (Weibo) mRlVideo.getTag();
+        Status weibo = (Status) mRlVideo.getTag();
         PageInfo.MediaInfo mediaInfo = weibo.getPage_info().getMedia_info();
         Context context = mRlVideo.getContext();
         Intent intent = VideoViewPlayingActivity.newIntent(context, mediaInfo.getStream_url());

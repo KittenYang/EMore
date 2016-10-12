@@ -9,7 +9,7 @@ public interface UserInfoDetailPresent extends BasePresent {
 
     public void unFollow();
 
-    public void getWeiboUserInfoByName();
+    public void getUserInfoByName();
 
     void onRefresh();
 }
