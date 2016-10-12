@@ -10,8 +10,11 @@ import com.caij.emore.present.DraftPresent;
 import com.caij.emore.ui.view.DraftListView;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.api.ex.SchedulerTransformer;
+import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -79,15 +82,11 @@ public class DraftPresentImp extends AbsBasePresent implements DraftPresent {
     @Override
     public void onCreate() {
         Subscription subscription = createDraftObservable(Long.MAX_VALUE)
-                .subscribe(new Subscriber<List<Draft>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                .subscribe(new SubscriberAdapter<List<Draft>>() {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        LogUtil.d(DraftPresentImp.this, "Draft load error " + e.getMessage());
                     }
 
                     @Override
@@ -133,33 +132,33 @@ public class DraftPresentImp extends AbsBasePresent implements DraftPresent {
     }
 
     private Observable<List<Draft>> createDraftObservable(final long maxTime) {
-        return Observable.create(new Observable.OnSubscribe<List<Draft>>() {
-            @Override
-            public void call(Subscriber<? super List<Draft>> subscriber) {
-                subscriber.onNext(mDraftManager.getDrafts(maxTime, PAGE_COUNT, 1));
-            }
-        })
-                .flatMap(new Func1<List<Draft>, Observable<Draft>>() {
-                    @Override
-                    public Observable<Draft> call(List<Draft> drafts) {
-                        return Observable.from(drafts);
-                    }
-                })
-                .filter(new Func1<Draft, Boolean>() {
-                    @Override
-                    public Boolean call(Draft draft) {
-                        return !mDrafts.contains(draft);
-                    }
-                })
-                .doOnNext(new Action1<Draft>() {
-                    @Override
-                    public void call(Draft draft) {
-                        List<String> images  = GsonUtils.fromJson(draft.getImage_paths(), new TypeToken<List<String>>(){}.getType());
-                        draft.setImages(images);
-                    }
-                })
-                .toList()
-                .compose(new SchedulerTransformer<List<Draft>>());
+        return RxUtil.createDataObservable(new RxUtil.Provider<List<Draft>>() {
+                @Override
+                public List<Draft> getData() {
+                    return mDraftManager.getDrafts(maxTime, PAGE_COUNT, 1);
+                }
+            })
+            .flatMap(new Func1<List<Draft>, Observable<Draft>>() {
+                @Override
+                public Observable<Draft> call(List<Draft> drafts) {
+                    return Observable.from(drafts);
+                }
+            })
+            .filter(new Func1<Draft, Boolean>() {
+                @Override
+                public Boolean call(Draft draft) {
+                    return !mDrafts.contains(draft);
+                }
+            })
+            .doOnNext(new Action1<Draft>() {
+                @Override
+                public void call(Draft draft) {
+                    List<String> images  = GsonUtils.fromJson(draft.getImage_paths(), new TypeToken<List<String>>(){}.getType());
+                    draft.setImages(images);
+                }
+            })
+            .toList()
+            .compose(new SchedulerTransformer<List<Draft>>());
     }
 
     @Override
