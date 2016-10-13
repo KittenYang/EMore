@@ -108,7 +108,7 @@ public class StatusRelayPresentImp extends AbsBasePresent implements StatusRelay
         mStatus.addAll(statuses);
         mStatusRelayView.setEntities(statuses);
 
-        mStatusRelayView.onLoadComplete(statuses.size() >= PAGE_COUNT - 5);
+        mStatusRelayView.onLoadComplete(mNextCursor != 0);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class StatusRelayPresentImp extends AbsBasePresent implements StatusRelay
                     public void onNext(List<Status> statuses) {
                         mStatus.addAll(statuses);
                         mStatusRelayView.notifyItemRangeInserted(mStatus, mStatus.size() - statuses.size(), statuses.size());
-                        mStatusRelayView.onLoadComplete(statuses.size() >= 15);
+                        mStatusRelayView.onLoadComplete(mNextCursor != 0);
                     }
                 });
 

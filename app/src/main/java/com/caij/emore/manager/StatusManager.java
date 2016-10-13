@@ -10,6 +10,15 @@ import java.util.List;
 
 public interface StatusManager {
 
+    /**
+
+     * @param uid
+     * @param since_id
+     * @param max_id
+     * @param count
+     * @param page
+     * @return
+     */
     public List<Status> getFriendStatuses(final long uid, final long since_id, final long max_id,
                                           final int count, final int page);
 

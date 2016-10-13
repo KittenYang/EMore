@@ -1,5 +1,7 @@
 package com.caij.emore.present.imp;
 
+import android.text.TextUtils;
+
 import com.caij.emore.AppApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.Key;
@@ -13,6 +15,8 @@ import com.caij.emore.present.FriendWeiboPresent;
 import com.caij.emore.remote.AttitudeApi;
 import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.FriendStatusView;
+import com.caij.emore.utils.GsonUtils;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SPUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.api.ex.ErrorCheckerTransformer;
@@ -20,7 +24,9 @@ import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.utils.rxjava.RxUtil;
 import com.caij.emore.utils.rxjava.SubscriberAdapter;
 import com.caij.emore.utils.weibo.MessageUtil;
+import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -77,7 +83,8 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
         Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<List<Status>>() {
             @Override
             public List<Status> getData() {
-                return mStatusManager.getFriendStatuses(mUid, 0, 0, PAGE_COUNT , 1);
+//                mStatusManager.getFriendStatuses(mUid, 0, 0, PAGE_COUNT , 1)
+                return getCacheStatus();
             }
         }).flatMap(new Func1<List<Status>, Observable<Status>>() {
             @Override
@@ -103,19 +110,36 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
         addSubscription(subscription);
     }
 
+    private List<Status> getCacheStatus() {
+        String ids = new SPUtil.SPBuilder(AppApplication.getInstance())
+                .openDefault()
+                .getString(Key.FRIEND_STATUS_LOCAL_CACHE_IDS, "");
+        if (!TextUtils.isEmpty(ids)) {
+            List<Long> idsl = GsonUtils.fromJson(ids, new TypeToken<List<Long>>(){}.getType());
+            List<Status> statuses = new ArrayList<Status>();
+            for (Long id : idsl) {
+                Status status = mStatusManager.getStatusById(id);
+                if (status != null) {
+                    statuses.add(status);
+                }
+            }
+            return statuses;
+        }
+        return null;
+    }
+
     private void onGetLocalStatusSuccess(List<Status> statuses) {
         mStatuses.addAll(statuses);
         mView.setEntities(mStatuses);
 
-        if (statuses.size() > 1) {
-            mNextCursor = statuses.get(statuses.size() - 1).getId();
-        }else {
-            mNextCursor = 0;
-        }
+        mNextCursor = new SPUtil.SPBuilder(AppApplication.getInstance())
+                .openDefault()
+                .getLong(Key.FRIEND_STATUS_LOCAL_NEXT_CURSOR_TIME, 0);
+        LogUtil.d(this, "local next cursor %s", mNextCursor);
 
         long preRefreshTime  = new SPUtil.SPBuilder(AppApplication.getInstance())
                 .openDefault()
-                .getLong(Key.FRIEND_WEIBO_UPDATE_TIME, -1);
+                .getLong(Key.FRIEND_STATUS_UPDATE_TIME, -1);
         if (System.currentTimeMillis() - preRefreshTime > STATUS_REFRESH_INTERVAL
                 || statuses.size() <= 0) {
             mView.toRefresh();
@@ -128,11 +152,13 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
 
     @Override
     public void refresh() {
-        Subscription subscription = getFriendStatusesObservable(0)
+        Subscription subscription = getFriendStatusesObservable(0, true)
                 .doOnNext(new Action1<List<Status>>() {
                     @Override
-                    public void call(List<Status> weibos) {
-                       saveStatusRefreshTime();
+                    public void call(List<Status> statuses) {
+                        saveStatusRefreshTimeAndNextCursor();
+
+                        saveCacheStatusId(statuses);
                     }
                 })
                 .doOnTerminate(new Action0() {
@@ -154,7 +180,7 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
                         mStatuses.addAll(statuses);
                         mView.setEntities(mStatuses);
 
-                        mView.onLoadComplete(statuses.size() >= PAGE_COUNT);
+                        mView.onLoadComplete(mNextCursor > 0);
 
                         MessageUtil.resetLocalUnReadMessage(UnReadMessage.TYPE_STATUS, 0, mUid, mNotifyManager);
                     }
@@ -162,10 +188,26 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
         addSubscription(subscription);
     }
 
-    private void saveStatusRefreshTime() {
+    /**
+     * 出现广告微博的时候导致排序就不太对， 所以采用这种方法缓存微博
+     * @param statuses
+     */
+    private void saveCacheStatusId(List<Status> statuses) {
+        List<Long> ids = new ArrayList<>();
+        for (Status status : statuses) {
+            ids.add(status.getId());
+        }
         new SPUtil.SPBuilder(AppApplication.getInstance())
                 .openDefault().edit()
-                .putLong(Key.FRIEND_WEIBO_UPDATE_TIME, System.currentTimeMillis())
+                .putString(Key.FRIEND_STATUS_LOCAL_CACHE_IDS, GsonUtils.toJson(ids))
+                .apply();
+    }
+
+    private void saveStatusRefreshTimeAndNextCursor() {
+        new SPUtil.SPBuilder(AppApplication.getInstance())
+                .openDefault().edit()
+                .putLong(Key.FRIEND_STATUS_UPDATE_TIME, System.currentTimeMillis())
+                .putLong(Key.FRIEND_STATUS_LOCAL_NEXT_CURSOR_TIME, mNextCursor)
                 .apply();
     }
 
@@ -176,7 +218,7 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
 
     @Override
     public void loadMore() {
-        Subscription subscription = getFriendStatusesObservable(mNextCursor)
+        Subscription subscription = getFriendStatusesObservable(mNextCursor, false)
             .subscribe(new ResponseSubscriber<List<Status>>(mView) {
 
 //                @Override
@@ -188,13 +230,13 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
                 public void onNext(List<Status> statuses) {
                     mStatuses.addAll(statuses);
                     mView.notifyItemRangeInserted(mStatuses, mStatuses.size() - statuses.size(), statuses.size());
-                    mView.onLoadComplete(statuses.size() >= PAGE_COUNT);
+                    mView.onLoadComplete(mNextCursor > 0);
                 }
             });
         addSubscription(subscription);
     }
 
-    private Observable<List<Status>> getFriendStatusesObservable(long maxId) {
+    private Observable<List<Status>> getFriendStatusesObservable(long maxId, final boolean isRefresh) {
         return mStatusApi.getFriendWeibo(mUid, 0, maxId, PAGE_COUNT, 1)
                 .compose(ErrorCheckerTransformer.<QueryStatusResponse>create())
                 .flatMap(new Func1<QueryStatusResponse, Observable<Status>>() {
@@ -202,6 +244,12 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
                     public Observable<Status> call(QueryStatusResponse response) {
                         mNextCursor = response.getNext_cursor();
                         return Observable.from(response.getStatuses());
+                    }
+                })
+                .filter(new Func1<Status, Boolean>() {
+                    @Override
+                    public Boolean call(Status status) {
+                        return isRefresh || !mStatuses.contains(status);
                     }
                 })
                 .compose(StatusContentSpannableConvertTransformer.create(false))
