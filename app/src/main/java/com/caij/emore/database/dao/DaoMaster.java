@@ -12,7 +12,6 @@ import com.caij.emore.database.dao.UserDao;
 import com.caij.emore.database.dao.LocalFileDao;
 import com.caij.emore.database.dao.StatusDao;
 import com.caij.emore.database.dao.DirectMessageDao;
-import com.caij.emore.database.dao.MessageImageDao;
 import com.caij.emore.database.dao.UrlInfoDao;
 import com.caij.emore.database.dao.UploadImageResponseDao;
 import com.caij.emore.database.dao.DraftDao;
@@ -31,7 +30,6 @@ public class DaoMaster extends AbstractDaoMaster {
         LocalFileDao.createTable(db, ifNotExists);
         StatusDao.createTable(db, ifNotExists);
         DirectMessageDao.createTable(db, ifNotExists);
-        MessageImageDao.createTable(db, ifNotExists);
         UrlInfoDao.createTable(db, ifNotExists);
         UploadImageResponseDao.createTable(db, ifNotExists);
         DraftDao.createTable(db, ifNotExists);
@@ -44,7 +42,6 @@ public class DaoMaster extends AbstractDaoMaster {
         LocalFileDao.dropTable(db, ifExists);
         StatusDao.dropTable(db, ifExists);
         DirectMessageDao.dropTable(db, ifExists);
-        MessageImageDao.dropTable(db, ifExists);
         UrlInfoDao.dropTable(db, ifExists);
         UploadImageResponseDao.dropTable(db, ifExists);
         DraftDao.dropTable(db, ifExists);
@@ -84,7 +81,6 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(LocalFileDao.class);
         registerDaoClass(StatusDao.class);
         registerDaoClass(DirectMessageDao.class);
-        registerDaoClass(MessageImageDao.class);
         registerDaoClass(UrlInfoDao.class);
         registerDaoClass(UploadImageResponseDao.class);
         registerDaoClass(DraftDao.class);

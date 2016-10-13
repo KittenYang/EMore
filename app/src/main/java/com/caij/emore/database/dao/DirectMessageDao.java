@@ -25,7 +25,7 @@ public class DirectMessageDao extends AbstractDao<DirectMessage, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "ID");
         public final static Property Idstr = new Property(1, String.class, "idstr", false, "IDSTR");
-        public final static Property Created_at = new Property(2, String.class, "created_at", false, "CREATED_AT");
+        public final static Property Created_at = new Property(2, java.util.Date.class, "created_at", false, "CREATED_AT");
         public final static Property Text = new Property(3, String.class, "text", false, "TEXT");
         public final static Property Sys_type = new Property(4, Integer.class, "sys_type", false, "SYS_TYPE");
         public final static Property Msg_status = new Property(5, Integer.class, "msg_status", false, "MSG_STATUS");
@@ -47,8 +47,8 @@ public class DirectMessageDao extends AbstractDao<DirectMessage, Long> {
         public final static Property OriImageId = new Property(21, Long.class, "oriImageId", false, "ORI_IMAGE_ID");
         public final static Property Geo_id = new Property(22, Long.class, "geo_id", false, "GEO_ID");
         public final static Property Local_status = new Property(23, Integer.class, "local_status", false, "LOCAL_STATUS");
-        public final static Property Created_at_long = new Property(24, Long.class, "created_at_long", false, "CREATED_AT_LONG");
-        public final static Property Att_ids_json = new Property(25, String.class, "att_ids_json", false, "ATT_IDS_JSON");
+        public final static Property Att_ids_json = new Property(24, String.class, "att_ids_json", false, "ATT_IDS_JSON");
+        public final static Property Att_infos_json = new Property(25, String.class, "att_infos_json", false, "ATT_INFOS_JSON");
     };
 
 
@@ -66,7 +66,7 @@ public class DirectMessageDao extends AbstractDao<DirectMessage, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"DIRECT_MESSAGE\" (" + //
                 "\"ID\" INTEGER PRIMARY KEY ," + // 0: id
                 "\"IDSTR\" TEXT," + // 1: idstr
-                "\"CREATED_AT\" TEXT," + // 2: created_at
+                "\"CREATED_AT\" INTEGER," + // 2: created_at
                 "\"TEXT\" TEXT," + // 3: text
                 "\"SYS_TYPE\" INTEGER," + // 4: sys_type
                 "\"MSG_STATUS\" INTEGER," + // 5: msg_status
@@ -88,8 +88,8 @@ public class DirectMessageDao extends AbstractDao<DirectMessage, Long> {
                 "\"ORI_IMAGE_ID\" INTEGER," + // 21: oriImageId
                 "\"GEO_ID\" INTEGER," + // 22: geo_id
                 "\"LOCAL_STATUS\" INTEGER," + // 23: local_status
-                "\"CREATED_AT_LONG\" INTEGER," + // 24: created_at_long
-                "\"ATT_IDS_JSON\" TEXT);"); // 25: att_ids_json
+                "\"ATT_IDS_JSON\" TEXT," + // 24: att_ids_json
+                "\"ATT_INFOS_JSON\" TEXT);"); // 25: att_infos_json
     }
 
     /** Drops the underlying database table. */
@@ -113,9 +113,9 @@ public class DirectMessageDao extends AbstractDao<DirectMessage, Long> {
             stmt.bindString(2, idstr);
         }
  
-        String created_at = entity.getCreated_at();
+        java.util.Date created_at = entity.getCreated_at();
         if (created_at != null) {
-            stmt.bindString(3, created_at);
+            stmt.bindLong(3, created_at.getTime());
         }
  
         String text = entity.getText();
@@ -223,14 +223,14 @@ public class DirectMessageDao extends AbstractDao<DirectMessage, Long> {
             stmt.bindLong(24, local_status);
         }
  
-        Long created_at_long = entity.getCreated_at_long();
-        if (created_at_long != null) {
-            stmt.bindLong(25, created_at_long);
-        }
- 
         String att_ids_json = entity.getAtt_ids_json();
         if (att_ids_json != null) {
-            stmt.bindString(26, att_ids_json);
+            stmt.bindString(25, att_ids_json);
+        }
+ 
+        String att_infos_json = entity.getAtt_infos_json();
+        if (att_infos_json != null) {
+            stmt.bindString(26, att_infos_json);
         }
     }
 
@@ -246,7 +246,7 @@ public class DirectMessageDao extends AbstractDao<DirectMessage, Long> {
         DirectMessage entity = new DirectMessage( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // idstr
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // created_at
+            cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)), // created_at
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // text
             cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // sys_type
             cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // msg_status
@@ -268,8 +268,8 @@ public class DirectMessageDao extends AbstractDao<DirectMessage, Long> {
             cursor.isNull(offset + 21) ? null : cursor.getLong(offset + 21), // oriImageId
             cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22), // geo_id
             cursor.isNull(offset + 23) ? null : cursor.getInt(offset + 23), // local_status
-            cursor.isNull(offset + 24) ? null : cursor.getLong(offset + 24), // created_at_long
-            cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25) // att_ids_json
+            cursor.isNull(offset + 24) ? null : cursor.getString(offset + 24), // att_ids_json
+            cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25) // att_infos_json
         );
         return entity;
     }
@@ -279,7 +279,7 @@ public class DirectMessageDao extends AbstractDao<DirectMessage, Long> {
     public void readEntity(Cursor cursor, DirectMessage entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setIdstr(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setCreated_at(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setCreated_at(cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)));
         entity.setText(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setSys_type(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
         entity.setMsg_status(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
@@ -301,8 +301,8 @@ public class DirectMessageDao extends AbstractDao<DirectMessage, Long> {
         entity.setOriImageId(cursor.isNull(offset + 21) ? null : cursor.getLong(offset + 21));
         entity.setGeo_id(cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22));
         entity.setLocal_status(cursor.isNull(offset + 23) ? null : cursor.getInt(offset + 23));
-        entity.setCreated_at_long(cursor.isNull(offset + 24) ? null : cursor.getLong(offset + 24));
-        entity.setAtt_ids_json(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
+        entity.setAtt_ids_json(cursor.isNull(offset + 24) ? null : cursor.getString(offset + 24));
+        entity.setAtt_infos_json(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
      }
     
     /** @inheritdoc */

@@ -16,9 +16,11 @@ import com.caij.emore.bean.response.AttitudeResponse;
 import com.caij.emore.bean.response.QueryStatusResponse;
 import com.caij.emore.bean.response.QueryStatusCommentResponse;
 import com.caij.emore.bean.response.Response;
+import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.bean.response.StatusAttitudesResponse;
+import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
@@ -134,9 +136,9 @@ public interface WeiCoService {
                 MultipartBody multipartBody = (MultipartBody) requestBody;
                 MultipartBody.Builder builder = new MultipartBody.Builder();
                 builder.setType(multipartBody.type());
+                builder.addFormDataPart(PARAMETER_TOKEN_NAME, accessToken);
                 builder.addFormDataPart(PARAMETER_SOURCE_NAME, Key.WEICO_APP_ID);
                 builder.addFormDataPart(PARAMETER_FROM_NAME, Key.WEICO_APP_FROM);
-                builder.addFormDataPart(PARAMETER_TOKEN_NAME, accessToken);
 
                 for (MultipartBody.Part part : multipartBody.parts()) {
                     builder.addPart(part);
@@ -327,5 +329,13 @@ public interface WeiCoService {
     @FormUrlEncoded
     @POST("2/statuses/update")
     Observable<Status> publishWeiboOfOnlyText(@Field("status") String status);
+
+
+    @GET("/2/direct_messages/conversation")
+    Observable<UserMessageResponse> getChatMessages(@Query("uid") long uid,
+                                                    @Query("since_id") long since_id,
+                                                    @Query("max_id") long max_id,
+                                                    @Query("count") int count,
+                                                    @Query("page") int page);
 
 }

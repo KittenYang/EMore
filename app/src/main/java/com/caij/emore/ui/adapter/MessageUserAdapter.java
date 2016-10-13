@@ -46,7 +46,7 @@ public class MessageUserAdapter extends BaseAdapter<MessageUser.UserListBean, Me
                 R.drawable.circle_image_placeholder, mImageConfig);
         holder.tvName.setText(userBean.getUser().getScreen_name());
         holder.tvMessage.setText(userBean.getDirect_message().getText());
-        holder.tvTime.setText(DateUtil.convWeiboDate(mContext, userBean.getDirect_message().getCreated_at()));
+        holder.tvTime.setText(DateUtil.convWeiboDate(mContext, userBean.getDirect_message().getCreated_at().getTime()));
 
         if (userBean.getUnread_count() > 0) {
             holder.tvUnreadCount.setVisibility(View.VISIBLE);

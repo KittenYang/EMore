@@ -11,4 +11,6 @@ public interface NotifyManager {
     public UnReadMessage getUnReadMessage(final long uid);
 
     public void resetUnReadMessage(final long uid, final String type, final int value);
+
+    void saveUnReadMessage(UnReadMessage unReadMessage);
 }

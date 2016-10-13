@@ -1,10 +1,10 @@
 package com.caij.emore.service.manager;
 
 import com.caij.emore.account.UserPrefs;
+import com.caij.emore.manager.imp.MessageManagerImp;
 import com.caij.emore.present.ChatManagerPresent;
 import com.caij.emore.present.imp.ChatManagerPresentImp;
-import com.caij.emore.source.local.LocalMessageSource;
-import com.caij.emore.source.server.ServerMessageSource;
+import com.caij.emore.remote.imp.MessageApiImp;
 
 /**
  * Created by Caij on 2016/7/11.
@@ -22,7 +22,7 @@ public class ChatManager extends IManager {
     @Override
     protected void doOnCreate() {
         mChatManagerPresent = new ChatManagerPresentImp(UserPrefs.get(ctx).getToken().getAccess_token(),
-                new ServerMessageSource(), new LocalMessageSource());
+                new MessageApiImp(), new MessageManagerImp());
         mChatManagerPresent.onCreate();
     }
 

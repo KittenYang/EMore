@@ -16,12 +16,12 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.UnReadMessage;
+import com.caij.emore.manager.imp.NotifyManagerImp;
 import com.caij.emore.present.UnReadMessageManagerPresent;
 import com.caij.emore.present.imp.UnReadMessageManagerPresentImp;
+import com.caij.emore.remote.imp.NotifyApiImp;
 import com.caij.emore.ui.view.UnReadMessageManagerPresentView;
 import com.caij.emore.service.EMoreService;
-import com.caij.emore.source.local.LocalMessageSource;
-import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.ui.activity.CommentsActivity;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.FriendshipActivity;
@@ -60,7 +60,7 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
         mAlarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         mUnReadMessageManagerPresent = new UnReadMessageManagerPresentImp(UserPrefs.get(ctx).getToken(),
-                new ServerMessageSource(), new LocalMessageSource(), this);
+                new NotifyApiImp(), new NotifyManagerImp(), this);
         mUnReadMessageManagerPresent.onCreate();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_SENDING_HEARTBEAT);

@@ -1,6 +1,7 @@
 package com.caij.emore.ui.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,6 +16,7 @@ import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.glide.MaskTransformation;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
@@ -22,6 +24,7 @@ import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.http.Url;
 
 /**
  * Created by Caij on 2016/7/10.
@@ -82,9 +85,9 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
 
             if (position - 1 >= 0) {
                 DirectMessage preMessage = getItem(position - 1);
-                if (message.getCreated_at_long() -  preMessage.getCreated_at_long()  > 10 * 60 * 1000) {
+                if (message.getCreated_at().getTime() -  preMessage.getCreated_at().getTime()  > 10 * 60 * 1000) {
                     viewHolder.tvTime.setVisibility(View.VISIBLE);
-                    viewHolder.tvTime.setText(DateUtil.convMessageDate(mContext, message.getCreated_at_long()));
+                    viewHolder.tvTime.setText(DateUtil.convMessageDate(mContext, message.getCreated_at().getTime()));
                 }else {
                     viewHolder.tvTime.setVisibility(View.GONE);
                 }
@@ -108,12 +111,11 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
                 viewHolder.pbLoading.setVisibility(View.INVISIBLE);
             }
 
-
             if (position - 1 >= 0) {
                 DirectMessage preMessage = getItem(position - 1);
-                if (message.getCreated_at_long() -  preMessage.getCreated_at_long()  > 10 * 60 * 1000) {
+                if (message.getCreated_at().getTime() -  preMessage.getCreated_at().getTime()  > 10 * 60 * 1000) {
                     viewHolder.tvTime.setVisibility(View.VISIBLE);
-                    viewHolder.tvTime.setText(DateUtil.convMessageDate(mContext, message.getCreated_at_long()));
+                    viewHolder.tvTime.setText(DateUtil.convMessageDate(mContext, message.getCreated_at().getTime()));
                 }else {
                     viewHolder.tvTime.setVisibility(View.GONE);
                 }
@@ -127,14 +129,15 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
 
             ImageInfo locakImage = message.getImageInfo();
             ViewGroup.LayoutParams layoutParams = viewHolder.ivImage.getLayoutParams();
-            calculateImageViewWidthAndHeight(locakImage, layoutParams);
+            layoutParams.width = locakImage.getWidth();
+            layoutParams.height = locakImage.getHeight();
             viewHolder.ivImage.setLayoutParams(layoutParams);
             ImageLoader.ImageConfig imageConfig = new ImageLoader.ImageConfigBuild().
                     setScaleType(ImageLoader.ScaleType.CENTER_CROP)
                     .setWidthAndHeight(layoutParams.width, layoutParams.height)
                     .setTransformation(mSelfTransformation)
                     .build();
-            ImageLoader.loadUrl(mContext, viewHolder.ivImage, appImageUrl(locakImage.getUrl()),
+            ImageLoader.loadUrl(mContext, viewHolder.ivImage, locakImage.getUrl(),
                     R.drawable.messages_right_bubble, imageConfig);
 
             if (message.getLocal_status() == DirectMessage.STATUS_SEND) {
@@ -152,9 +155,9 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
 
             if (position - 1 >= 0) {
                 DirectMessage preMessage = getItem(position - 1);
-                if (message.getCreated_at_long() -  preMessage.getCreated_at_long()  > 10 * 60 * 1000) {
+                if (message.getCreated_at().getTime() -  preMessage.getCreated_at().getTime()  > 10 * 60 * 1000) {
                     viewHolder.tvTime.setVisibility(View.VISIBLE);
-                    viewHolder.tvTime.setText(DateUtil.convMessageDate(mContext, message.getCreated_at_long()));
+                    viewHolder.tvTime.setText(DateUtil.convMessageDate(mContext, message.getCreated_at().getTime()));
                 }else {
                     viewHolder.tvTime.setVisibility(View.GONE);
                 }
@@ -168,22 +171,23 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
 
             ImageInfo locakImage = message.getImageInfo();
             ViewGroup.LayoutParams layoutParams = viewHolder.ivImage.getLayoutParams();
-            calculateImageViewWidthAndHeight(locakImage, layoutParams);
+            layoutParams.width = locakImage.getWidth();
+            layoutParams.height = locakImage.getHeight();
             viewHolder.ivImage.setLayoutParams(layoutParams);
             ImageLoader.ImageConfig imageConfig = new ImageLoader.ImageConfigBuild().
                     setScaleType(ImageLoader.ScaleType.CENTER_CROP)
                     .setWidthAndHeight(layoutParams.width, layoutParams.height)
                     .setTransformation(mOtherTransformation)
                     .build();
-            ImageLoader.loadUrl(mContext, viewHolder.ivImage, appImageUrl(locakImage.getUrl()),
+            ImageLoader.loadUrl(mContext, viewHolder.ivImage, locakImage.getUrl(),
                     R.drawable.messages_left_bubble, imageConfig);
 
 
             if (position - 1 >= 0) {
                 DirectMessage preMessage = getItem(position - 1);
-                if (message.getCreated_at_long() -  preMessage.getCreated_at_long()  > 10 * 60 * 1000) {
+                if (message.getCreated_at().getTime() -  preMessage.getCreated_at().getTime()  > 10 * 60 * 1000) {
                     viewHolder.tvTime.setVisibility(View.VISIBLE);
-                    viewHolder.tvTime.setText(DateUtil.convMessageDate(mContext, message.getCreated_at_long()));
+                    viewHolder.tvTime.setText(DateUtil.convMessageDate(mContext, message.getCreated_at().getTime()));
                 }else {
                     viewHolder.tvTime.setVisibility(View.GONE);
                 }
@@ -193,36 +197,6 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         }
     }
 
-    private void calculateImageViewWidthAndHeight(ImageInfo locakImage, ViewGroup.LayoutParams layoutParams) {
-        int width = locakImage.getWidth();
-        int height = locakImage.getHeight();
-        if (width > height) {
-            int maxWidth = DensityUtil.getScreenWidth(mContext) / 2;
-            if (width > maxWidth) {
-                layoutParams.width = maxWidth;
-                layoutParams.height = (int) (maxWidth * 1f / width * height);
-            } else {
-                layoutParams.width = width;
-                layoutParams.height = height;
-            }
-        }else {
-            int maxWidth = DensityUtil.getScreenWidth(mContext) / 3;
-            if (width > maxWidth) {
-                layoutParams.width = maxWidth;
-                layoutParams.height = (int) (maxWidth * 1f / width * height);
-            } else {
-                layoutParams.width = width;
-                layoutParams.height = height;
-            }
-        }
-    }
-
-    private String appImageUrl(String url) {
-        if (url.startsWith("http")) {
-            return url + "&access_token=" + UserPrefs.get(AppApplication.getInstance()).getToken().getAccess_token();
-        }
-        return url;
-    }
 
     @Override
     public int getItemViewType(int position) {

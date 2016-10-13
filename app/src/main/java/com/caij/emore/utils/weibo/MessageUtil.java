@@ -7,10 +7,10 @@ import com.caij.emore.bean.response.Response;
 import com.caij.emore.manager.NotifyManager;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.remote.NotifyApi;
-import com.caij.emore.source.MessageSource;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.api.ex.ErrorCheckerTransformer;
 import com.caij.emore.api.ex.SchedulerTransformer;
+import com.caij.emore.utils.rxjava.RxUtil;
 import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import rx.Observable;
@@ -74,10 +74,14 @@ public class MessageUtil {
         });
     }
 
-    public static void resetLocalUnReadMessageDisValue(final String token, final String type, final int disValue, final MessageSource localMessageSource) {
-        long uid  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getToken().getUid());
-        localMessageSource.getUnReadMessage(token, uid)
-                .doOnNext(new Action1<UnReadMessage>() {
+    public static void resetLocalUnReadMessageDisValue(final String type, final int disValue, final NotifyManager notifyManager) {
+        final long uid  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getToken().getUid());
+        RxUtil.createDataObservable(new RxUtil.Provider<UnReadMessage>() {
+            @Override
+            public UnReadMessage getData() {
+                return notifyManager.getUnReadMessage(uid);
+            }
+        }).doOnNext(new Action1<UnReadMessage>() {
                     @Override
                     public void call(UnReadMessage unReadMessage) {
                         if (type.equals(UnReadMessage.TYPE_MENTION_STATUS)) {
@@ -96,7 +100,7 @@ public class MessageUtil {
                             unReadMessage.setFollower(unReadMessage.getFollower() - disValue);
                         }
 
-                        localMessageSource.saveUnReadMessage(unReadMessage);
+                        notifyManager.saveUnReadMessage(unReadMessage);
                     }
                 })
                 .subscribeOn(Schedulers.io())

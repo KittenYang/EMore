@@ -13,7 +13,6 @@ import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.LocalFile;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.database.bean.DirectMessage;
-import com.caij.emore.database.bean.MessageImage;
 import com.caij.emore.database.bean.UrlInfo;
 import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.database.bean.Draft;
@@ -23,7 +22,6 @@ import com.caij.emore.database.dao.UserDao;
 import com.caij.emore.database.dao.LocalFileDao;
 import com.caij.emore.database.dao.StatusDao;
 import com.caij.emore.database.dao.DirectMessageDao;
-import com.caij.emore.database.dao.MessageImageDao;
 import com.caij.emore.database.dao.UrlInfoDao;
 import com.caij.emore.database.dao.UploadImageResponseDao;
 import com.caij.emore.database.dao.DraftDao;
@@ -42,7 +40,6 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig localFileDaoConfig;
     private final DaoConfig statusDaoConfig;
     private final DaoConfig directMessageDaoConfig;
-    private final DaoConfig messageImageDaoConfig;
     private final DaoConfig urlInfoDaoConfig;
     private final DaoConfig uploadImageResponseDaoConfig;
     private final DaoConfig draftDaoConfig;
@@ -52,7 +49,6 @@ public class DaoSession extends AbstractDaoSession {
     private final LocalFileDao localFileDao;
     private final StatusDao statusDao;
     private final DirectMessageDao directMessageDao;
-    private final MessageImageDao messageImageDao;
     private final UrlInfoDao urlInfoDao;
     private final UploadImageResponseDao uploadImageResponseDao;
     private final DraftDao draftDao;
@@ -74,9 +70,6 @@ public class DaoSession extends AbstractDaoSession {
         directMessageDaoConfig = daoConfigMap.get(DirectMessageDao.class).clone();
         directMessageDaoConfig.initIdentityScope(type);
 
-        messageImageDaoConfig = daoConfigMap.get(MessageImageDao.class).clone();
-        messageImageDaoConfig.initIdentityScope(type);
-
         urlInfoDaoConfig = daoConfigMap.get(UrlInfoDao.class).clone();
         urlInfoDaoConfig.initIdentityScope(type);
 
@@ -93,7 +86,6 @@ public class DaoSession extends AbstractDaoSession {
         localFileDao = new LocalFileDao(localFileDaoConfig, this);
         statusDao = new StatusDao(statusDaoConfig, this);
         directMessageDao = new DirectMessageDao(directMessageDaoConfig, this);
-        messageImageDao = new MessageImageDao(messageImageDaoConfig, this);
         urlInfoDao = new UrlInfoDao(urlInfoDaoConfig, this);
         uploadImageResponseDao = new UploadImageResponseDao(uploadImageResponseDaoConfig, this);
         draftDao = new DraftDao(draftDaoConfig, this);
@@ -103,7 +95,6 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(LocalFile.class, localFileDao);
         registerDao(Status.class, statusDao);
         registerDao(DirectMessage.class, directMessageDao);
-        registerDao(MessageImage.class, messageImageDao);
         registerDao(UrlInfo.class, urlInfoDao);
         registerDao(UploadImageResponse.class, uploadImageResponseDao);
         registerDao(Draft.class, draftDao);
@@ -115,7 +106,6 @@ public class DaoSession extends AbstractDaoSession {
         localFileDaoConfig.getIdentityScope().clear();
         statusDaoConfig.getIdentityScope().clear();
         directMessageDaoConfig.getIdentityScope().clear();
-        messageImageDaoConfig.getIdentityScope().clear();
         urlInfoDaoConfig.getIdentityScope().clear();
         uploadImageResponseDaoConfig.getIdentityScope().clear();
         draftDaoConfig.getIdentityScope().clear();
@@ -136,10 +126,6 @@ public class DaoSession extends AbstractDaoSession {
 
     public DirectMessageDao getDirectMessageDao() {
         return directMessageDao;
-    }
-
-    public MessageImageDao getMessageImageDao() {
-        return messageImageDao;
     }
 
     public UrlInfoDao getUrlInfoDao() {

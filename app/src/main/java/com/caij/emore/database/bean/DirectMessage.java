@@ -41,7 +41,6 @@ public class DirectMessage implements Serializable {
     private Long oriImageId;
     private Long geo_id;
     private Integer local_status = STATUS_SERVER;
-    private Long created_at_long;
     private String att_ids_json;
     private String att_infos_json;
 
@@ -55,7 +54,7 @@ public class DirectMessage implements Serializable {
         this.id = id;
     }
 
-    public DirectMessage(Long id, String idstr, java.util.Date created_at, String text, Integer sys_type, Integer msg_status, Long sender_id, Long recipient_id, String sender_screen_name, String recipient_screen_name, String mid, Boolean isLargeDm, String source, Long status_id, Integer dm_type, Integer media_type, Long ip, Long burn_time, Boolean matchKeyword, Boolean topublic, Boolean pushToMPS, Long oriImageId, Long geo_id, Integer local_status, Long created_at_long, String att_ids_json, String att_infos_json) {
+    public DirectMessage(Long id, String idstr, java.util.Date created_at, String text, Integer sys_type, Integer msg_status, Long sender_id, Long recipient_id, String sender_screen_name, String recipient_screen_name, String mid, Boolean isLargeDm, String source, Long status_id, Integer dm_type, Integer media_type, Long ip, Long burn_time, Boolean matchKeyword, Boolean topublic, Boolean pushToMPS, Long oriImageId, Long geo_id, Integer local_status, String att_ids_json, String att_infos_json) {
         this.id = id;
         this.idstr = idstr;
         this.created_at = created_at;
@@ -80,7 +79,6 @@ public class DirectMessage implements Serializable {
         this.oriImageId = oriImageId;
         this.geo_id = geo_id;
         this.local_status = local_status;
-        this.created_at_long = created_at_long;
         this.att_ids_json = att_ids_json;
         this.att_infos_json = att_infos_json;
     }
@@ -277,14 +275,6 @@ public class DirectMessage implements Serializable {
         this.local_status = local_status;
     }
 
-    public Long getCreated_at_long() {
-        return created_at_long;
-    }
-
-    public void setCreated_at_long(Long created_at_long) {
-        this.created_at_long = created_at_long;
-    }
-
     public String getAtt_ids_json() {
         return att_ids_json;
     }
@@ -317,6 +307,8 @@ public class DirectMessage implements Serializable {
     private transient Spannable textContentSpannable;
 
     private List<MessageAttachInfo> attachinfo;
+
+    private ImageInfo imageInfo;
 
     public List<Long> getAtt_ids() {
         return att_ids;
@@ -364,6 +356,14 @@ public class DirectMessage implements Serializable {
 
     public void setAttachinfo(List<MessageAttachInfo> attachinfo) {
         this.attachinfo = attachinfo;
+    }
+
+    public ImageInfo getImageInfo() {
+        return imageInfo;
+    }
+
+    public void setImageInfo(ImageInfo imageInfo) {
+        this.imageInfo = imageInfo;
     }
 
     @Override

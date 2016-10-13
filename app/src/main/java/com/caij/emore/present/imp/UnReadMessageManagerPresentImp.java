@@ -4,14 +4,15 @@ import com.caij.emore.AppApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.account.Token;
 import com.caij.emore.database.bean.UnReadMessage;
+import com.caij.emore.manager.NotifyManager;
 import com.caij.emore.present.UnReadMessageManagerPresent;
+import com.caij.emore.remote.NotifyApi;
 import com.caij.emore.ui.view.UnReadMessageManagerPresentView;
-import com.caij.emore.source.MessageSource;
-import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.api.ex.SchedulerTransformer;
+import com.caij.emore.utils.rxjava.RxUtil;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -25,23 +26,22 @@ import rx.functions.Action1;
 public class UnReadMessageManagerPresentImp extends AbsBasePresent implements UnReadMessageManagerPresent {
 
     private Observable<Object> mIntervalMillisUpdateObservable;
-    private MessageSource mServerMessageSource;
-    private MessageSource mLocalMessageSource;
+    private NotifyApi mNotifyApi;
+    private NotifyManager mNotifyManager;
     private UnReadMessageManagerPresentView mView;
     private Token mToken;
 
-    public UnReadMessageManagerPresentImp(Token token, MessageSource serverMessageSource,
-                                          MessageSource localMessageSource, UnReadMessageManagerPresentView view) {
+    public UnReadMessageManagerPresentImp(Token token, NotifyApi notifyApi,
+                                          NotifyManager notifyManager, UnReadMessageManagerPresentView view) {
         mToken = token;
-        mServerMessageSource = serverMessageSource;
-        mLocalMessageSource = localMessageSource;
+        mNotifyApi = notifyApi;
+        mNotifyManager = notifyManager;
         mView = view;
     }
 
     @Override
     public void onCreate() {
         mIntervalMillisUpdateObservable = RxBus.getDefault().register(EventTag.INTERVAL_MILLIS_UPDATE);
-        mServerMessageSource = new ServerMessageSource();
         mIntervalMillisUpdateObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
                     @Override
@@ -63,7 +63,7 @@ public class UnReadMessageManagerPresentImp extends AbsBasePresent implements Un
             return;
         }
         if (mToken != null) {
-            Subscription subscription = mServerMessageSource.getUnReadMessage(mToken.getAccess_token(), Long.parseLong(mToken.getUid()))
+            Subscription subscription = mNotifyApi.getUnReadMessage(Long.parseLong(mToken.getUid()))
                     .compose(new SchedulerTransformer<UnReadMessage>())
                     .subscribe(new Subscriber<UnReadMessage>() {
                         @Override
@@ -87,12 +87,16 @@ public class UnReadMessageManagerPresentImp extends AbsBasePresent implements Un
     }
 
     private void notifyMessage(final UnReadMessage serverUnReadMessage) {
-        mLocalMessageSource.getUnReadMessage(null, Long.parseLong(mToken.getUid()))
-                .doOnNext(new Action1<UnReadMessage>() {
+        RxUtil.createDataObservable(new RxUtil.Provider<UnReadMessage>() {
+            @Override
+            public UnReadMessage getData() {
+                return  mNotifyManager.getUnReadMessage(Long.parseLong(mToken.getUid()));
+            }
+        }).doOnNext(new Action1<UnReadMessage>() {
                     @Override
                     public void call(UnReadMessage unReadMessage) {
                         serverUnReadMessage.setUid(Long.parseLong(mToken.getUid()));
-                        mLocalMessageSource.saveUnReadMessage(serverUnReadMessage);
+                        mNotifyManager.saveUnReadMessage(serverUnReadMessage);
                     }
                 })
                 .compose(new SchedulerTransformer<UnReadMessage>())

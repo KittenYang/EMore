@@ -12,18 +12,11 @@ public class DbDaoGenerator {
         sch.setDefaultJavaPackageDao("com.caij.emore.database.dao");
         sch.enableKeepSectionsByDefault();
         createUser(sch);
-//        createImage(sch);
         createFile(sch);
 
-        createWeibo(sch);
-
-//        createPic(sch);
-//        createVisible(sch);
-//        createGeo(sch);
-//        createLikeBean(sch);
+        createStatus(sch);
 
         createDirectMessage(sch);
-        createDirectMessageImage(sch);
         createUrlInfo(sch);
         createUploadImageResponse(sch);
         createDraft(sch);
@@ -72,7 +65,7 @@ public class DbDaoGenerator {
         entityUser.addLongProperty("update_time");
     }
 
-    private static void createWeibo(Schema sch) {
+    private static void createStatus(Schema sch) {
         Entity entity = sch.addEntity("Status");
         entity.addDateProperty("created_at");
         entity.addLongProperty("id").primaryKey();
@@ -129,7 +122,7 @@ public class DbDaoGenerator {
         Entity entity = sch.addEntity("DirectMessage");
         entity.addLongProperty("id").primaryKey();
         entity.addStringProperty("idstr");
-        entity.addStringProperty("created_at");
+        entity.addDateProperty("created_at");
         entity.addStringProperty("text");
         entity.addIntProperty("sys_type");
         entity.addIntProperty("msg_status");
@@ -152,9 +145,9 @@ public class DbDaoGenerator {
         entity.addLongProperty("geo_id");
         entity.addIntProperty("local_status");
 
-        entity.addLongProperty("created_at_long");
-
         entity.addStringProperty("att_ids_json");
+
+        entity.addStringProperty("att_infos_json");
     }
 
     static void createDirectMessageImage(Schema sch) {

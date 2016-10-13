@@ -4,43 +4,48 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 
+import com.caij.emore.AppApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.account.Token;
+import com.caij.emore.account.UserPrefs;
+import com.caij.emore.bean.MessageAttachInfo;
 import com.caij.emore.bean.event.MessageResponseEvent;
 import com.caij.emore.bean.response.UserMessageResponse;
+import com.caij.emore.manager.MessageManager;
+import com.caij.emore.manager.NotifyManager;
 import com.caij.emore.manager.UserManager;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.ImageInfo;
-import com.caij.emore.database.bean.MessageImage;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.ChatPresent;
+import com.caij.emore.remote.MessageApi;
 import com.caij.emore.ui.view.DirectMessageView;
-import com.caij.emore.source.MessageSource;
-import com.caij.emore.utils.DateUtil;
+import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.api.ex.SchedulerTransformer;
+import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 import com.caij.emore.utils.weibo.MessageUtil;
 
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Caij on 2016/7/10.
@@ -52,27 +57,32 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
 
     private static final int MAX_NEW_MESSAGE_PAGE_COUNT = 40;
 
-    private Token mToken;
-    private MessageSource mServerMessageSource;
-    private MessageSource mLocalMessageSource;
+    private MessageApi mMessageApi;
+    private MessageManager mMessageManager;
     private UserManager mUserManager;
-    private List<DirectMessage> mDirectMessages;
-    private DirectMessageView mDirectMessageView;
+    private NotifyManager mNotifyManager;
+
     private long mToUserId;
     private long mSelfUserId;
+    private Token mToken;
+
+    private List<DirectMessage> mDirectMessages;
+    private DirectMessageView mDirectMessageView;
+
     private Observable<MessageResponseEvent> mSendMessageObservable;
+
     private Timer mLoadMessageTimer;
     private TimerTask mLoadMessageTask;
 
     public ChatPresentImp(Token token, long toUid, long selfUid,
-                          MessageSource serverMessageSource,
-                          MessageSource localMessageSource,
-                          UserManager userManager,
+                          MessageApi messageApi, MessageManager messageManager,
+                          UserManager userManager, NotifyManager notifyManager,
                           DirectMessageView directMessageView) {
         super();
         mToken = token;
-        mServerMessageSource = serverMessageSource;
-        mLocalMessageSource = localMessageSource;
+        mNotifyManager = notifyManager;
+        mMessageApi = messageApi;
+        mMessageManager = messageManager;
         mUserManager = userManager;
         mDirectMessages = new ArrayList<>();
         mDirectMessageView = directMessageView;
@@ -85,44 +95,53 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
 
     }
 
+
+    @Override
+    public void onCreate() {
+        initEvent();
+
+        getLocalMessage();
+
+        initLooperLoadMessage();
+    }
+
+    private void getLocalMessage() {
+        Subscription subscription = getLocalMessageObservable(0)
+                .subscribe(new SubscriberAdapter<List<DirectMessage>>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        loadNewMessage(0, true);
+                    }
+
+                    @Override
+                    public void onNext(List<DirectMessage> directMessages) {
+                        mDirectMessages.addAll(directMessages);
+                        mDirectMessageView.setEntities(mDirectMessages);
+                        mDirectMessageView.toScrollToPosition(mDirectMessages.size());
+                        if (directMessages.size() >= PAGE_COUNT - 1) {
+                            mDirectMessageView.onLoadComplete(true);
+                        }else {
+                            mDirectMessageView.onLoadComplete(false);
+                        }
+                        if (directMessages.size() == 0) {
+                            loadNewMessage(0, true);
+                        }else {
+                            loadNewMessage(getNewMessageSinceId(), false);
+                        }
+                    }
+                });
+        addSubscription(subscription);
+    }
+
     @Override
     public void loadMore() {
         long maxId = 0;
         if (mDirectMessages.size() > 1) {
             maxId = mDirectMessages.get(0).getId();
         }
-        Subscription subscription = mLocalMessageSource.getUserMessage(mToken.getAccess_token(), mToUserId, mSelfUserId,
-                0, maxId, PAGE_COUNT, 1)
-                .flatMap(new Func1<UserMessageResponse, Observable<DirectMessage>>() {
-                    @Override
-                    public Observable<DirectMessage> call(UserMessageResponse userMessageResponse) {
-                        return Observable.from(userMessageResponse.getDirect_messages());
-                    }
-                })
-                .filter(new Func1<DirectMessage, Boolean>() {
-                    @Override
-                    public Boolean call(DirectMessage directMessage) {
-                        return !mDirectMessages.contains(directMessage);
-                    }
-                })
-                .map(new Func1<DirectMessage, DirectMessage>() {
-                    @Override
-                    public DirectMessage call(DirectMessage message) {
-                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
-                        if (message.getAtt_ids() != null && message.getAtt_ids().size() > 0) {
-                            getMessageImageInfo(message);
-                        }
-                        return message;
-                    }
-                })
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<DirectMessage>>() {
-                    @Override
-                    public void onCompleted() {
 
-                    }
+        Subscription subscription = getLocalMessageObservable(maxId)
+                .subscribe(new SubscriberAdapter<List<DirectMessage>>() {
 
                     @Override
                     public void onError(Throwable e) {
@@ -149,98 +168,38 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         addSubscription(subscription);
     }
 
-    @Override
-    public void onCreate() {
-        initEvent();
-
-        Observable<UserMessageResponse> localObservable =  mLocalMessageSource.getUserMessage(mToken.getAccess_token(), mToUserId,
-                mSelfUserId, 0, 0, PAGE_COUNT, 1);
-        localObservable.flatMap(new Func1<UserMessageResponse, Observable<DirectMessage>>() {
-                    @Override
-                    public Observable<DirectMessage> call(UserMessageResponse userMessageResponse) {
-                        return Observable.from(userMessageResponse.getDirect_messages());
-                    }
-                })
-                .filter(new Func1<DirectMessage, Boolean>() {
-                    @Override
-                    public Boolean call(DirectMessage directMessage) {
-                        return !mDirectMessages.contains(directMessage);
-                    }
-                })
-                .map(new Func1<DirectMessage, DirectMessage>() {
-                    @Override
-                    public DirectMessage call(DirectMessage message) {
-                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
-                        if (message.getAtt_ids() != null && message.getAtt_ids().size() > 0) {
-                            getMessageImageInfo(message);
-                        }
-
-                        //这里是5分钟还没有发送出去 认为发送失败
-                        if (message.getLocal_status() == DirectMessage.STATUS_SEND
-                                && System.currentTimeMillis() - message.getCreated_at_long() > 5 * 60 * 1000) {
-                            message.setLocal_status(DirectMessage.STATUS_FAIL);
-                        }
-                        return message;
-                    }
-                })
-                .toList()
-                .doOnNext(new Action1<List<DirectMessage>>() {
-                    @Override
-                    public void call(List<DirectMessage> directMessages) {
-                        Collections.reverse(directMessages);
-                    }
-                })
-                .compose(new SchedulerTransformer<List<DirectMessage>>())
-                .subscribe(new Subscriber<List<DirectMessage>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        loadNewMessage(0, true);
-                    }
-
-                    @Override
-                    public void onNext(List<DirectMessage> directMessages) {
-                        mDirectMessages.addAll(directMessages);
-                        mDirectMessageView.setEntities(mDirectMessages);
-                        mDirectMessageView.toScrollToPosition(mDirectMessages.size());
-                        if (directMessages.size() >= PAGE_COUNT - 1) {
-                            mDirectMessageView.onLoadComplete(true);
-                        }else {
-                            mDirectMessageView.onLoadComplete(false);
-                        }
-                        if (directMessages.size() == 0) {
-                            loadNewMessage(0, true);
-                        }else {
-                            loadNewMessage(getNewMessageSinceId(), false);
-                        }
-                    }
-                });
-
-        initLooperLoadMessage();
+    private Observable<List<DirectMessage>> getLocalMessageObservable(final long maxId) {
+        return RxUtil.createDataObservable(new RxUtil.Provider<List<DirectMessage>>() {
+            @Override
+            public List<DirectMessage> getData() {
+                return  mMessageManager.getUserMessage(mToUserId, mSelfUserId, 0, maxId, PAGE_COUNT, 1);
+            }
+        }).flatMap(new Func1<List<DirectMessage>, Observable<DirectMessage>>() {
+            @Override
+            public Observable<DirectMessage> call(List<DirectMessage> messages) {
+                return Observable.from(messages);
+            }
+        })
+        .filter(new Func1<DirectMessage, Boolean>() {
+            @Override
+            public Boolean call(DirectMessage directMessage) {
+                return !mDirectMessages.contains(directMessage);
+            }
+        })
+        .compose(MessageTransformer.create())
+        .toList()
+        .doOnNext(new Action1<List<DirectMessage>>() {
+            @Override
+            public void call(List<DirectMessage> directMessages) {
+                Collections.reverse(directMessages);
+            }
+        })
+        .compose(SchedulerTransformer.<List<DirectMessage>>create());
     }
 
     private void initEvent() {
         mSendMessageObservable = RxBus.getDefault().register(EventTag.EVENT_SEND_MESSAGE_RESULT);
-        mSendMessageObservable.map(new Func1<MessageResponseEvent, MessageResponseEvent>() {
-            @Override
-            public MessageResponseEvent call(MessageResponseEvent messageResponseEvent) {
-                        if (messageResponseEvent.message != null
-                                && messageResponseEvent.message.getAtt_ids() != null
-                                && messageResponseEvent.message.getAtt_ids().size() > 0) {
-                            getMessageImageInfo(messageResponseEvent.message);
-                        }
-                        if (messageResponseEvent.message != null) {
-                            messageResponseEvent.message.setTextContentSpannable(SpannableStringUtil.
-                                    paraeSpannable(messageResponseEvent.message));
-                        }
-                        return messageResponseEvent;
-                    }
-                })
-                .compose(new SchedulerTransformer<MessageResponseEvent>())
+        mSendMessageObservable.compose(new SchedulerTransformer<MessageResponseEvent>())
                 .subscribe(new Action1<MessageResponseEvent>() {
                     @Override
                     public void call(MessageResponseEvent messageResponseEvent) {
@@ -249,11 +208,11 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                             DirectMessage directMessage = mDirectMessages.get(i);
                             if (directMessage.getId() == messageResponseEvent.localMessageId) {
                                 updatePosition = i;
-                                if (directMessage.getLocal_status() == DirectMessage.STATUS_FAIL) {
+                                if (messageResponseEvent.message == null) { //失败
                                     directMessage.setLocal_status(DirectMessage.STATUS_FAIL);
                                 }else {
-                                    mDirectMessages.remove(directMessage);
-                                    mDirectMessages.add(i, messageResponseEvent.message);
+                                    directMessage.setId(messageResponseEvent.message.getId());
+                                    directMessage.setLocal_status(DirectMessage.STATUS_SUCCESS);
                                 }
                                 break;
                             }
@@ -300,7 +259,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         if (isShowDialog) {
             mDirectMessageView.showDialogLoading(true);
         }
-        Subscription subscription = mServerMessageSource.getUserMessage(mToken.getAccess_token(), mToUserId,
+        Subscription subscription = mMessageApi.getChatMessages(mToUserId,
                 mSelfUserId, sinceId, 0, MAX_NEW_MESSAGE_PAGE_COUNT, 1)
                 .flatMap(new Func1<UserMessageResponse, Observable<DirectMessage>>() {
                     @Override
@@ -314,15 +273,11 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                         mDirectMessages.remove(message);
                     }
                 })
+                .compose(MessageTransformer.create())
                 .map(new Func1<DirectMessage, DirectMessage>() {
                     @Override
                     public DirectMessage call(DirectMessage message) {
-                        mLocalMessageSource.saveMessage(message);
-                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
-                        message.setCreated_at_long(DateUtil.parseCreateTime(message.getCreated_at()));
-                        if (message.getAtt_ids() != null && message.getAtt_ids().size() > 0) {
-                            getMessageImageInfo(message);
-                        }
+                        mMessageManager.saveMessage(message);
                         return message;
                     }
                 })
@@ -333,113 +288,42 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                         Collections.reverse(directMessages);
                     }
                 })
-                .compose(new SchedulerTransformer<List<DirectMessage>>())
-                .subscribe(new Subscriber<List<DirectMessage>>() {
+                .compose(SchedulerTransformer.<List<DirectMessage>>create())
+                .doOnTerminate(new Action0() {
                     @Override
-                    public void onCompleted() {
+                    public void call() {
                         if (isShowDialog) {
                             mDirectMessageView.showDialogLoading(false);
                         }
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (isShowDialog) {
-                            mDirectMessageView.showDialogLoading(false);
-                        }
-                    }
+                })
+                .subscribe(new SubscriberAdapter<List<DirectMessage>>() {
 
                     @Override
                     public void onNext(List<DirectMessage> directMessages) {
-                        mDirectMessages.addAll(directMessages);
-                        mDirectMessageView.setEntities(mDirectMessages);
+                        if (directMessages.size() > 0) {
+                            mDirectMessages.addAll(directMessages);
+                            mDirectMessageView.setEntities(mDirectMessages);
+
+                            MessageUtil.resetLocalUnReadMessageDisValue(UnReadMessage.TYPE_DM,
+                                    directMessages.size(), mNotifyManager);
+                        }
+
                         if (isShowDialog) {
                             mDirectMessageView.toScrollToPosition(mDirectMessages.size());
                         }else {
                             mDirectMessageView.attemptSmoothScrollToBottom();
-                        }
-
-                        if (directMessages.size() > 0) {
-                            MessageUtil.resetLocalUnReadMessageDisValue(mToken.getAccess_token(), UnReadMessage.TYPE_DM,
-                                    directMessages.size(), mLocalMessageSource);
                         }
                     }
                 });
         addSubscription(subscription);
     }
 
-    private void getMessageImageInfo(final DirectMessage directMessage) {
-        Observable<MessageImage> localObservable = mLocalMessageSource.getMessageImageInfo(mToken.getAccess_token(),
-                directMessage.getAtt_ids().get(0));
-        final Observable<MessageImage> serverObservable = mServerMessageSource.getMessageImageInfo(mToken.getAccess_token(),
-                directMessage.getAtt_ids().get(0))
-                .doOnNext(new Action1<MessageImage>() {
-                    @Override
-                    public void call(MessageImage messageImage) {
-                        mLocalMessageSource.saveMessageImage(messageImage);
-                        LogUtil.d(ChatPresentImp.this, "get MessageImage from server");
-                    }
-                });
-        Observable.concat(localObservable, serverObservable)
-                .first(new Func1<MessageImage, Boolean>() {
-                    @Override
-                    public Boolean call(MessageImage messageImage) {
-                        return messageImage != null;
-                    }
-                })
-                .flatMap(new Func1<MessageImage, Observable<ImageInfo>>() {
-                    @Override
-                    public Observable<ImageInfo> call(MessageImage messageImage) {
-                        return Observable.just(praseLocakImage(messageImage));
-                    }
-                }).subscribe(new Subscriber<ImageInfo>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(ImageInfo locakImage) {
-                        directMessage.setImageInfo(locakImage);
-                    }
-                });
-    }
-
-    private ImageInfo praseLocakImage(MessageImage messageImage) {
-        ImageInfo locakImage =  new ImageInfo();
-        locakImage.setUrl(messageImage.getThumbnail_600());
-        if (messageImage.getThumbnail_600().startsWith("http")) {
-            String size  = Uri.parse(messageImage.getThumbnail_600()).getQueryParameter("size");
-            String[] strings = size.split(",");
-            locakImage.setWidth(Integer.parseInt(strings[0]));
-            locakImage.setHeight(Integer.parseInt(strings[1]));
-        }else {
-            File file = new File(URI.create(messageImage.getThumbnail_600()));
-            BitmapFactory.Options options = ImageUtil.getImageOptions(file);
-            locakImage.setWidth(options.outWidth);
-            locakImage.setHeight(options.outHeight);
-        }
-        return locakImage;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        RxBus.getDefault().unregister(EventTag.EVENT_SEND_MESSAGE_RESULT, mSendMessageObservable);
-        cancelLooperLoadMessage();
-    }
-
     @Override
     public void sendMessage(final DirectMessage message) {
         mDirectMessages.remove(message);
         message.setLocal_status(DirectMessage.STATUS_SEND);
-        message.setCreated_at(DateUtil.formatCreatetime(System.currentTimeMillis()));
-        message.setCreated_at_long(System.currentTimeMillis());
+        message.setCreated_at(new Date(System.currentTimeMillis()));
         mDirectMessages.add(message);
         mDirectMessageView.setEntities(mDirectMessages);
         mDirectMessageView.attemptSmoothScrollToBottom();
@@ -447,7 +331,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
             @Override
             protected Object doInBackground(Object... params) {
-                mLocalMessageSource.saveMessage(message);
+                mMessageManager.saveMessage(message);
                 return null;
             }
 
@@ -472,84 +356,74 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
 
     @Override
     public void sendTextMessage(final String message) {
-        Observable.create(new Observable.OnSubscribe<User>() {
+        RxUtil.createDataObservable(new RxUtil.Provider<DirectMessage>() {
             @Override
-            public void call(Subscriber<? super User> subscriber) {
-                subscriber.onNext(mUserManager.getUserByUid(Long.parseLong(mToken.getUid())));
-                subscriber.onCompleted();
+            public DirectMessage getData() {
+                User user = mUserManager.getUserByUid(Long.parseLong(mToken.getUid()));
+                return buildTextMessage(user, mToUserId, message);
             }
-        }).flatMap(new Func1<User, Observable<DirectMessage>>() {
-                    @Override
-                    public Observable<DirectMessage> call(User user) {
-                        return Observable.just(buildTextMessage(user, mToUserId, message));
-                    }
-                })
-                .doOnNext(new Action1<DirectMessage>() {
-                    @Override
-                    public void call(DirectMessage message) {
-                        message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<DirectMessage>() {
-                    @Override
-                    public void onCompleted() {
+        }).doOnNext(new Action1<DirectMessage>() {
+            @Override
+            public void call(DirectMessage message) {
+                mMessageManager.saveMessage(message);
+                message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
+            }
+        })
+        .compose(SchedulerTransformer.<DirectMessage>create())
+        .subscribe(new SubscriberAdapter<DirectMessage>() {
 
-                    }
+            @Override
+            public void onError(Throwable e) {
+                LogUtil.d(ChatPresentImp.this, "build TEXT message error" + e.getMessage());
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        LogUtil.d(ChatPresentImp.this, "build TEXT message error" + e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(DirectMessage message) {
-                        send(message);
-                    }
-                });
+            @Override
+            public void onNext(DirectMessage message) {
+                send(message);
+            }
+        });
     }
 
     @Override
     public void sendImageMessage(final ArrayList<String> paths) {
-        Observable.create(new Observable.OnSubscribe<User>() {
+        RxUtil.createDataObservable(new RxUtil.Provider<List<DirectMessage>>() {
             @Override
-            public void call(Subscriber<? super User> subscriber) {
-                subscriber.onNext(mUserManager.getUserByUid(Long.parseLong(mToken.getUid())));
-                subscriber.onCompleted();
+            public List<DirectMessage> getData() {
+                User user = mUserManager.getUserByUid(Long.parseLong(mToken.getUid()));
+                return buildImagesMessage(user, mToUserId, paths);
+            }
+        }).flatMap(new Func1<List<DirectMessage>, Observable<DirectMessage>>() {
+            @Override
+            public Observable<DirectMessage> call(List<DirectMessage> directMessages) {
+                return Observable.from(directMessages);
             }
         })
-                .flatMap(new Func1<User, Observable<DirectMessage>>() {
-                    @Override
-                    public Observable<DirectMessage> call(User user) {
-                        return Observable.from(buildImagesMessage(user, mToUserId, paths));
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<DirectMessage>() {
-                    @Override
-                    public void onCompleted() {
+        .doOnNext(new Action1<DirectMessage>() {
+            @Override
+            public void call(DirectMessage message) {
+                mMessageManager.saveMessage(message);
+                message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
+            }
+        })
+        .compose(SchedulerTransformer.<DirectMessage>create())
+        .subscribe(new SubscriberAdapter<DirectMessage>() {
 
-                    }
+            @Override
+            public void onError(Throwable e) {
+                LogUtil.d(ChatPresentImp.this, "build image message error" + e.getMessage());
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        LogUtil.d(ChatPresentImp.this, "build image message error" + e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(DirectMessage message) {
-                        send(message);
-                    }
-                });
+            @Override
+            public void onNext(DirectMessage message) {
+                send(message);
+            }
+        });
 
     }
 
     private DirectMessage buildTextMessage(User self, long recipientId, String text) {
         DirectMessage directMessage = buildMessage(self, recipientId);
         directMessage.setText(text);
-        mLocalMessageSource.saveMessage(directMessage);
         return directMessage;
     }
 
@@ -558,7 +432,6 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         for (String path : paths) {
             DirectMessage message = buildImageMessage(self, recipientId, path);
             messages.add(message);
-            mLocalMessageSource.saveMessage(message);
         }
         return messages;
     }
@@ -570,8 +443,12 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         fids.add(directMessage.getId());
         fids.add(directMessage.getId());
         directMessage.setAtt_ids(fids);
-        MessageImage messageImage = createMessageImage(directMessage.getId(), path);
-        ImageInfo imageInfo = praseLocakImage(messageImage);
+        MessageAttachInfo messageAttachInfo  = new MessageAttachInfo();
+        messageAttachInfo.setThumbnail("file://" + path);
+        List<MessageAttachInfo> attachInfos = new ArrayList<>();
+        attachInfos.add(messageAttachInfo);
+        ImageInfo imageInfo = praseLocakImage(messageAttachInfo);
+        directMessage.setAttachinfo(attachInfos);
         directMessage.setImageInfo(imageInfo);
         return directMessage;
     }
@@ -583,24 +460,85 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         directMessage.setSender_id(self.getId());
         directMessage.setRecipient_id(recipientId);
         directMessage.setLocal_status(DirectMessage.STATUS_SEND);
-        directMessage.setCreated_at(DateUtil.formatCreatetime(System.currentTimeMillis()));
-        directMessage.setCreated_at_long(System.currentTimeMillis());
+        directMessage.setCreated_at(new Date(System.currentTimeMillis()));
         return directMessage;
     }
 
-    /**
-     * 这个必须放子线程
-     * @param fid
-     * @param path
-     */
-    private MessageImage createMessageImage(long fid, String path) {
-        MessageImage messageImage = new MessageImage();
-        messageImage.setFid(fid);
-        path = "file://" + path;
-        messageImage.setThumbnail_600(path);
-        mLocalMessageSource.saveMessageImage(messageImage);
-        return messageImage;
+
+    private static ImageInfo praseLocakImage(MessageAttachInfo messageImage) {
+        String url = messageImage.getThumbnail();
+        if (url.startsWith("http")) {
+            String size  = Uri.parse(url).getQueryParameter("size");
+            String[] strings = size.split(",");
+            return toImageInfo(url, Integer.parseInt(strings[0]), Integer.parseInt(strings[1]));
+        }else {
+            File file = new File(URI.create(url));
+            BitmapFactory.Options options = ImageUtil.getImageOptions(file);
+            return toImageInfo(url, options.outWidth, options.outHeight);
+        }
     }
 
+    public static ImageInfo toImageInfo(String url, int width, int height) {
+        ImageInfo imageInfo = new ImageInfo();
+        if (width > height) {
+            int maxWidth = (int) (DensityUtil.getScreenWidth(AppApplication.getInstance()) / 2f);
+            imageInfo.setWidth(maxWidth);
+            imageInfo.setHeight((int) (maxWidth * 1f / width * height));
+        }else {
+            int maxWidth = (int) (DensityUtil.getScreenWidth(AppApplication.getInstance()) / 3f);
+            imageInfo.setWidth(maxWidth);
+            imageInfo.setHeight((int) (maxWidth * 1f / width * height));
+        }
+        imageInfo.setUrl(appImageUrl(url, imageInfo.getWidth(), imageInfo.getHeight()));
+        return imageInfo;
+    }
+
+
+    private static String appImageUrl(String url, int width, int height) {
+        if (url.startsWith("http")) {
+            Uri uri = Uri.parse(url);
+            String v = uri.getScheme() + "://" + uri.getHost() + uri.getPath() + "?" + "fid=" + uri.getQueryParameter("fid") + "&width=" + width + "&high=" + height
+                    + "&access_token=" + UserPrefs.get(AppApplication.getInstance()).getToken().getAccess_token();
+            return v;
+        }
+        return url;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RxBus.getDefault().unregister(EventTag.EVENT_SEND_MESSAGE_RESULT, mSendMessageObservable);
+        cancelLooperLoadMessage();
+    }
+
+    static class MessageTransformer implements Observable.Transformer<DirectMessage, DirectMessage> {
+
+        @Override
+        public Observable<DirectMessage> call(Observable<DirectMessage> directMessageObservable) {
+            return directMessageObservable.doOnNext(new Action1<DirectMessage>() {
+                @Override
+                public void call(DirectMessage message) {
+                    message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
+
+                    if (message.getAttachinfo() != null && message.getAttachinfo().size() > 0) {
+                        ImageInfo imageInfo = praseLocakImage(message.getAttachinfo().get(0));
+                        message.setImageInfo(imageInfo);
+
+                    }
+
+                    //这里是5分钟还没有发送出去 认为发送失败
+                    if (message.getLocal_status() == DirectMessage.STATUS_SEND
+                            && System.currentTimeMillis() - message.getCreated_at().getTime() > 5 * 60 * 1000) {
+                        message.setLocal_status(DirectMessage.STATUS_FAIL);
+                    }
+
+                }
+            });
+        }
+
+        public static MessageTransformer create() {
+            return new MessageTransformer();
+        }
+    }
 
 }

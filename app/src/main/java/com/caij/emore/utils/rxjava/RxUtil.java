@@ -29,6 +29,6 @@ public class RxUtil {
     }
 
     public static interface Provider<T> {
-        public T getData();
+        public T getData() throws Exception;
     }
 }

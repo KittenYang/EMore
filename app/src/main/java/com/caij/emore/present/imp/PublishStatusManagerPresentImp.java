@@ -3,6 +3,7 @@ package com.caij.emore.present.imp;
 import android.os.AsyncTask;
 
 import com.caij.emore.EventTag;
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.manager.DraftManager;
 import com.caij.emore.manager.StatusManager;
@@ -19,6 +20,7 @@ import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.api.ex.ErrorCheckerTransformer;
+import com.caij.emore.utils.rxjava.RxUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +62,6 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
         ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
             @Override
             protected Object doInBackground(Object... params) {
-//                mDraftSource.deleteDraftById(publishBean.getId());
                 saveOrUpdate2Draft(publishBean, Draft.STATUS_SENDING);
                 return null;
             }
@@ -70,7 +71,7 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
                 super.onPostExecute(o);
                 if (publishBean.getPics() == null || publishBean.getPics().size() == 0) {
                     publishText(publishBean);
-                }else if (publishBean.getPics().size() == 1) {
+                } else if (publishBean.getPics().size() == 1) {
                     publishStatusOneImage(publishBean);
                 } else {
                     publishStatusMuImage(publishBean);
@@ -81,102 +82,93 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
 
     private void publishStatusMuImage(final PublishBean publishBean) {
         mPublishServiceView.onPublishStart(publishBean);
-//        final Account account = UserPrefs.getDefault().getAccount();
-        Subscription subscription = Observable.create(new Observable.OnSubscribe<List<String>>() {
-                    @Override
-                    public void call(Subscriber<? super List<String>> subscriber) {
-                        try {
-                            List<String> outPaths = new ArrayList<String>();
-                            for (String source : publishBean.getPics()) {
-                                outPaths.add(ImageUtil.compressImage(source,
-                                        mPublishServiceView.getContent().getApplicationContext()));
-                            }
-                            subscriber.onNext(outPaths);
-                            subscriber.onCompleted();
-                        } catch (Exception e) {
-                            subscriber.onError(e);
-                        }
-                    }
-                })
-                .flatMap(new Func1<List<String>, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(List<String> strings) {
-                        return Observable.from(strings);
-                    }
-                })
-                .flatMap(new Func1<String, Observable<UploadImageResponse>>() {
-                    @Override
-                    public Observable<UploadImageResponse> call(final String imagePath) {
-                            Observable<UploadImageResponse> serverObservable = mStatusApi.
-                                    uploadWeiboOfOneImage(imagePath)
-                                    .doOnNext(new Action1<UploadImageResponse>() {
-                                        @Override
-                                        public void call(UploadImageResponse uploadImageResponse) {
-                                            uploadImageResponse.setImagePath(imagePath);
-                                            mStatusUploadImageManager.insert(uploadImageResponse);
-                                        }
-                                    });
-                            Observable<UploadImageResponse> localObservable = Observable.create(new Observable.OnSubscribe<UploadImageResponse>() {
+        Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<List<String>>() {
+            @Override
+            public List<String> getData() throws Exception {
+                List<String> outPaths = new ArrayList<String>();
+                for (String source : publishBean.getPics()) {
+                    outPaths.add(ImageUtil.compressImage(source,
+                            mPublishServiceView.getContent().getApplicationContext()));
+                }
+                return outPaths;
+            }
+        }).flatMap(new Func1<List<String>, Observable<String>>() {
+            @Override
+            public Observable<String> call(List<String> strings) {
+                return Observable.from(strings);
+            }
+        }).flatMap(new Func1<String, Observable<UploadImageResponse>>() {
+                @Override
+                public Observable<UploadImageResponse> call(final String imagePath) {
+                    Observable<UploadImageResponse> serverObservable = mStatusApi.
+                            uploadWeiboOfOneImage(imagePath)
+                            .doOnNext(new Action1<UploadImageResponse>() {
                                 @Override
-                                public void call(Subscriber<? super UploadImageResponse> subscriber) {
-                                        subscriber.onNext(mStatusUploadImageManager.getByPath(imagePath));
-                                        subscriber.onCompleted();
-                                    }
-                                });
-                            return Observable.concat(localObservable, serverObservable)
-                                    .first(new Func1<UploadImageResponse, Boolean>() {
-                                        @Override
-                                        public Boolean call(UploadImageResponse uploadImageResponse) {
-                                            return uploadImageResponse != null;
-                                        }
-                                    });
-
-                    }
-                })
-                .toList()
-                .flatMap(new Func1<List<UploadImageResponse>, Observable<Status>>() {
-                    @Override
-                    public Observable<Status> call(List<UploadImageResponse> uploadImageResponses) {
-                        StringBuilder sb = new StringBuilder();
-                        for (UploadImageResponse uploadImageResponse : uploadImageResponses) {
-                            sb.append(uploadImageResponse.getPic_id()).append(",");
+                                public void call(UploadImageResponse uploadImageResponse) {
+                                    uploadImageResponse.setImagePath(imagePath);
+                                    mStatusUploadImageManager.insert(uploadImageResponse);
+                                }
+                            });
+                    Observable<UploadImageResponse> localObservable = Observable.create(new Observable.OnSubscribe<UploadImageResponse>() {
+                        @Override
+                        public void call(Subscriber<? super UploadImageResponse> subscriber) {
+                            subscriber.onNext(mStatusUploadImageManager.getByPath(imagePath));
+                            subscriber.onCompleted();
                         }
-                        return mStatusApi.publishWeiboOfMultiImage(publishBean.getText(), sb.toString());
+                    });
+                    return Observable.concat(localObservable, serverObservable)
+                            .first(new Func1<UploadImageResponse, Boolean>() {
+                                @Override
+                                public Boolean call(UploadImageResponse uploadImageResponse) {
+                                    return uploadImageResponse != null;
+                                }
+                            });
+                }
+            })
+            .toList()
+            .flatMap(new Func1<List<UploadImageResponse>, Observable<Status>>() {
+                @Override
+                public Observable<Status> call(List<UploadImageResponse> uploadImageResponses) {
+                    StringBuilder sb = new StringBuilder();
+                    for (UploadImageResponse uploadImageResponse : uploadImageResponses) {
+                        sb.append(uploadImageResponse.getPic_id()).append(",");
                     }
-                })
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        saveOrUpdate2Draft(publishBean, Draft.STATUS_FAIL);
-                    }
-                })
-                .doOnNext(new Action1<Status>() {
-                    @Override
-                    public void call(Status weibo) {
-                        mDraftManager.deleteDraftById(publishBean.getId());
-                        mStatusManager.saveStatus(weibo);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createStatusSubscriber());
+                    return mStatusApi.publishWeiboOfMultiImage(publishBean.getText(), sb.toString());
+                }
+            })
+            .doOnError(new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    saveOrUpdate2Draft(publishBean, Draft.STATUS_FAIL);
+                }
+            })
+            .doOnNext(new Action1<Status>() {
+                @Override
+                public void call(Status weibo) {
+                    mDraftManager.deleteDraftById(publishBean.getId());
+                    mStatusManager.saveStatus(weibo);
+                }
+            })
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(createStatusSubscriber());
         addSubscription(subscription);
     }
 
     private void publishStatusOneImage(final PublishBean publishBean) {
         mPublishServiceView.onPublishStart(publishBean);
         Subscription subscription = Observable.create(new Observable.OnSubscribe<String>() {
-                    @Override
-                    public void call(Subscriber<? super String> subscriber) {
-                        try {
-                            subscriber.onNext(ImageUtil.compressImage(publishBean.getPics().get(0),
-                                    mPublishServiceView.getContent().getApplicationContext()));
-                            subscriber.onCompleted();
-                        } catch (Exception e) {
-                            subscriber.onError(e);
-                        }
-                    }
-                })
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try {
+                    subscriber.onNext(ImageUtil.compressImage(publishBean.getPics().get(0),
+                            mPublishServiceView.getContent().getApplicationContext()));
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        })
                 .flatMap(new Func1<String, Observable<Status>>() {
                     @Override
                     public Observable<Status> call(String path) {
@@ -197,8 +189,7 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
                         mStatusManager.saveStatus(weibo);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(SchedulerTransformer.<Status>create())
                 .subscribe(createStatusSubscriber());
         addSubscription(subscription);
     }

@@ -17,6 +17,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * Created by Caij on 2016/6/30.
@@ -108,7 +109,6 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
 
     @Override
     public void getUserInfoByName() {
-        mUserView.showDialogLoading(true);
         Observable<User> localObservable = RxUtil.createDataObservable(new RxUtil.Provider<User>() {
             @Override
             public User getData() {
@@ -123,16 +123,30 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
                     }
                 });
         Subscription subscription = Observable.concat(localObservable, serverObservable)
-                .compose(new DefaultTransformer<User>())
-                .subscribe(new ResponseSubscriber<User>(mUserView) {
+                .filter(new Func1<User, Boolean>() {
                     @Override
-                    public void onCompleted() {
+                    public Boolean call(User user) {
+                        return user != null;
+                    }
+                })
+                .compose(ErrorCheckerTransformer.<User>create())
+                .compose(SchedulerTransformer.<User>create())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        mUserView.showDialogLoading(true);
+                    }
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
                         mUserView.showDialogLoading(false);
                     }
+                })
+                .subscribe(new ResponseSubscriber<User>(mUserView) {
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mUserView.showDialogLoading(false);
                         if (e instanceof HttpException) {
                             HttpException httpException = (HttpException) e;
                             int code  = httpException.code();

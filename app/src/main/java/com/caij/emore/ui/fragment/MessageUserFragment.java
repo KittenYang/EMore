@@ -15,11 +15,11 @@ import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.database.bean.UnReadMessage;
+import com.caij.emore.manager.imp.NotifyManagerImp;
 import com.caij.emore.present.MessageUserPresent;
 import com.caij.emore.present.imp.MessageUserPresentImp;
+import com.caij.emore.remote.imp.MessageApiImp;
 import com.caij.emore.ui.view.MessageUserView;
-import com.caij.emore.source.local.LocalMessageSource;
-import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.ui.activity.CommentsActivity;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.MentionActivity;
@@ -141,7 +141,7 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
         if (WeicoAuthUtil.checkWeicoLogin(this, false)) {
             Token accessToken = UserPrefs.get(getActivity()).getToken();
             return new MessageUserPresentImp(accessToken.getAccess_token(), Long.parseLong(accessToken.getUid()),
-                    new ServerMessageSource(), new LocalMessageSource(), this);
+                    new MessageApiImp(), new NotifyManagerImp(), this);
         }
         return null;
     }

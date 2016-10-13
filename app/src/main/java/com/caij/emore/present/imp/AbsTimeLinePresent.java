@@ -119,15 +119,6 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
     protected abstract void onStatusRelayCountUpdate(StatusActionCountUpdateEvent event);
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        RxBus.getDefault().unregister(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE, mStatusAttitudeCountObservable);
-        RxBus.getDefault().unregister(EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS, mAttitudeObservable);
-        RxBus.getDefault().unregister(EventTag.EVENT_STATUS_COMMENT_COUNT_UPDATE, mStatusCommentCountObservable);
-        RxBus.getDefault().unregister(EventTag.EVENT_STATUS_RELAY_COUNT_UPDATE, mStatusRelayCountObservable);
-    }
-
-    @Override
     public void deleteStatus(final Status deleteStatus, final int position) {
         mView.showDialogLoading(true, R.string.deleting);
         Subscription subscription =  mStatusApi.deleteWeibo(deleteStatus.getId())
@@ -318,6 +309,19 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                     }
                 });
         addSubscription(subscription);
+    }
+
+    private void unregisterEvent() {
+        RxBus.getDefault().unregister(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE, mStatusAttitudeCountObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS, mAttitudeObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_STATUS_COMMENT_COUNT_UPDATE, mStatusCommentCountObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_STATUS_RELAY_COUNT_UPDATE, mStatusRelayCountObservable);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterEvent();
     }
 
     public static class StatusContentSpannableConvertTransformer

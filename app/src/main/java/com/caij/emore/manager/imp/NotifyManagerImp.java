@@ -44,4 +44,9 @@ public class NotifyManagerImp implements NotifyManager {
             mUnReadMessageDao.insertOrReplace(unReadMessage);
         }
     }
+
+    @Override
+    public void saveUnReadMessage(UnReadMessage unReadMessage) {
+        mUnReadMessageDao.insertOrReplace(unReadMessage);
+    }
 }

@@ -35,7 +35,6 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
 
     private UserApi mUserApi;
     private UserManager mUserManager;
-    private NotifyApi mNotifyApi;
     private NotifyManager mNotifyManager;
     private DraftManager mDraftManager;
 
@@ -43,14 +42,12 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
     private Observable<Draft> mDraftObservable;
     private Observable<Boolean> mModeNightUpdate;
 
-    public MainPresentImp(long uid, MainView userView, UserApi userApi, UserManager userManager,
-                          NotifyApi notifyApi, NotifyManager notifyManager,
+    public MainPresentImp(long uid, MainView userView, UserApi userApi, UserManager userManager, NotifyManager notifyManager,
                           DraftManager draftManager) {
         mUid = uid;
         mUserView = userView;
         mUserApi = userApi;
         mUserManager = userManager;
-        mNotifyApi = notifyApi;
         mNotifyManager = notifyManager;
         mDraftManager = draftManager;
     }
@@ -140,15 +137,12 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
     }
 
     private void loadMessageCount() {
-        Observable<UnReadMessage> serverObservable = mNotifyApi.getUnReadMessage(mUid);
-        Observable<UnReadMessage> localObservable = RxUtil.createDataObservable(new RxUtil.Provider<UnReadMessage>() {
+        Subscription subscription =  RxUtil.createDataObservable(new RxUtil.Provider<UnReadMessage>() {
             @Override
             public UnReadMessage getData() {
                 return mNotifyManager.getUnReadMessage(mUid);
             }
-        });
-        Subscription subscription = Observable.concat(localObservable, serverObservable)
-                .compose(SchedulerTransformer.<UnReadMessage>create())
+        }) .compose(SchedulerTransformer.<UnReadMessage>create())
                 .subscribe(new SubscriberAdapter<UnReadMessage>() {
                     @Override
                     public void onNext(UnReadMessage unReadMessage) {

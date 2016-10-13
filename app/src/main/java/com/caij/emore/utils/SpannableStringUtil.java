@@ -192,7 +192,7 @@ public class SpannableStringUtil {
             Bitmap bitmap = EmotionsUtil.getCacheEmotion(key);
             if (bitmap == null) {
                 bitmap = BitmapFactory.decodeResource(context.getResources(), drawable);
-                int size = context.getResources().getDimensionPixelSize(R.dimen.text_size_medium);
+                int size = context.getResources().getDimensionPixelSize(R.dimen.text_size_large);
                 bitmap = ImageUtil.zoomBitmap(bitmap, size);
                 EmotionsUtil.putCacheEmotion(key, bitmap);
             }
@@ -213,7 +213,7 @@ public class SpannableStringUtil {
             Context context = AppApplication.getInstance();
             if (bitmap == null) {
                 bitmap = BitmapFactory.decodeResource(context.getResources(), drawableId);
-                int size = context.getResources().getDimensionPixelSize(R.dimen.text_size_medium);
+                int size = context.getResources().getDimensionPixelSize(R.dimen.text_size_large);
                 bitmap = ImageUtil.zoomBitmap(bitmap, size);
                 EmotionsUtil.putCacheEmotion(String.valueOf(unicode), bitmap);
             }

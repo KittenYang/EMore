@@ -5,23 +5,23 @@ import com.caij.emore.api.ex.ResponseSubscriber;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.database.bean.UnReadMessage;
+import com.caij.emore.manager.NotifyManager;
 import com.caij.emore.present.MessageUserPresent;
+import com.caij.emore.remote.MessageApi;
 import com.caij.emore.ui.view.MessageUserView;
-import com.caij.emore.source.MessageSource;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.api.ex.ErrorCheckerTransformer;
 import com.caij.emore.api.ex.SchedulerTransformer;
+import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Caij on 2016/7/10.
@@ -31,21 +31,26 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
     private final static int PAGE_COUNT = 20;
 
     private String mToken;
-    private MessageSource mServerMessageSource;
-    private MessageSource mLocalMessageSource;
-    private List<MessageUser.UserListBean> mUserListBeens;
-    private MessageUserView mMessageUserView;
-    private MessageUser mMessageUser;
-    private Observable<UnReadMessage> mUnReadMessageObservable;
     private long mUid;
 
-    public MessageUserPresentImp(String token, long uid, MessageSource serverMessageSource,
-                                 MessageSource localMessageSource, MessageUserView view) {
-        mServerMessageSource = serverMessageSource;
+    private MessageApi mMessageApi;
+    private NotifyManager mNotifyManager;
+
+    private MessageUserView mMessageUserView;
+
+    private List<MessageUser.UserListBean> mUserListBeens;
+    private MessageUser mMessageUser;
+
+    private Observable<UnReadMessage> mUnReadMessageObservable;
+
+
+    public MessageUserPresentImp(String token, long uid, MessageApi messageApi, NotifyManager notifyManager,
+                                 MessageUserView view) {
+        mMessageApi = messageApi;
         mToken = token;
         mUid = uid;
-        mLocalMessageSource = localMessageSource;
         mMessageUserView = view;
+        mNotifyManager = notifyManager;
         mUserListBeens = new ArrayList<>();
     }
 
@@ -108,25 +113,23 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
 
     @Override
     public void onCreate() {
-        mLocalMessageSource.getUnReadMessage(mToken, mUid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<UnReadMessage>() {
-                    @Override
-                    public void onCompleted() {
+        Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<UnReadMessage>() {
+            @Override
+            public UnReadMessage getData() {
+                return  mNotifyManager.getUnReadMessage(mUid);
+            }
+        })
+        .compose(SchedulerTransformer.<UnReadMessage>create())
+        .subscribe(new SubscriberAdapter<UnReadMessage>() {
 
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
+            @Override
+            public void onNext(UnReadMessage unReadMessage) {
+                mMessageUserView.onLoadUnReadMessageSuccess(unReadMessage);
+            }
+        });
 
-                    }
-
-                    @Override
-                    public void onNext(UnReadMessage unReadMessage) {
-                        mMessageUserView.onLoadUnReadMessageSuccess(unReadMessage);
-                    }
-                });
+        addSubscription(subscription);
 
         mUnReadMessageObservable = RxBus.getDefault().register(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE);
         mUnReadMessageObservable.subscribe(new Action1<UnReadMessage>() {
@@ -138,7 +141,7 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
     }
 
     private Observable<List<MessageUser.UserListBean>> createMessageObservable(long next_cursor, final boolean isRefresh) {
-        return mServerMessageSource.getMessageUserList(mToken, PAGE_COUNT, next_cursor)
+        return mMessageApi.getConversations(PAGE_COUNT, next_cursor)
                 .compose(new ErrorCheckerTransformer<MessageUser>())
                 .flatMap(new Func1<MessageUser, Observable<MessageUser.UserListBean>>() {
                     @Override
@@ -159,7 +162,7 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
 
     @Override
     public void deleteMessageConversation(final MessageUser.UserListBean userListBean) {
-        mServerMessageSource.deleteMessageConversation(mToken, userListBean.getUser().getId())
+        mMessageApi.deleteConversation(userListBean.getUser().getId())
                 .compose(new ErrorCheckerTransformer<Response>())
                 .doOnNext(new Action1<Response>() {
                     @Override
@@ -196,31 +199,26 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
     }
 
     private void resetMessage(final MessageUser.UserListBean userListBean) {
-        mLocalMessageSource.getUnReadMessage(mToken, mUid)
-                .doOnNext(new Action1<UnReadMessage>() {
-                    @Override
-                    public void call(UnReadMessage unReadMessage) {
-                        unReadMessage.setDm_single(unReadMessage.getDm_single() - userListBean.getUnread_count());
-                        mLocalMessageSource.saveUnReadMessage(unReadMessage);
-                    }
-                })
-                .compose(new SchedulerTransformer<UnReadMessage>())
-                .subscribe(new Subscriber<UnReadMessage>() {
-                    @Override
-                    public void onCompleted() {
+        RxUtil.createDataObservable(new RxUtil.Provider<UnReadMessage>() {
+            @Override
+            public UnReadMessage getData() {
+                return  mNotifyManager.getUnReadMessage(mUid);
+            }
+        }).doOnNext(new Action1<UnReadMessage>() {
+            @Override
+            public void call(UnReadMessage unReadMessage) {
+                unReadMessage.setDm_single(unReadMessage.getDm_single() - userListBean.getUnread_count());
+                mNotifyManager.saveUnReadMessage(unReadMessage);
+            }
+        })
+        .compose(new SchedulerTransformer<UnReadMessage>())
+        .subscribe(new SubscriberAdapter<UnReadMessage>() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(UnReadMessage unReadMessage) {
-                        RxBus.getDefault().post(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
-                    }
-                });
+            @Override
+            public void onNext(UnReadMessage unReadMessage) {
+                RxBus.getDefault().post(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE, unReadMessage);
+            }
+        });
     }
 
     @Override
@@ -228,6 +226,5 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
         super.onDestroy();
         RxBus.getDefault().unregister(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
     }
-
 
 }

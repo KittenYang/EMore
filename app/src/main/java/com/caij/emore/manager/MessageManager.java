@@ -18,4 +18,6 @@ public interface MessageManager {
 
     public void deleteMessageById(long id);
 
+    public DirectMessage getMessageById(long id);
+
 }

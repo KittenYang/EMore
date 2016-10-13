@@ -10,7 +10,7 @@
         android:layout_height="80dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="64dp"
-        android:src="@mipmap/sp_icon"/>
+        android:src="@mipmap/sp_logo"/>
 
     <TextView
         android:layout_width="wrap_content"

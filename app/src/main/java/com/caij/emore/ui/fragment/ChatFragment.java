@@ -27,14 +27,15 @@ import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Emotion;
+import com.caij.emore.manager.imp.MessageManagerImp;
+import com.caij.emore.manager.imp.NotifyManagerImp;
 import com.caij.emore.manager.imp.UserManagerImp;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.present.ChatPresent;
 import com.caij.emore.present.imp.ChatPresentImp;
+import com.caij.emore.remote.imp.MessageApiImp;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.view.DirectMessageView;
-import com.caij.emore.source.local.LocalMessageSource;
-import com.caij.emore.source.server.ServerMessageSource;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.ImagePrewActivity;
 import com.caij.emore.ui.adapter.MessageAdapter;
@@ -205,7 +206,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
         Token accessToken = UserPrefs.get(getActivity()).getToken();
         long recipientId = getArguments().getLong(Key.ID);
         return new ChatPresentImp(accessToken, recipientId, Long.parseLong(accessToken.getUid()),
-                new ServerMessageSource(), new LocalMessageSource(), new UserManagerImp(), this);
+                new MessageApiImp(), new MessageManagerImp(), new UserManagerImp(), new NotifyManagerImp(), this);
     }
 
 
