@@ -7,6 +7,8 @@ package com.caij.emore.database.bean;
 
 import android.text.Spannable;
 
+import com.caij.emore.bean.MessageAttachInfo;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class DirectMessage implements Serializable {
 
     private Long id;
     private String idstr;
-    private String created_at;
+    private java.util.Date created_at;
     private String text;
     private Integer sys_type;
     private Integer msg_status;
@@ -41,6 +43,7 @@ public class DirectMessage implements Serializable {
     private Integer local_status = STATUS_SERVER;
     private Long created_at_long;
     private String att_ids_json;
+    private String att_infos_json;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -52,7 +55,7 @@ public class DirectMessage implements Serializable {
         this.id = id;
     }
 
-    public DirectMessage(Long id, String idstr, String created_at, String text, Integer sys_type, Integer msg_status, Long sender_id, Long recipient_id, String sender_screen_name, String recipient_screen_name, String mid, Boolean isLargeDm, String source, Long status_id, Integer dm_type, Integer media_type, Long ip, Long burn_time, Boolean matchKeyword, Boolean topublic, Boolean pushToMPS, Long oriImageId, Long geo_id, Integer local_status, Long created_at_long, String att_ids_json) {
+    public DirectMessage(Long id, String idstr, java.util.Date created_at, String text, Integer sys_type, Integer msg_status, Long sender_id, Long recipient_id, String sender_screen_name, String recipient_screen_name, String mid, Boolean isLargeDm, String source, Long status_id, Integer dm_type, Integer media_type, Long ip, Long burn_time, Boolean matchKeyword, Boolean topublic, Boolean pushToMPS, Long oriImageId, Long geo_id, Integer local_status, Long created_at_long, String att_ids_json, String att_infos_json) {
         this.id = id;
         this.idstr = idstr;
         this.created_at = created_at;
@@ -79,6 +82,7 @@ public class DirectMessage implements Serializable {
         this.local_status = local_status;
         this.created_at_long = created_at_long;
         this.att_ids_json = att_ids_json;
+        this.att_infos_json = att_infos_json;
     }
 
     public Long getId() {
@@ -97,11 +101,11 @@ public class DirectMessage implements Serializable {
         this.idstr = idstr;
     }
 
-    public String getCreated_at() {
+    public java.util.Date getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(String created_at) {
+    public void setCreated_at(java.util.Date created_at) {
         this.created_at = created_at;
     }
 
@@ -289,6 +293,14 @@ public class DirectMessage implements Serializable {
         this.att_ids_json = att_ids_json;
     }
 
+    public String getAtt_infos_json() {
+        return att_infos_json;
+    }
+
+    public void setAtt_infos_json(String att_infos_json) {
+        this.att_infos_json = att_infos_json;
+    }
+
     // KEEP METHODS - put your custom methods here
     // KEEP METHODS END
 
@@ -302,8 +314,9 @@ public class DirectMessage implements Serializable {
     private User sender;
     private User recipient;
     private Geo geo;
-    private ImageInfo imageInfo;
     private transient Spannable textContentSpannable;
+
+    private List<MessageAttachInfo> attachinfo;
 
     public List<Long> getAtt_ids() {
         return att_ids;
@@ -337,20 +350,20 @@ public class DirectMessage implements Serializable {
         this.geo = geo;
     }
 
-    public ImageInfo getImageInfo() {
-        return imageInfo;
-    }
-
-    public void setImageInfo(ImageInfo imageInfo) {
-        this.imageInfo = imageInfo;
-    }
-
     public Spannable getTextContentSpannable() {
         return textContentSpannable;
     }
 
     public void setTextContentSpannable(Spannable textContentSpannable) {
         this.textContentSpannable = textContentSpannable;
+    }
+
+    public List<MessageAttachInfo> getAttachinfo() {
+        return attachinfo;
+    }
+
+    public void setAttachinfo(List<MessageAttachInfo> attachinfo) {
+        this.attachinfo = attachinfo;
     }
 
     @Override
