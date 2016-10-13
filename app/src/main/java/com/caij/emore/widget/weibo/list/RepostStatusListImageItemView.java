@@ -12,24 +12,24 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/6/16.
  */
-public class RepostWeiboListImageItemView extends RepostWeiboListItemView {
+public class RepostStatusListImageItemView extends RepostStatusListItemView {
 
     @BindView(R.id.pics_view)
     ImageInterface picsView;
 
-    public RepostWeiboListImageItemView(Context context) {
+    public RepostStatusListImageItemView(Context context) {
         super(context);
     }
 
-    public RepostWeiboListImageItemView(Context context, AttributeSet attrs) {
+    public RepostStatusListImageItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public RepostWeiboListImageItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RepostStatusListImageItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public RepostWeiboListImageItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RepostStatusListImageItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
@@ -38,9 +38,9 @@ public class RepostWeiboListImageItemView extends RepostWeiboListItemView {
     }
 
     @Override
-    public void setWeibo(Status weibo) {
-        super.setWeibo(weibo);
-        setImages(weibo, picsView);
+    public void setStatus(Status status) {
+        super.setStatus(status);
+        setImages(status, picsView);
     }
 
     protected void setImages(Status weibo, ImageInterface picsView) {

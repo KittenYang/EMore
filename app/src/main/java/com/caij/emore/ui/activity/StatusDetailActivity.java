@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -37,13 +38,13 @@ import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.widget.recyclerview.OnScrollListener;
-import com.caij.emore.widget.weibo.detail.RepostWeiboImageItemView;
-import com.caij.emore.widget.weibo.detail.WeiboImageItemView;
-import com.caij.emore.widget.weibo.list.RepostWeiboListArticleItemView;
-import com.caij.emore.widget.weibo.list.RepostWeiboListVideoItemView;
-import com.caij.emore.widget.weibo.list.WeiboListArticleItemView;
-import com.caij.emore.widget.weibo.list.WeiboListItemView;
-import com.caij.emore.widget.weibo.list.WeiboListVideoItemView;
+import com.caij.emore.widget.weibo.detail.RepostStatusImageItemView;
+import com.caij.emore.widget.weibo.detail.StatusImageItemView;
+import com.caij.emore.widget.weibo.list.RepostStatusListArticleItemView;
+import com.caij.emore.widget.weibo.list.RepostStatusListVideoItemView;
+import com.caij.emore.widget.weibo.list.StatusListArticleItemView;
+import com.caij.emore.widget.weibo.list.StatusListItemView;
+import com.caij.emore.widget.weibo.list.StatusListVideoItemView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
@@ -60,6 +61,11 @@ import butterknife.OnClick;
 public class StatusDetailActivity extends BaseToolBarActivity<StatusDetailPresent> implements StatusDetailView,
         SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener, OnScrollListener, ViewPager.OnPageChangeListener {
 
+    public static final int ENTER_TYPE_COM = 1;
+    public static final int ENTER_TYPE_COMMENT = 2;
+
+    @BindView(R.id.cl)
+    CoordinatorLayout coordinatorLayout;
     @BindView(R.id.fl_weibo_item_view)
     FrameLayout flWeiboItemView;
     @BindView(R.id.tabLayout)
@@ -81,7 +87,7 @@ public class StatusDetailActivity extends BaseToolBarActivity<StatusDetailPresen
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private WeiboListItemView mWeiboItemView;
+    private StatusListItemView mWeiboItemView;
 
     private long mStatusId;
     private Status mStatus;
@@ -89,8 +95,13 @@ public class StatusDetailActivity extends BaseToolBarActivity<StatusDetailPresen
     private boolean isActionMenuVisible = true;
 
     public static Intent newIntent(Context context, long statusId) {
+        return newIntent(context, statusId, ENTER_TYPE_COM);
+    }
+
+    public static Intent newIntent(Context context, long statusId, int type) {
         Intent intent = new Intent(context, StatusDetailActivity.class);
         intent.putExtra(Key.ID, statusId);
+        intent.putExtra(Key.TYPE, type);
         return intent;
     }
 
@@ -236,27 +247,27 @@ public class StatusDetailActivity extends BaseToolBarActivity<StatusDetailPresen
             int type = StatusAdapter.getWeiboType(status);
             switch (type) {
                 case StatusAdapter.TYPE_NORMAL_IMAGE:
-                    mWeiboItemView = new WeiboImageItemView(this);
+                    mWeiboItemView = new StatusImageItemView(this);
                     break;
 
                 case StatusAdapter.TYPE_REPOST_IMAGE:
-                    mWeiboItemView = new RepostWeiboImageItemView(this);
+                    mWeiboItemView = new RepostStatusImageItemView(this);
                     break;
 
                 case StatusAdapter.TYPE_NORMAL_VIDEO:
-                    mWeiboItemView = new WeiboListVideoItemView(this);
+                    mWeiboItemView = new StatusListVideoItemView(this);
                     break;
 
                 case StatusAdapter.TYPE_REPOST_VIDEO:
-                    mWeiboItemView = new RepostWeiboListVideoItemView(this);
+                    mWeiboItemView = new RepostStatusListVideoItemView(this);
                     break;
 
                 case StatusAdapter.TYPE_NORMAL_ARTICLE:
-                    mWeiboItemView = new WeiboListArticleItemView(this);
+                    mWeiboItemView = new StatusListArticleItemView(this);
                     break;
 
                 case StatusAdapter.TYPE_REPOST_ARTICLE:
-                    mWeiboItemView = new RepostWeiboListArticleItemView(this);
+                    mWeiboItemView = new RepostStatusListArticleItemView(this);
                     break;
             }
             mWeiboItemView.setDetail(true);
@@ -266,7 +277,7 @@ public class StatusDetailActivity extends BaseToolBarActivity<StatusDetailPresen
 
         mStatus = status;
 
-        mWeiboItemView.setWeibo(status);
+        mWeiboItemView.setStatus(status);
 
         setTabText(status);
         setAttitudeStatus(status);

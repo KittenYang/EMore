@@ -9,26 +9,26 @@ import com.caij.emore.database.bean.Status;
 /**
  * Created by Caij on 2016/9/1.
  */
-public class WeiboListVideoItemView extends WeiboListItemView {
+public class StatusListVideoItemView extends StatusListItemView {
 
     private CompositePatternVideo mCompositePatternVideo;
 
-    public WeiboListVideoItemView(Context context) {
+    public StatusListVideoItemView(Context context) {
         super(context);
         init();
     }
 
-    public WeiboListVideoItemView(Context context, AttributeSet attrs) {
+    public StatusListVideoItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public WeiboListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StatusListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public WeiboListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public StatusListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
@@ -44,9 +44,9 @@ public class WeiboListVideoItemView extends WeiboListItemView {
     }
 
     @Override
-    public void setWeibo(Status weibo) {
-        super.setWeibo(weibo);
-        mCompositePatternVideo.setWeibo(weibo, getContext());
+    public void setStatus(Status status) {
+        super.setStatus(status);
+        mCompositePatternVideo.setWeibo(status, getContext());
     }
 
 }

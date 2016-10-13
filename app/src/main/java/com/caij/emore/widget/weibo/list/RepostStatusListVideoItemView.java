@@ -9,26 +9,26 @@ import com.caij.emore.database.bean.Status;
 /**
  * Created by Caij on 2016/9/1.
  */
-public class RepostWeiboListVideoItemView extends RepostWeiboListItemView {
+public class RepostStatusListVideoItemView extends RepostStatusListItemView {
 
     private CompositePatternVideo mCompositePatternVideo;
 
-    public RepostWeiboListVideoItemView(Context context) {
+    public RepostStatusListVideoItemView(Context context) {
         super(context);
         initSelf();
     }
 
-    public RepostWeiboListVideoItemView(Context context, AttributeSet attrs) {
+    public RepostStatusListVideoItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initSelf();
     }
 
-    public RepostWeiboListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RepostStatusListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initSelf();
     }
 
-    public RepostWeiboListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RepostStatusListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initSelf();
     }
@@ -44,9 +44,9 @@ public class RepostWeiboListVideoItemView extends RepostWeiboListItemView {
     }
 
     @Override
-    public void setWeibo(Status weibo) {
-        super.setWeibo(weibo);
-        mCompositePatternVideo.setWeibo(weibo, getContext());
+    public void setStatus(Status status) {
+        super.setStatus(status);
+        mCompositePatternVideo.setWeibo(status, getContext());
     }
 
 }

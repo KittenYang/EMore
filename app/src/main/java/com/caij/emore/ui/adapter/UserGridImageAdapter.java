@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.WeiboImageInfo;
+import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.RatioImageView;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
@@ -15,7 +15,7 @@ import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 /**
  * Created by Caij on 2016/6/23.
  */
-public class UserGridImageAdapter extends BaseAdapter<WeiboImageInfo, BaseViewHolder> {
+public class UserGridImageAdapter extends BaseAdapter<StatusImageInfo, BaseViewHolder> {
 
     private ImageLoader.ImageConfig mImageConfig;
 
@@ -39,7 +39,7 @@ public class UserGridImageAdapter extends BaseAdapter<WeiboImageInfo, BaseViewHo
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         ImageViewHolder imageView = (ImageViewHolder) holder;
-        WeiboImageInfo image = getItem(position);
+        StatusImageInfo image = getItem(position);
         ImageLoader.loadUrl(mContext, imageView.imageView, image.getBmiddle().getUrl(), R.drawable.weibo_image_placeholder, mImageConfig);
     }
 

@@ -11,13 +11,13 @@ import com.caij.emore.database.bean.Status;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
-import com.caij.emore.widget.weibo.list.RepostWeiboListArticleItemView;
-import com.caij.emore.widget.weibo.list.RepostWeiboListImageItemView;
-import com.caij.emore.widget.weibo.list.RepostWeiboListVideoItemView;
-import com.caij.emore.widget.weibo.list.WeiboListArticleItemView;
-import com.caij.emore.widget.weibo.list.WeiboListImageItemView;
-import com.caij.emore.widget.weibo.list.WeiboListItemView;
-import com.caij.emore.widget.weibo.list.WeiboListVideoItemView;
+import com.caij.emore.widget.weibo.list.RepostStatusListArticleItemView;
+import com.caij.emore.widget.weibo.list.RepostStatusListImageItemView;
+import com.caij.emore.widget.weibo.list.RepostStatusListVideoItemView;
+import com.caij.emore.widget.weibo.list.StatusListArticleItemView;
+import com.caij.emore.widget.weibo.list.StatusListImageItemView;
+import com.caij.emore.widget.weibo.list.StatusListItemView;
+import com.caij.emore.widget.weibo.list.StatusListVideoItemView;
 
 import java.util.List;
 
@@ -58,19 +58,19 @@ public class StatusAdapter extends BaseAdapter<Status, StatusAdapter.WeiboBaseVi
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        WeiboListItemView weiboListItemView = null;
+        StatusListItemView weiboListItemView = null;
         if (viewType == TYPE_NORMAL_IMAGE) {
-            weiboListItemView = new WeiboListImageItemView(parent.getContext());
+            weiboListItemView = new StatusListImageItemView(parent.getContext());
         }else if (viewType == TYPE_REPOST_IMAGE){
-            weiboListItemView = new RepostWeiboListImageItemView(parent.getContext());
+            weiboListItemView = new RepostStatusListImageItemView(parent.getContext());
         }else if (viewType == TYPE_NORMAL_VIDEO) {
-            weiboListItemView = new WeiboListVideoItemView(parent.getContext());
+            weiboListItemView = new StatusListVideoItemView(parent.getContext());
         }else if (viewType == TYPE_REPOST_VIDEO) {
-            weiboListItemView = new RepostWeiboListVideoItemView(parent.getContext());
+            weiboListItemView = new RepostStatusListVideoItemView(parent.getContext());
         }else if (viewType == TYPE_NORMAL_ARTICLE) {
-            weiboListItemView = new WeiboListArticleItemView(parent.getContext());
+            weiboListItemView = new StatusListArticleItemView(parent.getContext());
         }else if (viewType == TYPE_REPOST_ARTICLE) {
-            weiboListItemView = new RepostWeiboListArticleItemView(parent.getContext());
+            weiboListItemView = new RepostStatusListArticleItemView(parent.getContext());
         }
         if (weiboListItemView != null) {
             weiboListItemView.setId(R.id.weibo_item_view);
@@ -83,7 +83,7 @@ public class StatusAdapter extends BaseAdapter<Status, StatusAdapter.WeiboBaseVi
     @Override
     public void onBindViewHolder(WeiboBaseViewHolder holder, int position) {
         if (holder.weiboItemView != null) {
-            holder.weiboItemView.setWeibo(getItem(position));
+            holder.weiboItemView.setStatus(getItem(position));
         }
     }
 
@@ -131,7 +131,7 @@ public class StatusAdapter extends BaseAdapter<Status, StatusAdapter.WeiboBaseVi
     public static class WeiboBaseViewHolder extends BaseViewHolder {
 
         @BindView(R.id.weibo_item_view)
-        WeiboListItemView weiboItemView;
+        StatusListItemView weiboItemView;
 
         public WeiboBaseViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener,
                                    final OnItemActionClickListener onItemActionClickListener) {

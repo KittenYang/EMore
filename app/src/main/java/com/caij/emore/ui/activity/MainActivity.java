@@ -26,7 +26,6 @@ import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.MainPresent;
 import com.caij.emore.present.imp.MainPresentImp;
-import com.caij.emore.remote.imp.NotifyApiImp;
 import com.caij.emore.remote.imp.UserApiImp;
 import com.caij.emore.ui.fragment.weibo.FriendStatusFragment;
 import com.caij.emore.ui.fragment.weibo.HotStatusFragment;
@@ -75,7 +74,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
     ActionBarDrawerToggle mActionBarDrawerToggle;
 
-    private Fragment mFriendWeiboFragment;
+    private Fragment mFriendStatusFragment;
     private Fragment mMessageFragment;
 
     private Fragment mVisibleFragment;
@@ -127,16 +126,16 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
     private void initContent(Bundle savedInstanceState) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
-            mFriendWeiboFragment = new FriendStatusFragment();
+            mFriendStatusFragment = new FriendStatusFragment();
             mMessageFragment = new MessageUserFragment();
             transaction.add(R.id.attach_container,
-                    mFriendWeiboFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG).commit();
+                    mFriendStatusFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG).commit();
 
-            mVisibleFragment = mFriendWeiboFragment;
+            mVisibleFragment = mFriendStatusFragment;
         } else {
-            mFriendWeiboFragment = getSupportFragmentManager().findFragmentByTag(Key.FRIEND_WEIBO_FRAGMENT_TAG);
-            if (mFriendWeiboFragment == null) {
-                mFriendWeiboFragment = new FriendStatusFragment();
+            mFriendStatusFragment = getSupportFragmentManager().findFragmentByTag(Key.FRIEND_WEIBO_FRAGMENT_TAG);
+            if (mFriendStatusFragment == null) {
+                mFriendStatusFragment = new FriendStatusFragment();
             }
             mMessageFragment = getSupportFragmentManager().findFragmentByTag(Key.MESSAGE_FRAGMENT_TAG);
             if (mMessageFragment == null) {
@@ -145,7 +144,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
             String key  = savedInstanceState.getString(Key.ID);
             if (Key.FRIEND_WEIBO_FRAGMENT_TAG.equals(key)) {
-                mVisibleFragment = mFriendWeiboFragment;
+                mVisibleFragment = mFriendStatusFragment;
             }else if (Key.MESSAGE_FRAGMENT_TAG.equals(key)) {
                 mVisibleFragment = mMessageFragment;
             }
@@ -162,7 +161,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if (mVisibleFragment == mFriendWeiboFragment) {
+        if (mVisibleFragment == mFriendStatusFragment) {
             outState.putString(Key.ID, Key.FRIEND_WEIBO_FRAGMENT_TAG);
         }else if (mVisibleFragment == mMessageFragment) {
             outState.putString(Key.ID, Key.MESSAGE_FRAGMENT_TAG);
@@ -178,7 +177,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
     }
 
     private void setViewStatus(Fragment fragment) {
-        if (fragment == mFriendWeiboFragment) {
+        if (fragment == mFriendStatusFragment) {
             rlItemWeibo.setSelected(true);
             rlItemMessage.setSelected(false);
             tvWeibo.setSelected(true);
@@ -317,7 +316,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
     }
 
     private void changeContent2FriendWeibo() {
-        changeContent(mFriendWeiboFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG);
+        changeContent(mFriendStatusFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG);
     }
 
     private void changeContent2Message() {

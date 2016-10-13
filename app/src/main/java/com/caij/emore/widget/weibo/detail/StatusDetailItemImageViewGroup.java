@@ -4,28 +4,28 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.caij.emore.bean.WeiboImageInfo;
+import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.weibo.list.WeiboItemImageViewGroup;
 
 /**
  * Created by Caij on 2016/6/13.
  */
-public class WeiboDetailItemImageViewGroup extends WeiboItemImageViewGroup {
+public class StatusDetailItemImageViewGroup extends WeiboItemImageViewGroup {
 
-    public WeiboDetailItemImageViewGroup(Context context) {
+    public StatusDetailItemImageViewGroup(Context context) {
         super(context);
     }
 
-    public WeiboDetailItemImageViewGroup(Context context, AttributeSet attrs) {
+    public StatusDetailItemImageViewGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WeiboDetailItemImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StatusDetailItemImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public WeiboDetailItemImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public StatusDetailItemImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
@@ -33,7 +33,7 @@ public class WeiboDetailItemImageViewGroup extends WeiboItemImageViewGroup {
     protected int measureChildOnOneImage(int availableWidth) {
         //如果是详情就撑满屏幕
         int imageHeight;
-        WeiboImageInfo picUrl = mImageInfoLinkedHashMap.get(mPicIds.get(0));
+        StatusImageInfo picUrl = mImageInfoLinkedHashMap.get(mPicIds.get(0));
         View child = getChildAt(0);
         if (picUrl.getBmiddle().getHeight() > 0 && picUrl.getBmiddle().getWidth() > 0) {
             imageHeight = (int) (availableWidth * picUrl.getBmiddle().getHeight() * 1.0f

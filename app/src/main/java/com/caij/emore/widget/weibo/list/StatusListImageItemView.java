@@ -12,31 +12,31 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/9/1.
  */
-public class WeiboListImageItemView extends WeiboListItemView {
+public class StatusListImageItemView extends StatusListItemView {
 
     @BindView(R.id.pics_view)
     ImageInterface picsView;
 
-    public WeiboListImageItemView(Context context) {
+    public StatusListImageItemView(Context context) {
         super(context);
     }
 
-    public WeiboListImageItemView(Context context, AttributeSet attrs) {
+    public StatusListImageItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WeiboListImageItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StatusListImageItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public WeiboListImageItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public StatusListImageItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
-    public void setWeibo(Status weibo) {
-        super.setWeibo(weibo);
-        setImages(weibo, picsView);
+    public void setStatus(Status status) {
+        super.setStatus(status);
+        setImages(status, picsView);
     }
 
     protected void setImages(Status weibo, ImageInterface picsView) {

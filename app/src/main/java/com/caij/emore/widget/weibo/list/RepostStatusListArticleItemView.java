@@ -9,26 +9,26 @@ import com.caij.emore.database.bean.Status;
 /**
  * Created by Caij on 2016/9/1.
  */
-public class WeiboListArticleItemView extends WeiboListItemView {
+public class RepostStatusListArticleItemView extends RepostStatusListItemView {
 
     private CompositePatternArticle mCompositePatternArticle;
 
-    public WeiboListArticleItemView(Context context) {
+    public RepostStatusListArticleItemView(Context context) {
         super(context);
         init();
     }
 
-    public WeiboListArticleItemView(Context context, AttributeSet attrs) {
+    public RepostStatusListArticleItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public WeiboListArticleItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RepostStatusListArticleItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public WeiboListArticleItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RepostStatusListArticleItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
@@ -41,13 +41,13 @@ public class WeiboListArticleItemView extends WeiboListItemView {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.view_weibo_article_item;
+        return R.layout.view_weibo_repost_article_item;
     }
 
     @Override
-    public void setWeibo(Status weibo) {
-        super.setWeibo(weibo);
-        mCompositePatternArticle.setWeibo(weibo, getContext());
+    public void setStatus(Status status) {
+        super.setStatus(status);
+        mCompositePatternArticle.setWeibo(status, getContext());
     }
 
 }

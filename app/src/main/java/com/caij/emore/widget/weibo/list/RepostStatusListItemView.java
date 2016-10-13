@@ -18,34 +18,34 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/16.
  */
-public abstract class RepostWeiboListItemView extends WeiboListItemView {
+public abstract class RepostStatusListItemView extends StatusListItemView {
 
     @BindView(R.id.ll_re)
     LinearLayout llRe;
     @BindView(R.id.tv_re_content)
     TextView tvReContent;
 
-    public RepostWeiboListItemView(Context context) {
+    public RepostStatusListItemView(Context context) {
         super(context);
     }
 
-    public RepostWeiboListItemView(Context context, AttributeSet attrs) {
+    public RepostStatusListItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public RepostWeiboListItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RepostStatusListItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public RepostWeiboListItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RepostStatusListItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
-    public void setWeibo(Status weibo) {
-        super.setWeibo(weibo);
+    public void setStatus(Status status) {
+        super.setStatus(status);
         // reContent
-        Status reWeibo = weibo.getRetweeted_status();
+        Status reWeibo = status.getRetweeted_status();
         llRe.setTag(reWeibo);
 
         tvReContent.setText(reWeibo.getContentSpannableString());

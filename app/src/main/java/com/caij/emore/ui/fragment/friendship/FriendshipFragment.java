@@ -26,11 +26,11 @@ public abstract class FriendshipFragment<P extends RefreshListPresent> extends S
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        int divMarginleft = DensityUtil.dip2px(getActivity(), 56f + 16f);
+        int divMarginLeft = DensityUtil.dip2px(getActivity(), 56f + 16f);
         xRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                 color(getResources().getColor(R.color.divider_timeline_item)).
-                margin(divMarginleft, 0).
-                size(DensityUtil.dip2px(getActivity(), 1f)).
+                margin(divMarginLeft, 0).
+                size(DensityUtil.dip2px(getActivity(), 0.66f)).
                 build());
     }
 

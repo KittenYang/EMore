@@ -9,7 +9,7 @@ import android.text.Spanned;
 
 import com.caij.emore.bean.PageInfo;
 import com.caij.emore.bean.ShortUrl;
-import com.caij.emore.bean.WeiboImageInfo;
+import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.weibo.Button;
 import com.caij.emore.bean.weibo.Title;
@@ -361,7 +361,7 @@ public class Status extends Response implements Serializable {
     // KEEP METHODS END
 
     private Visible visible;
-    private LinkedHashMap<String, WeiboImageInfo> pic_infos;
+    private LinkedHashMap<String, StatusImageInfo> pic_infos;
     private Geo geo;
     private User user;
     private Status retweeted_status;
@@ -382,11 +382,11 @@ public class Status extends Response implements Serializable {
         this.visible = visible;
     }
 
-    public LinkedHashMap<String, WeiboImageInfo> getPic_infos() {
+    public LinkedHashMap<String, StatusImageInfo> getPic_infos() {
         return pic_infos;
     }
 
-    public void setPic_infos(LinkedHashMap<String, WeiboImageInfo> pic_infos) {
+    public void setPic_infos(LinkedHashMap<String, StatusImageInfo> pic_infos) {
         this.pic_infos = pic_infos;
     }
 

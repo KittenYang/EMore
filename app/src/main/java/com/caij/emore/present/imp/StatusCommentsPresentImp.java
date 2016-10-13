@@ -114,7 +114,7 @@ public class StatusCommentsPresentImp extends AbsBasePresent implements StatusCo
 
         mStatusCommentsView.scrollToPosition(0);
 
-        mStatusCommentsView.onLoadComplete(comments.size() >= PAGE_COUNT - 5);
+        mStatusCommentsView.onLoadComplete(mNextCursor != 0);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class StatusCommentsPresentImp extends AbsBasePresent implements StatusCo
                         mComments.addAll(comments);
                         mStatusCommentsView.notifyItemRangeInserted(mComments, mComments.size() - comments.size(),
                                 comments.size());
-                        mStatusCommentsView.onLoadComplete(comments.size() >= PAGE_COUNT);
+                        mStatusCommentsView.onLoadComplete(mNextCursor != 0);
                     }
                 });
 

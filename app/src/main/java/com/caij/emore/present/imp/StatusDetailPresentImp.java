@@ -70,21 +70,17 @@ public class StatusDetailPresentImp extends AbsTimeLinePresent<StatusDetailView>
                         mView.showDialogLoading(true);
                     }
                 })
-                .doOnTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        mView.showDialogLoading(false);
-                    }
-                })
+
                 .subscribe(new ResponseSubscriber<Status>(mView) {
 
                     @Override
                     protected void onFail(Throwable e) {
-
+                        mView.showDialogLoading(false);
                     }
 
                     @Override
                     public void onNext(Status status) {
+                        mView.showDialogLoading(false);
                         mView.setStatus(status);
                     }
                 });

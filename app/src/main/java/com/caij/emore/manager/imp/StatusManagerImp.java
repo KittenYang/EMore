@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.caij.emore.bean.PageInfo;
 import com.caij.emore.bean.ShortUrl;
-import com.caij.emore.bean.WeiboImageInfo;
+import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.bean.weibo.Button;
 import com.caij.emore.bean.weibo.Title;
 import com.caij.emore.manager.StatusManager;
@@ -142,8 +142,8 @@ public class StatusManagerImp implements StatusManager {
             }
 
             if (!TextUtils.isEmpty(status.getPic_infos_json_string())) {
-                LinkedHashMap<String, WeiboImageInfo> pic_infos = GsonUtils.fromJson(status.getPic_infos_json_string(),
-                        new TypeToken<LinkedHashMap<String, WeiboImageInfo>>(){}.getType());
+                LinkedHashMap<String, StatusImageInfo> pic_infos = GsonUtils.fromJson(status.getPic_infos_json_string(),
+                        new TypeToken<LinkedHashMap<String, StatusImageInfo>>(){}.getType());
                 status.setPic_infos(pic_infos);
             }
 
@@ -209,7 +209,7 @@ public class StatusManagerImp implements StatusManager {
             status.setPic_ids_json_string(GsonUtils.toJson(picIds));
         }
 
-        LinkedHashMap<String, WeiboImageInfo> pic_infos = status.getPic_infos();
+        LinkedHashMap<String, StatusImageInfo> pic_infos = status.getPic_infos();
         if (pic_infos != null && pic_infos.size() > 0) {
             status.setPic_infos_json_string(GsonUtils.toJson(pic_infos));
         }

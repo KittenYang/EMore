@@ -43,15 +43,15 @@ public abstract class TimeLineStatusFragment<P extends TimeLinePresent> extends 
         xRecyclerView.completeLoading(isHaveMore);
     }
 
-    private void onMenuClick(final Status weibo, final int position) {
+    private void onMenuClick(final Status status, final int position) {
         List<String> items = new ArrayList<>();
-        if (weibo.getFavorited()) {
+        if (status.getFavorited()) {
             items.add("取消收藏");
         }else {
             items.add("收藏");
         }
         long uid = Long.parseLong(UserPrefs.get(getActivity()).getToken().getUid());
-        if (weibo.getUser().getId() == uid) {
+        if (status.getUser().getId() == uid) {
             items.add("删除");
         }
         String[] array = new String[items.size()];
@@ -60,30 +60,30 @@ public abstract class TimeLineStatusFragment<P extends TimeLinePresent> extends 
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
-                        if (weibo.getFavorited()) {
-                            uncollectWeibo(weibo);
+                        if (status.getFavorited()) {
+                            unCollectStatus(status);
                         }else {
-                            collectWeibo(weibo);
+                            collectStatus(status);
                         }
                         break;
 
                     case 1:
-                        deleteWeibo(weibo, position);
+                        deleteStatus(status, position);
                         break;
                 }
             }
         });
     }
 
-    private void deleteWeibo(Status weibo, int position) {
-        mPresent.deleteStatus(weibo, position);
+    private void deleteStatus(Status status, int position) {
+        mPresent.deleteStatus(status, position);
     }
 
-    private void collectWeibo(Status weibo) {
+    private void collectStatus(Status weibo) {
         mPresent.collectStatus(weibo);
     }
 
-    private void uncollectWeibo(Status weibo) {
+    private void unCollectStatus(Status weibo) {
         mPresent.unCollectStatus(weibo);
     }
 
@@ -111,11 +111,11 @@ public abstract class TimeLineStatusFragment<P extends TimeLinePresent> extends 
     @Override
     public void onLikeClick(View v, int position) {
         if (WeicoAuthUtil.checkWeicoLogin(this, false)) {
-            Status weibo = mRecyclerViewAdapter.getItem(position);
-            if (weibo.getAttitudes_status() == 1) {
-                mPresent.destroyAttitudeStatus(weibo);
+            Status status = mRecyclerViewAdapter.getItem(position);
+            if (status.getAttitudes_status() == 1) {
+                mPresent.destroyAttitudeStatus(status);
             }else {
-                mPresent.attitudeStatus(weibo);
+                mPresent.attitudeStatus(status);
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.api.ex.SchedulerTransformer;
-import com.caij.emore.bean.WeiboImageInfo;
+import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.bean.response.UserWeiboResponse;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.present.UserStatusPresent;
@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -31,7 +30,7 @@ public class UserImagePresentImp extends AbsBasePresent implements UserStatusPre
     private StatusApi mStatusApi;
     private List<Status> mStatuses;
     private long mUid;
-    private List<WeiboImageInfo> mPicUrl;
+    private List<StatusImageInfo> mPicUrl;
 
     public UserImagePresentImp(long uid, TimeLineStatusImageView view, StatusApi statusApi) {
         mView = view;

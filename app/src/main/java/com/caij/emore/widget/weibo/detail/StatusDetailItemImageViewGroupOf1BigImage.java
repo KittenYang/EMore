@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.bumptech.glide.request.target.Target;
-import com.caij.emore.bean.WeiboImageInfo;
+import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.LogUtil;
@@ -27,31 +27,31 @@ import java.util.concurrent.ExecutionException;
  * Created by Caij on 2016/6/13.
  * 这个是微博详情页的大图，需要全部加载，之前的控件ImageView展示不了，需要用WebView
  */
-public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implements ImageInterface {
+public class StatusDetailItemImageViewGroupOf1BigImage extends ViewGroup implements ImageInterface {
 
-    private WeiboImageInfo mImageInfo;
+    private StatusImageInfo mImageInfo;
     private Handler mMainHandler;
     private WebView mWebView;
 
     private boolean isDetached;
 
-    public WeiboDetailItemImageViewGroupOf1BigImage(Context context) {
+    public StatusDetailItemImageViewGroupOf1BigImage(Context context) {
         super(context);
         init(context);
     }
 
-    public WeiboDetailItemImageViewGroupOf1BigImage(Context context, AttributeSet attrs) {
+    public StatusDetailItemImageViewGroupOf1BigImage(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public WeiboDetailItemImageViewGroupOf1BigImage(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StatusDetailItemImageViewGroupOf1BigImage(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public WeiboDetailItemImageViewGroupOf1BigImage(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public StatusDetailItemImageViewGroupOf1BigImage(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
     }
@@ -105,7 +105,7 @@ public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implemen
         }
     }
 
-    private void disPlayPics(final WeiboImageInfo imageInfo) {
+    private void disPlayPics(final StatusImageInfo imageInfo) {
         ExecutorServiceUtil.submit(new Runnable() {
             @Override
             public void run() {
@@ -202,7 +202,7 @@ public class WeiboDetailItemImageViewGroupOf1BigImage extends ViewGroup implemen
     }
 
     @Override
-    public void setPics(List<String> pic_ids, LinkedHashMap<String, WeiboImageInfo> imageInfoLinkedHashMap) {
+    public void setPics(List<String> pic_ids, LinkedHashMap<String, StatusImageInfo> imageInfoLinkedHashMap) {
         this.mImageInfo = imageInfoLinkedHashMap.get(pic_ids.get(0));
         requestLayout();
         //因为请求重新绘制requestLayout是通过主线程handler发送消息， 这个再通过handler发送消息展示图片就会在绘制以后

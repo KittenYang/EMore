@@ -19,7 +19,7 @@ public class ImageInfoDao extends AbstractDao<ImageInfo, String> {
     public static final String TABLENAME = "IMAGE_INFO";
 
     /**
-     * Properties of entity WeiboImageInfo.<br/>
+     * Properties of entity StatusImageInfo.<br/>
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {

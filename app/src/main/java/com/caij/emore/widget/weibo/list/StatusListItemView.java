@@ -10,10 +10,10 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.database.bean.Status;
-import com.caij.emore.ui.activity.publish.CommentStatusActivity;
+import com.caij.emore.ui.activity.StatusDetailActivity;
 import com.caij.emore.utils.CountUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.widget.weibo.WeiboItemView;
+import com.caij.emore.widget.weibo.StatusItemView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -21,7 +21,7 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/16.
  */
-public abstract class WeiboListItemView extends WeiboItemView {
+public abstract class StatusListItemView extends StatusItemView {
 
     @BindView(R.id.tv_like)
     TextView tvLike;
@@ -45,25 +45,25 @@ public abstract class WeiboListItemView extends WeiboItemView {
 
     private boolean isDetail;
 
-    public WeiboListItemView(Context context) {
+    public StatusListItemView(Context context) {
         super(context);
     }
 
-    public WeiboListItemView(Context context, AttributeSet attrs) {
+    public StatusListItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WeiboListItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StatusListItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public WeiboListItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public StatusListItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
-    public void setWeibo(Status weibo) {
-        super.setWeibo(weibo);
+    public void setStatus(Status status) {
+        super.setStatus(status);
 
         if(isDetail) {
             rlWeiboBottom.setVisibility(GONE);
@@ -73,30 +73,30 @@ public abstract class WeiboListItemView extends WeiboItemView {
             btnMenus.setVisibility(VISIBLE);
         }
 
-        if (weibo.getTitle() != null && !isDetail) {
+        if (status.getTitle() != null && !isDetail) {
             llTitle.setVisibility(VISIBLE);
-            tvTitle.setText(weibo.getTitle().getText());
-            ImageLoader.load(getContext(), ivTitleIcon, weibo.getTitle().getIcon_url(), R.drawable.circle_image_placeholder);
+            tvTitle.setText(status.getTitle().getText());
+            ImageLoader.load(getContext(), ivTitleIcon, status.getTitle().getIcon_url(), R.drawable.circle_image_placeholder);
         }else {
             llTitle.setVisibility(GONE);
         }
 
-        tvRepostCount.setText(CountUtil.getCounter(getContext(), weibo.getReposts_count()));
+        tvRepostCount.setText(CountUtil.getCounter(getContext(), status.getReposts_count()));
 
-        if (weibo.getVisible() == null || "0".equals(weibo.getVisible().getType())) //非正常可见微博禁止转发
+        if (status.getVisible() == null || "0".equals(status.getVisible().getType())) //非正常可见微博禁止转发
             tvRepostCount.setVisibility(View.VISIBLE);
         else
             tvRepostCount.setVisibility(View.GONE);
 
-        tvCommentCount.setText(CountUtil.getCounter(getContext(), weibo.getComments_count()));
+        tvCommentCount.setText(CountUtil.getCounter(getContext(), status.getComments_count()));
 
-        tvLike.setText(String.valueOf(weibo.getAttitudes_count()));
-        tvLike.setSelected(weibo.getAttitudes_status() == 1);
+        tvLike.setText(String.valueOf(status.getAttitudes_count()));
+        tvLike.setSelected(status.getAttitudes_status() == 1);
 
-        tvLike.setTag(weibo);
-        tvCommentCount.setTag(weibo);
-        tvRepostCount.setTag(weibo);
-        btnMenus.setTag(weibo);
+        tvLike.setTag(status);
+        tvCommentCount.setTag(status);
+        tvRepostCount.setTag(status);
+        btnMenus.setTag(status);
 
     }
 
@@ -110,8 +110,8 @@ public abstract class WeiboListItemView extends WeiboItemView {
                 }
                 break;
             case R.id.tv_comment_count: {
-                Status weibo = (Status) view.getTag();
-                Intent intent = CommentStatusActivity.newIntent(getContext(), weibo.getId());
+                Status status = (Status) view.getTag();
+                Intent intent = StatusDetailActivity.newIntent(getContext(), status.getId());
                 getContext().startActivity(intent);
                 break;
             }

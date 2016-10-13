@@ -10,9 +10,7 @@ import android.view.ViewGroup;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
-import com.caij.emore.account.Token;
-import com.caij.emore.account.UserPrefs;
-import com.caij.emore.bean.WeiboImageInfo;
+import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.present.UserStatusPresent;
 import com.caij.emore.present.imp.UserImagePresentImp;
 import com.caij.emore.remote.imp.StatusApiImp;
@@ -25,7 +23,7 @@ import com.caij.emore.widget.recyclerview.XRecyclerView;
 /**
  * Created by Caij on 2016/6/29.
  */
-public class UserImageFragment extends RecyclerViewFragment<WeiboImageInfo, UserStatusPresent> implements TimeLineStatusImageView, XRecyclerView.OnLoadMoreListener {
+public class UserImageFragment extends RecyclerViewFragment<StatusImageInfo, UserStatusPresent> implements TimeLineStatusImageView, XRecyclerView.OnLoadMoreListener {
 
 
     public static UserImageFragment newInstance(long uid) {
@@ -43,7 +41,7 @@ public class UserImageFragment extends RecyclerViewFragment<WeiboImageInfo, User
     }
 
     @Override
-    protected BaseAdapter<WeiboImageInfo, ? extends BaseViewHolder> createRecyclerViewAdapter() {
+    protected BaseAdapter<StatusImageInfo, ? extends BaseViewHolder> createRecyclerViewAdapter() {
         return new UserGridImageAdapter(getActivity());
     }
 

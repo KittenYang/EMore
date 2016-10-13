@@ -3,7 +3,7 @@ package com.caij.emore.bean;
 /**
  * Created by Caij on 2016/8/25.
  */
-public class WeiboImageInfo {
+public class StatusImageInfo {
 
     /**
      * url : http://ww4.sinaimg.cn/wap180/7116d0edgw1f72hg7h6u4j20go09edgd.jpg

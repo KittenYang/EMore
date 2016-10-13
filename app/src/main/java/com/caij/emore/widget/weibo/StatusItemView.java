@@ -27,7 +27,7 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/5.
  */
-public abstract class WeiboItemView extends RelativeLayout {
+public abstract class StatusItemView extends RelativeLayout {
 
     @BindView(R.id.sdv_avatar)
     protected ImageView ivAvatar;
@@ -40,23 +40,23 @@ public abstract class WeiboItemView extends RelativeLayout {
     @BindView(R.id.tv_content)
     protected TextView tvContent;
 
-    public WeiboItemView(Context context) {
+    public StatusItemView(Context context) {
         super(context);
         init(context, null, -1, -1);
     }
 
-    public WeiboItemView(Context context, AttributeSet attrs) {
+    public StatusItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs, -1, -1);
     }
 
-    public WeiboItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StatusItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs, defStyleAttr, -1);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public WeiboItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public StatusItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -68,7 +68,7 @@ public abstract class WeiboItemView extends RelativeLayout {
 
     protected abstract int getLayoutId();
 
-    public void setWeibo(Status weibo) {
+    public void setStatus(Status weibo) {
         if (TextUtils.isEmpty(weibo.getUser().getRemark())) {
             tvName.setText(weibo.getUser().getName());
         }else {
