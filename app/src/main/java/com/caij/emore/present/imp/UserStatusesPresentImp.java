@@ -1,7 +1,7 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.api.ex.ResponseSubscriber;
-import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.bean.response.UserStatusesResponse;
 import com.caij.emore.manager.StatusManager;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.present.UserStatusPresent;
@@ -20,15 +20,15 @@ import rx.functions.Func1;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class UserStatusPresentImp extends AbsListTimeLinePresent<TimeLineStatusView> implements UserStatusPresent {
+public class UserStatusesPresentImp extends AbsListTimeLinePresent<TimeLineStatusView> implements UserStatusPresent {
 
     private final static int PAGE_COUNT = 20;
 
     private int mFeature = 0;
     private long mUid;
 
-    public UserStatusPresentImp(long uid, TimeLineStatusView view, StatusApi statusApi,
-                                StatusManager statusManager, AttitudeApi attitudeApi) {
+    public UserStatusesPresentImp(long uid, TimeLineStatusView view, StatusApi statusApi,
+                                  StatusManager statusManager, AttitudeApi attitudeApi) {
         super(view, statusApi, statusManager, attitudeApi);
         mUid = uid;
     }
@@ -90,7 +90,7 @@ public class UserStatusPresentImp extends AbsListTimeLinePresent<TimeLineStatusV
                     public void onNext(List<Status> statuses) {
                         mStatuses.addAll(statuses);
                         mView.notifyItemRangeInserted(mStatuses, mStatuses.size() - statuses.size(), statuses.size());
-                        mView.onLoadComplete(statuses.size() >= PAGE_COUNT - 1); //这里有一条重复的 所以需要-1
+                        mView.onLoadComplete(statuses.size() >= PAGE_COUNT); //这里有一条重复的 所以需要-1
                     }
                 });
         addSubscription(subscription);
@@ -98,10 +98,10 @@ public class UserStatusPresentImp extends AbsListTimeLinePresent<TimeLineStatusV
 
     private Observable<List<Status>> createObservable(long maxId, final boolean isRefresh) {
         return mStatusApi.getUseWeibo(mUid, mFeature, 0, maxId, PAGE_COUNT, 1)
-                .compose(new ErrorCheckerTransformer<UserWeiboResponse>())
-                .flatMap(new Func1<UserWeiboResponse, Observable<Status>>() {
+                .compose(new ErrorCheckerTransformer<UserStatusesResponse>())
+                .flatMap(new Func1<UserStatusesResponse, Observable<Status>>() {
                     @Override
-                    public Observable<Status> call(UserWeiboResponse response) {
+                    public Observable<Status> call(UserStatusesResponse response) {
                         return Observable.from(response.getStatuses());
                     }
                 })

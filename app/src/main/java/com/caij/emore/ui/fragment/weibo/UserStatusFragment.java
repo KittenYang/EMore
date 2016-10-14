@@ -10,7 +10,7 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.manager.imp.StatusManagerImp;
 import com.caij.emore.present.UserStatusPresent;
-import com.caij.emore.present.imp.UserStatusPresentImp;
+import com.caij.emore.present.imp.UserStatusesPresentImp;
 import com.caij.emore.remote.imp.AttitudeApiImp;
 import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.utils.DialogUtil;
@@ -46,7 +46,7 @@ public class UserStatusFragment extends TimeLineStatusFragment<UserStatusPresent
     @Override
     protected UserStatusPresent createPresent() {
         long uid = getArguments().getLong(Key.ID);
-        return new UserStatusPresentImp(uid, this,
+        return new UserStatusesPresentImp(uid, this,
                 new StatusApiImp(), new StatusManagerImp(), new AttitudeApiImp());
     }
 

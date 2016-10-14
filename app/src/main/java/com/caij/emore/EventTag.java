@@ -28,4 +28,5 @@ public interface EventTag {
 
     String EVENT_MODE_NIGHT_UPDATE = "event_mode_night_update";
     String EVENT_STATUS_REFRESH = "event_status_refresh";
+    Object EVENT_TOKEN_EXPIRED = "event_token_expired";
 }

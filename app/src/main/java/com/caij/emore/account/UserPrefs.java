@@ -116,6 +116,10 @@ public class UserPrefs {
         }
     }
 
+    public void deleteUsingAccount() {
+        deleteAccount(mAccount);
+    }
+
     private static class DBHelp extends DaoMaster.OpenHelper {
 
         DBHelp(Context context, String name, SQLiteDatabase.CursorFactory factory) {

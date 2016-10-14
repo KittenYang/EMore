@@ -1,6 +1,6 @@
 package com.caij.emore.api;
 
-import com.caij.emore.AppApplication;
+import com.caij.emore.EMoreApplication;
 import com.caij.emore.Key;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
@@ -17,10 +17,9 @@ import com.caij.emore.bean.response.QueryStatusResponse;
 import com.caij.emore.bean.response.QueryStatusCommentResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserMessageResponse;
-import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.bean.response.UserStatusesResponse;
 import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.bean.response.StatusAttitudesResponse;
-import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
@@ -108,7 +107,7 @@ public interface WeiCoService {
          */
         static Request interceptRequest(Request request) {
             RequestBody requestBody = request.body();
-            Token token = UserPrefs.get(AppApplication.getInstance()).getToken();
+            Token token = UserPrefs.get(EMoreApplication.getInstance()).getToken();
             String accessToken = token == null ? "" : token.getAccess_token();
             if (requestBody == null) {  //get
                 HttpUrl url = request.url().newBuilder()
@@ -164,9 +163,9 @@ public interface WeiCoService {
     Observable<Status> getWeiboById(@Query("id") long id, @Query("isGetLongText") int isGetLongText);
 
     @GET("2/statuses/user_timeline")
-    Observable<UserWeiboResponse> getUserWeibos(@Query("uid") long uid, @Query("feature") int feature,
-                                                @Query("since_id") long since_id, @Query("max_id") long max_id,
-                                                @Query("count") int count, @Query("page") int page);
+    Observable<UserStatusesResponse> getUserWeibos(@Query("uid") long uid, @Query("feature") int feature,
+                                                   @Query("since_id") long since_id, @Query("max_id") long max_id,
+                                                   @Query("count") int count, @Query("page") int page);
 
     @FormUrlEncoded
     @POST("/2/like/set_like")

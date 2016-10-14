@@ -1,19 +1,16 @@
 package com.caij.emore.ui.fragment;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.caij.emore.EMoreApplication;
 import com.caij.emore.R;
-import com.caij.emore.account.UserPrefs;
 import com.caij.emore.present.BasePresent;
-import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.view.BaseView;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.utils.Init;
 import com.caij.emore.utils.ToastUtil;
 
 /**
@@ -41,16 +38,7 @@ public abstract class BaseFragment<P extends BasePresent> extends Fragment imple
 
     @Override
     public void onAuthenticationError() {
-        UserPrefs userPrefs = UserPrefs.get(getActivity());
-        showHint(R.string.auth_invalid_hint);
-
-        Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(getActivity(), userPrefs.getAccount().getUsername(),
-                userPrefs.getAccount().getPwd());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        Init.getInstance().stop(getActivity());
-
-        startActivity(intent);
+        ((EMoreApplication)getActivity().getApplication()).onAuthenticationError();
     }
 
     @Override

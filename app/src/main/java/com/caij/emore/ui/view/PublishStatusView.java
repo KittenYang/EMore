@@ -9,7 +9,7 @@ import com.caij.emore.database.bean.Status;
 /**
  * Created by Caij on 2016/6/25.
  */
-public interface PublishServiceView extends BaseView {
+public interface PublishStatusView extends BaseView {
 
     void onPublishStart(PublishBean publishBean);
 

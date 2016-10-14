@@ -1,22 +1,19 @@
 package com.caij.emore.ui.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.caij.emore.AppApplication;
+import com.caij.emore.EMoreApplication;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.database.bean.ImageInfo;
 import com.caij.emore.utils.DateUtil;
-import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.glide.MaskTransformation;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
@@ -24,7 +21,6 @@ import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.http.Url;
 
 /**
  * Created by Caij on 2016/7/10.
@@ -201,7 +197,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
     @Override
     public int getItemViewType(int position) {
         DirectMessage directMessage = getItem(position);
-        if (directMessage.getSender_id() == Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getToken().getUid())) {
+        if (directMessage.getSender_id() == Long.parseLong(UserPrefs.get(EMoreApplication.getInstance()).getToken().getUid())) {
             if (directMessage.getAtt_ids() != null && directMessage.getAtt_ids().size() > 0 && directMessage.getImageInfo() != null) {
                 return TYPE_SELT_IMAGE;
             }else {

@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 
 import com.caij.emore.AppSettings;
+import com.caij.emore.EventTag;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
@@ -29,6 +30,7 @@ import com.caij.emore.ui.activity.MainActivity;
 import com.caij.emore.ui.activity.MentionActivity;
 import com.caij.emore.ui.fragment.AttitudesToMeFragment;
 import com.caij.emore.utils.LogUtil;
+import com.caij.emore.utils.rxbus.RxBus;
 
 /**
  * Created by Caij on 2016/7/7.
@@ -36,7 +38,7 @@ import com.caij.emore.utils.LogUtil;
 public class UnReadMessageManager extends IManager implements UnReadMessageManagerPresentView {
 
     private static final String ACTION_SENDING_HEARTBEAT = "com.caij.weiyo.schedule.action";
-    private static final int WEIBI_MENTION_NOTIFICATION_ID = 2000;
+    private static final int STATUS_MENTION_NOTIFICATION_ID = 2000;
     private static final int FOLLOWER_NOTIFICATION_ID = 2001;
     private static final int COMMENT_NOTIFICATION_ID = 2002;
     private static final int MESSAGE_NOTIFICATION_ID = 2003;
@@ -129,7 +131,7 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
                 intents[0] = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
                 intents[1] =  new Intent(ctx, MentionActivity.class);
                 notifyNotification(ctx.getString(R.string.app_name), text, serverUnReadMessage.getMention_status(),
-                        R.mipmap.statusbar_ic_mention_small, WEIBI_MENTION_NOTIFICATION_ID, intents);
+                        R.mipmap.statusbar_ic_mention_small, STATUS_MENTION_NOTIFICATION_ID, intents);
             }
 
             if (AppSettings.isNotifyCommentMentionEnable(ctx) && serverUnReadMessage.getMention_cmt() > 0
@@ -171,7 +173,7 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
 
         //这里用setInexactRepeating需要多一步操作， 在设置里面更改消息时间就要重新设置 intervalMillis ，需要通过事件总线通知
         // 如果用set 只需要在scheduleReceiver中重新设置定时闹钟就行
-        mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + seconds, seconds, pendingIntent);
+        mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), seconds, pendingIntent);
     }
 
     private void cancelHeartbeatTimer() {
@@ -206,4 +208,37 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
         mNotificationManager.notify(id, notification);
     }
 
+    @Override
+    public void onAuthenticationError() {
+        UserPrefs.get(ctx).deleteUsingAccount();
+
+        RxBus.getDefault().post(EventTag.EVENT_TOKEN_EXPIRED, null);
+
+        EMoreService.stop(ctx);
+    }
+
+    @Override
+    public void onDefaultLoadError() {
+
+    }
+
+    @Override
+    public void showHint(int stringId) {
+
+    }
+
+    @Override
+    public void showHint(String string) {
+
+    }
+
+    @Override
+    public void showDialogLoading(boolean isShow, int hintStringId) {
+
+    }
+
+    @Override
+    public void showDialogLoading(boolean isShow) {
+
+    }
 }

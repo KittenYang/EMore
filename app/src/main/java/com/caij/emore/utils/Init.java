@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 
-import com.caij.emore.AppApplication;
+import com.caij.emore.EMoreApplication;
 import com.caij.emore.BuildConfig;
 import com.caij.emore.EventTag;
 import com.caij.emore.Key;
@@ -118,7 +118,7 @@ public class Init {
             }catch (RemoteException re) {
                 mRestoreArrayDeque.offer(pipeEvent);
                 LogUtil.d(Init.this, "进程通讯异常: RemoteException" + re.getMessage());
-                initEMoreServicePipe(AppApplication.getInstance());
+                initEMoreServicePipe(EMoreApplication.getInstance());
             }catch (Exception e) {
                 LogUtil.d(Init.this, "进程通讯异常: Exception" + e.getMessage());
             }

@@ -5,12 +5,14 @@ package com.caij.emore.database.bean;
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
 
+import com.caij.emore.bean.response.Response;
+
 import java.io.Serializable;
 
 /**
  * Entity mapped to table "UN_READ_MESSAGE".
  */
-public class UnReadMessage implements Serializable {
+public class UnReadMessage extends Response implements Serializable {
 
     private Long uid;
     private Integer cmt;

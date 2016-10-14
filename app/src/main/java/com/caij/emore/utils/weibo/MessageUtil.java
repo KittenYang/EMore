@@ -1,6 +1,6 @@
 package com.caij.emore.utils.weibo;
 
-import com.caij.emore.AppApplication;
+import com.caij.emore.EMoreApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.response.Response;
@@ -75,7 +75,7 @@ public class MessageUtil {
     }
 
     public static void resetLocalUnReadMessageDisValue(final String type, final int disValue, final NotifyManager notifyManager) {
-        final long uid  = Long.parseLong(UserPrefs.get(AppApplication.getInstance()).getToken().getUid());
+        final long uid  = Long.parseLong(UserPrefs.get(EMoreApplication.getInstance()).getToken().getUid());
         RxUtil.createDataObservable(new RxUtil.Provider<UnReadMessage>() {
             @Override
             public UnReadMessage getData() {

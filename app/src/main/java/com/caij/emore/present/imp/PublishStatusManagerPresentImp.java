@@ -3,6 +3,7 @@ package com.caij.emore.present.imp;
 import android.os.AsyncTask;
 
 import com.caij.emore.EventTag;
+import com.caij.emore.api.ex.ResponseSubscriber;
 import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.bean.PublishBean;
 import com.caij.emore.manager.DraftManager;
@@ -11,9 +12,9 @@ import com.caij.emore.manager.StatusUploadImageManager;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.database.bean.UploadImageResponse;
-import com.caij.emore.present.PublishWeiboManagerPresent;
+import com.caij.emore.present.PublishStatusManagerPresent;
 import com.caij.emore.remote.StatusApi;
-import com.caij.emore.ui.view.PublishServiceView;
+import com.caij.emore.ui.view.PublishStatusView;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.ImageUtil;
@@ -36,25 +37,25 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Caij on 2016/7/19.
  */
-public class PublishStatusManagerPresentImp extends AbsBasePresent implements PublishWeiboManagerPresent {
+public class PublishStatusManagerPresentImp extends AbsBasePresent implements PublishStatusManagerPresent {
 
     private Observable<PublishBean> mPublishStatusObservable;
     private DraftManager mDraftManager;
     StatusApi mStatusApi;
     private StatusManager mStatusManager;
-    private PublishServiceView mPublishServiceView;
+    private PublishStatusView mPublishStatusView;
     private StatusUploadImageManager mStatusUploadImageManager;
 
     public PublishStatusManagerPresentImp(StatusApi statusApi,
                                           StatusManager statusManager,
                                           DraftManager draftManager,
                                           StatusUploadImageManager statusUploadImageManager,
-                                          PublishServiceView view) {
+                                          PublishStatusView view) {
         mStatusApi = statusApi;
         mStatusManager = statusManager;
         mDraftManager = draftManager;
         mStatusUploadImageManager = statusUploadImageManager;
-        mPublishServiceView = view;
+        mPublishStatusView = view;
     }
 
     @Override
@@ -81,14 +82,14 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
     }
 
     private void publishStatusMuImage(final PublishBean publishBean) {
-        mPublishServiceView.onPublishStart(publishBean);
+        mPublishStatusView.onPublishStart(publishBean);
         Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<List<String>>() {
             @Override
             public List<String> getData() throws Exception {
                 List<String> outPaths = new ArrayList<String>();
                 for (String source : publishBean.getPics()) {
                     outPaths.add(ImageUtil.compressImage(source,
-                            mPublishServiceView.getContent().getApplicationContext()));
+                            mPublishStatusView.getContent().getApplicationContext()));
                 }
                 return outPaths;
             }
@@ -156,13 +157,13 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
     }
 
     private void publishStatusOneImage(final PublishBean publishBean) {
-        mPublishServiceView.onPublishStart(publishBean);
+        mPublishStatusView.onPublishStart(publishBean);
         Subscription subscription = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 try {
                     subscriber.onNext(ImageUtil.compressImage(publishBean.getPics().get(0),
-                            mPublishServiceView.getContent().getApplicationContext()));
+                            mPublishStatusView.getContent().getApplicationContext()));
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     subscriber.onError(e);
@@ -196,7 +197,7 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
 
     private void publishText(final PublishBean publishBean) {
         Observable<Status> publishStatusObservable = mStatusApi.publishWeiboOfText(publishBean.getText());
-        mPublishServiceView.onPublishStart(publishBean);
+        mPublishStatusView.onPublishStart(publishBean);
         Subscription subscription = publishStatusObservable.subscribeOn(Schedulers.io())
                 .doOnError(new Action1<Throwable>() {
                     @Override
@@ -217,20 +218,17 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
     }
 
     private Subscriber<Status> createStatusSubscriber() {
-        return new Subscriber<Status>() {
-            @Override
-            public void onCompleted() {
-            }
+        return new ResponseSubscriber<Status>(mPublishStatusView) {
 
             @Override
-            public void onError(Throwable e) {
+            protected void onFail(Throwable e) {
                 LogUtil.d(PublishStatusManagerPresentImp.this, "publish weibo error " + e.getMessage());
-                mPublishServiceView.onPublishFail();
+                mPublishStatusView.onPublishFail();
             }
 
             @Override
             public void onNext(Status status) {
-                mPublishServiceView.onPublishSuccess(status);
+                mPublishStatusView.onPublishSuccess(status);
                 postPublishStatusSuccessEvent(status);
             }
         };

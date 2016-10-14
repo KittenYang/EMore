@@ -5,7 +5,7 @@ import com.caij.emore.api.WeiCoService;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.QueryRelayStatusResponse;
 import com.caij.emore.bean.response.QueryStatusResponse;
-import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.bean.response.UserStatusesResponse;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.remote.StatusApi;
@@ -42,7 +42,7 @@ public class StatusApiImp implements StatusApi {
     }
 
     @Override
-    public Observable<UserWeiboResponse> getUseWeibo(long uid, int feature, long since_id, long max_id, int count, int page) {
+    public Observable<UserStatusesResponse> getUseWeibo(long uid, int feature, long since_id, long max_id, int count, int page) {
         return mWeiCoService.getUserWeibos(uid, feature, since_id, max_id, count, page);
     }
 

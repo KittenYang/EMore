@@ -1,8 +1,9 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.AppApplication;
+import com.caij.emore.EMoreApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.account.Token;
+import com.caij.emore.api.ex.ResponseSubscriber;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.manager.NotifyManager;
 import com.caij.emore.present.UnReadMessageManagerPresent;
@@ -13,9 +14,9 @@ import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -59,20 +60,14 @@ public class UnReadMessageManagerPresentImp extends AbsBasePresent implements Un
 
     @Override
     public void loadUnReadMessage() {
-        if (!SystemUtil.isNetworkAvailable(AppApplication.getInstance())) {
-            return;
-        }
+        if (!SystemUtil.isNetworkAvailable(EMoreApplication.getInstance())) return;
         if (mToken != null) {
             Subscription subscription = mNotifyApi.getUnReadMessage(Long.parseLong(mToken.getUid()))
                     .compose(new SchedulerTransformer<UnReadMessage>())
-                    .subscribe(new Subscriber<UnReadMessage>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
+                    .subscribe(new ResponseSubscriber<UnReadMessage>(mView) {
 
                         @Override
-                        public void onError(Throwable e) {
+                        protected void onFail(Throwable e) {
 
                         }
 
@@ -100,12 +95,7 @@ public class UnReadMessageManagerPresentImp extends AbsBasePresent implements Un
                     }
                 })
                 .compose(new SchedulerTransformer<UnReadMessage>())
-                .subscribe(new Subscriber<UnReadMessage>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
+                .subscribe(new SubscriberAdapter<UnReadMessage>() {
                     @Override
                     public void onError(Throwable e) {
                         LogUtil.d(UnReadMessageManagerPresentImp.this, e.getMessage());

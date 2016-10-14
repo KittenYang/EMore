@@ -24,6 +24,8 @@ import rx.functions.Func1;
  */
 public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfoDetailPresent {
 
+    private static final long USER_CACHE_TIME = 2 * 60 * 1000;
+
     private DetailUserView mUserView;
     private UserApi mUserApi;
     private UserManager mUserManager;
@@ -41,7 +43,6 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
 
     @Override
     public void follow() {
-        mUserView.showDialogLoading(true);
         Subscription subscription = mUserApi.followUser(mName, mUser.getId())
                 .compose(new ErrorCheckerTransformer<User>())
                 .doOnNext(new Action1<User>() {
@@ -50,16 +51,24 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
                         mUserManager.saveUser(user);
                     }
                 })
-                .compose(new DefaultTransformer<User>())
-                .subscribe(new ResponseSubscriber<User>(mUserView) {
+                .compose(SchedulerTransformer.<User>create())
+                .doOnSubscribe(new Action0() {
                     @Override
-                    public void onCompleted() {
+                    public void call() {
+                        mUserView.showDialogLoading(true);
+                    }
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
                         mUserView.showDialogLoading(false);
                     }
+                })
+                .subscribe(new ResponseSubscriber<User>(mUserView) {
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mUserView.showDialogLoading(false);
+
                     }
 
                     @Override
@@ -115,21 +124,21 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
                 return mUserManager.getUserByName(mName);
             }
         });
-        Observable<User> serverObservable =  mUserApi.getWeiboUserByName(mName)
+        Observable<User> serverObservable = mUserApi.getWeiboUserByName(mName)
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User user) {
                         mUserManager.saveUser(user);
                     }
-                });
+                }).compose(ErrorCheckerTransformer.<User>create());
         Subscription subscription = Observable.concat(localObservable, serverObservable)
-                .filter(new Func1<User, Boolean>() {
+                .first(new Func1<User, Boolean>() {
                     @Override
                     public Boolean call(User user) {
-                        return user != null;
+                        return user != null &&
+                                Math.abs(System.currentTimeMillis() - user.getUpdate_time()) < USER_CACHE_TIME;
                     }
                 })
-                .compose(ErrorCheckerTransformer.<User>create())
                 .compose(SchedulerTransformer.<User>create())
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -152,7 +161,6 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
                             int code  = httpException.code();
                             if (code == 400) {
                                 mUserView.showHint(R.string.user_undefine);
-                                return;
                             }
                         }
                     }
@@ -169,23 +177,24 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
     @Override
     public void onRefresh() {
         Subscription subscription = mUserApi.getWeiboUserByName(mName)
+                .compose(ErrorCheckerTransformer.<User>create())
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User user) {
                         mUserManager.saveUser(user);
                     }
                 })
-                .compose(new DefaultTransformer<User>())
-                .subscribe(new ResponseSubscriber<User>(mUserView) {
+                .compose(SchedulerTransformer.<User>create())
+                .doOnTerminate(new Action0() {
                     @Override
-                    public void onCompleted() {
+                    public void call() {
                         mUserView.onRefreshComplete();
                     }
+                })
+                .subscribe(new ResponseSubscriber<User>(mUserView) {
 
                     @Override
                     protected void onFail(Throwable e) {
-                        mUserView.onRefreshComplete();
-                        mUserView.showDialogLoading(false);
                         if (e instanceof HttpException) {
                             HttpException httpException = (HttpException) e;
                             int code  = httpException.code();

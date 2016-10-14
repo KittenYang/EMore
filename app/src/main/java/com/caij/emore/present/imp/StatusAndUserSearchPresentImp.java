@@ -107,11 +107,11 @@ public class StatusAndUserSearchPresentImp extends AbsListTimeLinePresent<Status
                     }
 
                     @Override
-                    public void onNext(List<Status> weibos) {
-                        mStatuses.addAll(weibos);
-                        mView.notifyItemRangeInserted(mStatuses, mStatuses.size() - weibos.size(), weibos.size());
+                    public void onNext(List<Status> statuses) {
+                        mStatuses.addAll(statuses);
+                        mView.notifyItemRangeInserted(mStatuses, mStatuses.size() - statuses.size(), statuses.size());
 
-                        if (weibos.size() > PAGE_COUNT - 3) {
+                        if (statuses.size() > PAGE_COUNT - 3) {
                             mView.onLoadComplete(true);
                         }else {
                             mView.onLoadComplete(false);

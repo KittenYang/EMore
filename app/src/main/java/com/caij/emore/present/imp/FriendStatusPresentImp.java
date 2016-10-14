@@ -2,7 +2,7 @@ package com.caij.emore.present.imp;
 
 import android.text.TextUtils;
 
-import com.caij.emore.AppApplication;
+import com.caij.emore.EMoreApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.Key;
 import com.caij.emore.api.ex.ResponseSubscriber;
@@ -111,7 +111,7 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
     }
 
     private List<Status> getCacheStatus() {
-        String ids = new SPUtil.SPBuilder(AppApplication.getInstance())
+        String ids = new SPUtil.SPBuilder(EMoreApplication.getInstance())
                 .openDefault()
                 .getString(Key.FRIEND_STATUS_LOCAL_CACHE_IDS, "");
         if (!TextUtils.isEmpty(ids)) {
@@ -132,12 +132,12 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
         mStatuses.addAll(statuses);
         mView.setEntities(mStatuses);
 
-        mNextCursor = new SPUtil.SPBuilder(AppApplication.getInstance())
+        mNextCursor = new SPUtil.SPBuilder(EMoreApplication.getInstance())
                 .openDefault()
                 .getLong(Key.FRIEND_STATUS_LOCAL_NEXT_CURSOR_TIME, 0);
         LogUtil.d(this, "local next cursor %s", mNextCursor);
 
-        long preRefreshTime  = new SPUtil.SPBuilder(AppApplication.getInstance())
+        long preRefreshTime  = new SPUtil.SPBuilder(EMoreApplication.getInstance())
                 .openDefault()
                 .getLong(Key.FRIEND_STATUS_UPDATE_TIME, -1);
         if (System.currentTimeMillis() - preRefreshTime > STATUS_REFRESH_INTERVAL
@@ -197,14 +197,14 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
         for (Status status : statuses) {
             ids.add(status.getId());
         }
-        new SPUtil.SPBuilder(AppApplication.getInstance())
+        new SPUtil.SPBuilder(EMoreApplication.getInstance())
                 .openDefault().edit()
                 .putString(Key.FRIEND_STATUS_LOCAL_CACHE_IDS, GsonUtils.toJson(ids))
                 .apply();
     }
 
     private void saveStatusRefreshTimeAndNextCursor() {
-        new SPUtil.SPBuilder(AppApplication.getInstance())
+        new SPUtil.SPBuilder(EMoreApplication.getInstance())
                 .openDefault().edit()
                 .putLong(Key.FRIEND_STATUS_UPDATE_TIME, System.currentTimeMillis())
                 .putLong(Key.FRIEND_STATUS_LOCAL_NEXT_CURSOR_TIME, mNextCursor)

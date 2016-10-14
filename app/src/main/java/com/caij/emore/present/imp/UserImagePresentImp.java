@@ -2,7 +2,7 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.bean.StatusImageInfo;
-import com.caij.emore.bean.response.UserWeiboResponse;
+import com.caij.emore.bean.response.UserStatusesResponse;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.present.UserStatusPresent;
 import com.caij.emore.remote.StatusApi;
@@ -78,9 +78,9 @@ public class UserImagePresentImp extends AbsBasePresent implements UserStatusPre
     @Override
     public void refresh() {
         Subscription subscription = mStatusApi.getUseWeibo(mUid, 2, 0, 0, PAGE_COUNT, 1)
-                .flatMap(new Func1<UserWeiboResponse, Observable<Status>>() {
+                .flatMap(new Func1<UserStatusesResponse, Observable<Status>>() {
                     @Override
-                    public Observable<Status> call(UserWeiboResponse response) {
+                    public Observable<Status> call(UserStatusesResponse response) {
                         return Observable.from(response.getStatuses());
                     }
                 })
@@ -126,9 +126,9 @@ public class UserImagePresentImp extends AbsBasePresent implements UserStatusPre
             maxId = mStatuses.get(mStatuses.size() - 1).getId();
         }
         Subscription subscription = mStatusApi.getUseWeibo(mUid, 2, 0, maxId, PAGE_COUNT, 1)
-                .flatMap(new Func1<UserWeiboResponse, Observable<Status>>() {
+                .flatMap(new Func1<UserStatusesResponse, Observable<Status>>() {
                     @Override
-                    public Observable<Status> call(UserWeiboResponse response) {
+                    public Observable<Status> call(UserStatusesResponse response) {
                         return Observable.from(response.getStatuses());
                     }
                 })

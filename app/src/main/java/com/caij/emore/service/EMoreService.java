@@ -19,7 +19,7 @@ import android.support.annotation.Nullable;
 import com.caij.emore.EventTag;
 import com.caij.emore.Key;
 import com.caij.emore.service.manager.ChatManager;
-import com.caij.emore.service.manager.PublishWeiboManager;
+import com.caij.emore.service.manager.PublishStatusManager;
 import com.caij.emore.service.manager.UnReadMessageManager;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -33,7 +33,7 @@ public class EMoreService extends Service {
 
     private static final int SERVICE_ID = 5587;
 
-    private PublishWeiboManager mPublishWeiboManager;
+    private PublishStatusManager mPublishStatusManager;
     private UnReadMessageManager mUnReadMessageManager;
     private ChatManager mChatManager;
 
@@ -80,11 +80,11 @@ public class EMoreService extends Service {
         mPipeHandler = new PipeHandler();
         mServerMessenger = new Messenger(mPipeHandler);
 
-        mPublishWeiboManager = PublishWeiboManager.getInstance();
+        mPublishStatusManager = PublishStatusManager.getInstance();
         mUnReadMessageManager = UnReadMessageManager.getInstance();
         mChatManager = ChatManager.getInstance();
 
-        mPublishWeiboManager.onCreateManager(this);
+        mPublishStatusManager.onCreateManager(this);
         mUnReadMessageManager.onCreateManager(this);
         mChatManager.onCreateManager(this);
 
@@ -101,7 +101,7 @@ public class EMoreService extends Service {
         mServerMessenger = null;
         mPipeHandler.onDestroy();
         super.onDestroy();
-        mPublishWeiboManager.reset();
+        mPublishStatusManager.reset();
         mUnReadMessageManager.reset();
         mChatManager.reset();
         Process.killProcess(Process.myPid());
@@ -147,7 +147,8 @@ public class EMoreService extends Service {
                                 || tag.equals(EventTag.EVENT_PUBLISH_WEIBO_SUCCESS)
                                 || tag.equals(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE)
                                 || tag.equals(EventTag.EVENT_HAS_NEW_DM)
-                                || tag.equals(EventTag.EVENT_SEND_MESSAGE_RESULT)) {
+                                || tag.equals(EventTag.EVENT_SEND_MESSAGE_RESULT)
+                                || tag.equals(EventTag.EVENT_TOKEN_EXPIRED)) {
                             LogUtil.d(PipeHandler.this,"EMoreService send event " + tag.toString() + " to other event");
 
                             if (mClientMessenger != null) {

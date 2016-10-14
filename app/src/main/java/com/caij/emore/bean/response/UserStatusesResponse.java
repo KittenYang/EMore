@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/29.
  */
-public class UserWeiboResponse extends Response {
+public class UserStatusesResponse extends Response {
 
     private List<Status> statuses;
 
