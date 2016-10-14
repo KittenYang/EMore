@@ -17,14 +17,14 @@ public class ReplyCommentPresentImp extends AbsBasePresent implements ReplyComme
     private CommentApi mCommentApi;
     private CommentStatusView mCommentStatusView;
 
-    private long mWeiboId;
+    private long mStatusId;
     private long mCid;
 
-    public ReplyCommentPresentImp(long weiboId, long cid,
+    public ReplyCommentPresentImp(long statusId, long cid,
                                   CommentApi commentApi, CommentStatusView commentStatusView) {
         mCommentApi = commentApi;
         mCid = cid;
-        mWeiboId = weiboId;
+        mStatusId = statusId;
         mCommentStatusView = commentStatusView;
     }
 
@@ -36,7 +36,7 @@ public class ReplyCommentPresentImp extends AbsBasePresent implements ReplyComme
     @Override
     public void toReplyComment(String comment) {
         mCommentStatusView.showDialogLoading(true);
-        Subscription subscription = mCommentApi.replyComment(comment, mCid, mWeiboId)
+        Subscription subscription = mCommentApi.replyComment(comment, mCid, mStatusId)
                 .compose(new DefaultTransformer<Comment>())
                 .subscribe(new ResponseSubscriber<Comment>(mCommentStatusView) {
                     @Override

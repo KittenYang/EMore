@@ -31,11 +31,11 @@ public class StatusAttitudesPresentImp extends AbsBasePresent implements StatusR
     private static final int PAGE_COUNT = 20;
 
     private long mStatusId;
-    StatusAttitudesView mView;
-    List<User> mAttitudes;
+    private StatusAttitudesView mView;
+    private List<User> mAttitudes;
     private int mPage;
     private Observable<Event> mAttitudeObservable;
-    Observable<Event> mStatusRefreshObservable;
+    private Observable<Event> mStatusRefreshObservable;
 
     private AttitudeApi mAttitudeApi;
 

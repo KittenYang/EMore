@@ -39,11 +39,11 @@ public class RelayStatusPresentImp extends AbsBasePresent implements RepostWeibo
                     }
 
                     @Override
-                    public void onNext(Status weibo) {
+                    public void onNext(Status relayStatus) {
                         mRelayStatusView.showDialogLoading(false);
-                        mRelayStatusView.onRepostSuccess(weibo);
+                        mRelayStatusView.onRepostSuccess(relayStatus);
 
-                        RelayStatusEvent relayStatusEvent = new RelayStatusEvent(EventTag.EVENT_REPOST_WEIBO_SUCCESS, weibo, mStatusId);
+                        RelayStatusEvent relayStatusEvent = new RelayStatusEvent(EventTag.EVENT_REPOST_WEIBO_SUCCESS, relayStatus, mStatusId);
                         RxBus.getDefault().post(relayStatusEvent.type, relayStatusEvent);
                     }
                 });

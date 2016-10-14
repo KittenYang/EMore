@@ -43,7 +43,6 @@ public class StatusCommentsPresentImp extends AbsBasePresent implements StatusCo
     private List<Comment> mComments;
     private long mNextCursor;
 
-
     public StatusCommentsPresentImp(long statusId,
                                     CommentApi commentApi,
                                     StatusCommentsView statusCommentsView) {
@@ -205,6 +204,5 @@ public class StatusCommentsPresentImp extends AbsBasePresent implements StatusCo
         RxBus.getDefault().unregister(EventTag.EVENT_COMMENT_WEIBO_SUCCESS, mCommentObservable);
         RxBus.getDefault().unregister(EventTag.EVENT_STATUS_REFRESH, mStatusRefreshObservable);
     }
-
 
 }

@@ -63,11 +63,6 @@ public class AcceptCommentsPresentImp extends AbsBasePresent implements RefreshL
                     }
 
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
                     public void onNext(List<Comment> comments) {
                         mComments.addAll(comments);
                         mMentionView.setEntities(mComments);

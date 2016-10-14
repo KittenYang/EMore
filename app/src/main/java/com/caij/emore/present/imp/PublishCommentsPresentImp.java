@@ -43,7 +43,6 @@ public class PublishCommentsPresentImp extends AbsBasePresent implements Publish
 
     @Override
     public void deleteComment(final Comment comment, final int position) {
-
        Subscription subscription = mCommentApi.deleteComment(comment.getId())
                 .compose(new DefaultTransformer<Comment>())
                .doOnSubscribe(new Action0() {

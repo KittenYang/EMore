@@ -56,11 +56,6 @@ public class FriendPresentImp extends AbsBasePresent implements FriendshipPresen
                     }
 
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
                     public void onNext(List<User> users) {
                         mUsers.addAll(users);
                         mFriendshipView.notifyItemRangeInserted(mUsers, mUsers.size() - users.size(), users.size());
@@ -97,11 +92,6 @@ public class FriendPresentImp extends AbsBasePresent implements FriendshipPresen
                     @Override
                     protected void onFail(Throwable e) {
                         mFriendshipView.onRefreshComplete();
-                    }
-
-                    @Override
-                    public void onCompleted() {
-
                     }
 
                     @Override

@@ -98,10 +98,6 @@ public class CommentMentionPresentImp extends AbsBasePresent implements RefreshL
         }
         Subscription su = getCommentMentionsObservable(maxId, false)
                 .subscribe(new ResponseSubscriber<List<Comment>>(mMentionView) {
-                    @Override
-                    public void onCompleted() {
-
-                    }
 
                     @Override
                     protected void onFail(Throwable e) {

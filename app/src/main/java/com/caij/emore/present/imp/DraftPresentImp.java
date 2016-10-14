@@ -58,11 +58,7 @@ public class DraftPresentImp extends AbsBasePresent implements DraftPresent {
             maxTime = mDrafts.get(mDrafts.size() - 1).getCreate_at();
         }
         Subscription subscription = createDraftObservable(maxTime)
-                .subscribe(new Subscriber<List<Draft>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                .subscribe(new SubscriberAdapter<List<Draft>>() {
 
                     @Override
                     public void onError(Throwable e) {

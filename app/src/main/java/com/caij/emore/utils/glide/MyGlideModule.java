@@ -15,6 +15,9 @@ import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
 
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 
 
 /**
@@ -31,7 +34,13 @@ public class MyGlideModule implements GlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide) {
-        glide.register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(OkHttpClientProvider.getDefaultOkHttpClient()));
+//        OkHttpClientProvider.getDefaultOkHttpClient() //图片就不参加抓包调试
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .readTimeout(5, TimeUnit.SECONDS)//设置读取超时时间
+                .writeTimeout(5, TimeUnit.SECONDS)//设置写的超时时间
+                .connectTimeout(5, TimeUnit.SECONDS)//设置连接超时时间
+                .build();
+        glide.register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(okHttpClient));
     }
 
 }

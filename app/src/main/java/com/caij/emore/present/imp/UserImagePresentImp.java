@@ -87,7 +87,6 @@ public class UserImagePresentImp extends AbsBasePresent implements UserStatusPre
                 .doOnNext(new Action1<Status>() {
                     @Override
                     public void call(Status weibo) {
-                        // TODO: 2016/8/25 图片加载
                         mPicUrl.clear();
                         for (String picId : weibo.getPic_ids()) {
                             mPicUrl.add(weibo.getPic_infos().get(picId));

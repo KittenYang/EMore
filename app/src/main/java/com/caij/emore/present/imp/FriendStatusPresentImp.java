@@ -221,7 +221,7 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
         Subscription subscription = getFriendStatusesObservable(mNextCursor, false)
             .subscribe(new ResponseSubscriber<List<Status>>(mView) {
 
-//                @Override
+                @Override
                 protected void onFail(Throwable e) {
                     mView.onLoadComplete(true);
                 }

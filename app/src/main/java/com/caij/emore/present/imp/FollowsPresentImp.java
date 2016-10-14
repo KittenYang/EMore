@@ -70,11 +70,6 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
                     }
 
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
                     public void onNext(List<User> users) {
                         mUsers.addAll(users);
                         mFriendshipView.notifyItemRangeInserted(mUsers, mUsers.size() - users.size(), users.size());

@@ -30,7 +30,6 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
 
     private final static int PAGE_COUNT = 20;
 
-    private String mToken;
     private long mUid;
 
     private MessageApi mMessageApi;
@@ -43,11 +42,9 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
 
     private Observable<UnReadMessage> mUnReadMessageObservable;
 
-
-    public MessageUserPresentImp(String token, long uid, MessageApi messageApi, NotifyManager notifyManager,
+    public MessageUserPresentImp(long uid, MessageApi messageApi, NotifyManager notifyManager,
                                  MessageUserView view) {
         mMessageApi = messageApi;
-        mToken = token;
         mUid = uid;
         mMessageUserView = view;
         mNotifyManager = notifyManager;
@@ -61,11 +58,6 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
                     @Override
                     protected void onFail(Throwable e) {
                         mMessageUserView.onRefreshComplete();
-                    }
-
-                    @Override
-                    public void onCompleted() {
-
                     }
 
                     @Override
@@ -93,11 +85,6 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
                     @Override
                     protected void onFail(Throwable e) {
                         mMessageUserView.onLoadComplete(true);
-                    }
-
-                    @Override
-                    public void onCompleted() {
-
                     }
 
                     @Override
@@ -174,10 +161,6 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
                 })
                 .compose(new SchedulerTransformer<Response>())
                 .subscribe(new ResponseSubscriber<Response>(mMessageUserView) {
-                    @Override
-                    public void onCompleted() {
-
-                    }
 
                     @Override
                     protected void onFail(Throwable e) {
