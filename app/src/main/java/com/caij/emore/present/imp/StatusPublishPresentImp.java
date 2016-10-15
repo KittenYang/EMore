@@ -9,7 +9,7 @@ import com.caij.emore.bean.PublishBean;
 import com.caij.emore.manager.DraftManager;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.WeiboPublishPresent;
-import com.caij.emore.ui.view.StatusPublishView;
+import com.caij.emore.ui.view.StatusPublishView1;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -22,13 +22,13 @@ import java.util.ArrayList;
  */
 public class StatusPublishPresentImp extends AbsBasePresent implements WeiboPublishPresent {
 
-    private StatusPublishView mStatusPublishView;
+    private StatusPublishView1 mStatusPublishView1;
     private Account mAccount;
     private DraftManager mDraftManager;
 
-    public StatusPublishPresentImp(Account account, StatusPublishView statusPublishView, DraftManager draftManager) {
+    public StatusPublishPresentImp(Account account, StatusPublishView1 statusPublishView1, DraftManager draftManager) {
         mAccount = account;
-        mStatusPublishView = statusPublishView;
+        mStatusPublishView1 = statusPublishView1;
         mDraftManager = draftManager;
     }
 
@@ -41,7 +41,7 @@ public class StatusPublishPresentImp extends AbsBasePresent implements WeiboPubl
     public void publishStatus(long id, String content, ArrayList<String> imagePaths) {
         if (imagePaths != null && imagePaths.size() > 1) {
             if (mAccount.getToken() == null || mAccount.getToken().isExpired()) {
-                mStatusPublishView.toAuthWeico();
+                mStatusPublishView1.toAuthWeico();
                 return;
             }
         }
@@ -54,7 +54,7 @@ public class StatusPublishPresentImp extends AbsBasePresent implements WeiboPubl
 
         saveToDraft(id, content, imagePaths);
 
-        mStatusPublishView.finish();
+        mStatusPublishView1.finish();
     }
 
     @Override

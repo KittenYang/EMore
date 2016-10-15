@@ -77,7 +77,7 @@
         <activity android:name="com.caij.emore.ui.activity.StatusDetailActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name="com.caij.emore.ui.activity.publish.PublishWeiboActivity"
+        <activity android:name="com.caij.emore.ui.activity.publish.PublishWeiboActivity1"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 

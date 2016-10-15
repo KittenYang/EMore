@@ -24,7 +24,7 @@ import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.ui.view.FriendStatusView;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.SearchRecommendActivity;
-import com.caij.emore.ui.activity.publish.PublishWeiboActivity;
+import com.caij.emore.ui.activity.publish.PublishWeiboActivity1;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
@@ -101,7 +101,7 @@ public class FriendStatusFragment extends TimeLineStatusFragment<FriendWeiboPres
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.publish:
-                Intent intent = new Intent(getActivity(), PublishWeiboActivity.class);
+                Intent intent = new Intent(getActivity(), PublishWeiboActivity1.class);
                 startActivity(intent);
                 break;
 
