@@ -23,7 +23,7 @@ import com.caij.emore.manager.imp.DraftManagerImp;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.WeiboPublishPresent;
 import com.caij.emore.present.imp.StatusPublishPresentImp;
-import com.caij.emore.ui.view.StatusPublishView1;
+import com.caij.emore.ui.view.StatusPublishView;
 import com.caij.emore.ui.adapter.PublishImageAdapter;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.NavigationUtil;
@@ -38,7 +38,7 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/6/22.
  */
-public class PublishWeiboActivity1 extends PublishActivity<WeiboPublishPresent> implements RecyclerViewOnItemClickListener, StatusPublishView1, TextWatcher {
+public class PublishWeiboActivity extends PublishActivity<WeiboPublishPresent> implements RecyclerViewOnItemClickListener, StatusPublishView, TextWatcher {
 
 
     @BindView(R.id.et_content)
@@ -51,7 +51,7 @@ public class PublishWeiboActivity1 extends PublishActivity<WeiboPublishPresent> 
     private Draft mDraft;
 
     public static Intent newIntent(Context context, Draft draft) {
-        Intent intent = new Intent(context, PublishWeiboActivity1.class);
+        Intent intent = new Intent(context, PublishWeiboActivity.class);
         intent.putExtra(Key.OBJ, draft);
         return intent;
     }
@@ -195,12 +195,12 @@ public class PublishWeiboActivity1 extends PublishActivity<WeiboPublishPresent> 
                                 long id = mDraft != null ? mDraft.getId() : System.currentTimeMillis();
                                 mPresent.saveToDraft(id, etContent.getText().toString(),
                                         (ArrayList<String>) mPublishImageAdapter.getEntities());
-                                PublishWeiboActivity1.super.onBackPressed();
+                                PublishWeiboActivity.super.onBackPressed();
                             }
                         }, getString(R.string.cancel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                PublishWeiboActivity1.super.onBackPressed();
+                                PublishWeiboActivity.super.onBackPressed();
                             }
                         });
             }else {
