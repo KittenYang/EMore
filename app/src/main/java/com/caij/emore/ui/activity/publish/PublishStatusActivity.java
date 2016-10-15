@@ -21,7 +21,7 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Emotion;
 import com.caij.emore.manager.imp.DraftManagerImp;
 import com.caij.emore.database.bean.Draft;
-import com.caij.emore.present.WeiboPublishPresent;
+import com.caij.emore.present.StatusPublishPresent;
 import com.caij.emore.present.imp.StatusPublishPresentImp;
 import com.caij.emore.ui.view.StatusPublishView;
 import com.caij.emore.ui.adapter.PublishImageAdapter;
@@ -38,7 +38,7 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/6/22.
  */
-public class PublishWeiboActivity extends PublishActivity<WeiboPublishPresent> implements RecyclerViewOnItemClickListener, StatusPublishView, TextWatcher {
+public class PublishStatusActivity extends PublishActivity<StatusPublishPresent> implements RecyclerViewOnItemClickListener, StatusPublishView, TextWatcher {
 
 
     @BindView(R.id.et_content)
@@ -51,7 +51,7 @@ public class PublishWeiboActivity extends PublishActivity<WeiboPublishPresent> i
     private Draft mDraft;
 
     public static Intent newIntent(Context context, Draft draft) {
-        Intent intent = new Intent(context, PublishWeiboActivity.class);
+        Intent intent = new Intent(context, PublishStatusActivity.class);
         intent.putExtra(Key.OBJ, draft);
         return intent;
     }
@@ -97,7 +97,7 @@ public class PublishWeiboActivity extends PublishActivity<WeiboPublishPresent> i
     }
 
     @Override
-    protected WeiboPublishPresent createPresent() {
+    protected StatusPublishPresent createPresent() {
         return  new StatusPublishPresentImp(UserPrefs.get(this).getAccount(), this, new DraftManagerImp());
     }
 
@@ -195,12 +195,12 @@ public class PublishWeiboActivity extends PublishActivity<WeiboPublishPresent> i
                                 long id = mDraft != null ? mDraft.getId() : System.currentTimeMillis();
                                 mPresent.saveToDraft(id, etContent.getText().toString(),
                                         (ArrayList<String>) mPublishImageAdapter.getEntities());
-                                PublishWeiboActivity.super.onBackPressed();
+                                PublishStatusActivity.super.onBackPressed();
                             }
                         }, getString(R.string.cancel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                PublishWeiboActivity.super.onBackPressed();
+                                PublishStatusActivity.super.onBackPressed();
                             }
                         });
             }else {
