@@ -1,6 +1,6 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.EmoreApplication;
+import com.caij.emore.EMoreApplication;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.response.FriendshipResponse;
 import com.caij.emore.manager.NotifyManager;
@@ -121,7 +121,7 @@ public class FollowsPresentImp extends AbsBasePresent implements FriendshipPrese
                         mFriendshipView.onLoadComplete(users.size() > PAGE_SIZE - 1);
                         mFriendshipView.onRefreshComplete();
 
-                        if (mUid == UserPrefs.get(EmoreApplication.getInstance()).getAccount().getUid()) {
+                        if (mUid == UserPrefs.get(EMoreApplication.getInstance()).getAccount().getUid()) {
                             MessageUtil.resetUnReadMessage(UnReadMessage.TYPE_FOLLOWER, mUid,
                                     mNotifyApi, mNotifyManager);
                         }
