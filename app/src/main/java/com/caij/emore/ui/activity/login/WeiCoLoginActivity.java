@@ -67,15 +67,6 @@ public class WeiCoLoginActivity extends AbsLoginActivity implements WeiCoLoginVi
     }
 
     @Override
-    public void onLoginSuccess(WeiCoLoginResponse response) {
-        ActivityStack.getInstance().remove(this);
-        ActivityStack.getInstance().finishAllActivity();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    @Override
     public void onLoginSuccess(Token accessToken) {
         init(accessToken.getUid());
 

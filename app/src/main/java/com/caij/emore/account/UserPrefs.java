@@ -41,7 +41,6 @@ public class UserPrefs {
                 where(AccountDao.Properties.Status.eq(Account.STATUS_USING)).list();
         if (accounts != null && accounts.size() > 0) { //如果存在多个正在使用的账号 直接清除掉 只留一个正在使用的账号
             if (accounts.size() > 1) {
-//                throw new IllegalStateException("have multiple account using");
                 for (int i = 1; i < accounts.size(); i ++) {
                     Account account = accounts.get(i);
                     account.setStatus(Account.STATUS_BACKGROUND);

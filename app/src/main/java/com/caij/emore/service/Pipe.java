@@ -20,7 +20,6 @@ import com.caij.emore.utils.LogUtil;
 public class Pipe {
 
     private PipeServiceConnection mEMoreServiceConnection;
-    private PipeListener mPipeListener;
 
     public Pipe() {
 
@@ -31,7 +30,6 @@ public class Pipe {
     }
 
     public void open(Context context, PipeListener pipeListener) {
-        mPipeListener = pipeListener;
         Messenger clientMessenger = new Messenger(new PipeHandler(pipeListener));
         mEMoreServiceConnection =  new PipeServiceConnection(clientMessenger, pipeListener);
         EMoreService.bind(context.getApplicationContext(), mEMoreServiceConnection);
@@ -49,7 +47,6 @@ public class Pipe {
         if (mEMoreServiceConnection != null) {
             EMoreService.unbind(context.getApplicationContext(), mEMoreServiceConnection);
         }
-        mPipeListener = null;
         mEMoreServiceConnection = null;
     }
 
@@ -90,6 +87,7 @@ public class Pipe {
         @Override
         public void onServiceDisconnected(ComponentName name) {
             LogUtil.d(this, "onServiceDisconnected");
+            mPipeListener.onClose();
         }
     }
 

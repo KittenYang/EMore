@@ -111,8 +111,8 @@ public class EMApplication extends Application{
 
     public void onAuthenticationError() {
         Account account = UserPrefs.get(this).getAccount();
-        Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(this, account.getUsername(),
-                account.getPwd());
+        Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(this, null,
+                null);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
         UserPrefs.get(this).deleteUsingAccount();

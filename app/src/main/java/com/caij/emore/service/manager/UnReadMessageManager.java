@@ -37,7 +37,7 @@ import com.caij.emore.utils.rxbus.RxBus;
  */
 public class UnReadMessageManager extends IManager implements UnReadMessageManagerPresentView {
 
-    private static final String ACTION_SENDING_HEARTBEAT = "com.caij.weiyo.schedule.action";
+    private static final String ACTION_SENDING_HEARTBEAT = "com.caij.emore.schedule.action";
     private static final int STATUS_MENTION_NOTIFICATION_ID = 2000;
     private static final int FOLLOWER_NOTIFICATION_ID = 2001;
     private static final int COMMENT_NOTIFICATION_ID = 2002;
