@@ -7,14 +7,12 @@ import android.os.Bundle;
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.Token;
-import com.caij.emore.bean.response.WeiCoLoginResponse;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.present.imp.WeiCoLoginPresentImp;
 import com.caij.emore.ui.view.WeiCoLoginView;
 import com.caij.emore.remote.imp.LoginApiImp;
 import com.caij.emore.ui.activity.MainActivity;
-import com.caij.emore.utils.ActivityStack;
-import com.caij.emore.utils.Init;
+import com.caij.emore.Init;
 
 /**
  * Created by Caij on 2016/7/8.

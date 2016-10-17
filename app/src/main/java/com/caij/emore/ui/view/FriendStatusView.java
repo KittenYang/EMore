@@ -9,5 +9,5 @@ public interface FriendStatusView extends TimeLineStatusView {
 
     void toRefresh();
 
-    void onWeiboPublishSuccess(Status weibo);
+    void onStatusPublishSuccess(Status weibo);
 }

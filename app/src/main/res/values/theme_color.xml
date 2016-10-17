@@ -3,7 +3,6 @@
     <!-- theme color -->
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#303F9F</color>
 
     <color name="pink">#fb7299</color>
     <color name="pink_dark">#b85671</color>

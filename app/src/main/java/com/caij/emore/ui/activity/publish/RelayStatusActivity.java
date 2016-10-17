@@ -40,7 +40,7 @@ public class RelayStatusActivity extends PublishActivity<RepostWeiboPresent> imp
     ImageView imageView;
     @BindView(R.id.tv_name)
     TextView tvName;
-    @BindView(R.id.tv_weibo)
+    @BindView(R.id.tv_status)
     TextView tvDesc;
 
     private Dialog mRepostDialog;

@@ -56,18 +56,18 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="@dimen/spacing_large"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:textColor="@color/ui_background" />
+                android:textColor="@color/text_87_inverse" />
 
         </RelativeLayout>
 
 
         <RelativeLayout
-            android:id="@+id/rl_item_weibo"
+            android:id="@+id/rl_item_status"
             style="@style/NavItem"
             android:layout_marginTop="@dimen/spacing_medium">
 
             <TextView
-                android:id="@+id/tv_weibo"
+                android:id="@+id/tv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/weibo"
@@ -76,7 +76,7 @@
                 android:drawablePadding="@dimen/spacing_micro"/>
 
             <TextView
-                android:id="@+id/tv_unread_weibo_count"
+                android:id="@+id/tv_unread_status_count"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:background="@drawable/red_message_count_bg"

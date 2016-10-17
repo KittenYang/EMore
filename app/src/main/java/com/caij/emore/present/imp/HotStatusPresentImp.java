@@ -1,7 +1,7 @@
 package com.caij.emore.present.imp;
 
 import com.caij.emore.manager.StatusManager;
-import com.caij.emore.present.FriendWeiboPresent;
+import com.caij.emore.present.FriendStatusPresent;
 import com.caij.emore.present.HotWeiboPresent;
 import com.caij.emore.remote.AttitudeApi;
 import com.caij.emore.remote.StatusApi;
@@ -10,17 +10,17 @@ import com.caij.emore.ui.view.TimeLineStatusView;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class HotWeiboPresentImp extends AbsListTimeLinePresent<TimeLineStatusView> implements FriendWeiboPresent, HotWeiboPresent {
+public class HotStatusPresentImp extends AbsListTimeLinePresent<TimeLineStatusView> implements FriendStatusPresent, HotWeiboPresent {
 
     private final static int PAGE_COUNT = 20;
 
     private int page;
 
-    public HotWeiboPresentImp(TimeLineStatusView view, StatusApi statusApi, StatusManager statusManager, AttitudeApi attitudeApi) {
+    public HotStatusPresentImp(TimeLineStatusView view, StatusApi statusApi, StatusManager statusManager, AttitudeApi attitudeApi) {
         super(view, statusApi, statusManager, attitudeApi);
     }
 
-//    public HotWeiboPresentImp(Account account, TimeLineStatusView view, WeiboSource serverWeiboSource,
+//    public HotStatusPresentImp(Account account, TimeLineStatusView view, WeiboSource serverWeiboSource,
 //                              WeiboSource localWeiboSource) {
 //        super(account, view, serverWeiboSource, localWeiboSource);
 //    }

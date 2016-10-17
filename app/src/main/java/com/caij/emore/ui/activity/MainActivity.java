@@ -43,7 +43,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity<MainPresent> implements MainView, View.OnClickListener {
+public class MainActivity extends BaseActivity<MainPresent> implements MainView, View.OnClickListener, DoubleClickToolBar.DoubleClickListener {
 
     @BindView(R.id.img_navigation_avatar)
     ImageView mImgNavigationAvatar;
@@ -57,12 +57,12 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
     RelativeLayout mRlNavHead;
     @BindView(R.id.material_drawer_account_header_background)
     ImageView ivHeaderBackground;
-    @BindView(R.id.tv_weibo)
-    TextView tvWeibo;
-    @BindView(R.id.tv_unread_weibo_count)
-    TextView tvUnreadWeiboCount;
-    @BindView(R.id.rl_item_weibo)
-    RelativeLayout rlItemWeibo;
+    @BindView(R.id.tv_status)
+    TextView tvStatus;
+    @BindView(R.id.tv_unread_status_count)
+    TextView tvUnreadStatusCount;
+    @BindView(R.id.rl_item_status)
+    RelativeLayout rlItemStatus;
     @BindView(R.id.tv_message)
     TextView tvMessage;
     @BindView(R.id.tv_unread_message_count)
@@ -92,11 +92,11 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         mActionBarDrawerToggle.syncState();
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
 
-        Drawable iconWeiboDrawable = createNavMenuItemDrawable(R.mipmap.ic_weibo);
-        tvWeibo.setCompoundDrawables(iconWeiboDrawable, null, null, null);
+        Drawable statusIconDrawable = createNavMenuItemDrawable(R.mipmap.ic_weibo);
+        tvStatus.setCompoundDrawables(statusIconDrawable, null, null, null);
 
-        Drawable iconMessageDrawable = createNavMenuItemDrawable(R.mipmap.ic_message);
-        tvMessage.setCompoundDrawables(iconMessageDrawable, null, null, null);
+        Drawable messageIconDrawable = createNavMenuItemDrawable(R.mipmap.ic_message);
+        tvMessage.setCompoundDrawables(messageIconDrawable, null, null, null);
 
         initContent(savedInstanceState);
 
@@ -111,7 +111,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         super.onNewIntent(intent);
         String key  = intent.getStringExtra(Key.ID);
         if (Key.FRIEND_WEIBO_FRAGMENT_TAG.equals(key)) {
-            changeContent2FriendWeibo();
+            changeContent2FriendStatus();
         }else if (Key.MESSAGE_FRAGMENT_TAG.equals(key)) {
             changeContent2Message();
         }
@@ -178,17 +178,17 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
     private void setViewStatus(Fragment fragment) {
         if (fragment == mFriendStatusFragment) {
-            rlItemWeibo.setSelected(true);
+            rlItemStatus.setSelected(true);
             rlItemMessage.setSelected(false);
-            tvWeibo.setSelected(true);
+            tvStatus.setSelected(true);
             tvMessage.setSelected(false);
 
             setToolBarFlag(true);
         }else if (fragment == mMessageFragment) {
             rlItemMessage.setSelected(true);
-            rlItemWeibo.setSelected(false);
+            rlItemStatus.setSelected(false);
             tvMessage.setSelected(true);
-            tvWeibo.setSelected(false);
+            tvStatus.setSelected(false);
 
             setToolBarFlag(false);
         }
@@ -229,10 +229,10 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         int status = unReadMessage.getStatus();
 
         if (status > 0) {
-            tvUnreadWeiboCount.setVisibility(View.VISIBLE);
-            tvUnreadWeiboCount.setText(String.valueOf(status));
+            tvUnreadStatusCount.setVisibility(View.VISIBLE);
+            tvUnreadStatusCount.setText(String.valueOf(status));
         }else {
-            tvUnreadWeiboCount.setVisibility(View.GONE);
+            tvUnreadStatusCount.setVisibility(View.GONE);
         }
 
         int unReadMessageCount = unReadMessage.getCmt() + unReadMessage.getDm_single()
@@ -262,7 +262,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         }
     }
 
-    @OnClick({R.id.img_navigation_avatar, R.id.tv_setting, R.id.rl_draft,R.id.rl_item_weibo, R.id.rl_item_message, R.id.tv_hot_weibo})
+    @OnClick({R.id.img_navigation_avatar, R.id.tv_setting, R.id.rl_draft, R.id.rl_item_status, R.id.rl_item_message, R.id.tv_hot_weibo})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_setting: {
@@ -271,6 +271,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
             }
+
             case R.id.img_navigation_avatar: {
                 User user = (User) view.getTag();
                 if (user != null) {
@@ -280,9 +281,6 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
                 break;
             }
-            case R.id.toolbar:
-                RxBus.getDefault().post(EventTag.EVENT_TOOL_BAR_DOUBLE_CLICK, mVisibleFragment);
-                break;
 
             case R.id.rl_draft: {
                 Intent intent = DefaultFragmentActivity.starFragmentV4(this, getString(R.string.draft_box), DraftFragment.class, null);
@@ -291,9 +289,9 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
                 break;
             }
 
-            case R.id.rl_item_weibo:
-                if (!rlItemWeibo.isSelected()) {
-                    changeContent2FriendWeibo();
+            case R.id.rl_item_status:
+                if (!rlItemStatus.isSelected()) {
+                    changeContent2FriendStatus();
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
                 }
                 break;
@@ -315,7 +313,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         }
     }
 
-    private void changeContent2FriendWeibo() {
+    private void changeContent2FriendStatus() {
         changeContent(mFriendStatusFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG);
     }
 
@@ -334,4 +332,8 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         recreate();
     }
 
+    @Override
+    public void onDoubleClick(View v) {
+        RxBus.getDefault().post(EventTag.EVENT_TOOL_BAR_DOUBLE_CLICK, mVisibleFragment);
+    }
 }

@@ -12,9 +12,10 @@ import com.caij.emore.utils.LogUtil;
 /**
  * Created by Caij on 2016/7/19.
  */
-public class DoubleClickToolBar extends Toolbar {
+public class DoubleClickToolBar extends Toolbar implements View.OnClickListener {
 
-    private OnClickListener mDoubleClickListener;
+    private DoubleClickListener mDoubleClickListener;
+    private OnClickListener mClickListener;
     final long[] mHits = new long[2];
 
     public DoubleClickToolBar(Context context) {
@@ -34,23 +35,35 @@ public class DoubleClickToolBar extends Toolbar {
     }
 
     private void init() {
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
-                mHits[mHits.length-1] = SystemClock.uptimeMillis();
-                if (mHits[0] >= (SystemClock.uptimeMillis() - 500)) {
-                    if (mDoubleClickListener != null) {
-                        mDoubleClickListener.onClick(v);
-                    }
-                    LogUtil.d(DoubleClickToolBar.this, "double click");
-                }
-            }
-        });
+        super.setOnClickListener(this);
     }
 
-    public void setOnDoubleClickListener(OnClickListener listener) {
+    public void setOnDoubleClickListener(DoubleClickListener listener) {
         mDoubleClickListener = listener;
     }
 
+    @Override
+    public void setOnClickListener(OnClickListener l) {
+//        super.setOnClickListener(l);
+        mClickListener = l;
+    }
+
+    @Override
+    public void onClick(View v) {
+        System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+        mHits[mHits.length-1] = SystemClock.uptimeMillis();
+        if (mHits[0] >= (SystemClock.uptimeMillis() - 500)) {
+            if (mDoubleClickListener != null) {
+                mDoubleClickListener.onDoubleClick(v);
+            }
+        }else {
+            if (mClickListener != null) {
+                mClickListener.onClick(v);
+            }
+        }
+    }
+
+    public static interface DoubleClickListener {
+        void onDoubleClick(View v);
+    }
 }

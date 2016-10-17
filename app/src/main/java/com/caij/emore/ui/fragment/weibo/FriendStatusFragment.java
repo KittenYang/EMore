@@ -17,7 +17,7 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.manager.imp.NotifyManagerImp;
 import com.caij.emore.manager.imp.StatusManagerImp;
 import com.caij.emore.database.bean.Status;
-import com.caij.emore.present.FriendWeiboPresent;
+import com.caij.emore.present.FriendStatusPresent;
 import com.caij.emore.present.imp.FriendStatusPresentImp;
 import com.caij.emore.remote.imp.AttitudeApiImp;
 import com.caij.emore.remote.imp.StatusApiImp;
@@ -35,7 +35,7 @@ import rx.functions.Action1;
 /**
  * Created by Caij on 2016/6/4.
  */
-public class FriendStatusFragment extends TimeLineStatusFragment<FriendWeiboPresent> implements
+public class FriendStatusFragment extends TimeLineStatusFragment<FriendStatusPresent> implements
         RecyclerViewOnItemClickListener, XRecyclerView.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, FriendStatusView {
 
     private Observable<Object> mToolBarDoubleClickobservable;
@@ -56,7 +56,7 @@ public class FriendStatusFragment extends TimeLineStatusFragment<FriendWeiboPres
     }
 
     @Override
-    protected FriendWeiboPresent createPresent() {
+    protected FriendStatusPresent createPresent() {
        return new FriendStatusPresentImp(UserPrefs.get(getActivity()).getAccount().getUid(), this,
                 new StatusApiImp(), new StatusManagerImp(), new AttitudeApiImp(), new NotifyManagerImp());
     }
@@ -73,8 +73,8 @@ public class FriendStatusFragment extends TimeLineStatusFragment<FriendWeiboPres
     }
 
     @Override
-    public void onWeiboPublishSuccess(Status weibo) {
-        mRecyclerViewAdapter.addEntity(0, weibo);
+    public void onStatusPublishSuccess(Status status) {
+        mRecyclerViewAdapter.addEntity(0, status);
         mRecyclerViewAdapter.notifyItemInserted(0);
         LinearLayoutManager manager = (LinearLayoutManager) xRecyclerView.getLayoutManager();
         if (manager.findFirstVisibleItemPosition() < 2) {

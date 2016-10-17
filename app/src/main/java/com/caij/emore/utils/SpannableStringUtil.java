@@ -35,11 +35,11 @@ public class SpannableStringUtil {
     public static final String FULL_TEXT_SCHEME = "fulltext://";
 
     public static int color = EMApplication.getInstance().getResources().getColor(R.color.link_text_color);
-    public static int pressColor = EMApplication.getInstance().getResources().getColor(R.color.link_text_press_color);
+    private static int pressColor = EMApplication.getInstance().getResources().getColor(R.color.link_text_press_color);
 
 
-    static String httpRegular = "(http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]";
-    static Pattern sHttpPattern = Pattern.compile(httpRegular);
+    private static String httpRegular = "(http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]";
+    private static Pattern sHttpPattern = Pattern.compile(httpRegular);
 
     public static void praseName(Spannable spannableString) {
         // 用户名称

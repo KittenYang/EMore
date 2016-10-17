@@ -25,7 +25,7 @@ import com.caij.emore.ui.adapter.ThemeAdapter;
 import com.caij.emore.ui.fragment.AccountsFragment;
 import com.caij.emore.ui.fragment.AppAboutFragment;
 import com.caij.emore.utils.ActivityStack;
-import com.caij.emore.utils.Init;
+import com.caij.emore.Init;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;

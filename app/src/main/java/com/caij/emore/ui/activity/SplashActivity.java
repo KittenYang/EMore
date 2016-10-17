@@ -45,7 +45,7 @@ public class SplashActivity extends BaseActivity{
     @Override
     protected void setTheme() {
         int themePosition = ThemeUtils.getThemePosition(this);
-        setTheme(ThemeUtils.THEME_ARR[themePosition][ThemeUtils.APP_SPALH_THEME_POSITION]);
+        setTheme(ThemeUtils.THEME_ARR[themePosition][ThemeUtils.APP_SPLASH_THEME_POSITION]);
     }
 
     @Override

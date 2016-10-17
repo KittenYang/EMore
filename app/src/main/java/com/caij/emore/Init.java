@@ -1,16 +1,15 @@
-package com.caij.emore.utils;
+package com.caij.emore;
 
 import android.content.Context;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 
-import com.caij.emore.EMApplication;
-import com.caij.emore.BuildConfig;
-import com.caij.emore.EventTag;
-import com.caij.emore.Key;
 import com.caij.emore.service.EMoreService;
 import com.caij.emore.service.Pipe;
 import com.caij.emore.service.PipeEvent;
+import com.caij.emore.utils.LogUtil;
+import com.caij.emore.utils.SPUtil;
+import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.db.DBManager;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxbus.RxBusInterface;

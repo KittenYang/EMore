@@ -94,7 +94,7 @@ public class ToMeAttitudeAdapter extends BaseAdapter<Attitude, ToMeAttitudeAdapt
         TextView tvComment;
         @BindView(R.id.image_view)
         ImageView imageView;
-        @BindView(R.id.tv_weibo)
+        @BindView(R.id.tv_status)
         TextView tvWeibo;
         @BindView(R.id.tv_reply)
         TextView tvReplay;

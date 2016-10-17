@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.caij.emore.R;
 import com.caij.emore.account.Account;
-import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.AccountInfo;
 import com.caij.emore.present.AccountPresent;
@@ -20,7 +19,7 @@ import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.ui.adapter.AccountAdapter;
 import com.caij.emore.ui.view.AccountView;
 import com.caij.emore.utils.DensityUtil;
-import com.caij.emore.utils.Init;
+import com.caij.emore.Init;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;

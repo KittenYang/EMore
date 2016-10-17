@@ -14,7 +14,6 @@ import com.caij.emore.account.Account;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.utils.ActivityStack;
-import com.caij.emore.utils.Init;
 import com.caij.emore.utils.ChannelUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.LogUtil;

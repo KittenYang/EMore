@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.caij.emore.manager.imp.StatusManagerImp;
 import com.caij.emore.present.HotWeiboPresent;
-import com.caij.emore.present.imp.HotWeiboPresentImp;
+import com.caij.emore.present.imp.HotStatusPresentImp;
 import com.caij.emore.remote.imp.AttitudeApiImp;
 import com.caij.emore.remote.imp.StatusApiImp;
 
@@ -30,7 +30,7 @@ public class HotStatusFragment extends TimeLineStatusFragment<HotWeiboPresent> {
 
     @Override
     protected HotWeiboPresent createPresent() {
-        return new HotWeiboPresentImp(this, new StatusApiImp(), new StatusManagerImp(), new AttitudeApiImp());
+        return new HotStatusPresentImp(this, new StatusApiImp(), new StatusManagerImp(), new AttitudeApiImp());
     }
 
 }

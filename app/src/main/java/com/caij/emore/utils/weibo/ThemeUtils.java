@@ -17,7 +17,7 @@ public class ThemeUtils {
     public static final int APP_MAIN_THEME_POSITION = 1;
     public static final int APP_IMAGE_PRE_THEME_POSITION = 2;
     public static final int APP_VIDEO_PLAY_THEME_POSITION = 3;
-    public static final int APP_SPALH_THEME_POSITION = 4;
+    public static final int APP_SPLASH_THEME_POSITION = 4;
     public static final int APP_SEARCH_THEME_POSITION = 5;
 
     public static int[][] THEME_ARR = {

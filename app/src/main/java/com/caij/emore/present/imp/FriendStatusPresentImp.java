@@ -11,7 +11,7 @@ import com.caij.emore.manager.NotifyManager;
 import com.caij.emore.manager.StatusManager;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.database.bean.UnReadMessage;
-import com.caij.emore.present.FriendWeiboPresent;
+import com.caij.emore.present.FriendStatusPresent;
 import com.caij.emore.remote.AttitudeApi;
 import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.FriendStatusView;
@@ -38,7 +38,7 @@ import rx.functions.Func1;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusView> implements FriendWeiboPresent {
+public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusView> implements FriendStatusPresent {
 
     private final static int PAGE_COUNT = 20;
 
@@ -74,7 +74,7 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
                     .subscribe(new Action1<Status>() {
                         @Override
                         public void call(Status status) {
-                            mView.onWeiboPublishSuccess(status);
+                            mView.onStatusPublishSuccess(status);
                         }
                     });
     }

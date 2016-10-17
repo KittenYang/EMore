@@ -29,7 +29,7 @@
             android:textSize="@dimen/text_size_medium_min" />
 
         <TextView
-            android:id="@+id/tv_weibo"
+            android:id="@+id/tv_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
