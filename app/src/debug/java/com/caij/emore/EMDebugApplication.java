@@ -8,7 +8,7 @@ import com.squareup.leakcanary.LeakCanary;
 /**
  * Created by Caij on 15/11/03.
  */
-public class EMoreDebugApplication extends EMoreApplication {
+public class EMDebugApplication extends EMApplication {
 
     @Override
     public void onCreate() {

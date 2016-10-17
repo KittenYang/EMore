@@ -1,6 +1,6 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.EMApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.account.Token;
 import com.caij.emore.api.ex.ResponseSubscriber;
@@ -60,7 +60,7 @@ public class UnReadMessageManagerPresentImp extends AbsBasePresent implements Un
 
     @Override
     public void loadUnReadMessage() {
-        if (!SystemUtil.isNetworkAvailable(EMoreApplication.getInstance())) return;
+        if (!SystemUtil.isNetworkAvailable(EMApplication.getInstance())) return;
         if (mToken != null) {
             Subscription subscription = mNotifyApi.getUnReadMessage(Long.parseLong(mToken.getUid()))
                     .compose(new SchedulerTransformer<UnReadMessage>())

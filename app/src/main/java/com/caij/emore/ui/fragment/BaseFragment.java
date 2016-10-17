@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.EMApplication;
 import com.caij.emore.R;
 import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.view.BaseView;
@@ -38,7 +38,7 @@ public abstract class BaseFragment<P extends BasePresent> extends Fragment imple
 
     @Override
     public void onAuthenticationError() {
-        ((EMoreApplication)getActivity().getApplication()).onAuthenticationError();
+        ((EMApplication)getActivity().getApplication()).onAuthenticationError();
     }
 
     @Override

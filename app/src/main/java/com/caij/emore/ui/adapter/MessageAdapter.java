@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.EMApplication;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.DirectMessage;
@@ -197,7 +197,7 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
     @Override
     public int getItemViewType(int position) {
         DirectMessage directMessage = getItem(position);
-        if (directMessage.getSender_id() == Long.parseLong(UserPrefs.get(EMoreApplication.getInstance()).getToken().getUid())) {
+        if (directMessage.getSender_id() == Long.parseLong(UserPrefs.get(EMApplication.getInstance()).getToken().getUid())) {
             if (directMessage.getAtt_ids() != null && directMessage.getAtt_ids().size() > 0 && directMessage.getImageInfo() != null) {
                 return TYPE_SELT_IMAGE;
             }else {

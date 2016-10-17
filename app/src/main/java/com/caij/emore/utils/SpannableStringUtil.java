@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import android.text.style.URLSpan;
 
 import com.caij.emore.R;
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.EMApplication;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.ShortUrl;
 import com.caij.emore.database.bean.DirectMessage;
@@ -34,8 +34,8 @@ public class SpannableStringUtil {
 
     public static final String FULL_TEXT_SCHEME = "fulltext://";
 
-    public static int color = EMoreApplication.getInstance().getResources().getColor(R.color.link_text_color);
-    public static int pressColor = EMoreApplication.getInstance().getResources().getColor(R.color.link_text_press_color);
+    public static int color = EMApplication.getInstance().getResources().getColor(R.color.link_text_color);
+    public static int pressColor = EMApplication.getInstance().getResources().getColor(R.color.link_text_press_color);
 
 
     static String httpRegular = "(http|https)://[a-zA-Z0-9+&@#/%?=~_\\-|!:,\\.;]*[a-zA-Z0-9+&@#/%=~_|]";
@@ -175,7 +175,7 @@ public class SpannableStringUtil {
     }
 
     public static void praseDefaultEmotions(Spannable spannableString) {
-        Context context = EMoreApplication.getInstance();
+        Context context = EMApplication.getInstance();
         Matcher localMatcher = Pattern.compile("\\[(\\S+?)\\]").matcher(spannableString);
         while (localMatcher.find()) {
 
@@ -210,7 +210,7 @@ public class SpannableStringUtil {
                 continue;
             }
             Bitmap bitmap = EmotionsUtil.getCacheEmotion(String.valueOf(unicode));
-            Context context = EMoreApplication.getInstance();
+            Context context = EMApplication.getInstance();
             if (bitmap == null) {
                 bitmap = BitmapFactory.decodeResource(context.getResources(), drawableId);
                 int size = context.getResources().getDimensionPixelSize(R.dimen.text_size_large);

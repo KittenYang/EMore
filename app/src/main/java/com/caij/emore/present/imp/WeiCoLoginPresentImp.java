@@ -1,6 +1,6 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.EMApplication;
 import com.caij.emore.R;
 import com.caij.emore.account.Account;
 import com.caij.emore.account.Token;
@@ -34,7 +34,7 @@ public class WeiCoLoginPresentImp extends AbsBasePresent implements LoginPresent
                 .doOnNext(new Action1<Token>() {
                     @Override
                     public void call(Token accessToken) {
-                        UserPrefs userPrefs = UserPrefs.get(EMoreApplication.getInstance());
+                        UserPrefs userPrefs = UserPrefs.get(EMApplication.getInstance());
                         Account account = new Account();
                         long uid = Long.parseLong(accessToken.getUid());
                         account.setUsername(username);

@@ -16,7 +16,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.EMApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.R;
 import com.caij.emore.bean.ThemeItem;
@@ -131,7 +131,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 		ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, String>() {
 			@Override
 			protected String doInBackground(Object... params) {
-				return CacheUtils.getCacheFileSizeString(EMoreApplication.getInstance());
+				return CacheUtils.getCacheFileSizeString(EMApplication.getInstance());
 			}
 
 			@Override

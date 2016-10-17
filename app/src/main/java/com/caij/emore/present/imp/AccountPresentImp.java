@@ -2,7 +2,7 @@ package com.caij.emore.present.imp;
 
 import android.os.AsyncTask;
 
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.EMApplication;
 import com.caij.emore.account.Account;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.AccountInfo;
@@ -42,11 +42,11 @@ public class AccountPresentImp extends AbsBasePresent implements AccountPresent 
         ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, List<AccountInfo>>() {
             @Override
             protected List<AccountInfo> doInBackground(Object... params) {
-                List<Account> accounts = UserPrefs.get(EMoreApplication.getInstance()).getAccounts();
+                List<Account> accounts = UserPrefs.get(EMApplication.getInstance()).getAccounts();
                 List<AccountInfo> accountInfos = new ArrayList<AccountInfo>();
                 for (Account account : accounts) {
                     AccountInfo accountInfo = new AccountInfo();
-                    DaoSession daoSession = DBManager.newDaoSession(EMoreApplication.getInstance(),
+                    DaoSession daoSession = DBManager.newDaoSession(EMApplication.getInstance(),
                            account.getUid(), false);
                     User user = daoSession.getUserDao().load(account.getUid());
                     accountInfo.setAccount(account);
