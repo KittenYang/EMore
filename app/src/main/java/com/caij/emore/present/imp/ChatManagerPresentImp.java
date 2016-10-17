@@ -1,6 +1,6 @@
 package com.caij.emore.present.imp;
 
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.EmoreApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.bean.MessageImage;
 import com.caij.emore.bean.event.MessageResponseEvent;
@@ -60,7 +60,7 @@ public class ChatManagerPresentImp extends AbsBasePresent implements ChatManager
                 @Override
                 public String getData() throws Exception {
                     return ImageUtil.compressImage(file.getAbsolutePath(),
-                            EMoreApplication.getInstance());
+                            EmoreApplication.getInstance());
                 }
             }).flatMap(new Func1<String, Observable<MessageImage>>() {
                 @Override

@@ -1,6 +1,6 @@
 package com.caij.emore.remote.imp;
 
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.EmoreApplication;
 import com.caij.emore.Key;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.api.WeiBoService;
@@ -73,7 +73,7 @@ public class MessageApiImp implements MessageApi {
                     MultipartBody.Part body =
                             MultipartBody.Part.createFormData("file", file.getName(), requestFile);
                     return  mWeiBoService.uploadMessageImage(Key.UPLOAD_MESSAGE_IMAGE_URL,
-                            UserPrefs.get(EMoreApplication.getInstance()).getToken().getAccess_token(),
+                            UserPrefs.get(EmoreApplication.getInstance()).getToken().getAccess_token(),
                             Key.WEICO_APP_ID, Key.WEICO_APP_FROM, uid, body);
                 }
             });

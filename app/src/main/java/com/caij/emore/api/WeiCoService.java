@@ -1,6 +1,6 @@
 package com.caij.emore.api;
 
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.EmoreApplication;
 import com.caij.emore.Key;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
@@ -107,7 +107,7 @@ public interface WeiCoService {
          */
         static Request interceptRequest(Request request) {
             RequestBody requestBody = request.body();
-            Token token = UserPrefs.get(EMoreApplication.getInstance()).getToken();
+            Token token = UserPrefs.get(EmoreApplication.getInstance()).getToken();
             String accessToken = token == null ? "" : token.getAccess_token();
             if (requestBody == null) {  //get
                 HttpUrl url = request.url().newBuilder()

@@ -4,7 +4,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.EmoreApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
@@ -481,11 +481,11 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
     public static ImageInfo toImageInfo(String url, int width, int height) {
         ImageInfo imageInfo = new ImageInfo();
         if (width > height) {
-            int maxWidth = (int) (DensityUtil.getScreenWidth(EMoreApplication.getInstance()) / 2f);
+            int maxWidth = (int) (DensityUtil.getScreenWidth(EmoreApplication.getInstance()) / 2f);
             imageInfo.setWidth(maxWidth);
             imageInfo.setHeight((int) (maxWidth * 1f / width * height));
         }else {
-            int maxWidth = (int) (DensityUtil.getScreenWidth(EMoreApplication.getInstance()) / 3f);
+            int maxWidth = (int) (DensityUtil.getScreenWidth(EmoreApplication.getInstance()) / 3f);
             imageInfo.setWidth(maxWidth);
             imageInfo.setHeight((int) (maxWidth * 1f / width * height));
         }
@@ -498,7 +498,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         if (url.startsWith("http")) {
             Uri uri = Uri.parse(url);
             String v = uri.getScheme() + "://" + uri.getHost() + uri.getPath() + "?" + "fid=" + uri.getQueryParameter("fid") + "&width=" + width + "&high=" + height
-                    + "&access_token=" + UserPrefs.get(EMoreApplication.getInstance()).getToken().getAccess_token();
+                    + "&access_token=" + UserPrefs.get(EmoreApplication.getInstance()).getToken().getAccess_token();
             return v;
         }
         return url;

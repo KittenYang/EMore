@@ -28,7 +28,7 @@ import rx.functions.Action1;
 /**
  * Created by Caij on 2016/5/27.
  */
-public class EMoreApplication extends Application{
+public class EmoreApplication extends Application{
 
     private static Application mApplication;
     private int mVisibleActivityCount;
@@ -135,7 +135,7 @@ public class EMoreApplication extends Application{
                 @Override
                 protected String doInBackground(Object... params) {
                     String channel = ChannelUtil.getChannel(getApplicationContext());
-                    LogUtil.d(EMoreApplication.this, "get app channel : %s", channel);
+                    LogUtil.d(EmoreApplication.this, "get app channel : %s", channel);
                     if (TextUtils.isEmpty(channel)) {
                         channel = "default";
                     }

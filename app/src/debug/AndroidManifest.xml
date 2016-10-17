@@ -4,6 +4,6 @@
 
     <application
         tools:replace="android:name"
-        android:name=".EMoreDebugApplication"/>
+        android:name=".EmoreDebugApplication"/>
 
 </manifest>

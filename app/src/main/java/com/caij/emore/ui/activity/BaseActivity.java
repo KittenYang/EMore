@@ -4,7 +4,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.caij.emore.EMoreApplication;
+import com.caij.emore.EmoreApplication;
 import com.caij.emore.R;
 import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.view.BaseView;
@@ -46,7 +46,7 @@ public abstract class BaseActivity<P extends BasePresent> extends AppCompatActiv
 
     @Override
     public void onAuthenticationError() {
-        ((EMoreApplication)getApplication()).onAuthenticationError();
+        ((EmoreApplication)getApplication()).onAuthenticationError();
     }
 
     @Override
