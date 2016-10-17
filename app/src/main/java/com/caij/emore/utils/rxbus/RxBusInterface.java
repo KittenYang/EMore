@@ -13,7 +13,7 @@ public interface RxBusInterface {
 
     public void unregister(@NonNull Object tag, @NonNull Observable observable);
 
-    public void post(@NonNull Object tag, @NonNull Object content);
+    public void post(@NonNull Object tag, Object content);
 
     public void addEventListener(Listener listener);
 

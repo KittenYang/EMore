@@ -11,7 +11,7 @@ import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.DraftPresent;
 import com.caij.emore.present.imp.DraftPresentImp;
 import com.caij.emore.ui.view.DraftListView;
-import com.caij.emore.ui.activity.publish.PublishWeiboActivity;
+import com.caij.emore.ui.activity.publish.PublishStatusActivity;
 import com.caij.emore.ui.adapter.DraftAdapter;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
@@ -50,7 +50,7 @@ public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> imp
         }else {
             switch (draft.getType()) {
                 case Draft.TYPE_WEIBO:
-                    Intent intent = PublishWeiboActivity.newIntent(getActivity(), draft);
+                    Intent intent = PublishStatusActivity.newIntent(getActivity(), draft);
                     startActivity(intent);
                     break;
             }
