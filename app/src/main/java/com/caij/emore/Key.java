@@ -48,7 +48,7 @@ public interface Key {
     String COMMENT = "comment";
     String DATE = "date";
     String FRIEND_STATUS_UPDATE_TIME = "friend_status_update_time";
-    String FRIEND_STATUS_LOCAL_NEXT_CURSOR_TIME = "friend_status_local_next_cursor_time";
+    String FRIEND_STATUS_LOCAL_NEXT_CURSOR = "friend_status_local_next_cursor";
     String FRIEND_STATUS_LOCAL_CACHE_IDS = "friend_status_local_cache_ids";
     String TRANSIT_PIC = "transit_pic";
 

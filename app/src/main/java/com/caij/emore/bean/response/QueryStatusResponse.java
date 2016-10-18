@@ -23,6 +23,8 @@ public class QueryStatusResponse extends Response {
 
     private long total_number;
 
+    private List<String> advertises;
+
     public long getSince_id() {
         return since_id;
     }
@@ -77,5 +79,13 @@ public class QueryStatusResponse extends Response {
 
     public void setNext_cursor(long next_cursor) {
         this.next_cursor = next_cursor;
+    }
+
+    public List<String> getAdvertises() {
+        return advertises;
+    }
+
+    public void setAdvertises(List<String> advertises) {
+        this.advertises = advertises;
     }
 }

@@ -66,17 +66,17 @@ public class ToMeAttitudeAdapter extends BaseAdapter<Attitude, ToMeAttitudeAdapt
             holder.tvComment.setText("赞了这条微博");
         }
 
-        Status weibo = attitude.getStatus();
-        holder.tvBottomName.setText("@" + weibo.getUser().getName());
-        holder.tvWeibo.setText(weibo.getText());
+        Status status = attitude.getStatus();
+        holder.tvBottomName.setText("@" + status.getUser().getName());
+        holder.tvWeibo.setText(status.getText());
         ImageLoader.load(mContext, holder.imageView,
-                weibo.getBmiddle_pic() != null ?  weibo.getBmiddle_pic() : weibo.getUser().getAvatar_large(),
+                status.getBmiddle_pic() != null ?  status.getBmiddle_pic() : status.getUser().getAvatar_large(),
                 R.drawable.weibo_image_placeholder);
 
-        String createAt = DateUtil.convWeiboDate(mContext, weibo.getCreated_at().getTime());
+        String createAt = DateUtil.convWeiboDate(mContext, status.getCreated_at().getTime());
         String from = "";
-        if (!TextUtils.isEmpty(weibo.getSource()))
-            from = String.format("%s", Html.fromHtml(weibo.getSource()));
+        if (!TextUtils.isEmpty(status.getSource()))
+            from = String.format("%s", Html.fromHtml(status.getSource()));
         String desc = String.format("%s %s", createAt, from);
         holder.tvSource.setText(desc);
 

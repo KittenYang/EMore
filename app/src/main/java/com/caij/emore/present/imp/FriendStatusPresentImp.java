@@ -83,7 +83,6 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
         Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<List<Status>>() {
             @Override
             public List<Status> getData() {
-//                mStatusManager.getFriendStatuses(mUid, 0, 0, PAGE_COUNT , 1)
                 return getCacheStatus();
             }
         }).flatMap(new Func1<List<Status>, Observable<Status>>() {
@@ -134,7 +133,7 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
 
         mNextCursor = new SPUtil.SPBuilder(EMApplication.getInstance())
                 .openDefault()
-                .getLong(Key.FRIEND_STATUS_LOCAL_NEXT_CURSOR_TIME, 0);
+                .getLong(Key.FRIEND_STATUS_LOCAL_NEXT_CURSOR, 0);
         LogUtil.d(this, "local next cursor %s", mNextCursor);
 
         long preRefreshTime  = new SPUtil.SPBuilder(EMApplication.getInstance())
@@ -207,7 +206,7 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
         new SPUtil.SPBuilder(EMApplication.getInstance())
                 .openDefault().edit()
                 .putLong(Key.FRIEND_STATUS_UPDATE_TIME, System.currentTimeMillis())
-                .putLong(Key.FRIEND_STATUS_LOCAL_NEXT_CURSOR_TIME, mNextCursor)
+                .putLong(Key.FRIEND_STATUS_LOCAL_NEXT_CURSOR, mNextCursor)
                 .apply();
     }
 
@@ -243,6 +242,7 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
                     @Override
                     public Observable<Status> call(QueryStatusResponse response) {
                         mNextCursor = response.getNext_cursor();
+                        processAds(response);
                         return Observable.from(response.getStatuses());
                     }
                 })
@@ -253,14 +253,29 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
                     }
                 })
                 .compose(StatusContentSpannableConvertTransformer.create(false))
-                .toList()
-                .doOnNext(new Action1<List<Status>>() {
+                .doOnNext(new Action1<Status>() {
                     @Override
-                    public void call(List<Status> statuses) {
-                        mStatusManager.saveStatuses(statuses);
+                    public void call(Status status) {
+                        mStatusManager.saveStatus(status);
                     }
                 })
+                .toList()
                 .compose(SchedulerTransformer.<List<Status>>create());
+    }
+
+    /**
+     * 在返回的微博中 广告用户的关注是true  。。。所以把广告微博用户关注设置为false
+     * @param response
+     */
+    private void processAds(QueryStatusResponse response) {
+        if (response != null && response.getStatuses() != null && response.getAdvertises() != null
+                && response.getStatuses().size() > 0 && response.getAdvertises().size() > 0) {
+            for (Status status : response.getStatuses()) {
+                if (response.getAdvertises().contains(String.valueOf(status.getId()))) {
+                    status.getUser().setFollowing(false);
+                }
+            }
+        }
     }
 
     @Override
