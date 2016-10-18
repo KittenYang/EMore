@@ -1,9 +1,11 @@
 package com.caij.emore.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by Caij on 2016/8/25.
  */
-public class StatusImageInfo {
+public class StatusImageInfo implements Serializable {
 
     /**
      * url : http://ww4.sinaimg.cn/wap180/7116d0edgw1f72hg7h6u4j20go09edgd.jpg
@@ -149,7 +151,7 @@ public class StatusImageInfo {
         this.pic_status = pic_status;
     }
 
-    public static class Image {
+    public static class Image implements Serializable {
 
         private String url;
         private int width;
