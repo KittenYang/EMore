@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
 import com.caij.emore.R;
 import com.caij.emore.present.ImagePrePresent;
@@ -26,13 +27,15 @@ import java.util.concurrent.ExecutionException;
  */
 public class ImagePrePresentImp implements ImagePrePresent {
 
-    public Context mContent;
+    private Context mContent;
     private ImagePreView mImagePreView;
     private String mImageUrl;
     private String mHdImageUrl;
     private AsyncTask mImageLoadAsyncTask;
     private String mShowFilePath;
     private ImageUtil.ImageType mImageType = ImageUtil.ImageType.JPEG;
+
+    private String mShowImageUrl;
 
     public ImagePrePresentImp(Context context, String url, String hdUrl, ImagePreView imagePreView) {
         mContent = context;
@@ -47,6 +50,8 @@ public class ImagePrePresentImp implements ImagePrePresent {
     }
 
     private void loadImage(final String url) {
+        mShowImageUrl = url;
+
         if (mImageUrl.startsWith("/")) {  //本地文件
             showImage(mImageUrl);
         }else {
@@ -80,11 +85,9 @@ public class ImagePrePresentImp implements ImagePrePresent {
 
     @Override
     public void onViewLongClick() {
-        if (mShowFilePath == null) {
-            return;
-        }
+        if (mShowFilePath == null) return;
         String[] items;
-        if (!TextUtils.isEmpty(mHdImageUrl)) {
+        if (!TextUtils.isEmpty(mHdImageUrl) && !mShowImageUrl.equals(mHdImageUrl)) {
             items = new String[]{mContent.getString(R.string.save_image), mContent.getString(R.string.preview_big_image)};
             mImagePreView.showSelectDialog(items, new DialogInterface.OnClickListener(){
 
