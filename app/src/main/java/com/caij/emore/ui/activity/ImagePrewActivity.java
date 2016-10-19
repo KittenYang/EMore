@@ -13,7 +13,7 @@ import com.caij.emore.R;
 import com.caij.emore.present.imp.AbsBasePresent;
 import com.caij.emore.ui.adapter.StatusFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
-import com.caij.emore.ui.fragment.ImagePrewFragment;
+import com.caij.emore.ui.fragment.ImagePreviewFragment;
 import com.caij.emore.utils.weibo.ThemeUtils;
 import com.caij.emore.widget.HackyViewPager;
 
@@ -33,11 +33,11 @@ public class ImagePrewActivity extends BaseActivity {
     @BindView(R.id.tv_image_count)
     TextView mTvImageCount;
 
-    public static Intent newIntent(Context context, ArrayList<String> paths, int position) {
-        Intent intent = new Intent(context, ImagePrewActivity.class);
-        intent.putStringArrayListExtra(Key.IMAGE_PATHS, paths);
-        intent.putExtra(Key.POSITION, position);
-        return intent;
+    public static Intent newIntent(Context context, ArrayList<String> paths, ArrayList<String> hdPaths, int position) {
+        return new Intent(context, ImagePrewActivity.class)
+            .putStringArrayListExtra(Key.IMAGE_PATHS, paths)
+            .putExtra(Key.POSITION, position)
+            .putExtra(Key.HD_IMAGE_PATHS, hdPaths);
     }
 
     @Override
@@ -47,8 +47,9 @@ public class ImagePrewActivity extends BaseActivity {
         ButterKnife.bind(this);
 //        ViewCompat.setTransitionName(mVpImage, Key.TRANSIT_PIC);
         final ArrayList<String> paths = getIntent().getStringArrayListExtra(Key.IMAGE_PATHS);
+        final ArrayList<String> hdPaths = getIntent().getStringArrayListExtra(Key.HD_IMAGE_PATHS);
         final int position = getIntent().getIntExtra(Key.POSITION, 0);
-        init(paths, position);
+        init(paths, hdPaths, position);
     }
 
     @Override
@@ -62,10 +63,10 @@ public class ImagePrewActivity extends BaseActivity {
         return null;
     }
 
-    private void init( ArrayList<String> paths, int position) {
+    private void init(ArrayList<String> paths, ArrayList<String> hdPaths, int position) {
         final List<BaseFragment> fragments = new ArrayList<>();
-        for (String path : paths) {
-            ImagePrewFragment fragment = ImagePrewFragment.newInstance(path);
+        for (int i = 0; i < paths.size(); i ++) {
+            ImagePreviewFragment fragment = ImagePreviewFragment.newInstance(paths.get(i), hdPaths == null ? null : hdPaths.get(i));
             fragments.add(fragment);
         }
 

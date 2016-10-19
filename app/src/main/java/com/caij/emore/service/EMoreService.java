@@ -138,40 +138,44 @@ public class EMoreService extends Service {
         private Messenger mClientMessenger;
         private RxBusInterface.Listener mRxBusListener;
 
-        public PipeHandler() {
+        PipeHandler() {
             mRxBusListener = new RxBus.ListenerAdapter() {
                 @Override
                 public void onPost(Object tag, @NonNull Object content) {
-                    try {
-                        if (tag.equals(EventTag.EVENT_DRAFT_UPDATE)
-                                || tag.equals(EventTag.EVENT_PUBLISH_WEIBO_SUCCESS)
-                                || tag.equals(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE)
-                                || tag.equals(EventTag.EVENT_HAS_NEW_DM)
-                                || tag.equals(EventTag.EVENT_SEND_MESSAGE_RESULT)
-                                || tag.equals(EventTag.EVENT_TOKEN_EXPIRED)) {
-                            LogUtil.d(PipeHandler.this,"EMoreService send event " + tag.toString() + " to other event");
-
-                            if (mClientMessenger != null) {
-                                PipeEvent pipeEvent = new PipeEvent(tag, content);
-                                Message message = Message.obtain();
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable(Key.OBJ, pipeEvent);
-                                message.setData(bundle);
-
-                                mClientMessenger.send(message);
-                            }else {
-                                LogUtil.d(PipeHandler.this, "mClientMessenger is null");
-                            }
-                        }
-                    }catch (RemoteException re) {
-                        LogUtil.d(PipeHandler.this, "进程通讯异常: RemoteException" + re.getMessage());
-                        mClientMessenger = null;
-                    } catch (Exception e) {
-                        LogUtil.d(PipeHandler.this, "进程通讯异常: Exception" + e.getMessage());
-                    }
+                    filterEvent(tag, content);
                 }
             };
             RxBus.getDefault().addEventListener(mRxBusListener);
+        }
+
+        private void filterEvent(Object tag, Object content) {
+            try {
+                if (tag.equals(EventTag.EVENT_DRAFT_UPDATE)
+                        || tag.equals(EventTag.EVENT_PUBLISH_WEIBO_SUCCESS)
+                        || tag.equals(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE)
+                        || tag.equals(EventTag.EVENT_HAS_NEW_DM)
+                        || tag.equals(EventTag.EVENT_SEND_MESSAGE_RESULT)
+                        || tag.equals(EventTag.EVENT_TOKEN_EXPIRED)) {
+                    LogUtil.d(PipeHandler.this,"EMoreService send event " + tag.toString() + " to other event");
+
+                    if (mClientMessenger != null) {
+                        PipeEvent pipeEvent = new PipeEvent(tag, content);
+                        Message message = Message.obtain();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(Key.OBJ, pipeEvent);
+                        message.setData(bundle);
+
+                        mClientMessenger.send(message);
+                    }else {
+                        LogUtil.d(PipeHandler.this, "mClientMessenger is null");
+                    }
+                }
+            }catch (RemoteException re) {
+                LogUtil.d(PipeHandler.this, "进程通讯异常: RemoteException" + re.getMessage());
+                mClientMessenger = null;
+            } catch (Exception e) {
+                LogUtil.d(PipeHandler.this, "进程通讯异常: Exception" + e.getMessage());
+            }
         }
 
         @Override

@@ -160,7 +160,7 @@ public class PublishStatusActivity extends PublishActivity<StatusPublishPresent>
     @Override
     public void onItemClick(View view, int position) {
         NavigationUtil.startImagePreActivity(this, view,
-                (ArrayList<String>) mPublishImageAdapter.getEntities(), position);
+                (ArrayList<String>) mPublishImageAdapter.getEntities(), null, position);
     }
 
     private boolean isContentChange() {

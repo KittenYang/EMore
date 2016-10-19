@@ -34,7 +34,9 @@ public interface Key {
     String ID = "id";
     String TYPE = "type";
     String IMAGE_PATHS = "image_paths";
+    String HD_IMAGE_PATHS = "hd_image_paths";
     String IMAGE_PATH = "image_path";
+    String HD_IMAGE_PATH = "_hd_image_path";
     String POSITION = "position";
     String MAX = "max";
 

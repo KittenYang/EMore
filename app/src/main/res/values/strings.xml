@@ -204,5 +204,7 @@
     <string name="is_current_account">当前的账户已经是您选择的账号啦</string>
     <string name="article_detail">文章详情</string>
     <string name="night_mode_change_theme_hint">夜间模式下不能切换主题</string>
+    <string name="save_image">保存图片</string>
+    <string name="preview_big_image">查看大图</string>
 
 </resources>

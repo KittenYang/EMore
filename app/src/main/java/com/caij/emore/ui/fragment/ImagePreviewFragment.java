@@ -29,7 +29,7 @@ import butterknife.OnLongClick;
 /**
  * Created by Caij on 2016/6/24.
  */
-public class ImagePrewFragment extends BaseFragment<ImagePrePresent> implements ImagePreView {
+public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implements ImagePreView {
 
     @BindView(R.id.iv_image)
     ImageView mIvImage;
@@ -38,10 +38,11 @@ public class ImagePrewFragment extends BaseFragment<ImagePrePresent> implements 
     @BindView(R.id.pb_loading)
     ProgressBar pbLoading;
 
-    public static ImagePrewFragment newInstance(String url) {
-        ImagePrewFragment fragment = new ImagePrewFragment();
+    public static ImagePreviewFragment newInstance(String url, String hdUrl) {
+        ImagePreviewFragment fragment = new ImagePreviewFragment();
         Bundle bundle = new Bundle();
         bundle.putString(Key.IMAGE_PATH, url);
+        bundle.putString(Key.HD_IMAGE_PATH, hdUrl);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -63,7 +64,8 @@ public class ImagePrewFragment extends BaseFragment<ImagePrePresent> implements 
     @Override
     protected ImagePrePresent createPresent() {
         String picUrl = getArguments().getString(Key.IMAGE_PATH);
-        return new ImagePrePresentImp(getActivity(), picUrl, this);
+        String hdPicUrl = getArguments().getString(Key.HD_IMAGE_PATH);
+        return new ImagePrePresentImp(getActivity(), picUrl, hdPicUrl, this);
     }
 
     @Override
@@ -126,7 +128,7 @@ public class ImagePrewFragment extends BaseFragment<ImagePrePresent> implements 
         }
     }
 
-    @OnLongClick({R.id.sciv, R.id.iv_image})
+    @OnLongClick({R.id.iv_image, R.id.sciv})
     public boolean onLongClick(View view) {
         switch (view.getId()) {
             case R.id.sciv:

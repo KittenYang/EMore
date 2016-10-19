@@ -23,8 +23,8 @@ public class NavigationUtil {
         return intent;
     }
 
-    public static void startImagePreActivity(Context context, View view, ArrayList<String> paths, int position) {
-        Intent intent = ImagePrewActivity.newIntent(context, paths, position);
+    public static void startImagePreActivity(Context context, View view, ArrayList<String> paths, ArrayList<String> hdPaths, int position) {
+        Intent intent = ImagePrewActivity.newIntent(context, paths, hdPaths, position);
 //        ActivityOptionsCompat optionsCompat
 //                = ActivityOptionsCompat.makeSceneTransitionAnimation(
 //                (Activity) context, view, Key.TRANSIT_PIC);

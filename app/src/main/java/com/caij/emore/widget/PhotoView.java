@@ -76,4 +76,10 @@ public class PhotoView extends ImageView {
             }
         });
     }
+
+    @Override
+    public void setOnLongClickListener(OnLongClickListener l) {
+        mAttacher.setOnLongClickListener(l);
+//        super.setOnLongClickListener(l);
+    }
 }

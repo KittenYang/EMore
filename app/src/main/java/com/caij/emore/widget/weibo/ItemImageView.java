@@ -76,7 +76,7 @@ public class ItemImageView extends ImageView {
     }
 
     public boolean isGif() {
-        return mImageInfo != null && mImageInfo.getBmiddle().getType().contains("gif");
+        return mImageInfo != null && mImageInfo.getBmiddle().getType().equalsIgnoreCase("gif");
     }
 
 //    @Override

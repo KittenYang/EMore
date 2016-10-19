@@ -345,6 +345,13 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
 
     }
 
+    @Override
+    public String getMessageImageHdUrl(DirectMessage directMessage) {
+        String url = directMessage.getAttachinfo().get(0).getThumbnail();
+        return appImageUrl(url, DensityUtil.getScreenWidth(EMApplication.getInstance()),
+                DensityUtil.getScreenHeight(EMApplication.getInstance()));
+    }
+
     private void send(DirectMessage message) {
         MessageResponseEvent responseEvent = new MessageResponseEvent(EventTag.SEND_MESSAGE_EVENT, message.getId(), message);
         RxBus.getDefault().post(EventTag.SEND_MESSAGE_EVENT, responseEvent);

@@ -231,17 +231,20 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
     @Override
     public void onClick(View v) {
         ArrayList<String> paths = new ArrayList<>();
+        ArrayList<String> hdPaths = new ArrayList<>();
         int position = 0;
         for (int i = 0; i < mPicIds.size(); i ++) {
             StatusImageInfo picUrl = mImageInfoLinkedHashMap.get(mPicIds.get(i));
             View child = getChildAt(i);
-            paths.add(picUrl.getLarge().getUrl());
+            paths.add(picUrl.getBmiddle().getUrl());
+
+            StatusImageInfo.Image orignImage = picUrl.getOriginal();
+            hdPaths.add(orignImage == null ? null : orignImage.getUrl());
             if (child == v) {
                 position = i;
             }
         }
-        NavigationUtil.startImagePreActivity(getContext(), v, paths, position);
-
+        NavigationUtil.startImagePreActivity(getContext(), v, paths, hdPaths, position);
     }
 
     @Override

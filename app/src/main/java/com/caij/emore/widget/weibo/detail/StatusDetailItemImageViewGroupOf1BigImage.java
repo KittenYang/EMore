@@ -68,7 +68,12 @@ public class StatusDetailItemImageViewGroupOf1BigImage extends ViewGroup impleme
                 if (mImageInfo != null) {
                     ArrayList<String> images = new ArrayList<String>();
                     images.add(mImageInfo.getBmiddle().getUrl());
-                    NavigationUtil.startImagePreActivity(context, v, images, 0);
+
+                    ArrayList<String> hdImages = new ArrayList<String>();
+                    StatusImageInfo.Image orignImage = mImageInfo.getOriginal();
+                    hdImages.add(orignImage == null ? null : orignImage.getUrl());
+
+                    NavigationUtil.startImagePreActivity(context, v, images, hdImages, 0);
                 }
             }
         });

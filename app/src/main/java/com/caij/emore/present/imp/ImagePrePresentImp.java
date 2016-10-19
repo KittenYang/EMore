@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import com.bumptech.glide.request.target.Target;
 import com.caij.emore.R;
@@ -26,16 +27,18 @@ import java.util.concurrent.ExecutionException;
 public class ImagePrePresentImp implements ImagePrePresent {
 
     public Context mContent;
-    ImagePreView mImagePreView;
+    private ImagePreView mImagePreView;
     private String mImageUrl;
+    private String mHdImageUrl;
     private AsyncTask mImageLoadAsyncTask;
     private String mShowFilePath;
     private ImageUtil.ImageType mImageType = ImageUtil.ImageType.JPEG;
 
-    public ImagePrePresentImp(Context context, String url, ImagePreView imagePreView) {
+    public ImagePrePresentImp(Context context, String url, String hdUrl, ImagePreView imagePreView) {
         mContent = context;
         mImagePreView = imagePreView;
         mImageUrl = url;
+        mHdImageUrl = hdUrl;
     }
 
     @Override
@@ -44,7 +47,7 @@ public class ImagePrePresentImp implements ImagePrePresent {
     }
 
     private void loadImage(final String url) {
-        if (mImageUrl.startsWith("/")) {
+        if (mImageUrl.startsWith("/")) {  //本地文件
             showImage(mImageUrl);
         }else {
             mImagePreView.showProgress(true);
@@ -81,8 +84,8 @@ public class ImagePrePresentImp implements ImagePrePresent {
             return;
         }
         String[] items;
-        if (mImageUrl.contains("thumbnail") || mImageUrl.contains("bmiddle")) {
-            items = new String[]{"保存图片", "查看大图"};
+        if (!TextUtils.isEmpty(mHdImageUrl)) {
+            items = new String[]{mContent.getString(R.string.save_image), mContent.getString(R.string.preview_big_image)};
             mImagePreView.showSelectDialog(items, new DialogInterface.OnClickListener(){
 
                 @Override
@@ -90,13 +93,12 @@ public class ImagePrePresentImp implements ImagePrePresent {
                     if (which == 0) {
                         saveImage(new File(mShowFilePath));
                     }else {
-                        mImageUrl = mImageUrl.replace("thumbnail", "large").replace("bmiddle", "large");
-                        loadImage(mImageUrl);
+                        loadImage(mHdImageUrl);
                     }
                 }
             });
         }else if (mImageUrl.startsWith("http")){
-            items = new String[]{"保存图片"};
+            items = new String[]{mContent.getString(R.string.save_image)};
             mImagePreView.showSelectDialog(items, new DialogInterface.OnClickListener(){
 
                 @Override
@@ -116,8 +118,7 @@ public class ImagePrePresentImp implements ImagePrePresent {
                 try {
                     FileUtil.copy(source, target);
                     isSuccess = true;
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
                     isSuccess = false;
                 }
                 return isSuccess;

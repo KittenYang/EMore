@@ -354,17 +354,15 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
             int type = mMessageAdapter.getItemViewType(position - 1);
             if (type == MessageAdapter.TYPE_OTHER_IMAGE || type == MessageAdapter.TYPE_SELT_IMAGE) {
                 ArrayList<String> images = new ArrayList<>(1);
-                images.add(appImageUrl(directMessage.getImageInfo().getUrl()));
-                Intent intent = ImagePrewActivity.newIntent(getActivity(), images, 0);
+                images.add(directMessage.getImageInfo().getUrl());
+
+                ArrayList<String> hdPaths = new ArrayList<>(1);
+                hdPaths.add(mPresent.getMessageImageHdUrl(directMessage));
+
+                Intent intent = ImagePrewActivity.newIntent(getActivity(), images, hdPaths, 0);
                 startActivity(intent);
             }
         }
     }
 
-    private String appImageUrl(String url) {
-        if (url.startsWith("http")) {
-            return url + "&access_token=" + UserPrefs.get(getActivity()).getToken().getAccess_token();
-        }
-        return url;
-    }
 }
