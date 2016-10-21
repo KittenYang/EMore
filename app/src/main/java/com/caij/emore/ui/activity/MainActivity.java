@@ -27,6 +27,7 @@ import com.caij.emore.database.bean.User;
 import com.caij.emore.present.MainPresent;
 import com.caij.emore.present.imp.MainPresentImp;
 import com.caij.emore.remote.imp.UserApiImp;
+import com.caij.emore.ui.brige.ToolbarDoubleClick;
 import com.caij.emore.ui.fragment.weibo.FriendStatusFragment;
 import com.caij.emore.ui.fragment.weibo.HotStatusFragment;
 import com.caij.emore.ui.view.MainView;
@@ -334,6 +335,8 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
     @Override
     public void onDoubleClick(View v) {
-        RxBus.getDefault().post(EventTag.EVENT_TOOL_BAR_DOUBLE_CLICK, mVisibleFragment);
+        if (mVisibleFragment instanceof ToolbarDoubleClick) {
+            ((ToolbarDoubleClick) mVisibleFragment).acceptToolBarDoubleClick(v);
+        }
     }
 }

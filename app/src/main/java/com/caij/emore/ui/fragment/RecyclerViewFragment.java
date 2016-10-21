@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.present.ListPresent;
+import com.caij.emore.ui.brige.ToolbarDoubleClick;
 import com.caij.emore.ui.view.ListView;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
@@ -26,7 +27,9 @@ import butterknife.ButterKnife;
 /**
  * Created by Caij on 2015/9/23.
  */
-public abstract class RecyclerViewFragment<E, P extends ListPresent> extends LazyFragment<P> implements XRecyclerView.OnLoadMoreListener, ListView<E>,RecyclerViewOnItemClickListener {
+public abstract class RecyclerViewFragment<E, P extends ListPresent> extends LazyFragment<P> implements
+        XRecyclerView.OnLoadMoreListener, ListView<E>,RecyclerViewOnItemClickListener,
+        ToolbarDoubleClick {
 
     @BindView(R.id.xrecycler_view)
     protected XRecyclerView xRecyclerView;
@@ -136,5 +139,10 @@ public abstract class RecyclerViewFragment<E, P extends ListPresent> extends Laz
 
     protected void setEmptyText(TextView textView) {
         textView.setText("这里什么都没有");
+    }
+
+    @Override
+    public void acceptToolBarDoubleClick(View view) {
+        xRecyclerView.smoothScrollToPosition(0);
     }
 }

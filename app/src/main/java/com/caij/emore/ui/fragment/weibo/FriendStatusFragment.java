@@ -21,6 +21,7 @@ import com.caij.emore.present.FriendStatusPresent;
 import com.caij.emore.present.imp.FriendStatusPresentImp;
 import com.caij.emore.remote.imp.AttitudeApiImp;
 import com.caij.emore.remote.imp.StatusApiImp;
+import com.caij.emore.ui.brige.ToolbarDoubleClick;
 import com.caij.emore.ui.view.FriendStatusView;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.SearchRecommendActivity;
@@ -35,24 +36,13 @@ import rx.functions.Action1;
 /**
  * Created by Caij on 2016/6/4.
  */
-public class FriendStatusFragment extends TimeLineStatusFragment<FriendStatusPresent> implements
-        RecyclerViewOnItemClickListener, XRecyclerView.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, FriendStatusView {
-
-    private Observable<Object> mToolBarDoubleClickobservable;
+public class FriendStatusFragment extends TimeLineStatusFragment<FriendStatusPresent> implements RecyclerViewOnItemClickListener,
+        XRecyclerView.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, FriendStatusView{
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-        mToolBarDoubleClickobservable = RxBus.getDefault().register(EventTag.EVENT_TOOL_BAR_DOUBLE_CLICK);
-        mToolBarDoubleClickobservable.subscribe(new Action1<Object>() {
-            @Override
-            public void call(Object object) {
-                if (object == FriendStatusFragment.this) {
-                    xRecyclerView.smoothScrollToPosition(0);
-                }
-            }
-        });
     }
 
     @Override
@@ -127,9 +117,4 @@ public class FriendStatusFragment extends TimeLineStatusFragment<FriendStatusPre
         });
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        RxBus.getDefault().unregister(EventTag.EVENT_TOOL_BAR_DOUBLE_CLICK, mToolBarDoubleClickobservable);
-    }
 }
