@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.caij.emore.R;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.widget.weibo.ImageInterface;
 import com.caij.emore.widget.weibo.ItemImageView;
@@ -230,21 +232,37 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        ArrayList<String> paths = new ArrayList<>();
-        ArrayList<String> hdPaths = new ArrayList<>();
+        ArrayList<ImageInfo> paths = new ArrayList<>();
+        ArrayList<ImageInfo> hdPaths = new ArrayList<>();
         int position = 0;
         for (int i = 0; i < mPicIds.size(); i ++) {
             StatusImageInfo picUrl = mImageInfoLinkedHashMap.get(mPicIds.get(i));
             View child = getChildAt(i);
-            paths.add(picUrl.getBmiddle().getUrl());
+            paths.add(new ImageInfo(picUrl.getBmiddle().getUrl(), picUrl.getBmiddle().getWidth(),
+                    picUrl.getBmiddle().getHeight(), getImageType(picUrl.getBmiddle().getType())));
 
             StatusImageInfo.Image orignImage = picUrl.getOriginal();
-            hdPaths.add(orignImage == null ? null : orignImage.getUrl());
+            if (orignImage != null) {
+                hdPaths.add(new ImageInfo(orignImage.getUrl(), orignImage.getWidth(),
+                        orignImage.getHeight(), getImageType(orignImage.getType())));
+            }else {
+                hdPaths.add(null);
+            }
+
             if (child == v) {
                 position = i;
             }
         }
         NavigationUtil.startImagePreActivity(getContext(), v, paths, hdPaths, position);
+    }
+
+    protected ImageUtil.ImageType getImageType(String type) {
+        if (ImageUtil.ImageType.GIF.getValue().toLowerCase().contains(type)
+                || ImageUtil.ImageType.GIF.getValue().toUpperCase().contains(type)) {
+            return ImageUtil.ImageType.GIF;
+        }else {
+            return ImageUtil.ImageType.PNG;
+        }
     }
 
     @Override

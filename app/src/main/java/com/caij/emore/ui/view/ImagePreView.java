@@ -15,4 +15,6 @@ public interface ImagePreView extends BaseView {
     void showSelectDialog(String[] items, DialogInterface.OnClickListener onClickListener);
 
     void showProgress(boolean isShow);
+
+    void showProgress(long total, long progress);
 }

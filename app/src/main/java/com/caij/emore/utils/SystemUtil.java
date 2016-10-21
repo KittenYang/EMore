@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Process;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -19,6 +20,11 @@ import java.util.List;
  * Created by Caij on 2016/6/4.
  */
 public class SystemUtil {
+
+    public static final int NETWORK_TYPE_2G = 1;
+    public static final int NETWORK_TYPE_3G = 2;
+    public static final int NETWORK_TYPE_4G = 3;
+    public static final int NETWORK_TYPE_WIFI = 4;
 
     public static int getStatusBarHeight(Context context) {
         return getInternalDimensionSize(context.getResources(), "status_bar_height");
@@ -52,24 +58,66 @@ public class SystemUtil {
         return false;
     }
 
-    public static boolean isNetworkWifi(Context context) {
-        return getNetworkType(context) == ConnectivityManager.TYPE_WIFI;
+    public static boolean isNetworkFast(Context context) {
+        return isNetworkWifi(context) || getNetworkType(context) == NETWORK_TYPE_4G;
     }
 
+    public static boolean isNetworkWifi(Context context) {
+        return getNetworkType(context) == NETWORK_TYPE_WIFI;
+    }
+
+
     public static int getNetworkType(Context context) {
-        int netType = 0;
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo == null) {
-            return -1;
+        int networkType = NETWORK_TYPE_2G;
+
+        NetworkInfo networkInfo = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+        {
+            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI)
+            {
+                networkType = NETWORK_TYPE_WIFI;
+            }
+            else if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+            {
+                String _strSubTypeName = networkInfo.getSubtypeName();
+
+                // TD-SCDMA   networkType is 17
+                int networkSubType = networkInfo.getSubtype();
+                switch (networkSubType) {
+                    case TelephonyManager.NETWORK_TYPE_GPRS:
+                    case TelephonyManager.NETWORK_TYPE_EDGE:
+                    case TelephonyManager.NETWORK_TYPE_CDMA:
+                    case TelephonyManager.NETWORK_TYPE_1xRTT:
+                    case TelephonyManager.NETWORK_TYPE_IDEN: //api<8 : replace by 11
+                        networkType = NETWORK_TYPE_2G;
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_UMTS:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                    case TelephonyManager.NETWORK_TYPE_HSDPA:
+                    case TelephonyManager.NETWORK_TYPE_HSUPA:
+                    case TelephonyManager.NETWORK_TYPE_HSPA:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_B: //api<9 : replace by 14
+                    case TelephonyManager.NETWORK_TYPE_EHRPD:  //api<11 : replace by 12
+                    case TelephonyManager.NETWORK_TYPE_HSPAP:  //api<13 : replace by 15
+                        networkType = NETWORK_TYPE_3G;
+                        break;
+                    case TelephonyManager.NETWORK_TYPE_LTE:    //api<11 : replace by 13
+                        networkType = NETWORK_TYPE_4G;
+                        break;
+                    default:
+                        // http://baike.baidu.com/item/TD-SCDMA 中国移动 联通 电信 三种3G制式
+                        if (_strSubTypeName.equalsIgnoreCase("TD-SCDMA") || _strSubTypeName.equalsIgnoreCase("WCDMA") || _strSubTypeName.equalsIgnoreCase("CDMA2000"))
+                        {
+                            networkType = NETWORK_TYPE_3G;
+                        }
+
+                        break;
+                }
+            }
         }
-        int nType = networkInfo.getType();
-        if (nType == ConnectivityManager.TYPE_MOBILE) {
-            netType = ConnectivityManager.TYPE_MOBILE;
-        } else if (nType == ConnectivityManager.TYPE_WIFI) {
-            netType = ConnectivityManager.TYPE_WIFI;
-        }
-        return netType;
+
+        return networkType;
     }
 
     public static void showKeyBoard(Activity activity) {

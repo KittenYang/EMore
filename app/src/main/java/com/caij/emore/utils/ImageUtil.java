@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -41,7 +42,7 @@ import static android.media.ExifInterface.TAG_ORIENTATION;
  */
 public class ImageUtil {
 
-    public enum ImageType {
+    public enum ImageType implements Serializable {
 
         GIF("gif"),
         /** JPG type. */

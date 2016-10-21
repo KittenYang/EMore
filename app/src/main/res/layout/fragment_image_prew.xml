@@ -23,4 +23,11 @@
         android:visibility="gone"
         android:layout_gravity="center"/>
 
+    <com.caij.progressview.ProgressView
+        android:id="@+id/pv_loading"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+
 </FrameLayout>

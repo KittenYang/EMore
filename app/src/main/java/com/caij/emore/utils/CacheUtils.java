@@ -3,6 +3,9 @@ package com.caij.emore.utils;
 import android.content.Context;
 import android.os.Environment;
 
+import com.caij.emore.EMApplication;
+import com.caij.emore.R;
+
 import java.io.File;
 
 /**
@@ -10,7 +13,6 @@ import java.io.File;
  */
 public class CacheUtils {
 
-    private static String APP_FOLER_NAME = "emore";
 
     public static File getCacheDir(Context context) {
         return context.getCacheDir();
@@ -29,11 +31,16 @@ public class CacheUtils {
     }
 
     public static File getCompressImageDir(Context context) {
-        return new File(getCacheDir(context), "CompressImage");
+        return new File(getCacheDir(context), "compressimage");
+    }
+
+    public static File getCacheHdImageDir(Context context) {
+        return new File(getCacheDir(context), "hdimage");
     }
 
     public static File getImageSaveDir() {
-        return new File(Environment.getExternalStorageDirectory(), APP_FOLER_NAME + "/image/");
+        String name  = EMApplication.getInstance().getString(R.string.app_name);
+        return new File(Environment.getExternalStorageDirectory(), name + "/image/");
     }
 
 }

@@ -3,6 +3,7 @@ package com.caij.emore.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.present.imp.AbsBasePresent;
 import com.caij.emore.ui.adapter.StatusFragmentPagerAdapter;
 import com.caij.emore.ui.fragment.BaseFragment;
@@ -33,9 +35,9 @@ public class ImagePrewActivity extends BaseActivity {
     @BindView(R.id.tv_image_count)
     TextView mTvImageCount;
 
-    public static Intent newIntent(Context context, ArrayList<String> paths, ArrayList<String> hdPaths, int position) {
+    public static Intent newIntent(Context context, ArrayList<ImageInfo> paths, ArrayList<ImageInfo> hdPaths, int position) {
         return new Intent(context, ImagePrewActivity.class)
-            .putStringArrayListExtra(Key.IMAGE_PATHS, paths)
+            .putExtra(Key.IMAGE_PATHS, paths)
             .putExtra(Key.POSITION, position)
             .putExtra(Key.HD_IMAGE_PATHS, hdPaths);
     }
@@ -46,8 +48,8 @@ public class ImagePrewActivity extends BaseActivity {
         setContentView(R.layout.activity_image_prew);
         ButterKnife.bind(this);
 //        ViewCompat.setTransitionName(mVpImage, Key.TRANSIT_PIC);
-        final ArrayList<String> paths = getIntent().getStringArrayListExtra(Key.IMAGE_PATHS);
-        final ArrayList<String> hdPaths = getIntent().getStringArrayListExtra(Key.HD_IMAGE_PATHS);
+        final ArrayList<ImageInfo> paths = (ArrayList<ImageInfo>) getIntent().getSerializableExtra(Key.IMAGE_PATHS);
+        final ArrayList<ImageInfo> hdPaths = (ArrayList<ImageInfo>) getIntent().getSerializableExtra(Key.HD_IMAGE_PATHS);
         final int position = getIntent().getIntExtra(Key.POSITION, 0);
         init(paths, hdPaths, position);
     }
@@ -63,11 +65,10 @@ public class ImagePrewActivity extends BaseActivity {
         return null;
     }
 
-    private void init(ArrayList<String> paths, ArrayList<String> hdPaths, int position) {
+    private void init(ArrayList<ImageInfo> paths, ArrayList<ImageInfo> hdPaths, int position) {
         final List<BaseFragment> fragments = new ArrayList<>();
         for (int i = 0; i < paths.size(); i ++) {
-            ImagePreviewFragment fragment = ImagePreviewFragment.newInstance(paths.get(i), hdPaths == null ? null : hdPaths.get(i));
-            fragments.add(fragment);
+            fragments.add(createFragment(paths, hdPaths, i));
         }
 
         ImageFragmentAdapter adapter = new ImageFragmentAdapter(getSupportFragmentManager(), fragments, null);
@@ -96,6 +97,10 @@ public class ImagePrewActivity extends BaseActivity {
 
             }
         });
+    }
+
+    protected BaseFragment createFragment(ArrayList<ImageInfo> paths, ArrayList<ImageInfo> hdPaths, int i) {
+        return ImagePreviewFragment.newInstance(paths.get(i), hdPaths == null ? null : hdPaths.get(i));
     }
 
     private static class ImageFragmentAdapter extends StatusFragmentPagerAdapter {

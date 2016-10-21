@@ -27,6 +27,7 @@ import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Emotion;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.manager.imp.MessageManagerImp;
 import com.caij.emore.manager.imp.NotifyManagerImp;
 import com.caij.emore.manager.imp.UserManagerImp;
@@ -353,11 +354,13 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
         }else {
             int type = mMessageAdapter.getItemViewType(position - 1);
             if (type == MessageAdapter.TYPE_OTHER_IMAGE || type == MessageAdapter.TYPE_SELT_IMAGE) {
-                ArrayList<String> images = new ArrayList<>(1);
-                images.add(directMessage.getImageInfo().getUrl());
+                ArrayList<ImageInfo> images = new ArrayList<>(1);
+                images.add(directMessage.getImageInfo());
 
-                ArrayList<String> hdPaths = new ArrayList<>(1);
-                hdPaths.add(mPresent.getMessageImageHdUrl(directMessage));
+                ArrayList<ImageInfo> hdPaths = new ArrayList<>(1);
+                ImageInfo hdImageInfo = new ImageInfo(mPresent.getMessageImageHdUrl(directMessage), directMessage.getImageInfo().getWidth(),
+                        directMessage.getImageInfo().getWidth(), directMessage.getImageInfo().getImageType());
+                hdPaths.add(hdImageInfo);
 
                 Intent intent = ImagePrewActivity.newIntent(getActivity(), images, hdPaths, 0);
                 startActivity(intent);

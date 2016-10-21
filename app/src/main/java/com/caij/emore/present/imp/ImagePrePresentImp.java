@@ -3,179 +3,204 @@ package com.caij.emore.present.imp;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
+import com.caij.emore.EMApplication;
 import com.caij.emore.R;
+import com.caij.emore.api.ex.SchedulerTransformer;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.present.ImagePrePresent;
 import com.caij.emore.ui.view.ImagePreView;
 import com.caij.emore.utils.CacheUtils;
+import com.caij.emore.utils.DownLoadUtil;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.FileUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.ImageUtil;
+import com.caij.emore.utils.LogUtil;
+import com.caij.emore.utils.MD5Util;
 import com.caij.emore.utils.SystemUtil;
+import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+
+import rx.Subscription;
 
 /**
  * Created by Caij on 2016/7/27.
  */
-public class ImagePrePresentImp implements ImagePrePresent {
+public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePresent {
 
     private Context mContent;
     private ImagePreView mImagePreView;
-    private String mImageUrl;
-    private String mHdImageUrl;
-    private AsyncTask mImageLoadAsyncTask;
-    private String mShowFilePath;
-    private ImageUtil.ImageType mImageType = ImageUtil.ImageType.JPEG;
+    private ImageInfo mImageInfo;
+    private ImageInfo mHdImageInfo;
 
-    private String mShowImageUrl;
+    private String mShowImagePath;
+    private ImageInfo mShowImageInfo;
 
-    public ImagePrePresentImp(Context context, String url, String hdUrl, ImagePreView imagePreView) {
+    public ImagePrePresentImp(Context context, ImageInfo imageInfo, ImageInfo hdImageInfo, ImagePreView imagePreView) {
         mContent = context;
         mImagePreView = imagePreView;
-        mImageUrl = url;
-        mHdImageUrl = hdUrl;
+        mImageInfo = imageInfo;
+        mHdImageInfo = hdImageInfo;
     }
 
     @Override
     public void loadImage() {
-        loadImage(mImageUrl);
+        if (mHdImageInfo != null) {
+            String fileName = MD5Util.string2MD5(mHdImageInfo.getUrl());
+            File file = new File(CacheUtils.getCacheHdImageDir(EMApplication.getInstance()), fileName);
+            if (file.exists()) {
+                showFile(file, mHdImageInfo);
+            }else {
+                loadImage(mImageInfo);
+            }
+        }else {
+            loadImage(mImageInfo);
+        }
     }
 
-    private void loadImage(final String url) {
-        mShowImageUrl = url;
+    private void loadImage(ImageInfo imageInfo) {
+        getImageFile(imageInfo);
+    }
 
-        if (mImageUrl.startsWith("/")) {  //本地文件
-            showImage(mImageUrl);
-        }else {
-            mImagePreView.showProgress(true);
-            ExecutorServiceUtil.executeAsyncTask(mImageLoadAsyncTask = new AsyncTask<Object, Object, File>() {
+    private void getImageFile(final ImageInfo imageInfo) {
+        Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<File>() {
                 @Override
-                protected File doInBackground(Object... params) {
-
-                    File file = null;
-                    try {
-                        file = ImageLoader.getFile(mContent, url, Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
-                    } catch (ExecutionException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    return file;
+                public File getData() throws Exception {
+                    return ImageLoader.getFile(mContent, imageInfo.getUrl(), Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+                }
+            }).compose(SchedulerTransformer.<File>create())
+            .subscribe(new SubscriberAdapter<File>() {
+                @Override
+                public void onNext(File file) {
+                    mShowImageInfo = imageInfo;
+                    onGetFileSuccess(file, imageInfo);
                 }
 
                 @Override
-                protected void onPostExecute(File file) {
-                    super.onPostExecute(file);
-                    mImagePreView.showProgress(false);
-                    if (file == null) {
-                        mImagePreView.onDefaultLoadError();
-                    }else {
-                        showImage(file.getAbsolutePath());
-                    }
+                public void onError(Throwable e) {
+                    super.onError(e);
+                    onGetFileError();
                 }
             });
+
+        addSubscription(subscription);
+    }
+
+    private void onGetFileSuccess(File file, ImageInfo imageInfo) {
+        showFile(file, imageInfo);
+
+        if (SystemUtil.isNetworkFast(EMApplication.getInstance()) && mHdImageInfo != null) {
+            loadHdImage();
         }
+    }
+
+    private void showFile(File file, ImageInfo imageInfo) {
+        mShowImagePath = file.getAbsolutePath();
+
+        if (imageInfo.getImageType() == ImageUtil.ImageType.GIF) {
+            mImagePreView.showGifImage(Uri.fromFile(file).getPath());
+        }else if (ImageUtil.isLongImage(imageInfo.getWidth(), imageInfo.getHeight())) {
+            mImagePreView.showBigImage(Uri.fromFile(file).getPath());
+        }else {
+            mImagePreView.showLocalImage(Uri.fromFile(file).getPath());
+        }
+    }
+
+    private void loadHdImage() {
+        String fileName = MD5Util.string2MD5(mHdImageInfo.getUrl());
+        File file = new File(CacheUtils.getCacheHdImageDir(EMApplication.getInstance()), fileName);
+        mImagePreView.showProgress(true);
+        DownLoadUtil.down(mHdImageInfo.getUrl(), file.getAbsolutePath(), new DownLoadUtil.Callback() {
+            @Override
+            public void onSuccess(File file) {
+                if (mImagePreView != null) {
+                    showFile(file, mHdImageInfo);
+                    mImagePreView.showProgress(false);
+                }
+            }
+
+            @Override
+            public void onProgress(long total, long progress) {
+                LogUtil.d(ImagePrePresentImp.this, "total %s progress %s", total, progress);
+                if (mImagePreView != null) {
+                    mImagePreView.showProgress(total, progress);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                if (mImagePreView != null) {
+                    mImagePreView.onDefaultLoadError();
+                    mImagePreView.showProgress(false);
+                }
+            }
+        });
+    }
+
+    private void onGetFileError() {
+        mImagePreView.onDefaultLoadError();
     }
 
     @Override
     public void onViewLongClick() {
-        if (mShowFilePath == null) return;
+        if (mShowImagePath == null) return;
         String[] items;
-        if (!TextUtils.isEmpty(mHdImageUrl) && !mShowImageUrl.equals(mHdImageUrl)) {
+        if (mHdImageInfo != null && mHdImageInfo != mShowImageInfo) {
             items = new String[]{mContent.getString(R.string.save_image), mContent.getString(R.string.preview_big_image)};
             mImagePreView.showSelectDialog(items, new DialogInterface.OnClickListener(){
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (which == 0) {
-                        saveImage(new File(mShowFilePath));
+                        saveImage(new File(mShowImagePath));
                     }else {
-                        loadImage(mHdImageUrl);
+                        loadImage(mHdImageInfo);
                     }
                 }
             });
-        }else if (mImageUrl.startsWith("http")){
+        }else {
             items = new String[]{mContent.getString(R.string.save_image)};
             mImagePreView.showSelectDialog(items, new DialogInterface.OnClickListener(){
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    saveImage(new File(mShowFilePath));
+                    saveImage(new File(mShowImagePath));
                 }
             });
         }
     }
 
     private void saveImage(final File source) {
-        final File target = new File(CacheUtils.getImageSaveDir(), ImageUtil.createImageName(mImageType.getValue()));
-        ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Boolean>() {
-            @Override
-            protected Boolean doInBackground(Object... params) {
-                boolean isSuccess;
-                try {
+        final File target = new File(CacheUtils.getImageSaveDir(), ImageUtil.createImageName(mImageInfo.getImageType().getValue()));
+        Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<Object>() {
+                @Override
+                public Object getData() throws Exception {
                     FileUtil.copy(source, target);
-                    isSuccess = true;
-                } catch (Exception e) {
-                    isSuccess = false;
+                    return null;
                 }
-                return isSuccess;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean isSuccess) {
-               if (isSuccess) {
-                   mImagePreView.showHint("图片已保存:" + target.getAbsolutePath());
-                   SystemUtil.notifyScanFile(mContent, target.getAbsolutePath());
-               }else {
-                   mImagePreView.showHint(R.string.save_image_error);
-               }
-            }
-        });
-
-    }
-
-    private void showImage(final String localFilePath) {
-        mShowFilePath = localFilePath;
-        ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, ImageInfo>() {
-            @Override
-            protected ImageInfo doInBackground(Object... params) {
-                File file = new File(localFilePath);
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(localFilePath, options);
-                ImageInfo imageInfo = new ImageInfo();
-                try {
-                    imageInfo.imageType = ImageUtil.getImageType(file);
-                } catch (IOException e) {
+            }).compose(SchedulerTransformer.create())
+            .subscribe(new SubscriberAdapter<Object>() {
+                @Override
+                public void onNext(Object o) {
+                    mImagePreView.showHint("图片已保存:" + target.getAbsolutePath());
+                    SystemUtil.notifyScanFile(mContent, target.getAbsolutePath());
                 }
-                imageInfo.width = options.outWidth;
-                imageInfo.height = options.outHeight;
-                return imageInfo;
-            }
 
-            @Override
-            protected void onPostExecute(ImageInfo imageInfo) {
-                super.onPostExecute(imageInfo);
-                if (imageInfo != null) {
-                    mImageType = imageInfo.imageType;
-                    if (imageInfo.imageType == ImageUtil.ImageType.GIF) {
-                        mImagePreView.showGifImage("file://" + localFilePath);
-                    }else if (ImageUtil.isLongImage(imageInfo.width, imageInfo.height)) {
-                        mImagePreView.showBigImage(localFilePath);
-                    } else {
-                        mImagePreView.showLocalImage(localFilePath);
-                    }
-                }else {
-                    mImagePreView.onDefaultLoadError();
+                @Override
+                public void onError(Throwable e) {
+                    super.onError(e);
+                    mImagePreView.showHint(R.string.save_image_error);
                 }
-            }
-        });
+            });
+        addSubscription(subscription);
     }
 
     @Override
@@ -185,15 +210,7 @@ public class ImagePrePresentImp implements ImagePrePresent {
 
     @Override
     public void onDestroy() {
-        mContent = null;
-        if (mImageLoadAsyncTask != null) {
-            mImageLoadAsyncTask.cancel(true);
-        }
-    }
-
-    private static class ImageInfo {
-        ImageUtil.ImageType imageType = ImageUtil.ImageType.JPEG;
-        int width;
-        int height;
+        super.onDestroy();
+        mImagePreView = null;
     }
 }

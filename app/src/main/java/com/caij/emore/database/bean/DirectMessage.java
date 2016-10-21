@@ -7,6 +7,7 @@ package com.caij.emore.database.bean;
 
 import android.text.Spannable;
 
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.bean.MessageAttachInfo;
 
 import java.io.Serializable;

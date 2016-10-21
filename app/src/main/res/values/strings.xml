@@ -30,7 +30,7 @@
     <string name="image_count">张</string>
     <string name="refused_to_read_image">您拒绝了图片读取权限，没办法显示图片</string>
     <string name="complete">完成</string>
-    <string name="max_image_select_hint">您最多只能选择%s张图片</string>
+    <string name="max_image_select_hint">您最多只能选择%d张图片</string>
     <string name="unselect_image">您没有选择图片</string>
     <string name="publish_weibo">发布微博</string>
     <string name="wait_comment">正在评论，请等待</string>

@@ -10,9 +10,11 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.bumptech.glide.request.target.Target;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.widget.weibo.ImageInterface;
@@ -66,17 +68,33 @@ public class StatusDetailItemImageViewGroupOf1BigImage extends ViewGroup impleme
             @Override
             public void onClick(View v) {
                 if (mImageInfo != null) {
-                    ArrayList<String> images = new ArrayList<String>();
-                    images.add(mImageInfo.getBmiddle().getUrl());
+                    ArrayList<ImageInfo> images = new ArrayList<ImageInfo>();
+                    images.add(new ImageInfo(mImageInfo.getBmiddle().getUrl(), mImageInfo.getBmiddle().getWidth(),
+                            mImageInfo.getBmiddle().getHeight(), getImageType(mImageInfo.getBmiddle().getType())));
 
-                    ArrayList<String> hdImages = new ArrayList<String>();
+                    ArrayList<ImageInfo> hdImages = new ArrayList<ImageInfo>();
                     StatusImageInfo.Image orignImage = mImageInfo.getOriginal();
-                    hdImages.add(orignImage == null ? null : orignImage.getUrl());
+
+                    if (orignImage != null) {
+                        hdImages.add(new ImageInfo(orignImage.getUrl(), orignImage.getWidth(),
+                                orignImage.getHeight(), getImageType(orignImage.getType())));
+                    }else {
+                        hdImages.add(null);
+                    }
 
                     NavigationUtil.startImagePreActivity(context, v, images, hdImages, 0);
                 }
             }
         });
+    }
+
+    protected ImageUtil.ImageType getImageType(String type) {
+        if (ImageUtil.ImageType.GIF.getValue().toLowerCase().contains(type)
+                || ImageUtil.ImageType.GIF.getValue().toUpperCase().contains(type)) {
+            return ImageUtil.ImageType.GIF;
+        }else {
+            return ImageUtil.ImageType.PNG;
+        }
     }
 
     @Override

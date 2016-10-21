@@ -159,8 +159,8 @@ public class PublishStatusActivity extends PublishActivity<StatusPublishPresent>
 
     @Override
     public void onItemClick(View view, int position) {
-        NavigationUtil.startImagePreActivity(this, view,
-                (ArrayList<String>) mPublishImageAdapter.getEntities(), null, position);
+        NavigationUtil.startLocalImagePreActivity(this, view,
+                (ArrayList<String>) mPublishImageAdapter.getEntities(), position);
     }
 
     private boolean isContentChange() {

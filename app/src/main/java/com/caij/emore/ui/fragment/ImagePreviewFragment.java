@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import com.caij.emore.BuildConfig;
 import com.caij.emore.Key;
 import com.caij.emore.R;
+import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.present.ImagePrePresent;
 import com.caij.emore.present.imp.ImagePrePresentImp;
 import com.caij.emore.ui.view.ImagePreView;
@@ -20,6 +21,7 @@ import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.widget.subscaleview.ImageSource;
 import com.caij.emore.widget.subscaleview.SubsamplingScaleImageView;
+import com.caij.progressview.ProgressView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,12 +39,14 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
     SubsamplingScaleImageView sciv;
     @BindView(R.id.pb_loading)
     ProgressBar pbLoading;
+    @BindView(R.id.pv_loading)
+    ProgressView pvLoading;
 
-    public static ImagePreviewFragment newInstance(String url, String hdUrl) {
+    public static ImagePreviewFragment newInstance(ImageInfo imageInfo, ImageInfo hdImageInfo) {
         ImagePreviewFragment fragment = new ImagePreviewFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(Key.IMAGE_PATH, url);
-        bundle.putString(Key.HD_IMAGE_PATH, hdUrl);
+        bundle.putSerializable(Key.IMAGE_PATH, imageInfo);
+        bundle.putSerializable(Key.HD_IMAGE_PATH, hdImageInfo);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -63,8 +67,8 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
 
     @Override
     protected ImagePrePresent createPresent() {
-        String picUrl = getArguments().getString(Key.IMAGE_PATH);
-        String hdPicUrl = getArguments().getString(Key.HD_IMAGE_PATH);
+        ImageInfo picUrl = (ImageInfo) getArguments().getSerializable(Key.IMAGE_PATH);
+        ImageInfo hdPicUrl = (ImageInfo) getArguments().getSerializable(Key.HD_IMAGE_PATH);
         return new ImagePrePresentImp(getActivity(), picUrl, hdPicUrl, this);
     }
 
@@ -110,10 +114,16 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
     @Override
     public void showProgress(boolean isShow) {
         if (isShow) {
-            pbLoading.setVisibility(View.VISIBLE);
+            pvLoading.setVisibility(View.VISIBLE);
         }else {
-            pbLoading.setVisibility(View.GONE);
+            pvLoading.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void showProgress(long total, long progress) {
+        pvLoading.setMax((int) total);
+        pvLoading.setProgress((int) progress);
     }
 
     @OnClick({R.id.sciv, R.id.iv_image})

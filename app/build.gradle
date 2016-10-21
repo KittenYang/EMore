@@ -136,6 +136,7 @@ dependencies {
     }
     compile "com.tencent.bugly:crashreport:${rootProject.ext.crashreportVersion}"
     //    compile "com.tencent.bugly:nativecrashreport:${rootProject.ext.nativecrashreportVersion}"
+    compile 'com.github.Caij:ProgressView:9ff7176f6b'
 
     compile "com.jakewharton:butterknife:${rootProject.ext.butterknifeVersion}"
     apt "com.jakewharton:butterknife-compiler:${rootProject.ext.butterknifeVersion}"
