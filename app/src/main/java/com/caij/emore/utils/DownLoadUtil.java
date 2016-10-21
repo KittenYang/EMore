@@ -19,7 +19,7 @@ import okhttp3.ResponseBody;
 
 public class DownLoadUtil {
 
-    private static final long INTERVAL_PROGRESS_TIME  = 600;
+    private static final long INTERVAL_PROGRESS_TIME  = 500;
 
     private static OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .readTimeout(3000, TimeUnit.MILLISECONDS)

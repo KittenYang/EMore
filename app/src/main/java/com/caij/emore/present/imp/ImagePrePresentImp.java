@@ -57,6 +57,7 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
             String fileName = MD5Util.string2MD5(mHdImageInfo.getUrl());
             File file = new File(CacheUtils.getCacheHdImageDir(EMApplication.getInstance()), fileName);
             if (file.exists()) {
+                mShowImageInfo = mHdImageInfo;
                 showFile(file, mHdImageInfo);
             }else {
                 loadImage(mImageInfo);
@@ -97,7 +98,8 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
     private void onGetFileSuccess(File file, ImageInfo imageInfo) {
         showFile(file, imageInfo);
 
-        if (SystemUtil.isNetworkFast(EMApplication.getInstance()) && mHdImageInfo != null) {
+        if ((SystemUtil.isNetworkFast(EMApplication.getInstance()) && mHdImageInfo != null)
+                || (mHdImageInfo != null && mHdImageInfo.getImageType() == ImageUtil.ImageType.GIF)) {
             loadHdImage();
         }
     }
@@ -121,6 +123,7 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
         DownLoadUtil.down(mHdImageInfo.getUrl(), file.getAbsolutePath(), new DownLoadUtil.Callback() {
             @Override
             public void onSuccess(File file) {
+                mShowImageInfo = mHdImageInfo;
                 if (mImagePreView != null) {
                     showFile(file, mHdImageInfo);
                     mImagePreView.showProgress(false);
@@ -162,7 +165,7 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
                     if (which == 0) {
                         saveImage(new File(mShowImagePath));
                     }else {
-                        loadImage(mHdImageInfo);
+                        loadHdImage();
                     }
                 }
             });
