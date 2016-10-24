@@ -157,9 +157,7 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
     public void showLocalImage(Bitmap bitmap) {
         sciv.setVisibility(View.VISIBLE);
         mIvImage.setVisibility(View.GONE);
-
         sciv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE);
-
         sciv.setImage(ImageSource.bitmap(bitmap));
     }
 
