@@ -17,6 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
@@ -92,16 +93,9 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
         sciv.setVisibility(View.GONE);
         mIvImage.setVisibility(View.VISIBLE);
 
-//        ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild()
-//                .setScaleType(ImageLoader.ScaleType.FIT_CENTER)
-//                .setSupportGif(true)
-//                .setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE)
-//                .setAnimate(false)
-//                .build();
-//        ImageLoader.loadUrl(getActivity(), mIvImage, picUrl, -1, config);
-
-        // TODO: 2016/10/24 暂时解决图片切换时闪的问题， 但是未找到原因  后面需要找到具体问题
-        Glide.with(this).load(picUrl).dontAnimate().diskCacheStrategy(DiskCacheStrategy.SOURCE).fitCenter().into(new ViewTarget<View, GlideDrawable>(mIvImage) {
+        // TODO: 2016/10/24 暂时解决图片切换时闪的问题， 但是Glide为什么会闪的问题未找到原因  后面需要找到具体问题
+        Glide.with(this).load(picUrl).dontAnimate().diskCacheStrategy(DiskCacheStrategy.SOURCE).
+                fitCenter().into(new ViewTarget<View, GlideDrawable>(mIvImage) {
 
             private GlideDrawable mGlideDrawable;
 
@@ -127,7 +121,6 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
                 }
             }
         });
-
     }
 
     @Override
