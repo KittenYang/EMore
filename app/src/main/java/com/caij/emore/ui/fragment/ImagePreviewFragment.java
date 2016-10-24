@@ -3,6 +3,7 @@ package com.caij.emore.ui.fragment;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,6 +12,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.target.ViewTarget;
 import com.caij.emore.BuildConfig;
 import com.caij.emore.Key;
 import com.caij.emore.R;
@@ -18,9 +28,11 @@ import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.present.ImagePrePresent;
 import com.caij.emore.present.imp.ImagePrePresentImp;
 import com.caij.emore.ui.view.ImagePreView;
+import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.LogUtil;
+import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.widget.subscaleview.ImageSource;
 import com.caij.emore.widget.subscaleview.SubsamplingScaleImageView;
 import com.caij.progressview.ProgressView;
@@ -80,12 +92,42 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
         sciv.setVisibility(View.GONE);
         mIvImage.setVisibility(View.VISIBLE);
 
-        ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild()
-                .setScaleType(ImageLoader.ScaleType.FIT_CENTER)
-                .setSupportGif(true)
-                .setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE)
-                .build();
-        ImageLoader.loadUrl(getActivity(), mIvImage, picUrl, -1, config);
+//        ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild()
+//                .setScaleType(ImageLoader.ScaleType.FIT_CENTER)
+//                .setSupportGif(true)
+//                .setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE)
+//                .setAnimate(false)
+//                .build();
+//        ImageLoader.loadUrl(getActivity(), mIvImage, picUrl, -1, config);
+
+        // TODO: 2016/10/24 暂时解决图片切换时闪的问题， 但是未找到原因  后面需要找到具体问题
+        Glide.with(this).load(picUrl).dontAnimate().diskCacheStrategy(DiskCacheStrategy.SOURCE).fitCenter().into(new ViewTarget<View, GlideDrawable>(mIvImage) {
+
+            private GlideDrawable mGlideDrawable;
+
+            @Override
+            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                mGlideDrawable = resource;
+                mIvImage.setImageDrawable(resource);
+                resource.start();
+            }
+
+            @Override
+            public void onStart() {
+                if (mGlideDrawable != null) {
+                    mGlideDrawable.start();
+                }
+            }
+
+            @Override
+            public void onStop() {
+                super.onStop();
+                if (mGlideDrawable != null) {
+                    mGlideDrawable.stop();
+                }
+            }
+        });
+
     }
 
     @Override

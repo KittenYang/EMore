@@ -48,6 +48,7 @@ public class ImageLoader {
         private int priority;
         private int diskCacheStrategy;
         private boolean isCacheMemory;
+        private boolean isAnimate;
         private boolean isSupportGif;
         private Transformation transformation;
         private ImageLoadListener imageLoadListener;
@@ -77,6 +78,7 @@ public class ImageLoader {
         private boolean isSupportGif = false;
         private Transformation transformation;
         private ImageLoadListener imageLoadListener;
+        private boolean isAnimate = true;
 
         public ImageConfigBuild(){
 
@@ -139,6 +141,11 @@ public class ImageLoader {
 
         public ImageConfigBuild setImageLoadListener(ImageLoadListener imageLoadListener) {
             this.imageLoadListener = imageLoadListener;
+            return this;
+        }
+
+        public ImageConfigBuild setAnimate(boolean animate) {
+            isAnimate = animate;
             return this;
         }
 
@@ -317,6 +324,10 @@ public class ImageLoader {
                         return false;
                     }
                 });
+            }
+
+            if (!imageConfig.isAnimate) {
+                request.dontAnimate();
             }
 
             request.into(view);
