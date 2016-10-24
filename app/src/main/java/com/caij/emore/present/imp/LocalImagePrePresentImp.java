@@ -27,14 +27,12 @@ import java.util.concurrent.ExecutionException;
  */
 public class LocalImagePrePresentImp implements ImagePrePresent {
 
-    private Context mContent;
     private ImagePreView mImagePreView;
     private AsyncTask mImageLoadAsyncTask;
 
     private ImageInfo mImageInfo;
 
-    public LocalImagePrePresentImp(Context context, ImageInfo imageInfo, ImagePreView imagePreView) {
-        mContent = context;
+    public LocalImagePrePresentImp(ImageInfo imageInfo, ImagePreView imagePreView) {
         mImagePreView = imagePreView;
         mImageInfo = imageInfo;
     }
@@ -73,10 +71,12 @@ public class LocalImagePrePresentImp implements ImagePrePresent {
                 if (imageInfo != null) {
                     if (imageInfo.imageType == ImageUtil.ImageType.GIF) {
                         mImagePreView.showGifImage("file://" + localFilePath);
-                    }else if (ImageUtil.isLongImage(imageInfo.width, imageInfo.height)) {
-                        mImagePreView.showBigImage(localFilePath);
-                    } else {
-                        mImagePreView.showLocalImage(localFilePath);
+                    }else {
+                        if (ImagePrePresentImp.isLongHImage(imageInfo.width, imageInfo.height)) {
+                            mImagePreView.showLongHImage(localFilePath);
+                        }else {
+                            mImagePreView.showLocalImage(localFilePath);
+                        }
                     }
                 }else {
                     mImagePreView.onDefaultLoadError();
@@ -92,7 +92,6 @@ public class LocalImagePrePresentImp implements ImagePrePresent {
 
     @Override
     public void onDestroy() {
-        mContent = null;
         if (mImageLoadAsyncTask != null) {
             mImageLoadAsyncTask.cancel(true);
         }

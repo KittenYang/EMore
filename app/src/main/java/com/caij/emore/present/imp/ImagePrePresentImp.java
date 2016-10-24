@@ -2,12 +2,10 @@ package com.caij.emore.present.imp;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.text.TextUtils;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
 import com.caij.emore.EMApplication;
 import com.caij.emore.R;
@@ -17,7 +15,6 @@ import com.caij.emore.present.ImagePrePresent;
 import com.caij.emore.ui.view.ImagePreView;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.DownLoadUtil;
-import com.caij.emore.utils.ExecutorServiceUtil;
 import com.caij.emore.utils.FileUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.ImageUtil;
@@ -109,11 +106,50 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
 
         if (imageInfo.getImageType() == ImageUtil.ImageType.GIF) {
             mImagePreView.showGifImage(Uri.fromFile(file).getPath());
-        }else if (ImageUtil.isLongImage(imageInfo.getWidth(), imageInfo.getHeight())) {
-            mImagePreView.showBigImage(Uri.fromFile(file).getPath());
+        }else if (isBigImage(imageInfo.getWidth(), imageInfo.getHeight())) {
+            if (isLongHImage(imageInfo.getWidth(), imageInfo.getHeight())) {
+                mImagePreView.showLongHImage(Uri.fromFile(file).getPath());
+            }else {
+                mImagePreView.showLocalImage(Uri.fromFile(file).getPath());
+            }
         }else {
-            mImagePreView.showLocalImage(Uri.fromFile(file).getPath());
+            showLocalFile(file, imageInfo);
         }
+    }
+
+    public static boolean isBigImage(int width, int height) {
+        return (width > 2048 || height > 2048);
+    }
+
+    public static boolean isLongHImage(int width, int height) {
+        return height * 1f / width >= 3.0f;
+    }
+
+    private void showLocalFile(final File file, final ImageInfo imageInfo) {
+        Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<Bitmap>() {
+                @Override
+                public Bitmap getData() throws Exception {
+                    return BitmapFactory.decodeFile(file.getAbsolutePath());
+                }
+            })
+            .compose(SchedulerTransformer.<Bitmap>create())
+            .subscribe(new SubscriberAdapter<Bitmap>() {
+                @Override
+                public void onNext(Bitmap bitmap) {
+                    if (isLongHImage(imageInfo.getWidth(), imageInfo.getHeight())) {
+                        mImagePreView.showLongHImage(bitmap);
+                    }else {
+                        mImagePreView.showLocalImage(bitmap);
+                    }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    super.onError(e);
+                    mImagePreView.showLocalImage(Uri.fromFile(file).getPath());
+                }
+            });
+        addSubscription(subscription);
     }
 
     private void loadHdImage() {

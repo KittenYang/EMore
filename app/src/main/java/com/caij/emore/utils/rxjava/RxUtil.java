@@ -21,7 +21,7 @@ public class RxUtil {
                 try {
                     subscriber.onNext(provider.getData());
                     subscriber.onCompleted();
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     subscriber.onError(e);
                 }
             }

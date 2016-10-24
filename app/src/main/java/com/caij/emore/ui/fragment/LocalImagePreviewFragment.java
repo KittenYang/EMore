@@ -46,7 +46,7 @@ public class LocalImagePreviewFragment extends ImagePreviewFragment {
     @Override
     protected ImagePrePresent createPresent() {
         ImageInfo picUrl = (ImageInfo) getArguments().getSerializable(Key.IMAGE_PATH);
-        return new LocalImagePrePresentImp(getActivity(), picUrl, this);
+        return new LocalImagePrePresentImp(picUrl, this);
     }
 
 }

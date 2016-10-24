@@ -1,6 +1,8 @@
 package com.caij.emore.ui.fragment;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -62,6 +64,7 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        sciv.setDebug(BuildConfig.DEBUG);
         mPresent.loadImage();
     }
 
@@ -82,17 +85,7 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
                 .setSupportGif(true)
                 .setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE)
                 .build();
-        ImageLoader.loadUrl(getActivity(), mIvImage, picUrl, android.R.color.black, config);
-    }
-
-    @Override
-    public void showBigImage(String localFilePath) {
-        LogUtil.d(this, "showBigImage %s", localFilePath);
-        sciv.setVisibility(View.VISIBLE);
-        mIvImage.setVisibility(View.GONE);
-        sciv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_TOP_CROP);
-        sciv.setImage(ImageSource.uri(localFilePath));
-        sciv.setDebug(BuildConfig.DEBUG);
+        ImageLoader.loadUrl(getActivity(), mIvImage, picUrl, -1, config);
     }
 
     @Override
@@ -103,7 +96,6 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
         sciv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE);
 
         sciv.setImage(ImageSource.uri(localFilePath));
-        sciv.setDebug(BuildConfig.DEBUG);
     }
 
     @Override
@@ -124,6 +116,32 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
     public void showProgress(long total, long progress) {
         pvLoading.setMax((int) total);
         pvLoading.setProgress((int) progress);
+    }
+
+    @Override
+    public void showLocalImage(Bitmap bitmap) {
+        sciv.setVisibility(View.VISIBLE);
+        mIvImage.setVisibility(View.GONE);
+
+        sciv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE);
+
+        sciv.setImage(ImageSource.bitmap(bitmap));
+    }
+
+    @Override
+    public void showLongHImage(String path) {
+        sciv.setVisibility(View.VISIBLE);
+        mIvImage.setVisibility(View.GONE);
+        sciv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_TOP_CROP);
+        sciv.setImage(ImageSource.uri(path));
+    }
+
+    @Override
+    public void showLongHImage(Bitmap bitmap) {
+        sciv.setVisibility(View.VISIBLE);
+        mIvImage.setVisibility(View.GONE);
+        sciv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_TOP_CROP);
+        sciv.setImage(ImageSource.bitmap(bitmap));
     }
 
     @OnClick({R.id.sciv, R.id.iv_image})

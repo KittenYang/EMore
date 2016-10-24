@@ -2,6 +2,7 @@ package com.caij.emore.widget.weibo.list;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -75,7 +76,7 @@ public abstract class StatusListItemView extends StatusItemView {
 
         if (status.getTitle() != null && !isDetail) {
             llTitle.setVisibility(VISIBLE);
-            tvTitle.setText(status.getTitle().getText());
+            tvTitle.setText(TextUtils.isEmpty(status.getTitle().getText()) ? "推荐" : status.getTitle().getText());
             ImageLoader.load(getContext(), ivTitleIcon, status.getTitle().getIcon_url(), R.drawable.circle_image_placeholder);
         }else {
             llTitle.setVisibility(GONE);
