@@ -10,9 +10,10 @@ import com.caij.emore.manager.DraftManager;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.StatusPublishPresent;
 import com.caij.emore.ui.view.StatusPublishView;
-import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.RxUtil;
 
 import java.util.ArrayList;
 
@@ -59,7 +60,7 @@ public class StatusPublishPresentImp extends AbsBasePresent implements StatusPub
 
     @Override
     public void saveToDraft(final long id, final String content, final ArrayList<String> images) {
-        ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
+        new AsyncTask<Object, Object, Object>() {
             @Override
             protected Object doInBackground(Object... params) {
                 Draft draft = new Draft();
@@ -74,7 +75,7 @@ public class StatusPublishPresentImp extends AbsBasePresent implements StatusPub
                 RxBus.getDefault().post(EventTag.EVENT_DRAFT_UPDATE, draft);
                 return null;
             }
-        });
+        }.execute();
     }
 
 }

@@ -17,13 +17,14 @@ import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.present.PublishStatusManagerPresent;
 import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.PublishStatusView;
-import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.api.ex.ErrorCheckerTransformer;
 import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,8 +37,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
-
-import static android.R.attr.path;
 
 /**
  * Created by Caij on 2016/7/19.
@@ -65,25 +64,25 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
 
     @Override
     public void publishStatus(final PublishBean publishBean) {
-        ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
-            @Override
-            protected Object doInBackground(Object... params) {
-                saveOrUpdate2Draft(publishBean, Draft.STATUS_SENDING);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
-                if (publishBean.getPics() == null || publishBean.getPics().size() == 0) {
-                    publishText(publishBean);
-                } else if (publishBean.getPics().size() == 1) {
-                    publishStatusOneImage(publishBean);
-                } else {
-                    publishStatusMuImage(publishBean);
+        RxUtil.createDataObservable(new RxUtil.Provider<Object>() {
+                @Override
+                public Object getData() throws Exception {
+                    saveOrUpdate2Draft(publishBean, Draft.STATUS_SENDING);
+                    return null;
                 }
-            }
-        });
+            }).compose(SchedulerTransformer.create())
+            .subscribe(new SubscriberAdapter<Object>() {
+                @Override
+                public void onNext(Object o) {
+                    if (publishBean.getPics() == null || publishBean.getPics().size() == 0) {
+                        publishText(publishBean);
+                    } else if (publishBean.getPics().size() == 1) {
+                        publishStatusOneImage(publishBean);
+                    } else {
+                        publishStatusMuImage(publishBean);
+                    }
+                }
+            });
     }
 
     private void publishStatusMuImage(final PublishBean publishBean) {

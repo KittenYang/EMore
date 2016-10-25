@@ -10,13 +10,16 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.bumptech.glide.request.target.Target;
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.bean.StatusImageInfo;
-import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.NavigationUtil;
+import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 import com.caij.emore.widget.weibo.ImageInterface;
 
 import java.io.File;
@@ -24,6 +27,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import rx.Subscription;
 
 /**
  * Created by Caij on 2016/6/13.
@@ -34,8 +39,7 @@ public class StatusDetailItemImageViewGroupOf1BigImage extends ViewGroup impleme
     private StatusImageInfo mImageInfo;
     private Handler mMainHandler;
     private WebView mWebView;
-
-    private boolean isDetached;
+    private Subscription mGetImageFileSubscription;
 
     public StatusDetailItemImageViewGroupOf1BigImage(Context context) {
         super(context);
@@ -129,24 +133,19 @@ public class StatusDetailItemImageViewGroupOf1BigImage extends ViewGroup impleme
     }
 
     private void disPlayPics(final StatusImageInfo imageInfo) {
-        ExecutorServiceUtil.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final File file = ImageLoader.getFile(getContext(), imageInfo.getBmiddle().getUrl(),
+        mGetImageFileSubscription = RxUtil.createDataObservable(new RxUtil.Provider<File>() {
+                @Override
+                public File getData() throws Exception {
+                    return ImageLoader.getFile(getContext(), imageInfo.getBmiddle().getUrl(),
                             Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
-                    mMainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isDetached) return;
-                            readLargePicture(mWebView, file);
-                        }
-                    });
-                } catch (ExecutionException e) {
-                } catch (InterruptedException e) {
                 }
-            }
-        });
+            }).compose(SchedulerTransformer.<File>create())
+            .subscribe(new SubscriberAdapter<File>() {
+                @Override
+                public void onNext(File file) {
+                    readLargePicture(mWebView, file);
+                }
+            });
     }
 
     private void readLargePicture(final WebView large, File file) {
@@ -212,16 +211,18 @@ public class StatusDetailItemImageViewGroupOf1BigImage extends ViewGroup impleme
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        isDetached = false;
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        isDetached = true;
 
         mWebView.removeAllViews();
         mWebView.destroy();
+
+        if (mGetImageFileSubscription != null) {
+            mGetImageFileSubscription.unsubscribe();
+        }
     }
 
     @Override

@@ -13,11 +13,14 @@ import android.widget.ProgressBar;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.ui.activity.WebActivity;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.FileUtil;
 import com.caij.emore.utils.LogUtil;
+import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -63,9 +66,9 @@ public abstract class AbsLoginActivity extends WebActivity {
     }
 
     private void loadLoginHtml() {
-        mHtmlAsyncTask = new AsyncTask<Object, Object, String>() {
+        RxUtil.createDataObservable(new RxUtil.Provider<String>() {
             @Override
-            protected String doInBackground(Object... params) {
+            public String getData() throws Exception {
                 int i = 3;
                 while (i > 0) {
                     try {
@@ -108,10 +111,10 @@ public abstract class AbsLoginActivity extends WebActivity {
                 }
                 return null;
             }
-
+        }).compose(SchedulerTransformer.<String>create())
+        .subscribe(new SubscriberAdapter<String>() {
             @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
+            public void onNext(String s) {
                 if (!TextUtils.isEmpty(s)) {
                     mWebView.loadDataWithBaseURL("https://api.weibo.com", s, "text/html", "UTF-8", "");
                 }else {
@@ -129,8 +132,7 @@ public abstract class AbsLoginActivity extends WebActivity {
                             });
                 }
             }
-        };
-        ExecutorServiceUtil.executeAsyncTask(mHtmlAsyncTask);
+        });
     }
 
     @Override

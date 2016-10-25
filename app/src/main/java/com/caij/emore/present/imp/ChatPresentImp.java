@@ -22,7 +22,7 @@ import com.caij.emore.present.ChatPresent;
 import com.caij.emore.remote.MessageApi;
 import com.caij.emore.ui.view.DirectMessageView;
 import com.caij.emore.utils.DensityUtil;
-import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
@@ -328,20 +328,21 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         mDirectMessageView.setEntities(mDirectMessages);
         mDirectMessageView.attemptSmoothScrollToBottom();
 
-        ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
-            @Override
-            protected Object doInBackground(Object... params) {
-                mMessageManager.saveMessage(message);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
-                MessageResponseEvent responseEvent = new MessageResponseEvent(EventTag.SEND_MESSAGE_EVENT, message.getId(), message);
-                RxBus.getDefault().post(EventTag.SEND_MESSAGE_EVENT, responseEvent);
-            }
-        });
+        RxUtil.createDataObservable(new RxUtil.Provider<Object>() {
+                @Override
+                public Object getData() throws Exception {
+                    mMessageManager.saveMessage(message);
+                    return null;
+                }
+            })
+            .compose(SchedulerTransformer.create())
+            .subscribe(new SubscriberAdapter<Object>() {
+                @Override
+                public void onNext(Object o) {
+                    MessageResponseEvent responseEvent = new MessageResponseEvent(EventTag.SEND_MESSAGE_EVENT, message.getId(), message);
+                    RxBus.getDefault().post(EventTag.SEND_MESSAGE_EVENT, responseEvent);
+                }
+            });
 
     }
 

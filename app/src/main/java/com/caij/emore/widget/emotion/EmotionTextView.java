@@ -6,8 +6,11 @@ import android.text.Spannable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
-import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.api.ex.SchedulerTransformer;
+import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.SpannableStringUtil;
+import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 import com.caij.emore.widget.FixClickableSpanBugTextView;
 
 /**
@@ -30,19 +33,19 @@ public class EmotionTextView extends FixClickableSpanBugTextView {
     @Override
     public synchronized void setText(final CharSequence text, final BufferType type) {
         if (text != null && !TextUtils.isEmpty(text)) {
-            final Context context = getContext().getApplicationContext();
-            ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Spannable>() {
-                @Override
-                protected Spannable doInBackground(Object[] params) {
-                    return SpannableStringUtil.paraeSpannable(text.toString());
-                }
-
-                @Override
-                protected void onPostExecute(Spannable spannable) {
-                    super.onPostExecute(spannable);
-                    EmotionTextView.super.setText(spannable, type);
-                }
-            });
+            RxUtil.createDataObservable(new RxUtil.Provider<Spannable>() {
+                    @Override
+                    public Spannable getData() throws Exception {
+                        return SpannableStringUtil.paraeSpannable(text.toString());
+                    }
+                })
+                .compose(SchedulerTransformer.<Spannable>create())
+                .subscribe(new SubscriberAdapter<Spannable>() {
+                    @Override
+                    public void onNext(Spannable spannable) {
+                        EmotionTextView.super.setText(spannable, type);
+                    }
+                });
         }else {
             super.setText(text, type);
         }

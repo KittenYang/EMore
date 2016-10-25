@@ -8,7 +8,7 @@ import com.caij.emore.manager.DraftManager;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.DraftPresent;
 import com.caij.emore.ui.view.DraftListView;
-import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -178,18 +177,20 @@ public class DraftPresentImp extends AbsBasePresent implements DraftPresent {
 
     @Override
     public void deleteDraft(final Draft draft, final int position) {
-        ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
-            @Override
-            protected Object doInBackground(Object... params) {
-                mDraftManager.deleteDraftById(draft.getId());
-                return null;
-            }
+        RxUtil.createDataObservable(new RxUtil.Provider<Object>() {
+                @Override
+                public Object getData() throws Exception {
+                    mDraftManager.deleteDraftById(draft.getId());
+                    return null;
+                }
+            })
+            .compose(SchedulerTransformer.create())
+            .subscribe(new SubscriberAdapter<Object>() {
+                @Override
+                public void onNext(Object o) {
 
-            @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
-            }
-        });
+                }
+            });
     }
 
 }

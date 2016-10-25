@@ -8,7 +8,7 @@ import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.manager.MessageManager;
 import com.caij.emore.present.ChatManagerPresent;
 import com.caij.emore.remote.MessageApi;
-import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -100,7 +100,7 @@ public class ChatManagerPresentImp extends AbsBasePresent implements ChatManager
                         }
                     }
                 })
-                .subscribeOn(Schedulers.from(ExecutorServiceUtil.SEND_MESSAGE_SERVICE)) //这里单线程发送消息， 防止消息位置错乱
+                .subscribeOn(Schedulers.from(ExecutorServicePool.SEND_MESSAGE_SERVICE)) //这里单线程发送消息， 防止消息位置错乱
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SubscriberAdapter<DirectMessage>() {
 

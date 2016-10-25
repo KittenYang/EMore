@@ -19,6 +19,7 @@ import android.view.View;
 import com.caij.emore.EMApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.R;
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.bean.ThemeItem;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.adapter.ThemeAdapter;
@@ -28,9 +29,11 @@ import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.Init;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 import com.caij.emore.utils.weibo.ThemeUtils;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
@@ -128,18 +131,19 @@ public class AdvancedSettingFragment extends PreferenceFragment
 	}
 
 	private void lodCacheSize() {
-		ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, String>() {
-			@Override
-			protected String doInBackground(Object... params) {
-				return CacheUtils.getCacheFileSizeString(EMApplication.getInstance());
-			}
-
-			@Override
-			protected void onPostExecute(String s) {
-				super.onPostExecute(s);
-				cachePreference.setSummary(s);
-			}
-		});
+		RxUtil.createDataObservable(new RxUtil.Provider<String>() {
+				@Override
+				public String getData() throws Exception {
+					return CacheUtils.getCacheFileSizeString(EMApplication.getInstance());
+				}
+			})
+			.compose(SchedulerTransformer.<String>create())
+			.subscribe(new SubscriberAdapter<String>() {
+				@Override
+				public void onNext(String s) {
+					cachePreference.setSummary(s);
+				}
+			});
 	}
 
 	@Override
@@ -184,19 +188,20 @@ public class AdvancedSettingFragment extends PreferenceFragment
 	}
 
 	private void clearCache() {
-		ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, Object>() {
-			@Override
-			protected Object doInBackground(Object... params) {
-				CacheUtils.clearCache(getActivity());
-				return null;
-			}
-
-			@Override
-			protected void onPostExecute(Object o) {
-				super.onPostExecute(o);
-				lodCacheSize();
-			}
-		});
+		RxUtil.createDataObservable(new RxUtil.Provider<Object>() {
+				@Override
+				public Object getData() throws Exception {
+					CacheUtils.clearCache(getActivity());
+					return null;
+				}
+			})
+			.compose(SchedulerTransformer.create())
+			.subscribe(new SubscriberAdapter<Object>() {
+				@Override
+				public void onNext(Object o) {
+					lodCacheSize();
+				}
+			});
 	}
 
 

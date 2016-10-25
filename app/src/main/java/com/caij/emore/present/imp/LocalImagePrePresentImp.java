@@ -1,34 +1,28 @@
 package com.caij.emore.present.imp;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 
-import com.bumptech.glide.request.target.Target;
-import com.caij.emore.R;
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.present.ImagePrePresent;
 import com.caij.emore.ui.view.ImagePreView;
-import com.caij.emore.utils.CacheUtils;
-import com.caij.emore.utils.ExecutorServiceUtil;
-import com.caij.emore.utils.FileUtil;
-import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.ImageUtil;
-import com.caij.emore.utils.SystemUtil;
+import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+
+import rx.Subscription;
 
 /**
  * Created by Caij on 2016/7/27.
  */
-public class LocalImagePrePresentImp implements ImagePrePresent {
+public class LocalImagePrePresentImp extends AbsBasePresent implements ImagePrePresent {
 
     private ImagePreView mImagePreView;
-    private AsyncTask mImageLoadAsyncTask;
 
     private ImageInfo mImageInfo;
 
@@ -48,53 +42,47 @@ public class LocalImagePrePresentImp implements ImagePrePresent {
     }
 
     private void showImage(final String localFilePath) {
-        ExecutorServiceUtil.executeAsyncTask(mImageLoadAsyncTask = new AsyncTask<Object, Object, Zip>() {
-            @Override
-            protected Zip doInBackground(Object... params) {
-                File file = new File(localFilePath);
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(localFilePath, options);
-                Zip imageInfo = new Zip();
-                try {
-                    imageInfo.imageType = ImageUtil.getImageType(file);
-                } catch (IOException e) {
+        Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<Zip>() {
+                @Override
+                public Zip getData() throws Exception {
+                    File file = new File(localFilePath);
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(localFilePath, options);
+                    Zip imageInfo = new Zip();
+                    try {
+                        imageInfo.imageType = ImageUtil.getImageType(file);
+                    } catch (IOException e) {}
+                    imageInfo.width = options.outWidth;
+                    imageInfo.height = options.outHeight;
+                    return imageInfo;
                 }
-                imageInfo.width = options.outWidth;
-                imageInfo.height = options.outHeight;
-                return imageInfo;
-            }
-
-            @Override
-            protected void onPostExecute(Zip imageInfo) {
-                super.onPostExecute(imageInfo);
-                if (imageInfo != null) {
-                    if (imageInfo.imageType == ImageUtil.ImageType.GIF) {
-                        mImagePreView.showGifImage("file://" + localFilePath);
-                    }else {
-                        if (ImagePrePresentImp.isLongHImage(imageInfo.width, imageInfo.height)) {
-                            mImagePreView.showLongHImage(localFilePath);
+            })
+            .compose(SchedulerTransformer.<Zip>create())
+            .subscribe(new SubscriberAdapter<Zip>() {
+                @Override
+                public void onNext(Zip zip) {
+                    if (zip != null) {
+                        if (zip.imageType == ImageUtil.ImageType.GIF) {
+                            mImagePreView.showGifImage("file://" + localFilePath);
                         }else {
-                            mImagePreView.showLocalImage(localFilePath);
+                            if (ImagePrePresentImp.isLongHImage(zip.width, zip.height)) {
+                                mImagePreView.showLongHImage(localFilePath);
+                            }else {
+                                mImagePreView.showLocalImage(localFilePath);
+                            }
                         }
+                    }else {
+                        mImagePreView.onDefaultLoadError();
                     }
-                }else {
-                    mImagePreView.onDefaultLoadError();
                 }
-            }
-        });
+            });
+        addSubscription(subscription);
     }
 
     @Override
     public void onCreate() {
 
-    }
-
-    @Override
-    public void onDestroy() {
-        if (mImageLoadAsyncTask != null) {
-            mImageLoadAsyncTask.cancel(true);
-        }
     }
 
     private static class Zip {

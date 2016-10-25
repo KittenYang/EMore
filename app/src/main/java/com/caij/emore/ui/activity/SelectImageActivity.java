@@ -29,15 +29,18 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.bean.Image;
 import com.caij.emore.bean.ImageFolder;
 import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.adapter.FolderAdapter;
 import com.caij.emore.ui.adapter.GridImageAdapter;
-import com.caij.emore.utils.ExecutorServiceUtil;
+import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.ToastUtil;
+import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.io.File;
@@ -172,42 +175,38 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
     }
 
     private void initDate() {
-        AsyncTask<Object, Object, List<ImageFolder>> folderAsyncTask = new AsyncTask<Object, Object, List<ImageFolder>>() {
-
-            @Override
-            protected List<ImageFolder> doInBackground(Object... params) {
-                return getLocalImageFolder();
-            }
-
-            @Override
-            protected void onPostExecute(List<ImageFolder> imageFolders) {
-                super.onPostExecute(imageFolders);
-                mFolderAdapter.setEntities(imageFolders);
-                mFolderAdapter.notifyDataSetChanged();
-                loadImageByFolderId(null);
-            }
-        };
-        ExecutorServiceUtil.executeAsyncTask(folderAsyncTask);
+        RxUtil.createDataObservable(new RxUtil.Provider<List<ImageFolder>>() {
+                @Override
+                public List<ImageFolder> getData() throws Exception {
+                    return getLocalImageFolder();
+                }
+            }).compose(SchedulerTransformer.<List<ImageFolder>>create())
+            .subscribe(new SubscriberAdapter<List<ImageFolder>>() {
+                @Override
+                public void onNext(List<ImageFolder> imageFolders) {
+                    mFolderAdapter.setEntities(imageFolders);
+                    mFolderAdapter.notifyDataSetChanged();
+                    loadImageByFolderId(null);
+                }
+            });
     }
 
     private void loadImageByFolderId(final String id) {
-        AsyncTask<Object, Object, List<Image>> imageAsyncTask = new AsyncTask<Object, Object, List<Image>>() {
-
-            @Override
-            protected List<Image> doInBackground(Object... params) {
-                return getImagesByFolderId(id);
-            }
-
-            @Override
-            protected void onPostExecute(List<Image> images) {
-                super.onPostExecute(images);
-                mImageAdapter.setEntities(images);
-                mImageAdapter.notifyDataSetChanged();
-                mSelectImages.clear();
-                mMiImageCount.setTitle(getString(R.string.complete) + "(" + mSelectImages.size() + "/" + mMaxImageSelectCount + ")");
-            }
-        };
-        ExecutorServiceUtil.executeAsyncTask(imageAsyncTask);
+        RxUtil.createDataObservable(new RxUtil.Provider<List<Image>>() {
+                @Override
+                public List<Image> getData() throws Exception {
+                    return getImagesByFolderId(id);
+                }
+            }).compose(SchedulerTransformer.<List<Image>>create())
+            .subscribe(new SubscriberAdapter<List<Image>>() {
+                @Override
+                public void onNext(List<Image> images) {
+                    mImageAdapter.setEntities(images);
+                    mImageAdapter.notifyDataSetChanged();
+                    mSelectImages.clear();
+                    mMiImageCount.setTitle(getString(R.string.complete) + "(" + mSelectImages.size() + "/" + mMaxImageSelectCount + ")");
+                }
+            });
     }
 
     private List<ImageFolder> getLocalImageFolder() {

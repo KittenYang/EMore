@@ -2,6 +2,8 @@ package com.caij.emore.utils;
 
 import android.os.AsyncTask;
 
+import com.caij.emore.utils.rxjava.RxUtil;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,7 +34,7 @@ public class DownLoadUtil {
     }
 
     public static void down(final String url, final String filePath, final Callback callback) {
-        ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Long, Object>() {
+        new AsyncTask<Object, Long, Object>() {
             @Override
             protected Object doInBackground(Object... params) {
                 Request.Builder okHttpRequestBuilder = new Request.Builder();
@@ -80,6 +82,6 @@ public class DownLoadUtil {
                     callback.onSuccess((File) o);
                 }
             }
-        });
+        }.execute(ExecutorServicePool.DOWN_SERVICE);
     }
 }

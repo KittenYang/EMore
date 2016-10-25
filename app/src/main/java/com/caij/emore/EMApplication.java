@@ -4,28 +4,27 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 
-import com.bumptech.glide.Glide;
-import com.caij.emore.account.Account;
 import com.caij.emore.account.UserPrefs;
+import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.ChannelUtil;
-import com.caij.emore.utils.ExecutorServiceUtil;
-import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.utils.rxbus.RxBus;
+import com.caij.emore.utils.rxjava.RxUtil;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import hugo.weaving.DebugLog;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * Created by Caij on 2016/5/27.
@@ -34,6 +33,10 @@ public class EMApplication extends Application{
 
     private static Application mApplication;
     private int mVisibleActivityCount;
+
+    public static Context getInstance() {
+        return mApplication;
+    }
 
     @DebugLog
     public void onCreate() {
@@ -66,38 +69,19 @@ public class EMApplication extends Application{
     }
 
     private void registerActivityEvent() {
-        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-            }
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacksAdapter() {
 
             @Override
             public void onActivityStarted(Activity activity) {
                 mVisibleActivityCount ++;
             }
 
-            @Override
-            public void onActivityResumed(Activity activity) {
-            }
-
-            @Override
-            public void onActivityPaused(Activity activity) {
-            }
 
             @Override
             public void onActivityStopped(Activity activity) {
                 mVisibleActivityCount --;
             }
 
-            @Override
-            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-            }
-
-            @Override
-            public void onActivityDestroyed(Activity activity) {
-
-            }
         });
     }
 
@@ -112,7 +96,6 @@ public class EMApplication extends Application{
     }
 
     public void onAuthenticationError() {
-        Account account = UserPrefs.get(this).getAccount();
         Intent intent = WeiCoLoginActivity.newWeiCoLoginIntent(this, null,
                 null);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -133,27 +116,65 @@ public class EMApplication extends Application{
     }
 
     private void initCrashReport(){
-        if (!BuildConfig.DEBUG) {
-            ExecutorServiceUtil.executeAsyncTask(new AsyncTask<Object, Object, String>() {
+        RxUtil.createDataObservable(new RxUtil.Provider<String>() {
                 @Override
-                protected String doInBackground(Object... params) {
-                    String channel = ChannelUtil.getChannel(getApplicationContext());
-                    LogUtil.d(EMApplication.this, "get app channel : %s", channel);
-                    if (TextUtils.isEmpty(channel)) {
-                        channel = "default";
-                    }
+                public String getData() throws Exception {
+                    return ChannelUtil.getChannel(getApplicationContext());
+                }
+            }).filter(new Func1<String, Boolean>() {
+                @Override
+                public Boolean call(String s) {
+                    return !BuildConfig.DEBUG;
+                }
+            })
+            .compose(SchedulerTransformer.<String>create())
+            .subscribe(new SubscriberAdapter<String>() {
+                @Override
+                public void onNext(String channel) {
+                    if (TextUtils.isEmpty(channel)) channel = "default";
 
                     CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
-
                     strategy.setAppChannel(channel);
                     CrashReport.initCrashReport(getApplicationContext(), Key.BUGLY_KEY, false, strategy);
-                    return null;
                 }
             });
-         }
     }
 
-    public static Context getInstance() {
-        return mApplication;
+    private static class ActivityLifecycleCallbacksAdapter implements ActivityLifecycleCallbacks {
+
+        @Override
+        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+        }
+
+        @Override
+        public void onActivityStarted(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityResumed(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityPaused(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityStopped(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+        }
+
+        @Override
+        public void onActivityDestroyed(Activity activity) {
+
+        }
     }
 }
