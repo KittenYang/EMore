@@ -24,7 +24,7 @@ import rx.functions.Func1;
  */
 public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfoDetailPresent {
 
-    private static final long USER_CACHE_TIME = 2 * 60 * 1000;
+    private static final long USER_CACHE_TIME = 60 * 60 * 1000;
 
     private DetailUserView mUserView;
     private UserApi mUserApi;
@@ -136,7 +136,7 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
                     @Override
                     public Boolean call(User user) {
                         return user != null &&
-                                Math.abs(System.currentTimeMillis() - user.getUpdate_time()) < USER_CACHE_TIME;
+                                System.currentTimeMillis() - user.getUpdate_time() < USER_CACHE_TIME;
                     }
                 })
                 .compose(SchedulerTransformer.<User>create())

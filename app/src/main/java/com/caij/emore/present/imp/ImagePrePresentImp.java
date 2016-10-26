@@ -168,7 +168,7 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
 
             @Override
             public void onProgress(long total, long progress) {
-                LogUtil.d(ImagePrePresentImp.this, "total %s progress %s", total, progress);
+                LogUtil.d(ImagePrePresentImp.this.toString(), "total %s progress %s", total, progress);
                 if (mImagePreView != null) {
                     mImagePreView.showProgress(total, progress);
                 }

@@ -27,7 +27,7 @@ import rx.functions.Func1;
  */
 public class StatusDetailPresentImp extends AbsTimeLinePresent<StatusDetailView> implements StatusDetailPresent {
 
-    private static final long STATUS_CACHE_TIME = 2 * 60 * 60 * 1000;
+    private static final long STATUS_CACHE_TIME = 60 * 60 * 1000;
 
     private long mStatusId;
 

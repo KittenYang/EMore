@@ -59,6 +59,7 @@ public class DownLoadUtil {
                         writeTotalLength += length;
                         if (System.currentTimeMillis() - preTime > INTERVAL_PROGRESS_TIME) {
                             publishProgress(responseBody.contentLength(), writeTotalLength);
+                            preTime = System.currentTimeMillis();
                         }
                     }
                     return file;
