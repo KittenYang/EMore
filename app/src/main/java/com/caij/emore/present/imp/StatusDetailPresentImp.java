@@ -49,17 +49,17 @@ public class StatusDetailPresentImp extends AbsTimeLinePresent<StatusDetailView>
                 .compose(ErrorCheckerTransformer.<Status>create())
                 .doOnNext(new Action1<Status>() {
                     @Override
-                    public void call(Status weibo) {
-                        mStatusManager.saveStatus(weibo);
+                    public void call(Status status) {
+                        mStatusManager.saveStatus(status);
                     }
                 });
         Subscription subscription = Observable.concat(localObservable, serverObservable)
                 .first(new Func1<Status, Boolean>() {
                     @Override
-                    public Boolean call(Status weibo) {
-                        return weibo != null && weibo.getUpdate_time() != null
-                                && System.currentTimeMillis() - weibo.getUpdate_time() < STATUS_CACHE_TIME
-                                && (!weibo.getIsLongText() || weibo.getLongText() != null);
+                    public Boolean call(Status status) {
+                        return status != null && status.getUpdate_time() != null
+                                && System.currentTimeMillis() - status.getUpdate_time() < STATUS_CACHE_TIME
+                                && (!status.getIsLongText() || status.getLongText() != null);
                     }
                 })
                 .compose(StatusContentSpannableConvertTransformer.create(true))
