@@ -33,12 +33,10 @@ public class ChatManagerPresentImp extends AbsBasePresent implements ChatManager
     private MessageApi mMessageApi;
     private MessageManager mMessageManager;
     private Observable<MessageResponseEvent> mMessageSendObservable;
-    private String mToken;
 
-    public ChatManagerPresentImp(String token, MessageApi messageApi,
+    public ChatManagerPresentImp(MessageApi messageApi,
                                  MessageManager messageManager) {
         super();
-        mToken = token;
         mMessageApi = messageApi;
         mMessageManager = messageManager;
         mMessageSendObservable = RxBus.getDefault().register(EventTag.SEND_MESSAGE_EVENT);

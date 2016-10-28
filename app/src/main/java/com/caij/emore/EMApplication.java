@@ -11,6 +11,9 @@ import android.text.TextUtils;
 
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.api.ex.SchedulerTransformer;
+import com.caij.emore.di.component.ApplicationComponent;
+import com.caij.emore.di.component.DaggerApplicationComponent;
+import com.caij.emore.di.module.ApplicationModule;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.ChannelUtil;
@@ -33,6 +36,7 @@ public class EMApplication extends Application{
 
     private static Application mApplication;
     private int mVisibleActivityCount;
+    private ApplicationComponent mApplicationComponent;
 
     public static Context getInstance() {
         return mApplication;
@@ -55,6 +59,10 @@ public class EMApplication extends Application{
             registerTokenExpiredEvent();
             registerActivityEvent();
         }
+
+       mApplicationComponent = DaggerApplicationComponent.builder()
+                        .applicationModule(new ApplicationModule(this))
+                        .build();
     }
 
     private void initNightMode() {
@@ -68,8 +76,38 @@ public class EMApplication extends Application{
         }
     }
 
+    private void initCrashReport(){
+        RxUtil.createDataObservable(new RxUtil.Provider<String>() {
+            @Override
+            public String getData() throws Exception {
+                return ChannelUtil.getChannel(getApplicationContext());
+            }
+        }).filter(new Func1<String, Boolean>() {
+            @Override
+            public Boolean call(String s) {
+                return !BuildConfig.DEBUG;
+            }
+        })
+                .compose(SchedulerTransformer.<String>create())
+                .subscribe(new SubscriberAdapter<String>() {
+                    @Override
+                    public void onNext(String channel) {
+                        if (TextUtils.isEmpty(channel)) channel = "default";
+
+                        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
+                        strategy.setAppChannel(channel);
+                        CrashReport.initCrashReport(getApplicationContext(), Key.BUGLY_KEY, false, strategy);
+                    }
+                });
+    }
+
     private void registerActivityEvent() {
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacksAdapter() {
+
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                ActivityStack.getInstance().push(activity);
+            }
 
             @Override
             public void onActivityStarted(Activity activity) {
@@ -82,6 +120,10 @@ public class EMApplication extends Application{
                 mVisibleActivityCount --;
             }
 
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                ActivityStack.getInstance().remove(activity);
+            }
         });
     }
 
@@ -115,29 +157,8 @@ public class EMApplication extends Application{
         }
     }
 
-    private void initCrashReport(){
-        RxUtil.createDataObservable(new RxUtil.Provider<String>() {
-                @Override
-                public String getData() throws Exception {
-                    return ChannelUtil.getChannel(getApplicationContext());
-                }
-            }).filter(new Func1<String, Boolean>() {
-                @Override
-                public Boolean call(String s) {
-                    return !BuildConfig.DEBUG;
-                }
-            })
-            .compose(SchedulerTransformer.<String>create())
-            .subscribe(new SubscriberAdapter<String>() {
-                @Override
-                public void onNext(String channel) {
-                    if (TextUtils.isEmpty(channel)) channel = "default";
-
-                    CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
-                    strategy.setAppChannel(channel);
-                    CrashReport.initCrashReport(getApplicationContext(), Key.BUGLY_KEY, false, strategy);
-                }
-            });
+    public ApplicationComponent getApplicationComponent() {
+        return mApplicationComponent;
     }
 
     private static class ActivityLifecycleCallbacksAdapter implements ActivityLifecycleCallbacks {

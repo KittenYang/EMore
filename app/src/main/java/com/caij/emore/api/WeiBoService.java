@@ -56,7 +56,6 @@ public interface WeiBoService {
     }
 
 
-    //    https://api.weibo.com/oauth2/access_token
     @FormUrlEncoded
     @POST("oauth2/access_token")
     Observable<Token> getAccessToken(@Field("client_id") String clientId, @Field("client_secret") String clientSecret,
@@ -72,12 +71,12 @@ public interface WeiBoService {
     Observable<MessageUser> getConversations(@Query("count") int count,
                                              @Query("cursor") long cursor) ;
 
-    @GET("/2/direct_messages/conversation.json")
-    Observable<UserMessageResponse> getChatMessages(@Query("uid") long uid,
-                                                    @Query("since_id") long since_id,
-                                                    @Query("max_id") long max_id,
-                                                    @Query("count") int count,
-                                                    @Query("page") int page);
+//    @GET("/2/direct_messages/conversation.json")
+//    Observable<UserMessageResponse> getChatMessages(@Query("uid") long uid,
+//                                                    @Query("since_id") long since_id,
+//                                                    @Query("max_id") long max_id,
+//                                                    @Query("count") int count,
+//                                                    @Query("page") int page);
 
     @FormUrlEncoded
     @POST("/2/direct_messages/new.json")
@@ -93,12 +92,12 @@ public interface WeiBoService {
                                                        @Query("tuid") long uid,
                                                        @Part MultipartBody.Part file);
 
-    @GET
-    public Observable<MessageImage> getMessageImageInfo(@Url String url, @Query("fid") long fid);
+//    @GET
+//    public Observable<MessageImage> getMessageImageInfo(@Url String url, @Query("fid") long fid);
 
 
-    @GET("/2/short_url/info.json")
-    Call<ShortUrlInfo> getShortUrlInfo(@Query("url_short") List<String> url_shorts);
+//    @GET("/2/short_url/info.json")
+//    Call<ShortUrlInfo> getShortUrlInfo(@Query("url_short") List<String> url_shorts);
 
 
 

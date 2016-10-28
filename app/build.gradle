@@ -136,6 +136,10 @@ dependencies {
     compile "com.jakewharton:butterknife:${rootProject.ext.butterknifeVersion}"
     apt "com.jakewharton:butterknife-compiler:${rootProject.ext.butterknifeVersion}"
 
+    //dagger
+    apt "com.google.dagger:dagger-compiler:${rootProject.ext.daggerVersion}"
+    compile "com.google.dagger:dagger:${rootProject.ext.daggerVersion}"
+
     debugCompile "com.facebook.stetho:stetho:${rootProject.ext.stethoVersion}"
     debugCompile "com.facebook.stetho:stetho-okhttp3:${rootProject.ext.stethoVersion}"
     debugCompile "com.squareup.leakcanary:leakcanary-android:${rootProject.ext.leakcanaryVersion}"

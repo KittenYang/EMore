@@ -183,7 +183,7 @@ public class DbDaoGenerator {
         entity.addIntProperty("status");
         entity.addIntProperty("type");
         entity.addStringProperty("content");
-        entity.addStringProperty("image_paths");//以逗号分隔
+        entity.addStringProperty("image_paths");
     }
 
     static void createUnReadMessage(Schema sch) {

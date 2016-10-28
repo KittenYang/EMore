@@ -1,12 +1,5 @@
 package com.orientationchangedemo.caij.weiyo;
 
-import com.caij.emore.bean.response.QueryStatusResponse;
-import com.caij.emore.database.bean.User;
-import com.caij.emore.source.UserSource;
-import com.caij.emore.source.WeiboSource;
-import com.caij.emore.source.server.ServerUserSource;
-import com.caij.emore.source.server.ServerWeiboSource;
-import com.caij.emore.utils.GsonUtils;
 
 import org.junit.Test;
 
@@ -19,44 +12,12 @@ public class WeiboUnitTest {
 
     @Test
     public void loadUserInfo() throws Exception {
-        UserSource userSource = new ServerUserSource();
-        userSource.getWeiboUserInfoByName(Key.token, "Ca1j").subscribe(new Subscriber<User>() {
-            @Override
-            public void onCompleted() {
-                System.out.print("onCompleted");
-            }
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("onError");
-            }
-
-            @Override
-            public void onNext(User weiBoUser) {
-                System.out.print(GsonUtils.toJson(weiBoUser));
-            }
-        });
     }
 
     @Test
     public void loadFriendWeibo() throws Exception {
-        WeiboSource weiboSource = new ServerWeiboSource();
-        weiboSource.getFriendWeibo(Key.token, 0, 0, 0, 20, 1).subscribe(new Subscriber<QueryStatusResponse>() {
-            @Override
-            public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(QueryStatusResponse response) {
-
-            }
-        });
     }
 
     @Test

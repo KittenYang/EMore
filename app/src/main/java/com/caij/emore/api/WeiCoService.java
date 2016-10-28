@@ -109,7 +109,7 @@ public interface WeiCoService {
             RequestBody requestBody = request.body();
             Token token = UserPrefs.get(EMApplication.getInstance()).getToken();
             String accessToken = token == null ? "" : token.getAccess_token();
-            if (requestBody == null) {  //get
+            if ("GET".equals(request.method())) {  //get
                 HttpUrl url = request.url().newBuilder()
                         .addQueryParameter(PARAMETER_SOURCE_NAME, Key.WEICO_APP_ID)
                         .addQueryParameter(PARAMETER_FROM_NAME, Key.WEICO_APP_FROM)

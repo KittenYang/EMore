@@ -25,7 +25,6 @@ public abstract class BaseActivity<P extends BasePresent> extends AppCompatActiv
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme();
-        ActivityStack.getInstance().push(this);
 
         mPresent = createPresent();
         if (mPresent != null) {
@@ -83,14 +82,11 @@ public abstract class BaseActivity<P extends BasePresent> extends AppCompatActiv
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ActivityStack.getInstance().remove(this);
         if (mLoadingDialog != null) {
             mLoadingDialog.dismiss();
         }
         if (mPresent != null) {
             mPresent.onDestroy();
         }
-
-
     }
 }
