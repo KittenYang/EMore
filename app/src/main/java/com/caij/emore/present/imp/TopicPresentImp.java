@@ -4,7 +4,7 @@ import com.caij.emore.api.ex.ResponseSubscriber;
 import com.caij.emore.bean.response.QueryStatusResponse;
 import com.caij.emore.manager.StatusManager;
 import com.caij.emore.database.bean.Status;
-import com.caij.emore.present.WeiboMentionPresent;
+import com.caij.emore.present.StatusMentionPresent;
 import com.caij.emore.remote.AttitudeApi;
 import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.TimeLineStatusView;
@@ -20,7 +20,7 @@ import rx.functions.Func1;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineStatusView> implements WeiboMentionPresent {
+public class TopicPresentImp extends AbsListTimeLinePresent<TimeLineStatusView> implements StatusMentionPresent {
 
     private static final int COUNT = 20;
 

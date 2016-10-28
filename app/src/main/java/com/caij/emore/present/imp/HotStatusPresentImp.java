@@ -2,7 +2,7 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.manager.StatusManager;
 import com.caij.emore.present.FriendStatusPresent;
-import com.caij.emore.present.HotWeiboPresent;
+import com.caij.emore.present.HotStatusPresent;
 import com.caij.emore.remote.AttitudeApi;
 import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.TimeLineStatusView;
@@ -10,7 +10,7 @@ import com.caij.emore.ui.view.TimeLineStatusView;
 /**
  * Created by Caij on 2016/5/31.
  */
-public class HotStatusPresentImp extends AbsListTimeLinePresent<TimeLineStatusView> implements FriendStatusPresent, HotWeiboPresent {
+public class HotStatusPresentImp extends AbsListTimeLinePresent<TimeLineStatusView> implements FriendStatusPresent, HotStatusPresent {
 
     private final static int PAGE_COUNT = 20;
 

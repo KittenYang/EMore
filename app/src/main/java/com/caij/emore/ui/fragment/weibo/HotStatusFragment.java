@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.caij.emore.manager.imp.StatusManagerImp;
-import com.caij.emore.present.HotWeiboPresent;
+import com.caij.emore.present.HotStatusPresent;
 import com.caij.emore.present.imp.HotStatusPresentImp;
 import com.caij.emore.remote.imp.AttitudeApiImp;
 import com.caij.emore.remote.imp.StatusApiImp;
@@ -13,7 +13,7 @@ import com.caij.emore.remote.imp.StatusApiImp;
 /**
  * Created by Caij on 2016/7/25.
  */
-public class HotStatusFragment extends TimeLineStatusFragment<HotWeiboPresent> {
+public class HotStatusFragment extends TimeLineStatusFragment<HotStatusPresent> {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class HotStatusFragment extends TimeLineStatusFragment<HotWeiboPresent> {
     }
 
     @Override
-    protected HotWeiboPresent createPresent() {
+    protected HotStatusPresent createPresent() {
         return new HotStatusPresentImp(this, new StatusApiImp(), new StatusManagerImp(), new AttitudeApiImp());
     }
 

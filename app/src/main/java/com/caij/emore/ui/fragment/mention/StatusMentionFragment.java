@@ -8,7 +8,7 @@ import android.view.View;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.manager.imp.NotifyManagerImp;
 import com.caij.emore.manager.imp.StatusManagerImp;
-import com.caij.emore.present.WeiboMentionPresent;
+import com.caij.emore.present.StatusMentionPresent;
 import com.caij.emore.present.imp.StatusMentionPresentImp;
 import com.caij.emore.remote.imp.AttitudeApiImp;
 import com.caij.emore.remote.imp.StatusApiImp;
@@ -20,7 +20,7 @@ import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 /**
  * Created by Caij on 2016/6/4.
  */
-public class StatusMentionFragment extends TimeLineStatusFragment<WeiboMentionPresent> implements
+public class StatusMentionFragment extends TimeLineStatusFragment<StatusMentionPresent> implements
         RecyclerViewOnItemClickListener, XRecyclerView.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     @Override
@@ -29,7 +29,7 @@ public class StatusMentionFragment extends TimeLineStatusFragment<WeiboMentionPr
     }
 
     @Override
-    protected WeiboMentionPresent createPresent() {
+    protected StatusMentionPresent createPresent() {
        return new StatusMentionPresentImp(UserPrefs.get(getActivity()).getAccount().getUid(), this,
                new StatusApiImp(), new StatusManagerImp(), new AttitudeApiImp(),
                new NotifyApiImp(), new NotifyManagerImp());

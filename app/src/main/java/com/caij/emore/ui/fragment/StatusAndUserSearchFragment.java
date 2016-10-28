@@ -12,7 +12,7 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.manager.imp.StatusManagerImp;
 import com.caij.emore.database.bean.User;
-import com.caij.emore.present.WeiboAndUserSearchPresent;
+import com.caij.emore.present.StatusAndUserSearchPresent;
 import com.caij.emore.present.imp.StatusAndUserSearchPresentImp;
 import com.caij.emore.remote.imp.AttitudeApiImp;
 import com.caij.emore.remote.imp.StatusApiImp;
@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/7/26.
  */
-public class StatusAndUserSearchFragment extends TimeLineStatusFragment<WeiboAndUserSearchPresent> implements StatusAndUserSearchView {
+public class StatusAndUserSearchFragment extends TimeLineStatusFragment<StatusAndUserSearchPresent> implements StatusAndUserSearchView {
 
     private LinearLayout mUserlinearLayout;
     private ImageLoader.ImageConfig mUserImageConfig;
@@ -57,7 +57,7 @@ public class StatusAndUserSearchFragment extends TimeLineStatusFragment<WeiboAnd
     }
 
     @Override
-    protected WeiboAndUserSearchPresent createPresent() {
+    protected StatusAndUserSearchPresent createPresent() {
         String key = getArguments().getString(Key.ID);
         return new StatusAndUserSearchPresentImp(key, this,
                 new StatusApiImp(), new StatusManagerImp(), new AttitudeApiImp(), new UserApiImp());

@@ -5,7 +5,7 @@ import com.caij.emore.database.bean.Status;
 /**
  * Created by Caij on 2016/7/14.
  */
-public interface WeiboActionPresent  extends BasePresent{
+public interface StatusActionPresent extends BasePresent{
 
 
     void deleteStatus(Status weibo, int position);

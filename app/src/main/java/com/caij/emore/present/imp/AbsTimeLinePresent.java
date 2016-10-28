@@ -11,7 +11,7 @@ import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.Response;
 import com.caij.emore.manager.StatusManager;
 import com.caij.emore.database.bean.Status;
-import com.caij.emore.present.WeiboActionPresent;
+import com.caij.emore.present.StatusActionPresent;
 import com.caij.emore.remote.AttitudeApi;
 import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.WeiboActionView;
@@ -30,7 +30,7 @@ import rx.functions.Action1;
  * Created by Caij on 2016/7/2.
  */
 public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsBasePresent
-        implements WeiboActionPresent, Action1<Event>{
+        implements StatusActionPresent, Action1<Event>{
 
     protected V mView;
     protected StatusApi mStatusApi;

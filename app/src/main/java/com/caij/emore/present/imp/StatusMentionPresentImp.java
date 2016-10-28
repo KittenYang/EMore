@@ -6,7 +6,7 @@ import com.caij.emore.manager.NotifyManager;
 import com.caij.emore.manager.StatusManager;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.database.bean.UnReadMessage;
-import com.caij.emore.present.WeiboMentionPresent;
+import com.caij.emore.present.StatusMentionPresent;
 import com.caij.emore.remote.AttitudeApi;
 import com.caij.emore.remote.StatusApi;
 import com.caij.emore.remote.NotifyApi;
@@ -24,7 +24,7 @@ import rx.functions.Func1;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class StatusMentionPresentImp extends AbsListTimeLinePresent<TimeLineStatusView> implements WeiboMentionPresent {
+public class StatusMentionPresentImp extends AbsListTimeLinePresent<TimeLineStatusView> implements StatusMentionPresent {
 
     private static final int COUNT = 20;
 

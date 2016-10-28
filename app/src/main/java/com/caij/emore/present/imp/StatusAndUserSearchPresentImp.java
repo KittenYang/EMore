@@ -6,7 +6,7 @@ import com.caij.emore.bean.response.QueryStatusResponse;
 import com.caij.emore.manager.StatusManager;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.database.bean.User;
-import com.caij.emore.present.WeiboAndUserSearchPresent;
+import com.caij.emore.present.StatusAndUserSearchPresent;
 import com.caij.emore.remote.AttitudeApi;
 import com.caij.emore.remote.StatusApi;
 import com.caij.emore.remote.UserApi;
@@ -24,7 +24,7 @@ import rx.functions.Func2;
 /**
  * Created by Caij on 2016/7/26.
  */
-public class StatusAndUserSearchPresentImp extends AbsListTimeLinePresent<StatusAndUserSearchView> implements WeiboAndUserSearchPresent {
+public class StatusAndUserSearchPresentImp extends AbsListTimeLinePresent<StatusAndUserSearchView> implements StatusAndUserSearchPresent {
 
     public static final int PAGE_COUNT = 20;
 
