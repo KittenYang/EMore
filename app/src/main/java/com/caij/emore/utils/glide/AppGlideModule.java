@@ -24,7 +24,7 @@ import okhttp3.OkHttpClient;
 /**
  * Created by Caij on 15/8/14.
  */
-public class MyGlideModule implements GlideModule {
+public class AppGlideModule implements GlideModule {
 
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {

@@ -25,7 +25,7 @@
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
             tools:node="remove" />
 
-        <meta-data android:name="com.caij.emore.utils.glide.MyGlideModule"
+        <meta-data android:name="com.caij.emore.utils.glide.AppGlideModule"
             android:value="GlideModule"/>
 
         <service android:name=".service.EMoreService"
