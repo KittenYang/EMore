@@ -11,9 +11,6 @@ import android.text.TextUtils;
 
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.api.ex.SchedulerTransformer;
-import com.caij.emore.di.component.ApplicationComponent;
-import com.caij.emore.di.component.DaggerApplicationComponent;
-import com.caij.emore.di.module.ApplicationModule;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.ChannelUtil;
@@ -36,7 +33,6 @@ public class EMApplication extends Application{
 
     private static Application mApplication;
     private int mVisibleActivityCount;
-    private ApplicationComponent mApplicationComponent;
 
     public static Context getInstance() {
         return mApplication;
@@ -59,10 +55,6 @@ public class EMApplication extends Application{
             registerTokenExpiredEvent();
             registerActivityEvent();
         }
-
-       mApplicationComponent = DaggerApplicationComponent.builder()
-                        .applicationModule(new ApplicationModule(this))
-                        .build();
     }
 
     private void initNightMode() {
@@ -155,10 +147,6 @@ public class EMApplication extends Application{
             ActivityStack.getInstance().finishAllActivity();
             Process.killProcess(Process.myPid());
         }
-    }
-
-    public ApplicationComponent getApplicationComponent() {
-        return mApplicationComponent;
     }
 
     private static class ActivityLifecycleCallbacksAdapter implements ActivityLifecycleCallbacks {

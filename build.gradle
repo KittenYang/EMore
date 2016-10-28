@@ -43,7 +43,6 @@ ext {
     crashreportVersion = "2.3.1"
     nativecrashreportVersion = "2.2.0"
     searchviewVersion = "3.4.1"
-    daggerVersion = "2.6"
 }
 
 
