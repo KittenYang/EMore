@@ -48,12 +48,12 @@ public class DraftManagerImp implements DraftManager {
     public long getDraftsCount() {
         DraftDao draftDao = DBManager.getDaoSession().getDraftDao();
         QueryBuilder<Draft> queryBuilder = draftDao.queryBuilder();
-        WhereCondition conditionStauts = queryBuilder.or(DraftDao.Properties.Status.eq(Draft.STATUS_SAVE),
+        WhereCondition conditionStatus = queryBuilder.or(DraftDao.Properties.Status.eq(Draft.STATUS_SAVE),
                 DraftDao.Properties.Status.eq(Draft.STATUS_FAIL));
         long time = System.currentTimeMillis() - FAIL_TIME; //这种表示发送时间太长 可能是杀进程导致 把他归为发送失败。5分钟
         WhereCondition conditionOther = queryBuilder.and(DraftDao.Properties.Status.eq(Draft.STATUS_SENDING),
                 DraftDao.Properties.Create_at.lt(time));
-        return queryBuilder.where(queryBuilder.or(conditionStauts, conditionOther)).count();
+        return queryBuilder.where(queryBuilder.or(conditionStatus, conditionOther)).count();
     }
 
     @Override

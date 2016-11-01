@@ -185,12 +185,11 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
         }
     }
 
-//    public static boolean isImageWidthAndHeightSame(PicUrl picUrl1, PicUrl picUrl2) {
-//        return (picUrl1.getWidth() * 1.0f / picUrl1.getHeight() < MAX_RADIO && picUrl2.getWidth() * 1.0f / picUrl2.getHeight() < MAX_RADIO)
-//                ||(picUrl1.getHeight() * 1.0f / picUrl1.getWidth() < MAX_RADIO && picUrl2.getHeight() * 1.0f / picUrl2.getWidth() < MAX_RADIO)
-//                ||(picUrl1.getHeight() * 1.0f / picUrl1.getWidth() == MAX_RADIO && picUrl2.getHeight() * 1.0f / picUrl2.getWidth() == MAX_RADIO)
-//                || ((picUrl1.getWidth() <= 0 || picUrl1.getHeight() <=0) && (picUrl2.getWidth() <= 0 || picUrl2.getHeight() <=0));
-//    }
+    public static boolean isImageWidthAndHeightSame(StatusImageInfo picUrl1, StatusImageInfo picUrl2) {
+        return (picUrl1.getBmiddle().getWidth() * 1.0f / picUrl1.getBmiddle().getHeight() < MAX_RADIO && picUrl2.getBmiddle().getWidth() * 1.0f / picUrl2.getBmiddle().getHeight() < MAX_RADIO)
+                ||(picUrl1.getBmiddle().getHeight() * 1.0f / picUrl1.getBmiddle().getWidth() < MAX_RADIO && picUrl2.getBmiddle().getHeight() * 1.0f / picUrl2.getBmiddle().getWidth() < MAX_RADIO)
+                || ((picUrl1.getBmiddle().getWidth() <= 0 || picUrl1.getBmiddle().getHeight() <=0) && (picUrl2.getBmiddle().getWidth() <= 0 || picUrl2.getBmiddle().getHeight() <=0));
+    }
 
     @Override
     public void run() {
@@ -284,8 +283,8 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
             boolean isNeedRequestLayout = false;
             if (mImageInfoLinkedHashMap != null
                     && mImageInfoLinkedHashMap.size() == imageInfoLinkedHashMap.size()
-                    && mImageInfoLinkedHashMap.size() == 1) {
-//                    && !isImageWidthAndHeightSame(mImageInfoLinkedHashMap.get(0), imageInfoLinkedHashMap.get(0))) { //这个时候图片长度一样
+                    && mImageInfoLinkedHashMap.size() == 1
+                    && !isImageWidthAndHeightSame(mImageInfoLinkedHashMap.get(mPicIds.get(0)), imageInfoLinkedHashMap.get(pic_ids.get(0)))) { //这个时候图片长度一样
                 isNeedRequestLayout = true;
             }
 

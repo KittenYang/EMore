@@ -20,7 +20,6 @@ import com.caij.emore.utils.rxbus.RxBus;
 public class NotificationSettingsFragment extends PreferenceFragment
 		implements OnPreferenceClickListener, OnPreferenceChangeListener,OnCheckedChangeListener {
 
-    private CheckBoxPreference pNotificationEnable;// 开启通知提醒
 	private ListPreference pInterval;// 消息间隔
 	private CheckBoxPreference pNightClose;// 夜间勿扰
 	private CheckBoxPreference pStatusMention;// 提及微博
@@ -43,7 +42,7 @@ public class NotificationSettingsFragment extends PreferenceFragment
 		
 		setHasOptionsMenu(false);
 
-        pNotificationEnable = (CheckBoxPreference) findPreference(getString(R.string.key_notification_enable));
+		CheckBoxPreference pNotificationEnable = (CheckBoxPreference) findPreference(getString(R.string.key_notification_enable));
         pNotificationEnable.setOnPreferenceChangeListener(this);
 
 		pInterval = (ListPreference) findPreference(getString(R.string.key_message_interval));

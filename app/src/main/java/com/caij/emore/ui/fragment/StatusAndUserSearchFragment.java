@@ -31,7 +31,6 @@ public class StatusAndUserSearchFragment extends TimeLineStatusFragment<StatusAn
 
     private LinearLayout mUserlinearLayout;
     private ImageLoader.ImageConfig mUserImageConfig;
-    private View mHeadUserView;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -48,12 +47,12 @@ public class StatusAndUserSearchFragment extends TimeLineStatusFragment<StatusAn
     }
 
     private View createHeadUserView() {
-        mHeadUserView = getActivity().getLayoutInflater().inflate(R.layout.item_search_head, xRecyclerView, false);
-        mUserlinearLayout = (LinearLayout) mHeadUserView.findViewById(R.id.ll_user);
+        View headUserView = getActivity().getLayoutInflater().inflate(R.layout.item_search_head, xRecyclerView, false);
+        mUserlinearLayout = (LinearLayout) headUserView.findViewById(R.id.ll_user);
         mUserImageConfig = new ImageLoader.ImageConfigBuild().setCircle(true)
                 .setScaleType(ImageLoader.ScaleType.CENTER_CROP)
                 .build();
-        return mHeadUserView;
+        return headUserView;
     }
 
     @Override

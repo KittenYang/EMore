@@ -20,7 +20,7 @@ import retrofit2.Converter;
 
 final class RequestBodyConverter<T> implements Converter<T, RequestBody> {
     private static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=UTF-8");
-//    private static final MediaType MEDIA_TYPE_STRING = MediaType.parse("application/json; charset=UTF-8");
+    private static final MediaType MEDIA_TYPE_STRING = MediaType.parse("text/plain; charset=UTF-8");
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     private final Gson gson;
@@ -33,7 +33,7 @@ final class RequestBodyConverter<T> implements Converter<T, RequestBody> {
 
     @Override public RequestBody convert(T value) throws IOException {
         if (value instanceof String || value instanceof Long || value instanceof Integer) {
-            return RequestBody.create(null, String.valueOf(value));
+            return RequestBody.create(MEDIA_TYPE_STRING, String.valueOf(value));
         }else {
             Buffer buffer = new Buffer();
             Writer writer = new OutputStreamWriter(buffer.outputStream(), UTF_8);

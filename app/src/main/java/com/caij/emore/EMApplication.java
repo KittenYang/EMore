@@ -9,11 +9,13 @@ import android.os.Process;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 
+import com.bumptech.glide.Glide;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.utils.ChannelUtil;
+import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -145,7 +147,24 @@ public class EMApplication extends Application{
         }else {
             //关闭所有的Activity
             ActivityStack.getInstance().finishAllActivity();
+            Init.getInstance().stop(this);
             Process.killProcess(Process.myPid());
+        }
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        if (SystemUtil.isMainProcess(this)) {
+            ImageLoader.onTrimMemory(this, level);
+        }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (SystemUtil.isMainProcess(this)) {
+            ImageLoader.onLowMemory(this);
         }
     }
 

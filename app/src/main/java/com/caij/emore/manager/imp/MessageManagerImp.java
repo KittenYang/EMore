@@ -76,10 +76,10 @@ public class MessageManagerImp implements MessageManager {
         }
 
         User sender = mUserDao.load(message.getSender_id());
-        User recipien = mUserDao.load(message.getRecipient_id());
+        User recipient = mUserDao.load(message.getRecipient_id());
 
         message.setSender(sender);
-        message.setRecipient(recipien);
+        message.setRecipient(recipient);
 
 //                        Geo geo = mGeoDao.load(String.valueOf(message.getId()));
 //                        message.setGeo(geo);

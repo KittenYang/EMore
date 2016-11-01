@@ -1,6 +1,7 @@
 package com.caij.emore.utils;
 
 import android.graphics.Bitmap;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.util.LruCache;
 import android.util.SparseIntArray;
 
@@ -21,7 +22,7 @@ public class EmotionsUtil {
     public static String VIDEO_CARD_IMAGE_KEY  = "[查看视频]";
 
     private static ArrayList<Emotion> imageEmotionList = new ArrayList<>();
-    private static Map<String, Integer> imageEmotionMap = new HashMap<>();
+    private static Map<String, Integer> imageEmotionMap = new ArrayMap<>();
 
     private static SparseIntArray softEmotionMap = new SparseIntArray();
     private static ArrayList<Emotion> softEmotionList = new ArrayList<>(80);

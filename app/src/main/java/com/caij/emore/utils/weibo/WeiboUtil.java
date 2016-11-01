@@ -18,8 +18,6 @@ import java.util.Map;
  */
 public class WeiboUtil {
 
-    private static Map<String, Drawable> ransitionBitmaps = new HashMap<>(9);
-
     public static void setImageVerified(ImageView imgVerified, User user) {
 //        -1普通用户;
 //        0名人,

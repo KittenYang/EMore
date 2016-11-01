@@ -365,4 +365,13 @@ public class ImageLoader {
         return (File) createRequest(context, url).downloadOnly(width, height).get();
     }
 
+
+    public static void onTrimMemory(Context context, int level) {
+        Glide.get(context).trimMemory(level);
+    }
+
+    public static void onLowMemory(Context context) {
+        Glide.get(context).clearMemory();
+    }
+
 }
