@@ -1,13 +1,11 @@
 package com.caij.emore.widget.emotion;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.text.Spannable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import com.caij.emore.api.ex.SchedulerTransformer;
-import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.SpannableStringUtil;
 import com.caij.emore.utils.rxjava.RxUtil;
 import com.caij.emore.utils.rxjava.SubscriberAdapter;
@@ -36,7 +34,7 @@ public class EmotionTextView extends FixClickableSpanBugTextView {
             RxUtil.createDataObservable(new RxUtil.Provider<Spannable>() {
                     @Override
                     public Spannable getData() throws Exception {
-                        return SpannableStringUtil.paraeSpannable(text.toString());
+                        return SpannableStringUtil.formatSpannable(text.toString());
                     }
                 })
                 .compose(SchedulerTransformer.<Spannable>create())

@@ -24,14 +24,4 @@ public class ExecutorServicePool {
         }
     });
 
-    public static final java.util.concurrent.ExecutorService DOWN_SERVICE = new ThreadPoolExecutor(0, 4, 60, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
-                @Override
-                public Thread newThread(Runnable r) {
-                    Thread thread = new Thread(r);
-                    thread.setPriority( Process.THREAD_PRIORITY_BACKGROUND);
-                    return thread;
-                }
-             });
-
 }

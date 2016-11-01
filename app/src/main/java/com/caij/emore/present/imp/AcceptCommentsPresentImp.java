@@ -33,7 +33,7 @@ public class AcceptCommentsPresentImp extends AbsBasePresent implements RefreshL
     private RefreshListView<Comment> mMentionView;
     private List<Comment> mComments;
 
-    NotifyManager mNotifyManager;
+    private NotifyManager mNotifyManager;
     private CommentApi mCommentApi;
     private NotifyApi mNotifyApi;
 

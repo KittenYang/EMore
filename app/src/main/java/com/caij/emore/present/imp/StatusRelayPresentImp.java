@@ -72,7 +72,7 @@ public class StatusRelayPresentImp extends AbsBasePresent implements StatusRelay
         if (EventTag.EVENT_REPOST_WEIBO_SUCCESS.equals(event.type)) {
             RelayStatusEvent relayStatusEvent = (RelayStatusEvent) event;
             if (mStatusId == relayStatusEvent.weiboId) {
-                SpannableStringUtil.paraeSpannable(relayStatusEvent.weibo);
+                SpannableStringUtil.formatSpannable(relayStatusEvent.weibo);
                 mStatus.add(0, relayStatusEvent.weibo);
                 mStatusRelayView.onRelayStatusSuccess(mStatus);
             }

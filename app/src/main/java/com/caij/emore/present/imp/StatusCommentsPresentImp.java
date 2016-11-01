@@ -68,7 +68,7 @@ public class StatusCommentsPresentImp extends AbsBasePresent implements StatusCo
         if (EventTag.EVENT_COMMENT_WEIBO_SUCCESS.equals(event.type)) {
             CommentEvent commentEvent = (CommentEvent) event;
             if (commentEvent.statusId == mStatusId) {
-                SpannableStringUtil.paraeSpannable(commentEvent.comment);
+                SpannableStringUtil.formatSpannable(commentEvent.comment);
                 mComments.add(0, commentEvent.comment);
                 mStatusCommentsView.onCommentSuccess(mComments);
             }
@@ -155,7 +155,7 @@ public class StatusCommentsPresentImp extends AbsBasePresent implements StatusCo
                     @Override
                     public void call(List<Comment> comments) {
                         for (Comment comment : comments) {
-                            SpannableStringUtil.paraeSpannable(comment);
+                            SpannableStringUtil.formatSpannable(comment);
                         }
                     }
                 })

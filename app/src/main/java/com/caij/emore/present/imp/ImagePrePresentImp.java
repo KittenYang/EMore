@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.bumptech.glide.request.target.Target;
 import com.caij.emore.EMApplication;
@@ -26,7 +28,9 @@ import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import java.io.File;
 
+import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action0;
 
 /**
  * Created by Caij on 2016/7/27.
@@ -41,12 +45,20 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
     private String mShowImagePath;
     private ImageInfo mShowImageInfo;
 
+
+
     public ImagePrePresentImp(Context context, ImageInfo imageInfo, ImageInfo hdImageInfo, ImagePreView imagePreView) {
         mContent = context;
         mImagePreView = imagePreView;
         mImageInfo = imageInfo;
         mHdImageInfo = hdImageInfo;
     }
+
+    @Override
+    public void onCreate() {
+
+    }
+
 
     @Override
     public void loadImage() {
@@ -156,32 +168,42 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
         String fileName = MD5Util.string2MD5(mHdImageInfo.getUrl());
         File file = new File(CacheUtils.getCacheHdImageDir(EMApplication.getInstance()), fileName);
         mImagePreView.showProgress(true);
-        DownLoadUtil.down(mHdImageInfo.getUrl(), file.getAbsolutePath(), new DownLoadUtil.Callback() {
-            @Override
-            public void onSuccess(File file) {
-                mShowImageInfo = mHdImageInfo;
-                if (mImagePreView != null) {
-                    showFile(file, mHdImageInfo);
+        Subscription subscription = DownLoadUtil.down(mHdImageInfo.getUrl(), file.getAbsolutePath(), new DownLoadUtil.ProgressListener() {
+
+                @Override
+                public void onProgress(final long total, final long progress) {
+                    LogUtil.d(ImagePrePresentImp.this.toString(), "total %s progress %s", total, progress);
+                    if (mImagePreView != null) {
+                        mImagePreView.showProgress(total, progress);
+                    }
+                }
+            })
+            .compose(SchedulerTransformer.<File>create())
+            .doOnTerminate(new Action0() {
+                @Override
+                public void call() {
                     mImagePreView.showProgress(false);
                 }
-            }
+            })
+            .subscribe(new SubscriberAdapter<File>() {
 
-            @Override
-            public void onProgress(long total, long progress) {
-                LogUtil.d(ImagePrePresentImp.this.toString(), "total %s progress %s", total, progress);
-                if (mImagePreView != null) {
-                    mImagePreView.showProgress(total, progress);
+                @Override
+                public void onError(Throwable e) {
+                    if (mImagePreView != null) {
+                        mImagePreView.onDefaultLoadError();
+                    }
                 }
-            }
 
-            @Override
-            public void onError(Exception e) {
-                if (mImagePreView != null) {
-                    mImagePreView.onDefaultLoadError();
-                    mImagePreView.showProgress(false);
+                @Override
+                public void onNext(File file) {
+                    mShowImageInfo = mHdImageInfo;
+                    if (mImagePreView != null) {
+                        showFile(file, mHdImageInfo);
+
+                    }
                 }
-            }
-        });
+            });
+        addSubscription(subscription);
     }
 
     private void onGetFileError() {
@@ -218,19 +240,19 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
     }
 
     private void saveImage(final File source) {
-        final File target = new File(CacheUtils.getImageSaveDir(), ImageUtil.createImageName(mImageInfo.getImageType().getValue()));
-        Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<Object>() {
+        Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<File>() {
                 @Override
-                public Object getData() throws Exception {
+                public File getData() throws Exception {
+                    final File target = new File(CacheUtils.getImageSaveDir(), ImageUtil.createImageName(mImageInfo.getImageType().getValue()));
                     FileUtil.copy(source, target);
-                    return null;
+                    return target;
                 }
-            }).compose(SchedulerTransformer.create())
-            .subscribe(new SubscriberAdapter<Object>() {
+            }).compose(SchedulerTransformer.<File>create())
+            .subscribe(new SubscriberAdapter<File>() {
                 @Override
-                public void onNext(Object o) {
-                    mImagePreView.showHint("图片已保存:" + target.getAbsolutePath());
-                    SystemUtil.notifyScanFile(mContent, target.getAbsolutePath());
+                public void onNext(File o) {
+                    mImagePreView.showHint("图片已保存:" + o.getAbsolutePath());
+                    SystemUtil.notifyScanFile(mContent, o.getAbsolutePath());
                 }
 
                 @Override
@@ -243,13 +265,9 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
     }
 
     @Override
-    public void onCreate() {
-
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         mImagePreView = null;
     }
+
 }

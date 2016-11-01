@@ -3,6 +3,7 @@ package com.caij.emore.widget.span;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcel;
 import android.provider.Browser;
 import android.text.ParcelableSpan;
 import android.text.TextPaint;
@@ -30,12 +31,17 @@ public class MyURLSpan extends URLSpan implements ParcelableSpan {
         super(url);
     }
 
-    public void onClick(View widget) {
-        Context context = widget.getContext();
-        toDetaiPage(context, widget);
+    public MyURLSpan(Parcel in) {
+        super(in);
+        urlBean = (ShortUrl) in.readSerializable();
     }
 
-    private void toDetaiPage(Context context, View widget){
+    public void onClick(View widget) {
+        Context context = widget.getContext();
+        toDetailPage(context, widget);
+    }
+
+    private void toDetailPage(Context context, View widget){
         if (urlBean != null) {
             switch (urlBean.getObj_type()) {
                 case ShortUrl.TYPE_WEB:
@@ -62,8 +68,8 @@ public class MyURLSpan extends URLSpan implements ParcelableSpan {
             //这里有两种情况 一种是网页 一种是全文
             if (getURL().startsWith(SpannableStringUtil.FULL_TEXT_SCHEME)) {
                 if (widget.getTag() instanceof Status) {
-                    Status weibo = (Status) widget.getTag();
-                    Intent intent = StatusDetailActivity.newIntent(context, weibo.getId());
+                    Status status = (Status) widget.getTag();
+                    Intent intent = StatusDetailActivity.newIntent(context, status.getId());
                     context.startActivity(intent);
                 }
             }else {
@@ -104,4 +110,17 @@ public class MyURLSpan extends URLSpan implements ParcelableSpan {
     public void setUrlBean(ShortUrl urlBean) {
         this.urlBean = urlBean;
     }
+
+    public static final Creator<MyURLSpan> CREATOR = new Creator<MyURLSpan>() {
+        @Override
+        public MyURLSpan createFromParcel(Parcel in) {
+            return new MyURLSpan(in);
+        }
+
+        @Override
+        public MyURLSpan[] newArray(int size) {
+            return new MyURLSpan[size];
+        }
+    };
+
 }

@@ -47,14 +47,14 @@ public class EmotionEditText extends EditText{
             public void onTextChanged(CharSequence s, int start, int before, final int count) {
 //                LogUtil.d("onTextChanged", "onTextChanged %s %s", getSelectionStart(), getSelectionEnd());
 //                removeTextChangedListener(this);
-//                Spannable spannable = SpannableStringUtil.paraeSpannable(s.toString());
+//                Spannable spannable = SpannableStringUtil.formatSpannable(s.toString());
 //                setText(spannable);
 //                addTextChangedListener(this);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                SpannableStringUtil.paraeSpannable(s);
+                SpannableStringUtil.formatSpannable(s);
             }
         };
         addTextChangedListener(textWatcher);

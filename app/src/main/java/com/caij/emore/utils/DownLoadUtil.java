@@ -1,8 +1,7 @@
 package com.caij.emore.utils;
 
-import android.os.AsyncTask;
-
-import com.caij.emore.utils.rxjava.RxUtil;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,6 +13,8 @@ import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
+import rx.Observable;
+import rx.Subscriber;
 
 /**
  * Created by Caij on 2016/10/20.
@@ -23,20 +24,22 @@ public class DownLoadUtil {
 
     private static final long INTERVAL_PROGRESS_TIME  = 500;
 
-    private static OkHttpClient okHttpClient = new OkHttpClient.Builder()
-            .readTimeout(3000, TimeUnit.MILLISECONDS)
-            .writeTimeout(3000, TimeUnit.MILLISECONDS).build();
+    private static final int BUF_LONG  = 4096;
 
-    public static interface Callback {
-        void onSuccess(File file);
+    private static OkHttpClient okHttpClient = new OkHttpClient.Builder()
+            .readTimeout(3, TimeUnit.SECONDS)
+            .writeTimeout(3, TimeUnit.SECONDS).build();
+
+    private static Handler mMainHandler = new Handler(Looper.getMainLooper());
+
+    public static interface ProgressListener {
         void onProgress(long total, long progress);
-        void onError(Exception e);
     }
 
-    public static void down(final String url, final String filePath, final Callback callback) {
-        new AsyncTask<Object, Long, Object>() {
+    public static Observable<File> down(final String url, final String filePath, final ProgressListener progressListener) {
+        return Observable.create(new Observable.OnSubscribe<File>() {
             @Override
-            protected Object doInBackground(Object... params) {
+            public void call(Subscriber<? super File> subscriber) {
                 Request.Builder okHttpRequestBuilder = new Request.Builder();
                 okHttpRequestBuilder.url(url);
                 Request okHttpRequest = okHttpRequestBuilder.build();
@@ -44,45 +47,43 @@ public class DownLoadUtil {
                 File file = new File(filePath);
                 try {
                     if (!file.getParentFile().exists()) {
-                        file.getParentFile().mkdirs();
+                        if (!file.getParentFile().mkdirs()) {
+                            throw new IOException();
+                        }
                     }
                     ResponseBody responseBody = okHttpCall.execute().body();
                     FileOutputStream fileOutputStream = new FileOutputStream(file);
                     InputStream inputStream = responseBody.byteStream();
-                    byte[] buf = new byte[4096];
-                    int length;
+                    byte[] buf = new byte[BUF_LONG];
+                    int readLength;
                     long writeTotalLength = 0;
-                    publishProgress(responseBody.contentLength(), 0L);
-                    long preTime = System.currentTimeMillis();
-                    while ((length = inputStream.read(buf)) != -1) {
-                        fileOutputStream.write(buf, 0, length);
-                        writeTotalLength += length;
+                    long preTime = 0;
+
+                    while ((readLength = inputStream.read(buf)) != -1) {
+                        fileOutputStream.write(buf, 0, readLength);
+                        writeTotalLength += readLength;
                         if (System.currentTimeMillis() - preTime > INTERVAL_PROGRESS_TIME) {
-                            publishProgress(responseBody.contentLength(), writeTotalLength);
+                            postProgress(responseBody.contentLength(), writeTotalLength, progressListener);
                             preTime = System.currentTimeMillis();
                         }
                     }
-                    return file;
-                } catch (IOException e) {
+                    subscriber.onNext(file);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
                     file.deleteOnExit();
-                    return e;
+                    subscriber.onError(e);
                 }
             }
+        });
+    }
 
-            @Override
-            protected void onProgressUpdate(Long... values) {
-                callback.onProgress(values[0], values[1]);
-            }
 
+    private static void postProgress(final long total, final long progress, final ProgressListener progressListener) {
+        mMainHandler.post(new Runnable() {
             @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
-                if (o instanceof Exception) {
-                    callback.onError((Exception) o);
-                }else {
-                    callback.onSuccess((File) o);
-                }
+            public void run() {
+                progressListener.onProgress(total, progress);
             }
-        }.execute(ExecutorServicePool.DOWN_SERVICE);
+        });
     }
 }

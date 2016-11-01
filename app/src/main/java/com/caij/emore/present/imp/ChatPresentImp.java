@@ -2,7 +2,6 @@ package com.caij.emore.present.imp;
 
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import com.caij.emore.EMApplication;
 import com.caij.emore.EventTag;
@@ -22,7 +21,6 @@ import com.caij.emore.present.ChatPresent;
 import com.caij.emore.remote.MessageApi;
 import com.caij.emore.ui.view.DirectMessageView;
 import com.caij.emore.utils.DensityUtil;
-import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.SpannableStringUtil;
@@ -374,7 +372,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
             @Override
             public void call(DirectMessage message) {
                 mMessageManager.saveMessage(message);
-                message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
+                message.setTextContentSpannable(SpannableStringUtil.formatSpannable(message));
             }
         })
         .compose(SchedulerTransformer.<DirectMessage>create())
@@ -410,7 +408,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
             @Override
             public void call(DirectMessage message) {
                 mMessageManager.saveMessage(message);
-                message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
+                message.setTextContentSpannable(SpannableStringUtil.formatSpannable(message));
             }
         })
         .compose(SchedulerTransformer.<DirectMessage>create())
@@ -526,7 +524,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
             return directMessageObservable.doOnNext(new Action1<DirectMessage>() {
                 @Override
                 public void call(DirectMessage message) {
-                    message.setTextContentSpannable(SpannableStringUtil.paraeSpannable(message));
+                    message.setTextContentSpannable(SpannableStringUtil.formatSpannable(message));
 
                     if (message.getAttachinfo() != null && message.getAttachinfo().size() > 0) {
                         ImageInfo imageInfo = praseLocakImage(message.getAttachinfo().get(0));

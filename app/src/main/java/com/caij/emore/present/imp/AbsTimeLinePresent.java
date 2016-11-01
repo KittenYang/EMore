@@ -342,7 +342,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
             return statusObservable.doOnNext(new Action1<Status>() {
                 @Override
                 public void call(Status status) {
-                    SpannableStringUtil.paraeSpannable(status, isLongText);
+                    SpannableStringUtil.formatSpannable(status, isLongText);
                 }
             });
         }

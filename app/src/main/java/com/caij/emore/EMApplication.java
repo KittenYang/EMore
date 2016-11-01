@@ -70,27 +70,27 @@ public class EMApplication extends Application{
 
     private void initCrashReport(){
         RxUtil.createDataObservable(new RxUtil.Provider<String>() {
-            @Override
-            public String getData() throws Exception {
-                return ChannelUtil.getChannel(getApplicationContext());
-            }
-        }).filter(new Func1<String, Boolean>() {
-            @Override
-            public Boolean call(String s) {
-                return !BuildConfig.DEBUG;
-            }
-        })
-                .compose(SchedulerTransformer.<String>create())
-                .subscribe(new SubscriberAdapter<String>() {
-                    @Override
-                    public void onNext(String channel) {
-                        if (TextUtils.isEmpty(channel)) channel = "default";
+                @Override
+                public String getData() throws Exception {
+                    return ChannelUtil.getChannel(getApplicationContext());
+                }
+            }).filter(new Func1<String, Boolean>() {
+                @Override
+                public Boolean call(String s) {
+                    return !BuildConfig.DEBUG;
+                }
+            })
+            .compose(SchedulerTransformer.<String>create())
+            .subscribe(new SubscriberAdapter<String>() {
+                @Override
+                public void onNext(String channel) {
+                    if (TextUtils.isEmpty(channel)) channel = "default";
 
-                        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
-                        strategy.setAppChannel(channel);
-                        CrashReport.initCrashReport(getApplicationContext(), Key.BUGLY_KEY, false, strategy);
-                    }
-                });
+                    CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
+                    strategy.setAppChannel(channel);
+                    CrashReport.initCrashReport(getApplicationContext(), Key.BUGLY_KEY, false, strategy);
+                }
+            });
     }
 
     private void registerActivityEvent() {
