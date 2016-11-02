@@ -98,7 +98,7 @@ public class StatusMentionPresentImp extends AbsListTimeLinePresent<TimeLineStat
     }
 
     private Observable<List<Status>> createObservable(long maxId, final boolean isRefresh) {
-        return mStatusApi.getWeiboMentions(0, maxId, COUNT, 1)
+        return mStatusApi.getStatusMentions(0, maxId, COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryStatusResponse>())
                 .flatMap(new Func1<QueryStatusResponse, Observable<Status>>() {
                     @Override

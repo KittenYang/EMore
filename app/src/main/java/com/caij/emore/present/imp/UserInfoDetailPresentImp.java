@@ -7,7 +7,6 @@ import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
 import com.caij.emore.remote.UserApi;
 import com.caij.emore.ui.view.DetailUserView;
-import com.caij.emore.api.ex.DefaultTransformer;
 import com.caij.emore.api.ex.ErrorCheckerTransformer;
 import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.utils.rxjava.RxUtil;
@@ -81,7 +80,7 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
 
     @Override
     public void unFollow() {
-        Subscription subscription = mUserApi.unfollowUser(mName, mUser.getId())
+        Subscription subscription = mUserApi.unFollowUser(mName, mUser.getId())
                 .compose(new ErrorCheckerTransformer<User>())
                 .doOnNext(new Action1<User>() {
                     @Override
@@ -124,7 +123,7 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
                 return mUserManager.getUserByName(mName);
             }
         });
-        Observable<User> serverObservable = mUserApi.getWeiboUserByName(mName)
+        Observable<User> serverObservable = mUserApi.getUserByName(mName)
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User user) {
@@ -176,7 +175,7 @@ public class UserInfoDetailPresentImp extends AbsBasePresent implements UserInfo
 
     @Override
     public void onRefresh() {
-        Subscription subscription = mUserApi.getWeiboUserByName(mName)
+        Subscription subscription = mUserApi.getUserByName(mName)
                 .compose(ErrorCheckerTransformer.<User>create())
                 .doOnNext(new Action1<User>() {
                     @Override

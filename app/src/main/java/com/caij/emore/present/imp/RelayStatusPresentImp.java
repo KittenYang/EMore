@@ -29,7 +29,7 @@ public class RelayStatusPresentImp extends AbsBasePresent implements RepostWeibo
 
     @Override
     public void relayStatus(String status) {
-        Subscription subscription = mStatusApi.repostWeibo(status, mStatusId)
+        Subscription subscription = mStatusApi.relayStatus(status, mStatusId)
                 .compose(new DefaultTransformer<Status>())
                 .subscribe(new ResponseSubscriber<Status>(mRelayStatusView) {
 

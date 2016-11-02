@@ -11,9 +11,9 @@ import rx.Observable;
 
 public interface CommentApi {
 
-    public Observable<QueryStatusCommentResponse> getCommentsByWeibo(long id, long since_id, long max_id, int count, int page);
+    public Observable<QueryStatusCommentResponse> getCommentsByStatusId(long id, long since_id, long max_id, int count, int page);
 
-    public Observable<Comment> commentToWeibo(String comment, long weiboId);
+    public Observable<Comment> commentToStatus(String comment, long weiboId);
 
     public Observable<Comment> deleteComment(long cid);
 

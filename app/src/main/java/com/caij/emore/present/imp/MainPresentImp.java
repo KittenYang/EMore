@@ -9,7 +9,6 @@ import com.caij.emore.database.bean.Draft;
 import com.caij.emore.database.bean.UnReadMessage;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.MainPresent;
-import com.caij.emore.remote.NotifyApi;
 import com.caij.emore.remote.UserApi;
 import com.caij.emore.ui.view.MainView;
 import com.caij.emore.utils.rxbus.RxBus;
@@ -83,7 +82,7 @@ public class MainPresentImp extends AbsBasePresent implements MainPresent {
 
     @Override
     public void getUserInfoByUid() {
-        Observable<User> serverObservable = mUserApi.getWeiboUserByUid(mUid)
+        Observable<User> serverObservable = mUserApi.getUserByUid(mUid)
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User user) {

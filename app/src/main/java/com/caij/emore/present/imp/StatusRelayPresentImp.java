@@ -132,7 +132,7 @@ public class StatusRelayPresentImp extends AbsBasePresent implements StatusRelay
     }
 
     private  Observable<List<Status>> createObservable(long maxId) {
-        return mStatusApi.getRepostWeibos(mStatusId, 0, maxId, PAGE_COUNT, 1)
+        return mStatusApi.getRelayStatus(mStatusId, 0, maxId, PAGE_COUNT, 1)
                 .compose(new ErrorCheckerTransformer<QueryRelayStatusResponse>())
                 .flatMap(new Func1<QueryRelayStatusResponse, Observable<Status>>() {
                     @Override

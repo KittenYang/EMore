@@ -18,7 +18,7 @@ public class ArticleApiImp implements ArticleApi {
     }
 
     @Override
-    public Observable<Article> getArticleInfo(String accessToken, String containerid) {
-        return mWeiCoService.getInfoPageContent(containerid);
+    public Observable<Article> getArticleInfo(String accessToken, String containerId) {
+        return mWeiCoService.getInfoPageContent(containerId);
     }
 }

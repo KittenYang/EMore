@@ -22,17 +22,17 @@ public class AttitudeApiImp implements AttitudeApi {
     }
 
     @Override
-    public Observable<Attitude> attitudesToWeibo(String attitude, long weiboId) {
-        return mWeiCoService.attitudesWeibo(attitude, weiboId);
+    public Observable<Attitude> attitudesToStatus(String attitude, long statusId) {
+        return mWeiCoService.attitudesWeibo(attitude, statusId);
     }
 
     @Override
-    public Observable<Response> destoryAttitudesWeibo(String attitude, long weiboId) {
-        return mWeiCoService.destoryAttitudesWeibo(attitude, weiboId);
+    public Observable<Response> destroyAttitudesStatus(String attitude, long statusId) {
+        return mWeiCoService.destoryAttitudesWeibo(attitude, statusId);
     }
 
     @Override
-    public Observable<StatusAttitudesResponse> getWeiboAttiyudes(long id, int page, int count) {
+    public Observable<StatusAttitudesResponse> getStatusAttitudes(long id, int page, int count) {
         return mWeiCoService.getWeiboAttitudes(id, page, count);
     }
 

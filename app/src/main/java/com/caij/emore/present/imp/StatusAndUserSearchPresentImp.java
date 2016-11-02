@@ -124,7 +124,7 @@ public class StatusAndUserSearchPresentImp extends AbsListTimeLinePresent<Status
     }
 
     private Observable<List<Status>> createObservable(int page, final boolean isRefresh) {
-        return mStatusApi.getSearchWeibo(mKey, page, PAGE_COUNT)
+        return mStatusApi.getSearchStatus(mKey, page, PAGE_COUNT)
                 .compose(new ErrorCheckerTransformer<QueryStatusResponse>())
                 .flatMap(new Func1<QueryStatusResponse, Observable<Status>>() {
                     @Override

@@ -92,7 +92,7 @@ public class HotStatusPresentImp extends AbsListTimeLinePresent<TimeLineStatusVi
 //                        for (long id : weiboIds.getIds()) {
 //                            sb.append(id).append(",");
 //                        }
-//                        return mServerWeiboSource.getWeibosByIds(token, sb.toString());
+//                        return mServerWeiboSource.getStatusByIds(token, sb.toString());
 //                    }
 //                })
 //                .compose(new ErrorCheckerTransformer<QueryStatusResponse>())

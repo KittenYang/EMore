@@ -45,7 +45,7 @@ public class StatusDetailPresentImp extends AbsTimeLinePresent<StatusDetailView>
             }
         });
 
-        Observable<Status> serverObservable = mStatusApi.getWeiboById(1, mStatusId)
+        Observable<Status> serverObservable = mStatusApi.getStatusById(1, mStatusId)
                 .compose(ErrorCheckerTransformer.<Status>create())
                 .doOnNext(new Action1<Status>() {
                     @Override
@@ -92,7 +92,7 @@ public class StatusDetailPresentImp extends AbsTimeLinePresent<StatusDetailView>
         StatusRefreshEvent event = new StatusRefreshEvent(EventTag.EVENT_STATUS_REFRESH, mStatusId);
         RxBus.getDefault().post(event.type, event);
 
-        Subscription subscription = mStatusApi.getWeiboById(1, mStatusId)
+        Subscription subscription = mStatusApi.getStatusById(1, mStatusId)
                 .compose(ErrorCheckerTransformer.<Status>create())
                 .doOnNext(new Action1<Status>() {
                     @Override

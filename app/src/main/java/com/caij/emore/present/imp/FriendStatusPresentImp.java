@@ -236,7 +236,7 @@ public class FriendStatusPresentImp extends AbsListTimeLinePresent<FriendStatusV
     }
 
     private Observable<List<Status>> getFriendStatusesObservable(long maxId, final boolean isRefresh) {
-        return mStatusApi.getFriendWeibo(mUid, 0, maxId, PAGE_COUNT, 1)
+        return mStatusApi.getFriendStatus(mUid, 0, maxId, PAGE_COUNT, 1)
                 .compose(ErrorCheckerTransformer.<QueryStatusResponse>create())
                 .flatMap(new Func1<QueryStatusResponse, Observable<Status>>() {
                     @Override

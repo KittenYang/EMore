@@ -16,19 +16,19 @@ import java.lang.reflect.Field;
 /**
  * Created by Caij on 2016/6/15.
  */
-public class WeiboDetailTabLayout extends TabLayout{
+public class StatusDetailTabLayout extends TabLayout{
 
     private int mTabsCount;
 
-    public WeiboDetailTabLayout(Context context) {
+    public StatusDetailTabLayout(Context context) {
         super(context);
     }
 
-    public WeiboDetailTabLayout(Context context, AttributeSet attrs) {
+    public StatusDetailTabLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WeiboDetailTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StatusDetailTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -75,9 +75,7 @@ public class WeiboDetailTabLayout extends TabLayout{
                     }
 
                 });
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

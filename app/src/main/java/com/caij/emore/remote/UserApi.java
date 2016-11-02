@@ -16,13 +16,13 @@ import rx.functions.Func1;
 
 public interface UserApi {
 
-    public Observable<User> getWeiboUserByName(String name);
+    public Observable<User> getUserByName(String name);
 
-    public Observable<User> getWeiboUserByUid(long uid);
+    public Observable<User> getUserByUid(long uid);
 
     public Observable<User> followUser(String screen_name, long uid);
 
-    public Observable<User> unfollowUser(String screen_name, long uid);
+    public Observable<User> unFollowUser(String screen_name, long uid);
 
     public Observable<FriendshipResponse> getFriends(long uid, int count, int trim_status, long cursor);
 

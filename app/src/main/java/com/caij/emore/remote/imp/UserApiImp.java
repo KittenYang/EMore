@@ -21,12 +21,12 @@ public class UserApiImp implements UserApi {
     }
 
     @Override
-    public Observable<User> getWeiboUserByName(String name) {
+    public Observable<User> getUserByName(String name) {
         return mWeiCoService.getWeiBoUserInfoByName(name);
     }
 
     @Override
-    public Observable<User> getWeiboUserByUid(long uid) {
+    public Observable<User> getUserByUid(long uid) {
         return mWeiCoService.getWeiBoUserInfoByUid(uid);
     }
 
@@ -36,7 +36,7 @@ public class UserApiImp implements UserApi {
     }
 
     @Override
-    public Observable<User> unfollowUser(String screen_name, long uid) {
+    public Observable<User> unFollowUser(String screen_name, long uid) {
         return mWeiCoService.unfollowUser(screen_name, uid);
     }
 

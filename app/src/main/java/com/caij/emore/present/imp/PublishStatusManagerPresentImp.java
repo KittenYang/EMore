@@ -1,7 +1,6 @@
 package com.caij.emore.present.imp;
 
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 
 import com.caij.emore.EventTag;
 import com.caij.emore.api.ex.ResponseSubscriber;
@@ -17,7 +16,6 @@ import com.caij.emore.database.bean.UploadImageResponse;
 import com.caij.emore.present.PublishStatusManagerPresent;
 import com.caij.emore.remote.StatusApi;
 import com.caij.emore.ui.view.PublishStatusView;
-import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.GsonUtils;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
@@ -135,7 +133,7 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
     }
 
     private Observable<UploadImageResponse> uploadImage(final String imagePath) {
-        Observable<UploadImageResponse> serverObservable = mStatusApi.uploadWeiboOfOneImage(imagePath)
+        Observable<UploadImageResponse> serverObservable = mStatusApi.uploadStatusOfOneImage(imagePath)
                 .doOnNext(new Action1<UploadImageResponse>() {
                     @Override
                     public void call(UploadImageResponse uploadImageResponse) {
@@ -163,7 +161,7 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
         for (UploadImageResponse uploadImageResponse : uploadImageResponses) {
             sb.append(uploadImageResponse.getPic_id()).append(",");
         }
-        return mStatusApi.publishWeiboOfMultiImage(text, sb.toString())
+        return mStatusApi.publishStatusOfMultiImage(text, sb.toString())
                 .compose(ErrorCheckerTransformer.<Status>create())
                 .doOnNext(new Action1<Status>() {
                     @Override
@@ -224,7 +222,7 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
     }
 
     private Observable<Status> createPublishStatusOfOneImage(String text, final String path) {
-        return mStatusApi.publishWeiboOfOneImage(text, path)
+        return mStatusApi.publishStatusOfOneImage(text, path)
                 .compose(ErrorCheckerTransformer.<Status>create())
                 .doOnNext(new Action1<Status>() {
                     @Override
@@ -250,7 +248,7 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
 
     private void publishText(final PublishBean publishBean) {
         mPublishStatusView.onPublishStart(publishBean);
-        Subscription subscription = mStatusApi.publishWeiboOfText(publishBean.getText())
+        Subscription subscription = mStatusApi.publishStatusOfText(publishBean.getText())
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {

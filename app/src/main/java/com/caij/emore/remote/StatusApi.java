@@ -15,37 +15,37 @@ import rx.Observable;
 
 public interface StatusApi {
 
-    public Observable<QueryStatusResponse> getFriendWeibo(long uid, long sinceId, long maxId,
-                                                          int count, int page);
+    public Observable<QueryStatusResponse> getFriendStatus(long uid, long sinceId, long maxId,
+                                                           int count, int page);
 
-    public Observable<UserStatusesResponse> getUseWeibo(long uid, int feature, long since_id, long max_id, int count, int page);
+    public Observable<UserStatusesResponse> getUseStatus(long uid, int feature, long since_id, long max_id, int count, int page);
 
-    public Observable<Status> publishWeiboOfText(String content);
+    public Observable<Status> publishStatusOfText(String content);
 
-    public Observable<Status> publishWeiboOfOneImage(final String content, final String imagePath);
+    public Observable<Status> publishStatusOfOneImage(final String content, final String imagePath);
 
-    public Observable<UploadImageResponse> uploadWeiboOfOneImage(String imagePath);
+    public Observable<UploadImageResponse> uploadStatusOfOneImage(String imagePath);
 
-    public Observable<Status> publishWeiboOfMultiImage(String status, String picIds);
+    public Observable<Status> publishStatusOfMultiImage(String status, String picIds);
 
-    public Observable<Status> deleteWeibo(long id);
+    public Observable<Status> deleteStatusById(long id);
 
-    public Observable<FavoritesCreateResponse> collectWeibo(long id);
+    public Observable<FavoritesCreateResponse> collectStatus(long id);
 
-    public Observable<FavoritesCreateResponse> uncollectWeibo(long id);
+    public Observable<FavoritesCreateResponse> unCollectStatus(long id);
 
-    public Observable<Status> repostWeibo(String status, long weiboId);
+    public Observable<Status> relayStatus(String status, long weiboId);
 
-    public Observable<QueryStatusResponse> getWeiboMentions(long since_id, long max_id, int count, int page);
+    public Observable<QueryStatusResponse> getStatusMentions(long since_id, long max_id, int count, int page);
 
-    public Observable<Status> getWeiboById(int isGetLongText, long id);
+    public Observable<Status> getStatusById(int isGetLongText, long id);
 
-    public Observable<QueryStatusResponse> getWeibosByIds(String ids);
+    public Observable<QueryStatusResponse> getStatusByIds(String ids);
 
     public Observable<QueryStatusResponse> getTopicsByKey(String q, int page, int count);
 
-    public Observable<QueryStatusResponse> getSearchWeibo(String q, int page, int count);
+    public Observable<QueryStatusResponse> getSearchStatus(String q, int page, int count);
 
-    public Observable<QueryRelayStatusResponse> getRepostWeibos(long id, long since_id, long max_id, int count, int page);
+    public Observable<QueryRelayStatusResponse> getRelayStatus(long id, long since_id, long max_id, int count, int page);
 
 }

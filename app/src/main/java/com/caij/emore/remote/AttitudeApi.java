@@ -13,11 +13,11 @@ import rx.Observable;
 
 public interface AttitudeApi {
 
-    public Observable<Attitude> attitudesToWeibo(String attitude, long weiboId);
+    public Observable<Attitude> attitudesToStatus(String attitude, long weiboId);
 
-    public Observable<Response> destoryAttitudesWeibo(String attitude, long weiboId);
+    public Observable<Response> destroyAttitudesStatus(String attitude, long weiboId);
 
-    public Observable<StatusAttitudesResponse> getWeiboAttiyudes(long id, int page, int count);
+    public Observable<StatusAttitudesResponse> getStatusAttitudes(long id, int page, int count);
 
     public Observable<AttitudeResponse> getToMeAttitudes(long maxId, long sinceId, int page, int count);
 }

@@ -137,7 +137,7 @@ public class StatusAttitudesPresentImp extends AbsBasePresent implements StatusR
     }
 
     private  Observable<List<User>> createObservable(int page) {
-        return mAttitudeApi.getWeiboAttiyudes(mStatusId, page, PAGE_COUNT)
+        return mAttitudeApi.getStatusAttitudes(mStatusId, page, PAGE_COUNT)
                 .compose(new ErrorCheckerTransformer<StatusAttitudesResponse>())
                 .flatMap(new Func1<StatusAttitudesResponse, Observable<List<User>>>() {
                     @Override

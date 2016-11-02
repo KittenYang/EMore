@@ -20,13 +20,13 @@ public class CommentApiImp implements CommentApi {
     }
 
     @Override
-    public Observable<QueryStatusCommentResponse> getCommentsByWeibo(long id, long since_id, long max_id, int count, int page) {
+    public Observable<QueryStatusCommentResponse> getCommentsByStatusId(long id, long since_id, long max_id, int count, int page) {
         return mWeiCoService.getCommentsByWeibo(id, since_id, max_id, count, page);
     }
 
     @Override
-    public Observable<Comment> commentToWeibo(String comment, long weiboId) {
-        return mWeiCoService.createCommentForWeibo(comment, weiboId);
+    public Observable<Comment> commentToStatus(String comment, long statusId) {
+        return mWeiCoService.createCommentForWeibo(comment, statusId);
     }
 
     @Override
@@ -35,8 +35,8 @@ public class CommentApiImp implements CommentApi {
     }
 
     @Override
-    public Observable<Comment> replyComment(String comment, long cid, long weiboId) {
-        return mWeiCoService.replyComment(cid, weiboId, comment);
+    public Observable<Comment> replyComment(String comment, long cid, long statusId) {
+        return mWeiCoService.replyComment(cid, statusId, comment);
     }
 
     @Override

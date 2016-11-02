@@ -97,7 +97,7 @@ public class UserStatusesPresentImp extends AbsListTimeLinePresent<TimeLineStatu
     }
 
     private Observable<List<Status>> createObservable(long maxId, final boolean isRefresh) {
-        return mStatusApi.getUseWeibo(mUid, mFeature, 0, maxId, PAGE_COUNT, 1)
+        return mStatusApi.getUseStatus(mUid, mFeature, 0, maxId, PAGE_COUNT, 1)
                 .compose(new ErrorCheckerTransformer<UserStatusesResponse>())
                 .flatMap(new Func1<UserStatusesResponse, Observable<Status>>() {
                     @Override

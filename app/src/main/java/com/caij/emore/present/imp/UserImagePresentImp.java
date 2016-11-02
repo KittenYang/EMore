@@ -77,7 +77,7 @@ public class UserImagePresentImp extends AbsBasePresent implements UserStatusPre
 
     @Override
     public void refresh() {
-        Subscription subscription = mStatusApi.getUseWeibo(mUid, 2, 0, 0, PAGE_COUNT, 1)
+        Subscription subscription = mStatusApi.getUseStatus(mUid, 2, 0, 0, PAGE_COUNT, 1)
                 .flatMap(new Func1<UserStatusesResponse, Observable<Status>>() {
                     @Override
                     public Observable<Status> call(UserStatusesResponse response) {
@@ -125,7 +125,7 @@ public class UserImagePresentImp extends AbsBasePresent implements UserStatusPre
         if (mStatuses.size() > 0) {
             maxId = mStatuses.get(mStatuses.size() - 1).getId();
         }
-        Subscription subscription = mStatusApi.getUseWeibo(mUid, 2, 0, maxId, PAGE_COUNT, 1)
+        Subscription subscription = mStatusApi.getUseStatus(mUid, 2, 0, maxId, PAGE_COUNT, 1)
                 .flatMap(new Func1<UserStatusesResponse, Observable<Status>>() {
                     @Override
                     public Observable<Status> call(UserStatusesResponse response) {

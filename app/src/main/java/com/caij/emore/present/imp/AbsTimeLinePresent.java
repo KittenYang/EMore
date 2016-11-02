@@ -121,7 +121,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
     @Override
     public void deleteStatus(final Status deleteStatus, final int position) {
         mView.showDialogLoading(true, R.string.deleting);
-        Subscription subscription =  mStatusApi.deleteWeibo(deleteStatus.getId())
+        Subscription subscription =  mStatusApi.deleteStatusById(deleteStatus.getId())
                 .compose(ErrorCheckerTransformer.<Status>create())
                 .doOnNext(new Action1<Status>() {
                     @Override
@@ -147,7 +147,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
     @Override
     public void collectStatus(final Status status) {
-        Subscription subscription = mStatusApi.collectWeibo(status.getId())
+        Subscription subscription = mStatusApi.collectStatus(status.getId())
                 .compose(ErrorCheckerTransformer.<FavoritesCreateResponse>create())
                 .doOnNext(new Action1<FavoritesCreateResponse>() {
                     @Override
@@ -185,7 +185,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
     @Override
     public void unCollectStatus(final Status status) {
-        Subscription subscription = mStatusApi.uncollectWeibo(status.getId())
+        Subscription subscription = mStatusApi.unCollectStatus(status.getId())
                 .compose(ErrorCheckerTransformer.<FavoritesCreateResponse>create())
                 .doOnNext(new Action1<FavoritesCreateResponse>() {
                     @Override
@@ -223,7 +223,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
     @Override
     public void attitudeStatus(final Status status) {
-        Subscription subscription = mAttitudeApi.attitudesToWeibo("smile", status.getId())
+        Subscription subscription = mAttitudeApi.attitudesToStatus("smile", status.getId())
                 .compose(ErrorCheckerTransformer.<Attitude>create())
                 .doOnNext(new Action1<Attitude>() {
                     @Override
@@ -268,7 +268,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
     @Override
     public void destroyAttitudeStatus(final Status status) {
-        Subscription subscription = mAttitudeApi.destoryAttitudesWeibo("smile", status.getId())
+        Subscription subscription = mAttitudeApi.destroyAttitudesStatus("smile", status.getId())
                 .compose(ErrorCheckerTransformer.create())
                 .doOnNext(new Action1<Response>() {
                     @Override

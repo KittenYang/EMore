@@ -35,7 +35,7 @@ public class CommentStatusPresentImp extends AbsBasePresent implements CommentSt
 
     @Override
     public void toCommentStatus(String comment) {
-        Subscription subscription = mCommentApi.commentToWeibo(comment, mStatusId)
+        Subscription subscription = mCommentApi.commentToStatus(comment, mStatusId)
                 .compose(new DefaultTransformer<Comment>())
                 .doOnSubscribe(new Action0() {
                     @Override

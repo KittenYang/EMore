@@ -138,7 +138,7 @@ public class StatusCommentsPresentImp extends AbsBasePresent implements StatusCo
     }
 
     private Observable<List<Comment>> getCommentsObservable(long maxId) {
-        return mCommentApi.getCommentsByWeibo(mStatusId, 0, maxId, PAGE_COUNT, 1)
+        return mCommentApi.getCommentsByStatusId(mStatusId, 0, maxId, PAGE_COUNT, 1)
                 .compose(ErrorCheckerTransformer.<QueryStatusCommentResponse>create())
                 .flatMap(new Func1<QueryStatusCommentResponse, Observable<List<Comment>>>() {
                     @Override
