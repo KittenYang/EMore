@@ -60,5 +60,5 @@
 
     <color name="chat_edit_text_bg">#EEEEEE</color>
 
-    <color name="image_loading_progress">#88ffffff</color>
+    <color name="image_loading_progress">#ccffffff</color>
 </resources>

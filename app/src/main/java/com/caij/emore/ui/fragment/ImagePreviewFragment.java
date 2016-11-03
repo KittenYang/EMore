@@ -193,7 +193,7 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
         }
     }
 
-    @OnLongClick({R.id.iv_image, R.id.sciv})
+    @OnLongClick({R.id.iv_image, R.id.sciv, R.id.view_shadow})
     public boolean onLongClick(View view) {
         switch (view.getId()) {
             case R.id.sciv:
