@@ -25,6 +25,7 @@
         android:visibility="gone"
         android:layout_gravity="center"/>
 
+
     <com.caij.progressview.ProgressView
         android:id="@+id/pv_loading"
         android:layout_width="50dp"
@@ -33,5 +34,12 @@
         android:layout_gravity="center"
         app:circle_color="@color/image_loading_progress"
         app:fan_progress_color="@color/image_loading_progress"/>
+
+    <View
+        android:id="@+id/view_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#33000000"
+        android:visibility="gone"/>
 
 </FrameLayout>

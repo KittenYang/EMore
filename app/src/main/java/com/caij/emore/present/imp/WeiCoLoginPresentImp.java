@@ -5,10 +5,13 @@ import com.caij.emore.R;
 import com.caij.emore.account.Account;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
+import com.caij.emore.bean.GroupResponse;
 import com.caij.emore.present.LoginPresent;
 import com.caij.emore.remote.LoginApi;
+import com.caij.emore.repository.GroupRepository;
 import com.caij.emore.ui.view.WeiCoLoginView;
 import com.caij.emore.api.ex.SchedulerTransformer;
+import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import rx.Subscriber;
 import rx.Subscription;
@@ -47,7 +50,7 @@ public class WeiCoLoginPresentImp extends AbsBasePresent implements LoginPresent
                         userPrefs.changeAccount(account);
                     }
                 })
-                .compose(new SchedulerTransformer<Token>())
+                .compose(SchedulerTransformer.<Token>create())
                 .subscribe(new Subscriber<Token>() {
                     @Override
                     public void onCompleted() {

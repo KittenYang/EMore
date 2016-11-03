@@ -288,7 +288,7 @@ public class PageInfo implements Serializable {
         this.cards = cards;
     }
 
-    public static class PicInfo {
+    public static class PicInfo implements Serializable {
         /**
          * height : 236
          * url : http://ww3.sinaimg.cn/orj480/736f0c7ejw1f72fso97o5j20bu06kdfx.jpg
@@ -335,7 +335,7 @@ public class PageInfo implements Serializable {
             this.pic_middle = pic_middle;
         }
 
-        public static class PicBigBean {
+        public static class PicBigBean implements Serializable {
             private String height;
             private String url;
             private String width;
@@ -365,7 +365,7 @@ public class PageInfo implements Serializable {
             }
         }
 
-        public static class PicSmallBean {
+        public static class PicSmallBean implements Serializable {
             private String height;
             private String url;
             private String width;
@@ -395,7 +395,7 @@ public class PageInfo implements Serializable {
             }
         }
 
-        public static class PicMiddleBean {
+        public static class PicMiddleBean implements Serializable {
             private String url;
             private String height;
             private String width;
@@ -636,7 +636,7 @@ public class PageInfo implements Serializable {
             this.play_completion_actions = play_completion_actions;
         }
 
-        public static class PlayCompletionActionsBean {
+        public static class PlayCompletionActionsBean implements Serializable {
             private int type;
             private String icon;
             private String text;
@@ -708,7 +708,7 @@ public class PageInfo implements Serializable {
                 this.actionlog = actionlog;
             }
 
-            public static class ActionlogBean {
+            public static class ActionlogBean implements Serializable {
                 private String oid;
                 private int act_code;
                 private int act_type;
@@ -749,7 +749,7 @@ public class PageInfo implements Serializable {
         }
     }
 
-    public static class Actionlog {
+    public static class Actionlog implements Serializable {
         private int act_type;
         private long uid;
         private String mid;
@@ -824,7 +824,7 @@ public class PageInfo implements Serializable {
         }
     }
 
-    public static class Card {
+    public static class Card implements Serializable {
         private int type;
         private String button_name;
         private String button_pic;

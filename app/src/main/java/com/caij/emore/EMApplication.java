@@ -51,11 +51,11 @@ public class EMApplication extends Application{
             Init.getInstance().start(this, UserPrefs.get(this).getAccount().getUid());
         }
 
-        initNightMode();
-
         if (SystemUtil.isMainProcess(this)) {
             registerTokenExpiredEvent();
             registerActivityEvent();
+
+            initNightMode();
         }
     }
 

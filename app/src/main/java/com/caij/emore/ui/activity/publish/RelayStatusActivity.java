@@ -148,5 +148,7 @@ public class RelayStatusActivity extends PublishActivity<RepostWeiboPresent> imp
             tvName.setText("@" + weibo.getRetweeted_status().getUser().getName());
             tvDesc.setText(weibo.getRetweeted_status().getText());
         }
+
+        etContent.setSelection(0);
     }
 }

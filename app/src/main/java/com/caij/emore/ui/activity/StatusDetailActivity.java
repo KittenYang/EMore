@@ -430,4 +430,5 @@ public class StatusDetailActivity extends BaseToolBarActivity<StatusDetailPresen
     public void onPageScrollStateChanged(int state) {
 
     }
+
 }

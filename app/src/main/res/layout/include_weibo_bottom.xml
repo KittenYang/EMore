@@ -5,11 +5,7 @@
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:gravity="center_vertical"
-    android:paddingLeft="@dimen/spacing_weibo_item"
-    android:paddingRight="@dimen/spacing_weibo_item"
-    android:paddingTop="@dimen/spacing_medium"
-    android:paddingBottom="@dimen/spacing_medium">
+    android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/tv_like"
@@ -23,7 +19,11 @@
             android:drawablePadding="4dp"
             android:gravity="center_vertical"
             android:background="?attr/selectableItemBackground"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="@dimen/spacing_medium"
+            android:paddingBottom="@dimen/spacing_medium"/>
 
         <TextView
             android:id="@+id/tv_comment_count"
@@ -38,7 +38,11 @@
             android:background="?attr/selectableItemBackground"
             android:gravity="center"
             android:drawablePadding="4dp"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:paddingRight="10dp"
+            android:paddingLeft="5dp"
+            android:paddingTop="@dimen/spacing_medium"
+            android:paddingBottom="@dimen/spacing_medium"/>
 
         <TextView
             android:id="@+id/tv_repost_count"
@@ -50,11 +54,14 @@
             android:textSize="12sp"
             android:drawableLeft="@mipmap/timeline_icon_retweet"
             android:background="?attr/selectableItemBackground"
-            android:layout_marginRight="10dip"
             android:layout_toLeftOf="@id/tv_comment_count"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:drawablePadding="4dp"/>
+            android:drawablePadding="4dp"
+            android:paddingRight="5dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="@dimen/spacing_medium"
+            android:paddingBottom="@dimen/spacing_medium"/>
 
 
 </RelativeLayout>

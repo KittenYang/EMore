@@ -130,7 +130,7 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
     }
 
     public static boolean isBigImage(int width, int height) {
-        return width * height > 2048 * 2048;
+        return width * height > 2048 * 2048 || width > 6000 || height > 6000;
     }
 
     public static boolean isLongHImage(int width, int height) {

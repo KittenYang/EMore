@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.caij.emore.Key;
 import com.caij.emore.database.dao.DaoMaster;
 import com.caij.emore.database.dao.DaoSession;
+import com.caij.emore.database.dao.GroupDao;
 
 import de.greenrobot.dao.identityscope.IdentityScopeType;
 import de.greenrobot.dao.query.QueryBuilder;

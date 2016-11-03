@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.caij.emore.BuildConfig;
 import com.caij.emore.R;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.ui.view.BaseView;
 import com.caij.emore.utils.LogUtil;
 
@@ -30,33 +31,35 @@ public abstract class ResponseSubscriber<T> extends Subscriber<T> {
             HttpException httpException = (HttpException) e;
             int code  = httpException.code();
             if (code == 401) {//AuthFailureError
-//                || code == 403 可能是没有权限
                 mBaseView.onAuthenticationError();
                 return;
             }else if (code == 403) {
                 mBaseView.showHint(R.string.server_error_permissions);
             }else {
-                mBaseView.showHint(R.string.server_error);
+                mBaseView.showHint(httpException.message());
             }
         }else if (e instanceof RuntimeException && e.getCause() instanceof ErrorResponseException) {
             ErrorResponseException errorResponseException = (ErrorResponseException) e.getCause();
-            if (TextUtils.isEmpty(errorResponseException.mResponse.getError())) {
-                mBaseView.showHint(errorResponseException.mResponse.getErrmsg());
-            }else {
-                mBaseView.showHint(errorResponseException.mResponse.getError());
-            }
+            onServerError(errorResponseException.mResponse);
         }else {
             if(BuildConfig.DEBUG) {
                 mBaseView.showHint(e.getMessage());
             }else {
                 mBaseView.showHint(R.string.net_request_error);
             }
-
         }
 
         LogUtil.d(this, e.getMessage());
 
         onFail(e);
+    }
+
+    private void onServerError(Response response) {
+        if (TextUtils.isEmpty(response.getError())) {
+            mBaseView.showHint(response.getErrmsg());
+        }else {
+            mBaseView.showHint(response.getError());
+        }
     }
 
     private void onNetworkError(Throwable e) {

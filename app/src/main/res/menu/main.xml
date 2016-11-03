@@ -4,14 +4,22 @@
 
     <group
         android:id="@+id/mainMenus" android:orderInCategory="100">
-    <item
-        android:id="@+id/publish" android:icon="@mipmap/ic_menu_edit_white"
-        android:orderInCategory="2"
-        android:title="@string/publish" app:showAsAction="always"/>
-    <item
-        android:id="@+id/search" android:icon="@mipmap/ic_search_white_24dp"
-        android:orderInCategory="2"
-        android:title="@string/main_search" app:showAsAction="always"/>
+
+        <item
+            android:id="@+id/filter" android:icon="@mipmap/icon_filter"
+            android:orderInCategory="2"
+            android:title="@string/main_group" app:showAsAction="ifRoom"/>
+
+        <item
+            android:id="@+id/publish" android:icon="@mipmap/ic_menu_edit_white"
+            android:orderInCategory="2"
+            android:title="@string/publish" app:showAsAction="ifRoom"/>
+
+        <item
+            android:id="@+id/search" android:icon="@mipmap/icon_search"
+            android:orderInCategory="2"
+            android:title="@string/main_search" app:showAsAction="ifRoom" />
+
     </group>
 
 </menu>

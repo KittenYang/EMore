@@ -147,4 +147,9 @@ public class StatusApiImp implements StatusApi {
         return mWeiCoService.getRepostWeibos(id, since_id, max_id, count, page);
     }
 
+    @Override
+    public Observable<QueryStatusResponse> getGroupStatus(long list_id, long sinceId, long maxId, int count, int page) {
+        return mWeiCoService.getGroupStatus(list_id, sinceId, maxId, count, page);
+    }
+
 }

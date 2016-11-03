@@ -42,9 +42,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.caij.emore.ui.activity.login.EMoreLoginActivity"
-            android:screenOrientation="portrait"/>
-
         <activity android:name="com.caij.emore.ui.activity.login.WeiCoLoginActivity"
             android:screenOrientation="portrait"/>
 
@@ -98,7 +95,7 @@
 
         <activity android:name="com.caij.emore.ui.activity.publish.RelayStatusActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize"/>
 
         <activity android:name="com.caij.emore.ui.activity.publish.ReplyCommentActivity"
             android:screenOrientation="portrait"

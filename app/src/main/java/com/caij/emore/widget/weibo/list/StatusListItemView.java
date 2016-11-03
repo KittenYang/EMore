@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.caij.emore.R;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.ui.activity.StatusDetailActivity;
+import com.caij.emore.ui.activity.publish.RelayStatusActivity;
 import com.caij.emore.utils.CountUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.weibo.StatusItemView;
@@ -121,6 +122,12 @@ public abstract class StatusListItemView extends StatusItemView {
                 if (onMenuClickListener != null) {
                     onMenuClickListener.onClick(view);
                 }
+                break;
+
+            case R.id.tv_repost_count:
+                Status status = (Status) view.getTag();
+                Intent intent = RelayStatusActivity.newIntent(getContext(), status);
+                getContext().startActivity(intent);
                 break;
 
         }

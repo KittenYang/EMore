@@ -82,29 +82,6 @@ public class FriendStatusFragment extends TimeLineStatusFragment<FriendStatusPre
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.publish:
-                Intent intent = new Intent(getActivity(), PublishStatusActivity.class);
-                startActivity(intent);
-                break;
-
-            case R.id.search:
-                Intent intent1 = new Intent(getActivity(), SearchRecommendActivity.class);
-                startActivity(intent1);
-                getActivity().overridePendingTransition(-1, -1);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void setEmptyText(TextView textView) {
         textView.setText(R.string.friend_weibo_empty_hint);
         textView.setOnClickListener(new View.OnClickListener() {

@@ -58,10 +58,10 @@ public abstract class AbsLoginActivity extends WebActivity {
     protected void handlerIntent(Intent intent) {
         mUsername = getIntent().getStringExtra(Key.USERNAME);
         mPassword = getIntent().getStringExtra(Key.PWD);
-        if (mUsername == null || mPassword == null) {
-            mUsername = "";
-            mPassword = "";
-        }
+
+        mUsername = mUsername == null ? "" : mUsername;
+        mPassword = mPassword == null ? "" : mPassword;
+
         loadLoginHtml();
     }
 
@@ -208,14 +208,14 @@ public abstract class AbsLoginActivity extends WebActivity {
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
             if (newProgress == 100) {
-                if (!TextUtils.isEmpty(mUsername) && !TextUtils.isEmpty(mPassword)) {
+//                if (!TextUtils.isEmpty(mUsername) && !TextUtils.isEmpty(mPassword)) {
                     if (!mAccountFilled && !TextUtils.isEmpty(view.getUrl()) && view.getUrl().equalsIgnoreCase("about:blank")) {
                         LogUtil.d(TAG, "fillAccount(%s, %s)", mUsername, mPassword);
 
                         view.loadUrl("javascript:fillAccount()");
                         mAccountFilled = true;
                     }
-                }
+//                }
             }
         }
     }

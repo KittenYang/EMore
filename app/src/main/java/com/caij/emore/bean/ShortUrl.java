@@ -3,13 +3,14 @@ package com.caij.emore.bean;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by Caij on 2016/8/25.
  */
-public class ShortUrl {
+public class ShortUrl implements Serializable {
 
     public static final int TYPE_WEB = 0;
     public static final int TYPE_VIDEO = 1;

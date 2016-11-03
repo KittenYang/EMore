@@ -7,6 +7,7 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Article;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.Comment;
+import com.caij.emore.bean.GroupResponse;
 import com.caij.emore.bean.VideoInfo;
 import com.caij.emore.bean.WeiboIds;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
@@ -60,6 +61,8 @@ public interface WeiCoService {
     public static final String PARAMETER_FROM_NAME = "from";
     public static final String PARAMETER_TOKEN_NAME = "access_token";
 
+    public static final String HTTP_GET = "GET";
+
     public static class WeiCoFactory {
 
         private static final long READ_TIMEOUT = 10;
@@ -109,7 +112,7 @@ public interface WeiCoService {
             RequestBody requestBody = request.body();
             Token token = UserPrefs.get(EMApplication.getInstance()).getToken();
             String accessToken = token == null ? "" : token.getAccess_token();
-            if ("GET".equals(request.method())) {  //get
+            if (HTTP_GET.equals(request.method())) {  //get
                 HttpUrl url = request.url().newBuilder()
                         .addQueryParameter(PARAMETER_SOURCE_NAME, Key.WEICO_APP_ID)
                         .addQueryParameter(PARAMETER_FROM_NAME, Key.WEICO_APP_FROM)
@@ -179,7 +182,7 @@ public interface WeiCoService {
     @POST("/2/like/cancel_like")
     public Observable<Response> destoryAttitudesWeibo(@Field("attitude") String attitude, @Field("id") long weiboId);
 
-//    @GET("/2/statuses/show")
+//    @HTTP_GET("/2/statuses/show")
 //    public Observable<Status> getStatusById(@Query("access_token") String access_token,
 //                                          @Query("isGetLongText") int isGetLongText,
 //                                          @Query("source") String source, @Query("id") long weiboId);
@@ -336,5 +339,12 @@ public interface WeiCoService {
                                                     @Query("max_id") long max_id,
                                                     @Query("count") int count,
                                                     @Query("page") int page);
+
+    @GET("/2/groups")
+    Observable<GroupResponse> getGroups();
+
+    @GET("/2/groups/timeline")
+    Observable<QueryStatusResponse> getGroupStatus(@Query("list_id") long list_id, @Query("since_id") long since_id, @Query("max_id") long max_id,
+                                                    @Query("count") int count, @Query("page") int page);
 
 }

@@ -56,6 +56,8 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
     ProgressBar pbLoading;
     @BindView(R.id.pv_loading)
     ProgressView pvLoading;
+    @BindView(R.id.view_shadow)
+    View viewShadow;
 
     public static ImagePreviewFragment newInstance(ImageInfo imageInfo, ImageInfo hdImageInfo) {
         ImagePreviewFragment fragment = new ImagePreviewFragment();
@@ -94,7 +96,7 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
         mIvImage.setVisibility(View.VISIBLE);
 
         // TODO: 2016/10/24 暂时解决图片切换时闪的问题， 但是Glide为什么会闪的问题未找到原因  后面需要找到具体问题
-        Glide.with(this).load(picUrl).dontAnimate().diskCacheStrategy(DiskCacheStrategy.SOURCE).
+        Glide.with(this).load(picUrl).dontAnimate().diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).
                 fitCenter().into(new ViewTarget<View, GlideDrawable>(mIvImage) {
 
             private GlideDrawable mGlideDrawable;
@@ -142,8 +144,10 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
     public void showProgress(boolean isShow) {
         if (isShow) {
             pvLoading.setVisibility(View.VISIBLE);
+            viewShadow.setVisibility(View.VISIBLE);
         }else {
             pvLoading.setVisibility(View.GONE);
+            viewShadow.setVisibility(View.GONE);
         }
     }
 
@@ -204,5 +208,11 @@ public class ImagePreviewFragment extends BaseFragment<ImagePrePresent> implemen
 
     private void onViewLongClick() {
         mPresent.onViewLongClick();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        sciv.recycle();
     }
 }

@@ -5,7 +5,7 @@ import de.greenrobot.daogenerator.Schema;
 
 public class DbDaoGenerator {
 
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     public static void main(String[] args) throws Exception {
         Schema sch = new Schema(VERSION, "com.caij.emore.database.bean");
@@ -22,7 +22,25 @@ public class DbDaoGenerator {
         createDraft(sch);
         createUnReadMessage(sch);
 //        createLongText(sch);
+        createGroup(sch);
         new de.greenrobot.daogenerator.DaoGenerator().generateAll(sch, "./app/src/main/java");
+    }
+
+    private static void createGroup(Schema sch) {
+        Entity entity = sch.addEntity("Group");
+        entity.addDateProperty("created_at");
+        entity.addStringProperty("description");
+        entity.addLongProperty("id").primaryKey();
+        entity.addStringProperty("idstr");
+        entity.addIntProperty("like_count");
+        entity.addIntProperty("member_count");
+        entity.addStringProperty("mode");
+        entity.addStringProperty("name");
+        entity.addStringProperty("profile_image_url");
+        entity.addIntProperty("sysgroup");
+        entity.addIntProperty("visible");
+
+        entity.addLongProperty("uid");
     }
 
     static void createUser(Schema sch) {

@@ -48,4 +48,7 @@ public interface StatusApi {
 
     public Observable<QueryRelayStatusResponse> getRelayStatus(long id, long since_id, long max_id, int count, int page);
 
+    public Observable<QueryStatusResponse> getGroupStatus(long list_id, long sinceId, long maxId,
+                                                           int count, int page);
+
 }

@@ -61,7 +61,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
         mAttitudeObservable.subscribe(this);
 
         mStatusAttitudeCountObservable = RxBus.getDefault().register(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE);
-        mStatusAttitudeCountObservable.doOnNext(new Action1<StatusActionCountUpdateEvent>() {
+        addSubscription(mStatusAttitudeCountObservable.doOnNext(new Action1<StatusActionCountUpdateEvent>() {
             @Override
             public void call(StatusActionCountUpdateEvent statusActionCountUpdateEvent) {
                 Status status = mStatusManager.getStatusById(statusActionCountUpdateEvent.statusId);
@@ -70,10 +70,10 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                     mStatusManager.saveStatus(status);
                 }
             }
-        }).compose(SchedulerTransformer.<Event>create()).subscribe(this);
+        }).compose(SchedulerTransformer.<Event>create()).subscribe(this));
 
         mStatusCommentCountObservable = RxBus.getDefault().register(EventTag.EVENT_STATUS_COMMENT_COUNT_UPDATE);
-        mStatusCommentCountObservable.doOnNext(new Action1<StatusActionCountUpdateEvent>() {
+        addSubscription(mStatusCommentCountObservable.doOnNext(new Action1<StatusActionCountUpdateEvent>() {
             @Override
             public void call(StatusActionCountUpdateEvent statusActionCountUpdateEvent) {
                 Status status = mStatusManager.getStatusById(statusActionCountUpdateEvent.statusId);
@@ -82,10 +82,10 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                     mStatusManager.saveStatus(status);
                 }
             }
-        }).compose(SchedulerTransformer.<StatusActionCountUpdateEvent>create()).subscribe(this);
+        }).compose(SchedulerTransformer.<StatusActionCountUpdateEvent>create()).subscribe(this));
 
         mStatusRelayCountObservable = RxBus.getDefault().register(EventTag.EVENT_STATUS_RELAY_COUNT_UPDATE);
-        mStatusRelayCountObservable.doOnNext(new Action1<StatusActionCountUpdateEvent>() {
+        addSubscription(mStatusRelayCountObservable.doOnNext(new Action1<StatusActionCountUpdateEvent>() {
             @Override
             public void call(StatusActionCountUpdateEvent statusActionCountUpdateEvent) {
                 Status status = mStatusManager.getStatusById(statusActionCountUpdateEvent.statusId);
@@ -94,7 +94,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                     mStatusManager.saveStatus(status);
                 }
             }
-        }).compose(SchedulerTransformer.<StatusActionCountUpdateEvent>create()).subscribe(this);
+        }).compose(SchedulerTransformer.<StatusActionCountUpdateEvent>create()).subscribe(this));
     }
 
     @Override
