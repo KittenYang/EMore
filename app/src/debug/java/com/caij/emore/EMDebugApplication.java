@@ -31,17 +31,9 @@ public class EMDebugApplication extends EMApplication {
         Looper.getMainLooper().setMessageLogging(new LooperMonitor(new LooperMonitor.BlockListener() {
             @Override
             public void onBlockEvent(long realStartTime, long realTimeEnd, long threadTimeStart, long threadTimeEnd) {
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("realStartTime").append(" : ").append(realStartTime)
-                        .append(SEPARATOR)
-                        .append("realTimeEnd").append(" : ").append(realTimeEnd)
-                        .append(SEPARATOR);
-//                for (StackTraceElement stackTraceElement : Looper.getMainLooper().getThread().getStackTrace()) {
-//                    stringBuilder
-//                            .append(stackTraceElement.toString())
-//                            .append(SEPARATOR);
-//                }
-                LogUtil.e("LooperMonitor", stringBuilder.toString());
+                String stringBuilder = "realStartTime" + " : " + realStartTime +
+                        SEPARATOR + "realTimeEnd" + " : " + realTimeEnd + SEPARATOR;
+                LogUtil.e("LooperMonitor", stringBuilder);
             }
         }, 3000));
     }

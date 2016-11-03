@@ -110,9 +110,9 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         super.onNewIntent(intent);
         String key  = intent.getStringExtra(Key.ID);
         if (Key.FRIEND_WEIBO_FRAGMENT_TAG.equals(key)) {
-            changeContent2FriendStatus();
+            switchContentOfStatus();
         }else if (Key.MESSAGE_FRAGMENT_TAG.equals(key)) {
-            changeContent2Message();
+            switchContentOfMessage();
         }
     }
 
@@ -277,7 +277,6 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
                     Intent intent = UserInfoActivity.newIntent(this, user.getScreen_name());
                     startActivity(intent);
                 }
-
                 break;
             }
 
@@ -290,14 +289,14 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
             case R.id.rl_item_status:
                 if (!rlItemStatus.isSelected()) {
-                    changeContent2FriendStatus();
+                    switchContentOfStatus();
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
                 }
                 break;
 
             case R.id.rl_item_message:
                 if (!rlItemMessage.isSelected()) {
-                    changeContent2Message();
+                    switchContentOfMessage();
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
                 }
                 break;
@@ -312,11 +311,11 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         }
     }
 
-    private void changeContent2FriendStatus() {
+    private void switchContentOfStatus() {
         changeContent(mStatusContainerFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG);
     }
 
-    private void changeContent2Message() {
+    private void switchContentOfMessage() {
         changeContent(mMessageFragment, Key.MESSAGE_FRAGMENT_TAG);
     }
 
