@@ -13,6 +13,7 @@ import com.caij.emore.R;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.ui.activity.StatusDetailActivity;
+import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
@@ -50,6 +51,13 @@ public class MessageCommentAdapter extends BaseAdapter<Comment, MessageCommentAd
             public void onItemClick(View view, int position) {
                 Comment comment = getItem(position);
                 Intent intent = ReplyCommentActivity.newIntent(mContext, comment.getStatus().getId(), comment.getId());
+                mContext.startActivity(intent);
+            }
+        }, new RecyclerViewOnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Comment comment = getItem(position);
+                Intent intent = UserInfoActivity.newIntent(mContext, comment.getUser().getScreen_name());
                 mContext.startActivity(intent);
             }
         });
@@ -101,19 +109,23 @@ public class MessageCommentAdapter extends BaseAdapter<Comment, MessageCommentAd
 
         private RecyclerViewOnItemClickListener onWeiboViewClickListener;
         private RecyclerViewOnItemClickListener onReplayClickListener;
+        private RecyclerViewOnItemClickListener onAvatarClickListener;
 
         public CommentMentionViewHolder(final View itemView, RecyclerViewOnItemClickListener onItemClickListener,
                                         final RecyclerViewOnItemClickListener onWeiboViewClickListener,
-                                        final RecyclerViewOnItemClickListener onReplayClickListener) {
+                                        final RecyclerViewOnItemClickListener onReplayClickListener,
+                                        final RecyclerViewOnItemClickListener onAvatarClickListener) {
             super(itemView, onItemClickListener);
             ButterKnife.bind(this, itemView);
             this.onWeiboViewClickListener = onWeiboViewClickListener;
             this.onReplayClickListener = onReplayClickListener;
+            this.onAvatarClickListener =  onAvatarClickListener;
             tvHeadName = (TextView) itemView.findViewById(R.id.item_head).findViewById(R.id.tv_name);
             View bottomView = itemView.findViewById(R.id.item_bottom);
             tvBottomName = (TextView) bottomView.findViewById(R.id.tv_name);
             bottomView.setOnClickListener(this);
             tvReplay.setOnClickListener(this);
+            sdvAvatar.setOnClickListener(this);
         }
 
         @Override
@@ -126,6 +138,10 @@ public class MessageCommentAdapter extends BaseAdapter<Comment, MessageCommentAd
             }else if (v.getId() ==  R.id.tv_reply) {
                 if (onReplayClickListener != null) {
                     onReplayClickListener.onItemClick(v, getLayoutPosition());
+                }
+            }else if (v.getId() == R.id.sdv_avatar) {
+                if (onAvatarClickListener != null) {
+                    onAvatarClickListener.onItemClick(v, getLayoutPosition());
                 }
             }
         }
