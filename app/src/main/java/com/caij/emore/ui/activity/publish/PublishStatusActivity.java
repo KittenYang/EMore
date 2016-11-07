@@ -131,7 +131,9 @@ public class PublishStatusActivity extends PublishActivity<StatusPublishPresent>
 
     @Override
     protected void onEmotionClick(Emotion emotion) {
-        etContent.append(emotion.key);
+        Editable editAble = etContent.getEditableText();
+        int start = etContent.getSelectionStart();
+        editAble.insert(start, emotion.key);
     }
 
     @Override

@@ -222,7 +222,7 @@ public class SpannableStringUtil {
     }
 
     public static Spannable formatSpannable(String text) {
-        SpannableStringBuilder contentSpannableString = formatHttpUrlText(text + " ", null);
+        SpannableStringBuilder contentSpannableString = formatHttpUrlText(text, null);
         SpannableStringUtil.formatName(contentSpannableString);
         SpannableStringUtil.formatTopic(contentSpannableString);
         SpannableStringUtil.formatDefaultEmotions(contentSpannableString);
@@ -230,17 +230,9 @@ public class SpannableStringUtil {
         return contentSpannableString;
     }
 
-    public static void formatSpannable(Spannable text) {
-        SpannableStringUtil.formatName(text);
-        SpannableStringUtil.formatTopic(text);
-        SpannableStringUtil.formatDefaultEmotions(text);
-        SpannableStringUtil.formatSoftEmotions(text);
-    }
-
     public static void formatSpannable(Status status) {
         formatSpannable(status, false);
     }
-
 
     public static void formatSpannable(Status status, boolean isLongText) {
         String text;

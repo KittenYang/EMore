@@ -183,7 +183,9 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     }
 
     protected void onEmotionClick(Emotion emotion) {
-        etContent.append(emotion.key);
+        Editable editAble = etContent.getEditableText();
+        int start = etContent.getSelectionStart();
+        editAble.insert(start, emotion.key);
     }
 
     private void loadMore() {

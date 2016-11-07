@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -64,7 +65,9 @@ public class ReplyCommentActivity extends PublishActivity<ReplyCommentWeiboPrese
 
     @Override
     protected void onEmotionClick(Emotion emotion) {
-        etContent.append(emotion.key);
+        Editable editAble = etContent.getEditableText();
+        int start = etContent.getSelectionStart();
+        editAble.insert(start, emotion.key);
     }
 
     @Override

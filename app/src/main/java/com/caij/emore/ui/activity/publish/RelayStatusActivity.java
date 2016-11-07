@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.widget.ImageView;
@@ -82,7 +83,9 @@ public class RelayStatusActivity extends PublishActivity<RepostWeiboPresent> imp
 
     @Override
     protected void onEmotionClick(Emotion emotion) {
-        etContent.append(emotion.key);
+        Editable editAble = etContent.getEditableText();
+        int start = etContent.getSelectionStart();
+        editAble.insert(start, emotion.key);
     }
 
     @Override
