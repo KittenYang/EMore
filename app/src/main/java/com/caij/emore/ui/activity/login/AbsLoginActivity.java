@@ -212,7 +212,9 @@ public abstract class AbsLoginActivity extends WebActivity {
                     if (!mAccountFilled && !TextUtils.isEmpty(view.getUrl()) && view.getUrl().equalsIgnoreCase("about:blank")) {
                         LogUtil.d(TAG, "fillAccount(%s, %s)", mUsername, mPassword);
 
-                        view.loadUrl("javascript:fillAccount()");
+                        if (!TextUtils.isEmpty(mUsername)) {
+                            view.loadUrl("javascript:fillAccount()");
+                        }
                         mAccountFilled = true;
                     }
 //                }
