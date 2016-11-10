@@ -70,7 +70,7 @@ public class ImageUtil {
     private static final int QUALITY_LOW = 20;
 
     public static BitmapFactory.Options getImageOptions(String url) throws IOException {
-        OkHttpClient okHttpClient = OkHttpClientProvider.getDefaultOkHttpClient();
+        OkHttpClient okHttpClient = OkHttpClientProvider.getDefaultOkHttpClient(false);
         okHttpClient = okHttpClient.newBuilder().readTimeout(3000, TimeUnit.MILLISECONDS)
                 .writeTimeout(3000, TimeUnit.MILLISECONDS).build();
         Request.Builder okHttpRequestBuilder = new Request.Builder();

@@ -85,7 +85,7 @@ public interface WeiCoService {
 
 
         static OkHttpClient createOkHttpClient() {
-            return OkHttpClientProvider.getDefaultOkHttpClient()
+            return OkHttpClientProvider.getDefaultOkHttpClient(true)
                     .newBuilder()
                     .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)//设置读取超时时间
                     .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)//设置写的超时时间

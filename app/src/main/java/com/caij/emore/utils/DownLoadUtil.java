@@ -28,7 +28,7 @@ public class DownLoadUtil {
 
     private static final int BUF_LONG  = 4096;
 
-    private static OkHttpClient okHttpClient = OkHttpClientProvider.getDefaultOkHttpClient().newBuilder()
+    private static OkHttpClient okHttpClient = OkHttpClientProvider.getDefaultOkHttpClient(false).newBuilder()
             .readTimeout(3, TimeUnit.SECONDS).writeTimeout(3, TimeUnit.SECONDS).build();
 
     public static Observable<Progress> down(final String url, final String filePath) {

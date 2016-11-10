@@ -21,7 +21,7 @@ public class OkHttpClientProvider {
 
     private static OkHttpClient sOkHttpClient;
 
-    public static OkHttpClient getDefaultOkHttpClient() {
+    public static OkHttpClient getDefaultOkHttpClient(boolean isNeedTest) {
         if (sOkHttpClient == null) {
             synchronized (OkHttpClientProvider.class) {
                 if (sOkHttpClient == null) {
@@ -37,8 +37,10 @@ public class OkHttpClientProvider {
                     });
                     try {
                         //only debug
-                        Class c = Class.forName("com.facebook.stetho.okhttp3.StethoInterceptor");
-                        okHttpBuild.addNetworkInterceptor((Interceptor) c.newInstance());
+                        if (isNeedTest) {
+                            Class c = Class.forName("com.facebook.stetho.okhttp3.StethoInterceptor");
+                            okHttpBuild.addNetworkInterceptor((Interceptor) c.newInstance());
+                        }
                     } catch (Exception e) {
                         LogUtil.e(TAG, "com.facebook.stetho.okhttp3.StethoInterceptor not found");
                     }
