@@ -166,26 +166,17 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
 
     private void loadHdImage() {
         String fileName = MD5Util.string2MD5(mHdImageInfo.getUrl());
-        File file = new File(CacheUtils.getCacheHdImageDir(EMApplication.getInstance()), fileName);
+        final File file = new File(CacheUtils.getCacheHdImageDir(EMApplication.getInstance()), fileName);
         mImagePreView.showProgress(true);
-        Subscription subscription = DownLoadUtil.down(mHdImageInfo.getUrl(), file.getAbsolutePath(), new DownLoadUtil.ProgressListener() {
-
-                @Override
-                public void onProgress(final long total, final long progress) {
-                    LogUtil.d(ImagePrePresentImp.this.toString(), "total %s progress %s", total, progress);
-                    if (mImagePreView != null) {
-                        mImagePreView.showProgress(total, progress);
-                    }
-                }
-            })
-            .compose(SchedulerTransformer.<File>create())
+        Subscription subscription = DownLoadUtil.down(mHdImageInfo.getUrl(), file.getAbsolutePath())
+            .compose(SchedulerTransformer.<DownLoadUtil.Progress>create())
             .doOnTerminate(new Action0() {
                 @Override
                 public void call() {
                     mImagePreView.showProgress(false);
                 }
             })
-            .subscribe(new SubscriberAdapter<File>() {
+            .subscribe(new SubscriberAdapter<DownLoadUtil.Progress>() {
 
                 @Override
                 public void onError(Throwable e) {
@@ -195,11 +186,19 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
                 }
 
                 @Override
-                public void onNext(File file) {
+                public void onNext(DownLoadUtil.Progress progress) {
+                    LogUtil.d(ImagePrePresentImp.this.toString(), "total %s progress %s", progress.total, progress.read);
+                    if (mImagePreView != null) {
+                        mImagePreView.showProgress(progress.total, progress.read);
+                    }
+                }
+
+                @Override
+                public void onCompleted() {
+                    super.onCompleted();
                     mShowImageInfo = mHdImageInfo;
                     if (mImagePreView != null) {
                         showFile(file, mHdImageInfo);
-
                     }
                 }
             });

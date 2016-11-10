@@ -3,6 +3,8 @@ package com.caij.emore.utils;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.caij.emore.utils.okhttp.OkHttpClientProvider;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,20 +28,13 @@ public class DownLoadUtil {
 
     private static final int BUF_LONG  = 4096;
 
-    private static OkHttpClient okHttpClient = new OkHttpClient.Builder()
-            .readTimeout(3, TimeUnit.SECONDS)
-            .writeTimeout(3, TimeUnit.SECONDS).build();
+    private static OkHttpClient okHttpClient = OkHttpClientProvider.getDefaultOkHttpClient().newBuilder()
+            .readTimeout(3, TimeUnit.SECONDS).writeTimeout(3, TimeUnit.SECONDS).build();
 
-    private static Handler mMainHandler = new Handler(Looper.getMainLooper());
-
-    public static interface ProgressListener {
-        void onProgress(long total, long progress);
-    }
-
-    public static Observable<File> down(final String url, final String filePath, final ProgressListener progressListener) {
-        return Observable.create(new Observable.OnSubscribe<File>() {
+    public static Observable<Progress> down(final String url, final String filePath) {
+        return Observable.create(new Observable.OnSubscribe<Progress>() {
             @Override
-            public void call(Subscriber<? super File> subscriber) {
+            public void call(Subscriber<? super Progress> subscriber) {
                 Request.Builder okHttpRequestBuilder = new Request.Builder();
                 okHttpRequestBuilder.url(url);
                 Request okHttpRequest = okHttpRequestBuilder.build();
@@ -59,15 +54,23 @@ public class DownLoadUtil {
                     long writeTotalLength = 0;
                     long preTime = 0;
 
+                    Progress progress = new Progress();
+                    progress.total = responseBody.contentLength();
+
+                    progress.read = 0;
+
+                    subscriber.onNext(progress);
+
                     while ((readLength = inputStream.read(buf)) != -1) {
                         fileOutputStream.write(buf, 0, readLength);
                         writeTotalLength += readLength;
                         if (System.currentTimeMillis() - preTime > INTERVAL_PROGRESS_TIME) {
-                            postProgress(responseBody.contentLength(), writeTotalLength, progressListener);
+                            progress.read = writeTotalLength;
+                            subscriber.onNext(progress);
                             preTime = System.currentTimeMillis();
                         }
                     }
-                    subscriber.onNext(file);
+
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     file.deleteOnExit();
@@ -77,13 +80,8 @@ public class DownLoadUtil {
         });
     }
 
-
-    private static void postProgress(final long total, final long progress, final ProgressListener progressListener) {
-        mMainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                progressListener.onProgress(total, progress);
-            }
-        });
+    public static class Progress {
+        public long total;
+        public long read;
     }
 }
