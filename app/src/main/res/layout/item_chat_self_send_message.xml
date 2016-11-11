@@ -60,7 +60,8 @@
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:layout_alignParentRight="true"
-        tool:src="@mipmap/messagescenter_at" />
+        tool:src="@mipmap/messagescenter_at"
+        android:layout_below="@id/tv_send_time"/>
 
 
 </RelativeLayout>

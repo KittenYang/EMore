@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -156,6 +157,9 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    hideBottom();
+                }
             }
         });
         mMessageAdapter.setItemLongClickListener(new RecyclerViewOnItemClickListener() {
@@ -175,6 +179,22 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
         });
         etContent.addTextChangedListener(this);
         mRecyclerView.setAdapter(headerAndFooterRecyclerViewAdapter);
+
+        etContent.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    flEmotion.setVisibility(View.GONE);
+                    ivEmotion.setSelected(false);
+                }
+                return false;
+            }
+        });
+    }
+
+    private void hideBottom() {
+        SystemUtil.hideKeyBoard(getActivity());
+        flEmotion.setVisibility(View.GONE);
     }
 
     protected void onEmotionDeleteClick() {

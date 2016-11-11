@@ -16,10 +16,10 @@
     <dimen name="activity_vertical_margin">@dimen/spacing_large</dimen>
 
     <!--text size-->
-    <dimen name="text_size_small">12dp</dimen>
-    <dimen name="text_size_medium_min">14dp</dimen>
-    <dimen name="text_size_medium">16dp</dimen>
-    <dimen name="text_size_large">18dp</dimen>
+    <dimen name="text_size_small">12.0dp</dimen>
+    <dimen name="text_size_medium_min">14.0dp</dimen>
+    <dimen name="text_size_medium">16.0dp</dimen>
+    <dimen name="text_size_large">18.0dp</dimen>
 
     <dimen name="text_size_large_bt">24dp</dimen>
 
