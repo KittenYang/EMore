@@ -68,9 +68,7 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
         intentFilter.addAction(ACTION_SENDING_HEARTBEAT);
         ctx.registerReceiver(scheduleReceiver, intentFilter);
 
-        if (UserPrefs.get(ctx).getToken() == null) {
-            EMoreService.stop(ctx);
-        }else {
+        if (UserPrefs.get(ctx).getToken() != null) {
             scheduleHeartbeat(AppSettings.getMessageIntervalValue(ctx));
         }
     }

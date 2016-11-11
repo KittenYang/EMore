@@ -18,6 +18,7 @@ import android.support.annotation.Nullable;
 
 import com.caij.emore.EventTag;
 import com.caij.emore.Key;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.service.manager.ChatManager;
 import com.caij.emore.service.manager.PublishStatusManager;
 import com.caij.emore.service.manager.UnReadMessageManager;
@@ -88,6 +89,9 @@ public class EMoreService extends Service {
         mUnReadMessageManager.onCreateManager(this);
         mChatManager.onCreateManager(this);
 
+        if (UserPrefs.get(this).getToken() == null) {
+            stopSelf();
+        }
     }
 
     @Override
