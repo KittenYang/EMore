@@ -1,5 +1,5 @@
 # EMore
-微博第三方客户端， EMore的意思是Easy More 更简单的使用。
+微博第三方客户端， EMore的意思是Easy More 更简单的使用。[下载](https://beta.bugly.qq.com/j0z4)
  
 
 ![main](introduce/main.png)   ![message](introduce/message.png)
