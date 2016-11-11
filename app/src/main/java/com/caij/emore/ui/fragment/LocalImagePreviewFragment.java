@@ -34,11 +34,10 @@ import butterknife.OnLongClick;
  */
 public class LocalImagePreviewFragment extends ImagePreviewFragment {
 
-    public static ImagePreviewFragment newInstance(ImageInfo imageInfo, ImageInfo hdImageInfo) {
+    public static ImagePreviewFragment newInstance(ImageInfo imageInfo) {
         LocalImagePreviewFragment fragment = new LocalImagePreviewFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(Key.IMAGE_PATH, imageInfo);
-        bundle.putSerializable(Key.HD_IMAGE_PATH, hdImageInfo);
         fragment.setArguments(bundle);
         return fragment;
     }

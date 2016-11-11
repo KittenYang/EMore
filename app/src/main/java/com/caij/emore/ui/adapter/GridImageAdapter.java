@@ -10,10 +10,14 @@ import android.widget.ImageView;
 import com.caij.emore.R;
 import com.caij.emore.bean.Image;
 import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.widget.RatioImageView;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,17 +30,22 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
     private ImageLoader.ImageConfig mImageConfig;
     private ImageSelectListener mImageSelectListener;
 
-    public GridImageAdapter(Context context) {
+    private List<String> selectImages;
+    private int mMaxImageSelectCount;
+
+    public GridImageAdapter(Context context, int maxImageSelectCount) {
         super(context);
         mImageConfig = new ImageLoader.ImageConfigBuild().
                 setScaleType(ImageLoader.ScaleType.CENTER_CROP).build();
+        selectImages = new ArrayList<>(maxImageSelectCount);
+        mMaxImageSelectCount = maxImageSelectCount;
     }
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == 2) {
             View view = mInflater.inflate(R.layout.item_image, parent, false);
-            ImageViewHolder imageViewHolder = new ImageViewHolder(view, mOnItemClickListener, mImageSelectListener);
+            ImageViewHolder imageViewHolder = new ImageViewHolder(view, mOnItemClickListener);
             return imageViewHolder;
         }else {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -57,14 +66,23 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
         this.mImageSelectListener = imageSelectListener;
     }
 
+    public List<String> getSelectImages() {
+        return selectImages;
+    }
+
+    public void setSelectImages(List<String> selectImages) {
+        this.selectImages = selectImages;
+    }
+
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         if (holder instanceof  ImageViewHolder) {
             ImageViewHolder imageView = (ImageViewHolder) holder;
             Image image = getItem(position);
-            imageView.selectCheckBox.setSelected(image.isSelected());
+            boolean isSelect = selectImages.contains(image.getPath());
+            imageView.selectCheckBox.setSelected(isSelect);
             imageView.selectCheckBox.setTag(image);
-            imageView.viewShaw.setVisibility(image.isSelected() ? View.VISIBLE : View.GONE);
+            imageView.viewShaw.setVisibility(isSelect ? View.VISIBLE : View.GONE);
             String path = "file://" + image.getPath();
             ImageLoader.loadUrl(mContext, imageView.imageView, path, R.drawable.weibo_image_placeholder, mImageConfig);
         }else if (holder instanceof  CameraViewHolder){
@@ -73,7 +91,7 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
         }
     }
 
-    public static class ImageViewHolder extends BaseViewHolder {
+    public class ImageViewHolder extends BaseViewHolder {
 
         @BindView(R.id.image_view)
         RatioImageView imageView;
@@ -83,28 +101,36 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
         View viewShaw;
 
         public ImageViewHolder(final View itemView,
-                               RecyclerViewOnItemClickListener onItemClickListener,
-                               final ImageSelectListener imageSelectListener) {
+                               RecyclerViewOnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);
             ButterKnife.bind(this, itemView);
             selectCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Image image = (Image) v.getTag();
-                    if (imageSelectListener != null && imageSelectListener.onSelect(!image.isSelected(), image)) {
-                        image.setSelected(!image.isSelected());
+                    if (!selectImages.contains(image.getPath())) {
+                        v.setSelected(true);
+                        viewShaw.setVisibility(View.VISIBLE);
+                        AnimatorSet animatorSet = new AnimatorSet();
+                        ObjectAnimator scaleAnimatorX = ObjectAnimator.ofFloat(v, View.SCALE_X, 1f, 1.15f, 1f);
+                        ObjectAnimator scaleAnimatorY = ObjectAnimator.ofFloat(v, View.SCALE_Y, 1f, 1.15f, 1f);
+                        animatorSet.playTogether(scaleAnimatorY, scaleAnimatorX);
+                        animatorSet.start();
 
-                        v.setSelected(image.isSelected());
-                        if (image.isSelected()) {
-                            viewShaw.setVisibility(View.VISIBLE);
-                            AnimatorSet animatorSet = new AnimatorSet();
-                            ObjectAnimator scaleAnimatorX = ObjectAnimator.ofFloat(v, View.SCALE_X, 1f, 1.15f, 1f);
-                            ObjectAnimator scaleAnimatorY = ObjectAnimator.ofFloat(v, View.SCALE_Y, 1f, 1.15f, 1f);
-                            animatorSet.playTogether(scaleAnimatorY, scaleAnimatorX);
-                            animatorSet.start();
+                        selectImages.add(image.getPath());
+                    }else {
+                        if (getSelectImages().size() >= mMaxImageSelectCount) {
+                            ToastUtil.show(mContext, String.format(mContext.getString(R.string.max_image_select_hint), mMaxImageSelectCount));
+                            return;
                         }else {
+                            v.setSelected(false);
                             viewShaw.setVisibility(View.GONE);
+                            selectImages.remove(image.getPath());
                         }
+                    }
+
+                    if (mImageSelectListener != null) {
+                        mImageSelectListener.onSelect(selectImages.contains(image.getPath()), image);
                     }
                 }
             });

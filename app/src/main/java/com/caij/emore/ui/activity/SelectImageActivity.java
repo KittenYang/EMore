@@ -59,6 +59,7 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
 
     private static final int REQUEST_CODE_CAPTURE = 100;
     private static final int MY_PERMISSIONS_REQUEST_READ_IMAGE = 100;
+    private static final int REQUEST_CODE_SELECT_IMAGES = 100;
 
     @BindView(R.id.tv_folder)
     TextView tvFolder;
@@ -75,7 +76,6 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
 
     private Handler mHandler;
     private String camareOutputPath;
-    private ArrayList<String> mSelectImages;
     private int mMaxImageSelectCount;
 
     public static Intent newIntent(Context context, int maxImageCount) {
@@ -91,7 +91,6 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
         mMaxImageSelectCount = getIntent().getIntExtra(Key.MAX, 0);
         initView();
         mHandler = new Handler();
-        mSelectImages = new ArrayList<>();
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -127,7 +126,7 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setBackgroundColor(getResources().getColor(R.color.ui_background));
-        mImageAdapter = new GridImageAdapter(this);
+        mImageAdapter = new GridImageAdapter(this, mMaxImageSelectCount);
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
@@ -168,9 +167,11 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
                     ArrayList<String> paths = new ArrayList<String>();
                     paths.add(image.getPath());
                     NavigationUtil.startLocalImagePreActivity(SelectImageActivity.this, view, paths, 0);
+
                 }
             }
         });
+
         mImageAdapter.setOnSelectListener(this);
     }
 
@@ -201,10 +202,14 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
             .subscribe(new SubscriberAdapter<List<Image>>() {
                 @Override
                 public void onNext(List<Image> images) {
+                    //这里是相机
+                    Image item = new Image();
+                    item.setType(1);
+                    images.add(0, item);
+
                     mImageAdapter.setEntities(images);
                     mImageAdapter.notifyDataSetChanged();
-                    mSelectImages.clear();
-                    mMiImageCount.setTitle(getString(R.string.complete) + "(" + mSelectImages.size() + "/" + mMaxImageSelectCount + ")");
+                    mMiImageCount.setTitle(getString(R.string.complete) + "(" + mImageAdapter.getSelectImages().size() + "/" + mMaxImageSelectCount + ")");
                 }
             });
     }
@@ -268,11 +273,6 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
 
     private ArrayList<Image> getImagesByFolderId(String bucketId) {
         ArrayList<Image> imageList = new ArrayList<Image>();
-
-        Image item = new Image();
-        item.setType(1);
-        imageList.add(item);
-
         String[] columns;
         String orderBy = MediaStore.Images.Media._ID + " DESC";
         String selection;
@@ -293,13 +293,16 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
         }
 
         if (cursor != null && cursor.getCount() > 0) {
+            Image item;
             while (cursor.moveToNext()) {
                 item = new Image();
                 int idColumn = cursor.getColumnIndex(MediaStore.Images.Media._ID);
                 int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                String path = cursor.getString(dataColumn);
                 item.setId(cursor.getLong(idColumn));
-                item.setPath(cursor.getString(dataColumn));
+                item.setPath(path);
                 item.setType(2);
+
                 imageList.add(item);
             }
             cursor.close();
@@ -311,18 +314,8 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
 
     @Override
     public boolean onSelect(boolean isSelect, Image image) {
-        if (isSelect && mSelectImages.size() >= mMaxImageSelectCount) {
-            ToastUtil.show(this, String.format(getString(R.string.max_image_select_hint), mMaxImageSelectCount));
-            return false;
-        }else {
-            if (isSelect) {
-                mSelectImages.add(image.getPath());
-            } else {
-                mSelectImages.remove(image.getPath());
-            }
-            mMiImageCount.setTitle(getString(R.string.complete) + "(" + mSelectImages.size() + "/" + mMaxImageSelectCount + ")");
-            return true;
-        }
+        mMiImageCount.setTitle(getString(R.string.complete) + "(" + mImageAdapter.getSelectImages().size() + "/" + mMaxImageSelectCount + ")");
+        return true;
     }
 
     private void showImageFolder() {
@@ -412,6 +405,26 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
                 }
                 break;
         }
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_SELECT_IMAGES) {
+                ArrayList<String> paths = data.getStringArrayListExtra(Key.IMAGE_PATHS);
+                boolean isOk = data.getBooleanExtra(Key.TYPE, false);
+
+                mImageAdapter.setSelectImages(paths);
+
+                if (isOk) {
+                    Intent intent = new Intent();
+                    intent.putStringArrayListExtra(Key.IMAGE_PATHS, (ArrayList<String>) mImageAdapter.getSelectImages());
+                    setResult(Activity.RESULT_OK, intent);
+                    finish();
+                }else {
+                    mMiImageCount.setTitle(getString(R.string.complete) + "(" + mImageAdapter.getSelectImages().size() + "/" + mMaxImageSelectCount + ")");
+                }
+
+                mImageAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     @Override
@@ -424,13 +437,21 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.image_count) {
-            if (mSelectImages == null || mSelectImages.size() == 0) {
+            if (mImageAdapter.getSelectImages() == null || mImageAdapter.getSelectImages().size() == 0) {
                 ToastUtil.show(this, R.string.unselect_image);
             }else {
                 Intent intent = new Intent();
-                intent.putStringArrayListExtra(Key.IMAGE_PATHS, mSelectImages);
+                intent.putStringArrayListExtra(Key.IMAGE_PATHS, (ArrayList<String>) mImageAdapter.getSelectImages());
                 setResult(Activity.RESULT_OK, intent);
                 finish();
+            }
+        }else if (item.getItemId() == R.id.image_pre) {
+            if (mImageAdapter.getSelectImages() == null || mImageAdapter.getSelectImages().size() == 0) {
+                ToastUtil.show(this, R.string.unselect_image);
+            }else {
+                Intent intent = SelectImagePrewActivity.newIntent(SelectImageActivity.this,
+                        (ArrayList<String>) mImageAdapter.getSelectImages(), 0);
+                startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGES);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -450,4 +471,5 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
             }
         }
     }
+
 }

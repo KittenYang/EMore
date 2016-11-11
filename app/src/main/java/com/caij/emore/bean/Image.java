@@ -4,7 +4,6 @@ public class Image {
 
     private long id;
 	private String path;
-	private boolean isSelected;
 
     private int type;
 
@@ -14,14 +13,6 @@ public class Image {
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
     }
 
     public long getId() {

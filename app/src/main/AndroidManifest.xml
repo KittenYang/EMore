@@ -130,6 +130,9 @@
         <activity android:name="com.caij.emore.ui.activity.ArticleActivity"
             android:screenOrientation="portrait"/>
 
+        <activity android:name="com.caij.emore.ui.activity.SelectImagePrewActivity"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

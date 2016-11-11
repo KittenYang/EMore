@@ -25,6 +25,6 @@ public class LocalImagePrewActivity extends ImagePrewActivity {
 
     @Override
     protected BaseFragment createFragment(ArrayList<ImageInfo> paths, ArrayList<ImageInfo> hdPaths, int i) {
-        return LocalImagePreviewFragment.newInstance(paths.get(i), hdPaths == null ? null : hdPaths.get(i));
+        return LocalImagePreviewFragment.newInstance(paths.get(i));
     }
 }

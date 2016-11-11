@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,7 @@ import com.caij.emore.remote.imp.GroupApiImp;
 import com.caij.emore.repository.GroupRepository;
 import com.caij.emore.ui.activity.SearchRecommendActivity;
 import com.caij.emore.ui.activity.publish.PublishStatusActivity;
+import com.caij.emore.ui.brige.ToolbarDoubleClick;
 import com.caij.emore.ui.fragment.weibo.FriendStatusFragment;
 import com.caij.emore.ui.view.StatusContainerView;
 import com.caij.emore.utils.LogUtil;
@@ -32,7 +34,7 @@ import java.util.List;
  * Created by Caij on 2016/11/2.
  */
 
-public class StatusContainerFragment extends BaseFragment<StatusContainerPresent> implements StatusContainerView {
+public class StatusContainerFragment extends BaseFragment<StatusContainerPresent> implements StatusContainerView, ToolbarDoubleClick {
 
     public static final String FRIEND_STATUS_FRAGMENT_TAG = "friend_status_fragment_tag";
 
@@ -132,5 +134,15 @@ public class StatusContainerFragment extends BaseFragment<StatusContainerPresent
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void acceptToolBarDoubleClick(View view) {
+        List<Fragment> fragments = getChildFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof ToolbarDoubleClick) {
+                ((ToolbarDoubleClick) fragment).acceptToolBarDoubleClick(view);
+            }
+        }
     }
 }

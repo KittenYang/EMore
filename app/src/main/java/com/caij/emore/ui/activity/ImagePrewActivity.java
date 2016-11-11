@@ -103,7 +103,7 @@ public class ImagePrewActivity extends BaseActivity {
         return ImagePreviewFragment.newInstance(paths.get(i), hdPaths == null ? null : hdPaths.get(i));
     }
 
-    private static class ImageFragmentAdapter extends StatusFragmentPagerAdapter {
+    public static class ImageFragmentAdapter extends StatusFragmentPagerAdapter {
 
         public ImageFragmentAdapter(FragmentManager fm, List<BaseFragment> fragments, List<String> titles) {
             super(fm, fragments, titles);
