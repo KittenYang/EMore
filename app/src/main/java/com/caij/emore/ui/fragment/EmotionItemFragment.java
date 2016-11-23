@@ -108,16 +108,6 @@ public class EmotionItemFragment extends BaseFragment {
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 7);
             recyclerView.setLayoutManager(gridLayoutManager);
-            recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-                @Override
-                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                    if (parent.getChildLayoutPosition(view) >= 14) { //最下面一行不要间距
-                        outRect.bottom = 0;
-                    }else {
-                        outRect.bottom =  getResources().getDimensionPixelSize(R.dimen.spacing_emotion);
-                    }
-                }
-            });
             recyclerView.setAdapter(new MyGridAdapter(container.getContext(), emotions, position));
             container.addView(view);
             return view;
@@ -140,8 +130,8 @@ public class EmotionItemFragment extends BaseFragment {
 
         @Override
         public EmotionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            ImageView imageView = new ImageView(parent.getContext());
-            return new EmotionViewHolder(imageView, mOnItemClickListener);
+            View view = mInflater.inflate(R.layout.item_emotion, parent, false);
+            return new EmotionViewHolder(view, mOnItemClickListener);
         }
 
         @Override
@@ -180,7 +170,7 @@ public class EmotionItemFragment extends BaseFragment {
 
         public EmotionViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);
-            imageView = (ImageView) itemView;
+            imageView = (ImageView) itemView.findViewById(R.id.iv_emotion);
         }
     }
 }

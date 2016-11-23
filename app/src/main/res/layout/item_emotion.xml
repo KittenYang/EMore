@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.caij.emore.widget.RatioRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:ratio="1">
+
+    <ImageView
+        android:id="@+id/iv_emotion"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_centerInParent="true">
+
+    </ImageView>
+
+</com.caij.emore.widget.RatioRelativeLayout>
+
