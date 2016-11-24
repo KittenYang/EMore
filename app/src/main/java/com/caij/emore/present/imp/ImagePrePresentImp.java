@@ -45,8 +45,6 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
     private String mShowImagePath;
     private ImageInfo mShowImageInfo;
 
-
-
     public ImagePrePresentImp(Context context, ImageInfo imageInfo, ImageInfo hdImageInfo, ImagePreView imagePreView) {
         mContent = context;
         mImagePreView = imagePreView;
@@ -58,7 +56,6 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
     public void onCreate() {
 
     }
-
 
     @Override
     public void loadImage() {
@@ -130,7 +127,7 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
     }
 
     public static boolean isBigImage(int width, int height) {
-        return width * height > 2048 * 2048 || width > 6000 || height > 6000;
+        return width * height > 2048 * 2048 || width > 4048 || height > 4048;
     }
 
     public static boolean isLongHImage(int width, int height) {

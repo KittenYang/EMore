@@ -392,54 +392,46 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
 
     @Override
     public void sendImageMessage(final ArrayList<String> paths) {
-        RxUtil.createDataObservable(new RxUtil.Provider<List<DirectMessage>>() {
-            @Override
-            public List<DirectMessage> getData() {
-                User user = mUserManager.getUserByUid(Long.parseLong(mToken.getUid()));
-                return buildImagesMessage(user, mToUserId, paths);
-            }
-        }).flatMap(new Func1<List<DirectMessage>, Observable<DirectMessage>>() {
-            @Override
-            public Observable<DirectMessage> call(List<DirectMessage> directMessages) {
-                return Observable.from(directMessages);
-            }
-        })
-        .doOnNext(new Action1<DirectMessage>() {
-            @Override
-            public void call(DirectMessage message) {
-                mMessageManager.saveMessage(message);
-                message.setTextContentSpannable(SpannableStringUtil.formatSpannable(message));
-            }
-        })
-        .compose(SchedulerTransformer.<DirectMessage>create())
-        .subscribe(new SubscriberAdapter<DirectMessage>() {
+        final User user = mUserManager.getUserByUid(Long.parseLong(mToken.getUid()));
+        Subscription subscription = Observable.from(paths)
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        return ImageUtil.compressImage(s, EMApplication.getInstance());
+                    }
+                })
+                .map(new Func1<String, DirectMessage>() {
+                    @Override
+                    public DirectMessage call(String s) {
+                        return buildImageMessage(user, mToUserId, s);
+                    }
+                })
+                .doOnNext(new Action1<DirectMessage>() {
+                    @Override
+                    public void call(DirectMessage message) {
+                        mMessageManager.saveMessage(message);
+                        message.setTextContentSpannable(SpannableStringUtil.formatSpannable(message));
+                    }
+                }).compose(SchedulerTransformer.<DirectMessage>create())
+                .subscribe(new SubscriberAdapter<DirectMessage>() {
 
-            @Override
-            public void onError(Throwable e) {
-                LogUtil.d(ChatPresentImp.this, "build image message error" + e.getMessage());
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        LogUtil.d(ChatPresentImp.this, "build image message error" + e.getMessage());
+                    }
 
-            @Override
-            public void onNext(DirectMessage message) {
-                send(message);
-            }
-        });
-
+                    @Override
+                    public void onNext(DirectMessage message) {
+                        send(message);
+                    }
+                });
+        addSubscription(subscription);
     }
 
     private DirectMessage buildTextMessage(User self, long recipientId, String text) {
         DirectMessage directMessage = buildMessage(self, recipientId);
         directMessage.setText(text);
         return directMessage;
-    }
-
-    private List<DirectMessage> buildImagesMessage(User self, long recipientId, List<String>  paths){
-        List<DirectMessage> messages = new ArrayList<>(paths.size());
-        for (String path : paths) {
-            DirectMessage message = buildImageMessage(self, recipientId, path);
-            messages.add(message);
-        }
-        return messages;
     }
 
     private DirectMessage buildImageMessage(User self, long recipientId, String path) {
@@ -453,7 +445,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         messageAttachInfo.setThumbnail("file://" + path);
         List<MessageAttachInfo> attachInfos = new ArrayList<>();
         attachInfos.add(messageAttachInfo);
-        ImageInfo imageInfo = praseLocakImage(messageAttachInfo);
+        ImageInfo imageInfo = parseImageInfo(messageAttachInfo);
         directMessage.setAttachinfo(attachInfos);
         directMessage.setImageInfo(imageInfo);
         return directMessage;
@@ -471,7 +463,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
     }
 
 
-    private static ImageInfo praseLocakImage(MessageAttachInfo messageImage) {
+    private static ImageInfo parseImageInfo(MessageAttachInfo messageImage) {
         String url = messageImage.getThumbnail();
         if (url.startsWith("http")) {
             String size  = Uri.parse(url).getQueryParameter("size");
@@ -527,7 +519,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                     message.setTextContentSpannable(SpannableStringUtil.formatSpannable(message));
 
                     if (message.getAttachinfo() != null && message.getAttachinfo().size() > 0) {
-                        ImageInfo imageInfo = praseLocakImage(message.getAttachinfo().get(0));
+                        ImageInfo imageInfo = parseImageInfo(message.getAttachinfo().get(0));
                         message.setImageInfo(imageInfo);
 
                     }

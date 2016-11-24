@@ -132,10 +132,12 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
             mVisibleFragment = mStatusContainerFragment;
         } else {
-            mStatusContainerFragment = (StatusContainerFragment) getSupportFragmentManager().findFragmentByTag(Key.FRIEND_WEIBO_FRAGMENT_TAG);
+            mStatusContainerFragment = (StatusContainerFragment) getSupportFragmentManager()
+                    .findFragmentByTag(Key.FRIEND_WEIBO_FRAGMENT_TAG);
             if (mStatusContainerFragment == null) {
                 mStatusContainerFragment = new StatusContainerFragment();
             }
+
             mMessageFragment = getSupportFragmentManager().findFragmentByTag(Key.MESSAGE_FRAGMENT_TAG);
             if (mMessageFragment == null) {
                 mMessageFragment = new MessageUserFragment();

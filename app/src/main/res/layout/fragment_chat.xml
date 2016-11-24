@@ -10,7 +10,8 @@
         android:layout_weight="1"
         android:paddingTop="@dimen/spacing_medium"
         android:paddingBottom="@dimen/spacing_medium"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:background="@color/ui_background">
 
     </android.support.v7.widget.RecyclerView>
 
