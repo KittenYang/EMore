@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
@@ -16,7 +15,6 @@ import com.caij.emore.R;
 import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.ui.activity.WebActivity;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.FileUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxjava.RxUtil;
@@ -25,6 +23,10 @@ import com.caij.emore.utils.rxjava.SubscriberAdapter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+
+import java.io.IOException;
+
+import rx.Subscription;
 
 /**
  * Created by Caij on 2016/5/28.
@@ -36,8 +38,8 @@ public abstract class AbsLoginActivity extends WebActivity {
 
     protected String mUsername;
     protected String mPassword;
-    private AsyncTask<Object, Object, String> mHtmlAsyncTask;
     private boolean mAccountFilled = false;
+    private Subscription mLoginHtmlSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,73 +68,86 @@ public abstract class AbsLoginActivity extends WebActivity {
     }
 
     private void loadLoginHtml() {
-        RxUtil.createDataObservable(new RxUtil.Provider<String>() {
-            @Override
-            public String getData() throws Exception {
-                int i = 3;
-                while (i > 0) {
-                    try {
-                        String js = FileUtil.readAssetsFile("oauth.js", getApplicationContext());
-                        js = js.replace("%username%", mUsername).replace("%password%", mPassword);
-
-                        Document dom = Jsoup.connect(getLoginUrl()).get();
-                        String html = dom.toString();
-                        html = html.replace("<html>", "<html id='all' >").replace("</head>", js + "</head>")
-                                .replace("action-type=\"submit\"", "action-type=\"submit\" id=\"submit\"");
-
+        mLoginHtmlSubscription = RxUtil.createDataObservable(new RxUtil.Provider<String>() {
+                @Override
+                public String getData() throws Exception {
+                    int i = 3;
+                    while (i > 0) {
                         try {
-                            // 通过监听input标签的oninput事件，来获取账户密码
-                            // onchange是value改变，且焦点改变才触发
-                            // oninput是value改变就触发
-                            dom = Jsoup.parse(html);
-                            Element inputAccount = dom.select("input#userId").first();
-                            inputAccount.attr("oninput", "getAccount()");
-
-                            Element pwdAccount = dom.select("input#passwd").first();
-                            pwdAccount.attr("oninput", "getAccount()");
-
-                            LogUtil.d(TAG, inputAccount.toString());
-                            LogUtil.d(TAG, pwdAccount.toString());
-
-                            html = dom.toString();
-
-                            LogUtil.d(TAG, "添加input监听事件");
+                            return getLoginHtml();
                         }catch(Exception e){
                             LogUtil.d(TAG, e.getMessage());
                         }
-
-                        LogUtil.v(TAG, html);
-
-                        return html;
-                    }catch(Exception e){
-                        LogUtil.d(TAG, e.getMessage());
+                        i --;
                     }
-                    i --;
+                    throw new RuntimeException(new IOException());
                 }
-                return null;
-            }
-        }).compose(SchedulerTransformer.<String>create())
-        .subscribe(new SubscriberAdapter<String>() {
-            @Override
-            public void onNext(String s) {
-                if (!TextUtils.isEmpty(s)) {
-                    mWebView.loadDataWithBaseURL("https://api.weibo.com", s, "text/html", "UTF-8", "");
-                }else {
-                    DialogUtil.showHintDialog(AbsLoginActivity.this, getString(R.string.hint), "网页加载失败加载",
-                            "重新加载", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    loadLoginHtml();
-                                }
-                            }, "退出", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    finish();
-                                }
-                            });
+            })
+            .compose(SchedulerTransformer.<String>create())
+            .subscribe(new SubscriberAdapter<String>() {
+                @Override
+                public void onNext(String s) {
+                    if (!TextUtils.isEmpty(s)) {
+                        mWebView.loadDataWithBaseURL("https://api.weibo.com", s, "text/html", "UTF-8", "");
+                    }
                 }
-            }
-        });
+
+                @Override
+                public void onError(Throwable e) {
+                    super.onError(e);
+                    showReLoadDialog();
+                }
+            });
+    }
+
+    private void showReLoadDialog() {
+        DialogUtil.showHintDialog(AbsLoginActivity.this, getString(R.string.hint), "网页加载失败加载",
+                "重新加载", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        loadLoginHtml();
+                    }
+                }, "退出", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+    }
+
+    private String getLoginHtml() throws IOException {
+        String js = FileUtil.readAssetsFile("oauth.js", getApplicationContext());
+        js = js.replace("%username%", mUsername).replace("%password%", mPassword);
+
+        Document dom = Jsoup.connect(getLoginUrl()).get();
+        String html = dom.toString();
+        html = html.replace("<html>", "<html id='all' >").replace("</head>", js + "</head>")
+                .replace("action-type=\"submit\"", "action-type=\"submit\" id=\"submit\"");
+
+        try {
+            // 通过监听input标签的oninput事件，来获取账户密码
+            // onchange是value改变，且焦点改变才触发
+            // oninput是value改变就触发
+            dom = Jsoup.parse(html);
+            Element inputAccount = dom.select("input#userId").first();
+            inputAccount.attr("oninput", "getAccount()");
+
+            Element pwdAccount = dom.select("input#passwd").first();
+            pwdAccount.attr("oninput", "getAccount()");
+
+            LogUtil.d(TAG, inputAccount.toString());
+            LogUtil.d(TAG, pwdAccount.toString());
+
+            html = dom.toString();
+
+            LogUtil.d(TAG, "添加input监听事件");
+        }catch(Exception e){
+            LogUtil.d(TAG, e.getMessage());
+        }
+
+        LogUtil.v(TAG, html);
+
+        return html;
     }
 
     @Override
@@ -167,8 +182,9 @@ public abstract class AbsLoginActivity extends WebActivity {
 
     @Override
     protected void onDestroy() {
-        if (mHtmlAsyncTask != null && !mHtmlAsyncTask.isCancelled()) {
-            mHtmlAsyncTask.cancel(true);
+        if (mLoginHtmlSubscription != null && !mLoginHtmlSubscription.isUnsubscribed()) {
+            mLoginHtmlSubscription.unsubscribe();
+            mLoginHtmlSubscription = null;
         }
         super.onDestroy();
     }
