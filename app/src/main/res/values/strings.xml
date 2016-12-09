@@ -209,5 +209,8 @@
     <string name="preview_big_image">查看大图</string>
     <string name="home_page">首页</string>
     <string name="group">分组</string>
+    <string name="cancel_collection">取消收藏</string>
+    <string name="collection">收藏</string>
+    <string name="delete">删除</string>
 
 </resources>

@@ -97,9 +97,9 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         Drawable messageIconDrawable = createNavMenuItemDrawable(R.mipmap.ic_message);
         tvMessage.setCompoundDrawables(messageIconDrawable, null, null, null);
 
-        initContent(savedInstanceState);
+        initContentFragment(savedInstanceState);
 
-        setViewStatus(mVisibleFragment);
+        setNavItemViewStatus(mVisibleFragment);
 
         mPresent.getUserInfoByUid();
         mPresent.getNotifyInfo();
@@ -110,9 +110,9 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         super.onNewIntent(intent);
         String key  = intent.getStringExtra(Key.ID);
         if (Key.FRIEND_WEIBO_FRAGMENT_TAG.equals(key)) {
-            switchContentOfStatus();
+            switchContent2Status();
         }else if (Key.MESSAGE_FRAGMENT_TAG.equals(key)) {
-            switchContentOfMessage();
+            switchContent2Message();
         }
     }
 
@@ -122,7 +122,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         setTheme(ThemeUtils.THEME_ARR[themePosition][ThemeUtils.APP_MAIN_THEME_POSITION]);
     }
 
-    private void initContent(Bundle savedInstanceState) {
+    private void initContentFragment(Bundle savedInstanceState) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
             mStatusContainerFragment = new StatusContainerFragment();
@@ -159,7 +159,6 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
                 new UserManagerImp(), new NotifyManagerImp(), new DraftManagerImp());
     }
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (mVisibleFragment == mStatusContainerFragment) {
@@ -177,7 +176,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         return DrawableUtil.createSelectThemeDrawable(this, drawableId, R.color.icon_normal_color, typedValue.resourceId);
     }
 
-    private void setViewStatus(Fragment fragment) {
+    private void setNavItemViewStatus(Fragment fragment) {
         if (fragment == mStatusContainerFragment) {
             rlItemStatus.setSelected(true);
             rlItemMessage.setSelected(false);
@@ -195,7 +194,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         }
     }
 
-    public void switchContent(Fragment from, Fragment to, int id, String tag) {
+    public void switchContentFragment(Fragment from, Fragment to, int id, String tag) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (!to.isAdded()) {
             transaction.hide(from).add(id, to, tag).commit();
@@ -266,65 +265,61 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
     @OnClick({R.id.img_navigation_avatar, R.id.tv_setting, R.id.rl_draft, R.id.rl_item_status, R.id.rl_item_message, R.id.tv_hot_weibo})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_setting: {
+            case R.id.tv_setting:
                 Intent intent = new Intent(this, SettingActivity.class);
                 startActivity(intent);
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
-            }
 
-            case R.id.img_navigation_avatar: {
+            case R.id.img_navigation_avatar:
                 User user = (User) view.getTag();
                 if (user != null) {
-                    Intent intent = UserInfoActivity.newIntent(this, user.getScreen_name());
+                    intent = UserInfoActivity.newIntent(this, user.getScreen_name());
                     startActivity(intent);
                 }
                 break;
-            }
 
-            case R.id.rl_draft: {
-                Intent intent = DefaultFragmentActivity.starFragmentV4(this, getString(R.string.draft_box), DraftFragment.class, null);
+            case R.id.rl_draft:
+                intent = DefaultFragmentActivity.starFragmentV4(this, getString(R.string.draft_box), DraftFragment.class, null);
                 startActivity(intent);
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
-            }
 
             case R.id.rl_item_status:
                 if (!rlItemStatus.isSelected()) {
-                    switchContentOfStatus();
+                    switchContent2Status();
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
                 }
                 break;
 
             case R.id.rl_item_message:
                 if (!rlItemMessage.isSelected()) {
-                    switchContentOfMessage();
+                    switchContent2Message();
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
                 }
                 break;
 
-            case R.id.tv_hot_weibo: {
-                Intent intent = DefaultFragmentActivity.starFragmentV4(this, getString(R.string.hot_weibo),
+            case R.id.tv_hot_weibo:
+                intent = DefaultFragmentActivity.starFragmentV4(this, getString(R.string.hot_weibo),
                         HotStatusFragment.class, null);
                 startActivity(intent);
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
-            }
         }
     }
 
-    private void switchContentOfStatus() {
-        changeContent(mStatusContainerFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG);
+    private void switchContent2Status() {
+        toContentFragment(mStatusContainerFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG);
     }
 
-    private void switchContentOfMessage() {
-        changeContent(mMessageFragment, Key.MESSAGE_FRAGMENT_TAG);
+    private void switchContent2Message() {
+        toContentFragment(mMessageFragment, Key.MESSAGE_FRAGMENT_TAG);
     }
 
-    private void changeContent(Fragment fragment, String tag) {
-        switchContent(mVisibleFragment, fragment, R.id.attach_container, tag);
+    private void toContentFragment(Fragment fragment, String tag) {
+        switchContentFragment(mVisibleFragment, fragment, R.id.attach_container, tag);
         mVisibleFragment = fragment;
-        setViewStatus(mVisibleFragment);
+        setNavItemViewStatus(mVisibleFragment);
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.present.TimeLinePresent;
@@ -52,13 +53,13 @@ public abstract class TimeLineStatusFragment<P extends TimeLinePresent> extends 
     private void onMenuClick(final Status status, final int position) {
         List<String> items = new ArrayList<>();
         if (status.getFavorited()) {
-            items.add("取消收藏");
+            items.add(getString(R.string.cancel_collection));
         }else {
-            items.add("收藏");
+            items.add(getString(R.string.collection));
         }
         long uid = Long.parseLong(UserPrefs.get(getActivity()).getToken().getUid());
         if (status.getUser().getId() == uid) {
-            items.add("删除");
+            items.add(getString(R.string.delete));
         }
         String[] array = new String[items.size()];
         DialogUtil.showItemDialog(getActivity(), null, items.toArray(array), new DialogInterface.OnClickListener() {
@@ -85,28 +86,28 @@ public abstract class TimeLineStatusFragment<P extends TimeLinePresent> extends 
         mPresent.deleteStatus(status, position);
     }
 
-    private void collectStatus(Status weibo) {
-        mPresent.collectStatus(weibo);
+    private void collectStatus(Status status) {
+        mPresent.collectStatus(status);
     }
 
-    private void unCollectStatus(Status weibo) {
-        mPresent.unCollectStatus(weibo);
+    private void unCollectStatus(Status status) {
+        mPresent.unCollectStatus(status);
     }
 
     @Override
-    public void onDeleteStatusSuccess(Status weibo, int position) {
-        mRecyclerViewAdapter.removeEntity(weibo);
+    public void onDeleteStatusSuccess(Status status, int position) {
+        mRecyclerViewAdapter.removeEntity(status);
         mRecyclerViewAdapter.notifyItemRemoved(position);
     }
 
     @Override
-    public void onCollectSuccess(Status weibo) {
-        weibo.setFavorited(true);
+    public void onCollectSuccess(Status status) {
+        status.setFavorited(true);
     }
 
     @Override
-    public void onUnCollectSuccess(Status weibo) {
-        weibo.setFavorited(false);
+    public void onUnCollectSuccess(Status status) {
+        status.setFavorited(false);
     }
 
     @Override
@@ -157,11 +158,8 @@ public abstract class TimeLineStatusFragment<P extends TimeLinePresent> extends 
                 && index + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount() <= lastVisibleFeedPosition) {
             //得到要更新的item的view
             View view = xRecyclerView.getRecyclerView().getChildAt(index - firstVisibleItemPosition + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
-            if (null != xRecyclerView.getRecyclerView().getChildViewHolder(view)){
-                RecyclerView.ViewHolder viewHolder = xRecyclerView.getRecyclerView().getChildViewHolder(view);
 
-                return viewHolder;
-            }
+            return xRecyclerView.getRecyclerView().getChildViewHolder(view);
         }
 
         return null;
