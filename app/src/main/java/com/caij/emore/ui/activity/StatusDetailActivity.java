@@ -244,7 +244,7 @@ public class StatusDetailActivity extends BaseToolBarActivity<StatusDetailPresen
         mAttachContainer.setVisibility(View.VISIBLE);
 
         if (mWeiboItemView == null) {
-            int type = StatusAdapter.getWeiboType(status);
+            int type = StatusAdapter.getStatusType(status);
             switch (type) {
                 case StatusAdapter.TYPE_NORMAL_IMAGE:
                     mWeiboItemView = new StatusImageItemView(this);

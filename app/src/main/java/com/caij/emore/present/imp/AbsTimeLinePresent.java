@@ -233,18 +233,6 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                     }
                 })
                 .compose(SchedulerTransformer.<Attitude>create())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mView.showDialogLoading(true, R.string.requesting);
-                    }
-                })
-                .doOnTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        mView.showDialogLoading(false, R.string.requesting);
-                    }
-                })
                 .subscribe(new ResponseSubscriber<Attitude>(mView) {
                     @Override
                     protected void onFail(Throwable e) {
@@ -278,18 +266,6 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                     }
                 })
                 .compose(SchedulerTransformer.<Response>create())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mView.showDialogLoading(true, R.string.requesting);
-                    }
-                })
-                .doOnTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        mView.showDialogLoading(false, R.string.requesting);
-                    }
-                })
                 .subscribe(new ResponseSubscriber<Response>(mView) {
                     @Override
                     protected void onFail(Throwable e) {

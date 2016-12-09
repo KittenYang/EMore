@@ -92,7 +92,7 @@ public abstract class StatusListItemView extends StatusItemView {
 
         tvCommentCount.setText(CountUtil.getCounter(getContext(), status.getComments_count()));
 
-        tvLike.setText(String.valueOf(status.getAttitudes_count()));
+        tvLike.setText(CountUtil.getCounter(getContext(), status.getAttitudes_count()));
         tvLike.setSelected(status.getAttitudes_status() == 1);
 
         tvLike.setTag(status);
@@ -145,4 +145,28 @@ public abstract class StatusListItemView extends StatusItemView {
         this.isDetail = isDetail;
     }
 
+
+    public void setLikeSelected(Status status) {
+        if (tvLike.getTag() == status) {
+            tvLike.setSelected(status.getAttitudes_status() == 1);
+        }
+    }
+
+    public void setLikeCount(Status status) {
+        if (tvLike.getTag() == status) {
+            tvLike.setText(CountUtil.getCounter(getContext(), status.getAttitudes_count()));
+        }
+    }
+
+    public void setCommentCount(Status status) {
+        if (tvCommentCount.getTag() == status) {
+            tvCommentCount.setText(CountUtil.getCounter(getContext(), status.getComments_count()));
+        }
+    }
+
+    public void setRelayCount(Status status) {
+        if (tvRepostCount.getTag() == status) {
+            tvRepostCount.setText(CountUtil.getCounter(getContext(), status.getReposts_count()));
+        }
+    }
 }

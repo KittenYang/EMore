@@ -89,15 +89,15 @@ public class StatusAdapter extends BaseAdapter<Status, StatusAdapter.WeiboBaseVi
 
     @Override
     public int getItemViewType(int position) {
-        Status weibo = getItem(position);
-        return getWeiboType(weibo);
+        Status status = getItem(position);
+        return getStatusType(status);
     }
 
-    public static int getWeiboType(Status weibo) {
-        if (weibo.getRetweeted_status() == null) {
-            PageInfo pageInfo = weibo.getPage_info();
+    public static int getStatusType(Status status) {
+        if (status.getRetweeted_status() == null) {
+            PageInfo pageInfo = status.getPage_info();
             if (pageInfo != null &&
-                    (weibo.getPic_ids() == null || weibo.getPic_ids().size() == 0)) {
+                    (status.getPic_ids() == null || status.getPic_ids().size() == 0)) {
                 int type = pageInfo.getPageType();
                 if (type == ShortUrl.TYPE_VIDEO) {
                     return TYPE_NORMAL_VIDEO;
@@ -110,8 +110,8 @@ public class StatusAdapter extends BaseAdapter<Status, StatusAdapter.WeiboBaseVi
                 return TYPE_NORMAL_IMAGE;
             }
         }else {
-            Status reWebo = weibo.getRetweeted_status();
-            PageInfo pageInfo = weibo.getPage_info();
+            Status reWebo = status.getRetweeted_status();
+            PageInfo pageInfo = status.getPage_info();
             if (pageInfo != null
                     && (reWebo.getPic_ids() == null || reWebo.getPic_ids().size() == 0)) {
                 int type = pageInfo.getPageType();
@@ -153,6 +153,19 @@ public class StatusAdapter extends BaseAdapter<Status, StatusAdapter.WeiboBaseVi
                     }
                 }
             });
+        }
+
+        public void onStatusAttitudeUpdate(Status status) {
+            weiboItemView.setLikeSelected(status);
+            weiboItemView.setLikeCount(status);
+        }
+
+        public void onStatusCommentCountUpdate(Status status) {
+            weiboItemView.setCommentCount(status);
+        }
+
+        public void onStatusRelayCountUpdate(Status status) {
+            weiboItemView.setRelayCount(status);
         }
     }
 

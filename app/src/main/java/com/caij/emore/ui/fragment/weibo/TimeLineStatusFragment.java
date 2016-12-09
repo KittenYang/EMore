@@ -2,6 +2,8 @@ package com.caij.emore.ui.fragment.weibo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.caij.emore.account.UserPrefs;
@@ -11,15 +13,19 @@ import com.caij.emore.ui.activity.StatusDetailActivity;
 import com.caij.emore.ui.adapter.StatusAdapter;
 import com.caij.emore.ui.view.TimeLineStatusView;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
+import com.caij.emore.utils.AnimUtil;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.widget.recyclerview.BaseAdapter;
 import com.caij.emore.widget.recyclerview.BaseViewHolder;
+import com.caij.emore.widget.recyclerview.HeaderAndFooterRecyclerViewAdapter;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.R.attr.value;
 
 /**
  * Created by Caij on 2016/6/4.
@@ -109,13 +115,70 @@ public abstract class TimeLineStatusFragment<P extends TimeLinePresent> extends 
     }
 
     @Override
+    public void onStatusAttitudeUpdate(Status status, int index) {
+        RecyclerView.ViewHolder viewHolder = findViewHolder(index);
+        if (viewHolder != null && viewHolder instanceof StatusAdapter.WeiboBaseViewHolder) {
+            ((StatusAdapter.WeiboBaseViewHolder) viewHolder).onStatusAttitudeUpdate(status);
+        }
+    }
+
+    @Override
+    public void onStatusAttitudeCountUpdate(Status status, int index) {
+        RecyclerView.ViewHolder viewHolder = findViewHolder(index);
+        if (viewHolder != null && viewHolder instanceof StatusAdapter.WeiboBaseViewHolder) {
+            ((StatusAdapter.WeiboBaseViewHolder) viewHolder).onStatusAttitudeUpdate(status);
+        }
+    }
+
+    @Override
+    public void onStatusCommentCountUpdate(Status status, int index) {
+        RecyclerView.ViewHolder viewHolder = findViewHolder(index);
+        if (viewHolder != null && viewHolder instanceof StatusAdapter.WeiboBaseViewHolder) {
+            ((StatusAdapter.WeiboBaseViewHolder) viewHolder).onStatusCommentCountUpdate(status);
+        }
+    }
+
+    @Override
+    public void onStatusRelayCountUpdate(Status status, int index) {
+        RecyclerView.ViewHolder viewHolder = findViewHolder(index);
+        if (viewHolder != null && viewHolder instanceof StatusAdapter.WeiboBaseViewHolder) {
+            ((StatusAdapter.WeiboBaseViewHolder) viewHolder).onStatusRelayCountUpdate(status);
+        }
+    }
+
+    private RecyclerView.ViewHolder findViewHolder(int index) {
+        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) xRecyclerView.getLayoutManager();
+        int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+        int lastVisibleFeedPosition = linearLayoutManager.findLastVisibleItemPosition();
+
+        HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter = xRecyclerView.getAdapter();
+
+        if (firstVisibleItemPosition <= index + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount()
+                && index + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount() <= lastVisibleFeedPosition) {
+            //得到要更新的item的view
+            View view = xRecyclerView.getRecyclerView().getChildAt(index - firstVisibleItemPosition + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
+            if (null != xRecyclerView.getRecyclerView().getChildViewHolder(view)){
+                RecyclerView.ViewHolder viewHolder = xRecyclerView.getRecyclerView().getChildViewHolder(view);
+
+                return viewHolder;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
     public void onLikeClick(View v, int position) {
         if (WeicoAuthUtil.checkWeicoLogin(this, false)) {
             Status status = mRecyclerViewAdapter.getItem(position);
             if (status.getAttitudes_status() == 1) {
                 mPresent.destroyAttitudeStatus(status);
+                v.setSelected(false);
+                AnimUtil.scale(v, 1f, 1.2f, 1f);
             }else {
                 mPresent.attitudeStatus(status);
+                v.setSelected(true);
+                AnimUtil.scale(v, 1f, 1.2f, 1f);
             }
         }
     }

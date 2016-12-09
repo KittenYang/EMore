@@ -7,8 +7,8 @@ import com.caij.emore.manager.StatusManager;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.remote.AttitudeApi;
 import com.caij.emore.remote.StatusApi;
+import com.caij.emore.ui.view.ListStatusActionView;
 import com.caij.emore.ui.view.ListView;
-import com.caij.emore.ui.view.WeiboActionView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/8/12.
  */
-public abstract class AbsListTimeLinePresent<V extends WeiboActionView & ListView<Status>> extends AbsTimeLinePresent<V> {
+public abstract class AbsListTimeLinePresent<V extends ListStatusActionView & ListView<Status>> extends AbsTimeLinePresent<V> {
 
     protected List<Status> mStatuses;
 
@@ -31,7 +31,7 @@ public abstract class AbsListTimeLinePresent<V extends WeiboActionView & ListVie
             Status status = mStatuses.get(index);
             if (status.getId() == event.statusId) {
                 status.setAttitudes_count(event.count);
-                mView.notifyItemChanged(mStatuses, index);
+                mView.onStatusAttitudeCountUpdate(status, index);
                 break;
             }
         }
@@ -43,7 +43,7 @@ public abstract class AbsListTimeLinePresent<V extends WeiboActionView & ListVie
             Status status = mStatuses.get(index);
             if (status.getId() == event.statusId) {
                 status.setComments_count(event.count);
-                mView.notifyItemChanged(mStatuses, index);
+                mView.onStatusCommentCountUpdate(status, index);
                 break;
             }
         }
@@ -55,7 +55,7 @@ public abstract class AbsListTimeLinePresent<V extends WeiboActionView & ListVie
             Status status = mStatuses.get(index);
             if (status.getId() == event.statusId) {
                 status.setReposts_count(event.count);
-                mView.notifyItemChanged(mStatuses, index);
+                mView.onStatusRelayCountUpdate(status, index);
                 break;
             }
         }
@@ -71,7 +71,7 @@ public abstract class AbsListTimeLinePresent<V extends WeiboActionView & ListVie
                 }else {
                     status.setAttitudes_status(0);
                 }
-                mView.notifyItemChanged(mStatuses, index);
+                mView.onStatusAttitudeUpdate(status, index);
                 break;
             }
         }
