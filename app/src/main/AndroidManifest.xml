@@ -118,7 +118,8 @@
 
         <activity android:name=".ui.activity.SearchRecommendActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme_Default.SearchActivity"/>
+            android:theme="@style/AppTheme_Default.SearchActivity"
+            android:windowSoftInputMode="stateHidden"/>
 
         <activity android:name=".ui.activity.VideoViewPlayingActivity"
             android:screenOrientation="portrait"
