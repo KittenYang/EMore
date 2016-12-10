@@ -125,9 +125,6 @@ dependencies {
     compile "org.greenrobot:greendao:${rootProject.ext.greendaoVersion}"
     compile "com.github.chrisbanes:PhotoView:${rootProject.ext.photoViewVersion}"
     compile "org.jsoup:jsoup:${rootProject.ext.jsoupVersion}"
-    compile("com.lapism:searchview:${rootProject.ext.searchviewVersion}") {
-        exclude module: 'design'
-    }
     compile "com.tencent.bugly:crashreport:${rootProject.ext.crashreportVersion}"
     //    compile "com.tencent.bugly:nativecrashreport:${rootProject.ext.nativecrashreportVersion}"
 

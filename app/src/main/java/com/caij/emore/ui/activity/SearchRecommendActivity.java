@@ -4,21 +4,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.SinaSearchRecommend;
 import com.caij.emore.present.SearchRecommendPresent;
 import com.caij.emore.present.imp.SearchRecommendPresentImp;
-import com.caij.emore.ui.fragment.StatusAndUserSearchFragment;
-import com.caij.emore.ui.view.SearchRecommendView;
 import com.caij.emore.remote.imp.ServerSearchRecommendImp;
 import com.caij.emore.ui.adapter.SearchAdapter;
+import com.caij.emore.ui.fragment.StatusAndUserSearchFragment;
+import com.caij.emore.ui.view.SearchRecommendView;
+import com.caij.emore.utils.InitiateSearch;
+import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.weibo.ThemeUtils;
 import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
-import com.lapism.searchview.SearchView;
 
 import java.util.List;
 
@@ -34,12 +41,23 @@ public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent
 
     public static final int TEXT_CHANGE_QUERY_WHAT = 100;
 
-    @BindView(R.id.searchView)
-    SearchView mSearchView;
-    @BindView(R.id.rl_root)
-    View rootView;
+    @BindView(R.id.card_search)
+    CardView rootView;
 
     SearchAdapter mSearchAdapter;
+    @BindView(R.id.image_search_back)
+    ImageView imageSearchBack;
+    @BindView(R.id.edit_text_search)
+    EditText editTextSearch;
+    @BindView(R.id.clearSearch)
+    ImageView clearSearch;
+    @BindView(R.id.linearLayout_search)
+    LinearLayout linearLayoutSearch;
+    @BindView(R.id.line_divider)
+    View lineDivider;
+    @BindView(R.id.listView)
+    ListView listView;
+
     private Handler mHandler;
 
     @Override
@@ -48,64 +66,17 @@ public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
-        mSearchView.setVersion(SearchView.VERSION_MENU_ITEM);
-        mSearchView.setTheme(SearchView.THEME_LIGHT, true);
-        mSearchView.setDivider(false);
-        mSearchView.setHint(R.string.search_hint);
-        mSearchView.setVoice(false);
-        mSearchView.setAnimationDuration(300);
-        mSearchView.setTextSize(16);
-
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
+        final ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (!TextUtils.isEmpty(query)) {
-                    searchTextSubmit(query);
+            public void onGlobalLayout() {
+                if (rootView.getViewTreeObserver().isAlive()) {
+                    rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                searchTextChange(newText);
-                return true;
-            }
-
-        });
-
-        mSearchView.setOnOpenCloseListener(new SearchView.OnOpenCloseListener() {
-            @Override
-            public void onClose() {
-                finish();
-            }
-
-            @Override
-            public void onOpen() {
-
+                LogUtil.d("SearchRecommendActivity", "SearchRecommendActivity");
+                InitiateSearch.handleToolBar(SearchRecommendActivity.this, rootView, listView, editTextSearch, lineDivider);
             }
         });
-
-        mSearchView.setHint(R.string.search_hint_text);
-        mSearchAdapter = new SearchAdapter(this);
-        mSearchAdapter.setOnItemClickListener(this);
-        mSearchView.setAdapter(mSearchAdapter);
-
-        mHandler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (msg.what == TEXT_CHANGE_QUERY_WHAT) {
-                    search((String) msg.obj);
-                }
-            }
-        };
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mSearchView.open(true);
-            }
-        }, 200);
     }
 
     @Override
@@ -124,8 +95,8 @@ public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent
         if (TextUtils.isEmpty(newText)) {
             mSearchAdapter.clearEntities();
             mSearchAdapter.notifyDataSetChanged();
-        }else {
-            Message message  = Message.obtain();
+        } else {
+            Message message = Message.obtain();
             message.obj = newText;
             message.what = TEXT_CHANGE_QUERY_WHAT;
             mHandler.sendMessageDelayed(message, 500);
@@ -169,7 +140,7 @@ public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent
 
     @Override
     public void onBackPressed() {
-        mSearchView.close(true);
-//        super.onBackPressed();
+        super.onBackPressed();
+        InitiateSearch.handleToolBar(SearchRecommendActivity.this, rootView, listView, editTextSearch, lineDivider);
     }
 }
