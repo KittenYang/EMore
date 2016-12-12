@@ -27,27 +27,23 @@ public class SearchAdapter extends BaseAdapter<SinaSearchRecommend.RecommendData
 
     @Override
     public SearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View view = mInflater.inflate(R.layout.item_search, parent, false);
-//        return new SearchViewHolder(view, mOnItemClickListener);
-
-        return null;
+        View view = mInflater.inflate(R.layout.item_search, parent, false);
+        return new SearchViewHolder(view, mOnItemClickListener);
     }
 
     @Override
     public void onBindViewHolder(SearchViewHolder holder, int position) {
         SinaSearchRecommend.RecommendData data = getItem(position);
-//        holder.textViewItemText.setText(data.getKey());
-//        holder.tvCount.setText(CountUtil.getCounter(mContext, Integer.parseInt(data.getCount())));
+        holder.textViewItemText.setText(data.getKey());
+        holder.tvCount.setText(CountUtil.getCounter(mContext, Integer.parseInt(data.getCount())));
     }
 
     public static class SearchViewHolder extends BaseViewHolder {
-//
-//        @BindView(R.id.textView_item_text)
-//        TextView textViewItemText;
-//        @BindView(R.id.tv_count)
-//        TextView tvCount;
-//        @BindView(R.id.imageView_item_icon_left)
-//        ImageView leftImage;
+
+        @BindView(R.id.tv_name)
+        TextView textViewItemText;
+        @BindView(R.id.tv_count)
+        TextView tvCount;
 
         public SearchViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);

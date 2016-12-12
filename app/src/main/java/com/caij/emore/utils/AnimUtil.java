@@ -1,5 +1,6 @@
 package com.caij.emore.utils;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.view.View;
@@ -19,5 +20,28 @@ public class AnimUtil {
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(animatorX, animatorY);
         animatorSet.start();
+    }
+
+    public static class AnimatorListenerAdapter implements Animator.AnimatorListener {
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
     }
 }

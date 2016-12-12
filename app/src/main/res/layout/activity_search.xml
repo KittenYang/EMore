@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:visibility="invisible"
-    card_view:cardBackgroundColor="@color/white"
+    card_view:cardBackgroundColor="@color/color_card"
     card_view:cardCornerRadius="2dp">
 
     <RelativeLayout
@@ -35,9 +35,11 @@
                 android:layout_weight="1"
                 android:background="#fff"
                 android:gravity="center_vertical"
-                android:hint="Search"
+                android:hint="搜索"
                 android:imeOptions="actionSearch"
                 android:inputType="textCapWords"
+                android:textColor="@color/text_80"
+                android:textColorHint="@color/text_54"
                 android:paddingLeft="12dp"
                 android:paddingRight="8dp"
                 android:singleLine="true" />
@@ -60,11 +62,13 @@
             android:layout_below="@+id/linearLayout_search"
             android:background="#eee" />
 
-        <ListView
-            android:id="@+id/listView"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/line_divider"
-            android:divider="@color/white" />
+            android:divider="@color/color_card" />
+
     </RelativeLayout>
+
 </android.support.v7.widget.CardView>
