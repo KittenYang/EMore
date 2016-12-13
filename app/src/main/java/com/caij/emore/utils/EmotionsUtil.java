@@ -41,6 +41,15 @@ public class EmotionsUtil {
         imageEmotionMap.put(IMAGE_CARD_IMAGE_KEY, R.mipmap.timeline_icon_photo);
         imageEmotionMap.put(VIDEO_CARD_IMAGE_KEY, R.mipmap.timeline_card_small_video);
 
+        imageEmotionMap.put("[抱抱]", R.mipmap.d_baobao);
+        imageEmotionList.add(new Emotion("[抱抱]", R.mipmap.d_baobao));
+
+        imageEmotionMap.put("[二哈]", R.mipmap.d_erha);
+        imageEmotionList.add(new Emotion("[二哈]", R.mipmap.d_erha));
+
+        imageEmotionMap.put("[摊手]", R.mipmap.d_tanshou);
+        imageEmotionList.add(new Emotion("[摊手]", R.mipmap.d_tanshou));
+
         imageEmotionMap.put("[微笑]", R.mipmap.d_hehe);
         imageEmotionList.add(new Emotion("[微笑]", R.mipmap.d_hehe));
 
@@ -70,6 +79,15 @@ public class EmotionsUtil {
 
         imageEmotionMap.put("[抓狂]", R.mipmap.d_zhuakuang);
         imageEmotionList.add(new Emotion("[抓狂]", R.mipmap.d_zhuakuang));
+
+        imageEmotionMap.put("[坏笑]", R.mipmap.d_huaixiao);
+        imageEmotionList.add(new Emotion("[坏笑]", R.mipmap.d_huaixiao));
+
+        imageEmotionMap.put("[甜]", R.mipmap.d_tian);
+        imageEmotionList.add(new Emotion("[甜]", R.mipmap.d_tian));
+
+        imageEmotionMap.put("[污]", R.mipmap.d_wu);
+        imageEmotionList.add(new Emotion("[污]", R.mipmap.d_wu));
 
         imageEmotionMap.put("[哼]", R.mipmap.d_heng);
         imageEmotionList.add(new Emotion("[哼]", R.mipmap.d_heng));
@@ -202,6 +220,15 @@ public class EmotionsUtil {
 
         imageEmotionMap.put("[带着微博去旅行]", R.mipmap.d_travel);
         imageEmotionList.add(new Emotion("[带着微博去旅行]", R.mipmap.d_travel));
+
+        imageEmotionMap.put("[骷髅]", R.mipmap.d_kulou);
+        imageEmotionList.add(new Emotion("[骷髅]", R.mipmap.d_kulou));
+
+        imageEmotionMap.put("[炸鸡啤酒]", R.mipmap.d_zhajipijiu);
+        imageEmotionList.add(new Emotion("[炸鸡啤酒]", R.mipmap.d_zhajipijiu));
+
+        imageEmotionMap.put("[马到成功]", R.mipmap.d_madaochenggong);
+        imageEmotionList.add(new Emotion("[马到成功]", R.mipmap.d_madaochenggong));
 
         imageEmotionMap.put("[心]", R.mipmap.l_xin);
         imageEmotionList.add(new Emotion("[心]", R.mipmap.l_xin));
