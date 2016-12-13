@@ -87,9 +87,9 @@ public class FriendStatusFragment extends TimeLineStatusFragment<FriendStatusPre
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), getString(R.string.hot_weibo),
-                        HotStatusFragment.class, null);
-                startActivity(intent);
+//                Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), getString(R.string.hot_weibo),
+//                        HotStatusFragment.class, null);
+//                startActivity(intent);
             }
         });
     }

@@ -198,10 +198,11 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
         notificationBuilder.setContentText(contentText);
         notificationBuilder.setSmallIcon(drawable);
         notificationBuilder.setNumber(num);
-        PendingIntent pendingIntent = PendingIntent.getActivities(ctx,  -1, intents, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivities(ctx,  id, intents, PendingIntent.FLAG_CANCEL_CURRENT);
         notificationBuilder.setContentIntent(pendingIntent);
         notificationBuilder.setLargeIcon(BitmapFactory.decodeResource(ctx.getResources(), R.mipmap.ic_launcher));
         notificationBuilder.setAutoCancel(true);
+        notificationBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
         Notification notification = notificationBuilder.getNotification();
         mNotificationManager.notify(id, notification);
     }
