@@ -26,6 +26,7 @@ android {
         }
 
         release {
+            v2SigningEnabled false
             if (key_store != null) {
                 storeFile file(key_store)
                 storePassword store_password
@@ -36,7 +37,6 @@ android {
     }
 
     buildTypes {
-
         debug {
             versionNameSuffix "-debug"
             minifyEnabled false
