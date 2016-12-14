@@ -32,7 +32,8 @@
         <service android:name=".service.EMoreService"
             android:process=":v587"
             android:description="@string/emore_service_desc"/>
-        <service android:name=".service.EMoreService$GrayInnerService"/>
+        <service android:name=".service.EMoreService$GrayInnerService"
+            android:process=":v587"/>
 
         <activity android:name="com.caij.emore.ui.activity.SplashActivity"
             android:theme="@style/AppTheme_Default.SplashActivity">
