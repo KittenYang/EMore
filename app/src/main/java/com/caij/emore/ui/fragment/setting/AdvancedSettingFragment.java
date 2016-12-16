@@ -99,6 +99,11 @@ public class AdvancedSettingFragment extends PreferenceFragment
 				circleView.setColor(themeItem.getColor());
 				baseViewHolder.setVisible(R.id.tv_select, themeItem.isSelect());
 			}
+
+			@Override
+			public void onCreateViewHolder(BaseViewHolder baseViewHolder) {
+
+			}
 		});
 
 		mThemeAdapter.setOnItemClickListener(this);

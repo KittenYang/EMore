@@ -123,6 +123,11 @@ public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent
                 baseViewHolder.setText(R.id.tv_name, recommendData.getKey());
                 baseViewHolder.setText(R.id.tv_count, CountUtil.getCounter(SearchRecommendActivity.this, Integer.parseInt(recommendData.getCount())));
             }
+
+            @Override
+            public void onCreateViewHolder(BaseViewHolder baseViewHolder) {
+
+            }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mSearchAdapter);

@@ -85,6 +85,11 @@ public class PublishStatusActivity extends PublishActivity<StatusPublishPresent>
                 ImageLoader.load(PublishStatusActivity.this, imageView, s, R.drawable.weibo_image_placeholder);
                 baseViewHolder.getView(R.id.iv_delete).setTag(s);
             }
+
+            @Override
+            public void onCreateViewHolder(BaseViewHolder baseViewHolder) {
+
+            }
         });
 
         mRecyclerView.setAdapter(mPublishImageAdapter);
