@@ -49,7 +49,8 @@ import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.widget.recyclerview.HeaderAndFooterRecyclerViewAdapter;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
 import com.caij.emore.widget.recyclerview.LoadMoreView;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.RecyclerViewOnItemLongClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,9 +163,9 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
                 }
             }
         });
-        mMessageAdapter.setItemLongClickListener(new RecyclerViewOnItemClickListener() {
+        mMessageAdapter.setOnItemLongClickListener(new RecyclerViewOnItemLongClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
+            public boolean onItemLongClick(View view, int position) {
                 final DirectMessage directMessage = mMessageAdapter.getItem(position - 1);
                 if (directMessage.getLocal_status() == DirectMessage.STATUS_FAIL) {
                     DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), "是否重新发送",
@@ -175,6 +176,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
                                 }
                             }, getString(R.string.cancel), null);
                 }
+                return true;
             }
         });
         etContent.addTextChangedListener(this);

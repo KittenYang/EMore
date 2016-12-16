@@ -10,10 +10,8 @@ import com.caij.emore.R;
 import com.caij.emore.bean.MessageUser;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemLongClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +34,7 @@ public class MessageUserAdapter extends BaseAdapter<MessageUser.UserListBean, Me
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.item_message_user, parent, false);
-        return new ViewHolder(view, mOnItemClickListener, mRecyclerViewOnItemLongClickListener);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -70,15 +68,9 @@ public class MessageUserAdapter extends BaseAdapter<MessageUser.UserListBean, Me
         @BindView(R.id.tv_unread_count)
         TextView tvUnreadCount;
 
-        public ViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener, final RecyclerViewOnItemLongClickListener longClickListener) {
-            super(itemView, onItemClickListener);
+        public ViewHolder(View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    return longClickListener.onItemLongClick(v, getLayoutPosition());
-                }
-            });
         }
     }
 

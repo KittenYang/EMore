@@ -10,9 +10,8 @@ import com.caij.emore.R;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +34,7 @@ public class AttitudeAdapter extends BaseAdapter<User, AttitudeAdapter.AttitudeV
     @Override
     public AttitudeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.item_weibo_attitude, parent, false);
-        return new AttitudeViewHolder(view, mOnItemClickListener);
+        return new AttitudeViewHolder(view);
     }
 
     @Override
@@ -53,8 +52,8 @@ public class AttitudeAdapter extends BaseAdapter<User, AttitudeAdapter.AttitudeV
         @BindView(R.id.tv_name)
         TextView tvName;
 
-        public AttitudeViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public AttitudeViewHolder(View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }

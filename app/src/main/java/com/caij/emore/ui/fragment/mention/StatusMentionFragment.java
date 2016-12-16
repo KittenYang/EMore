@@ -15,7 +15,7 @@ import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.remote.imp.NotifyApiImp;
 import com.caij.emore.ui.fragment.weibo.TimeLineStatusFragment;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
 
 /**
  * Created by Caij on 2016/6/4.

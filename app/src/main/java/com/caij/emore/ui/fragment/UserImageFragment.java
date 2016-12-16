@@ -16,9 +16,9 @@ import com.caij.emore.present.imp.UserImagePresentImp;
 import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.ui.view.TimeLineStatusImageView;
 import com.caij.emore.ui.adapter.UserGridImageAdapter;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 /**
  * Created by Caij on 2016/6/29.

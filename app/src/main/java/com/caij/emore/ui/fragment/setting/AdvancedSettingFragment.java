@@ -22,20 +22,22 @@ import com.caij.emore.R;
 import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.bean.ThemeItem;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
-import com.caij.emore.ui.adapter.ThemeAdapter;
 import com.caij.emore.ui.fragment.AccountsFragment;
 import com.caij.emore.ui.fragment.AppAboutFragment;
 import com.caij.emore.utils.ActivityStack;
 import com.caij.emore.Init;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.rxjava.RxUtil;
 import com.caij.emore.utils.rxjava.SubscriberAdapter;
 import com.caij.emore.utils.weibo.ThemeUtils;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.emore.widget.CircleView;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
+import com.caij.rvadapter.delegate.SingleItemViewDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +54,7 @@ public class AdvancedSettingFragment extends PreferenceFragment
 	private Preference cachePreference;
 
 	private Dialog mThemeDialog;
-	private ThemeAdapter mThemeAdapter;
+	private MultiItemTypeAdapter<ThemeItem> mThemeAdapter;
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -88,7 +90,17 @@ public class AdvancedSettingFragment extends PreferenceFragment
 		themeItems.add(new ThemeItem(getResources().getColor(R.color.red), false));
 		themeItems.add(new ThemeItem(getResources().getColor(R.color.grey), false));
 
-		mThemeAdapter = new ThemeAdapter(getActivity(), themeItems);
+		mThemeAdapter = new MultiItemTypeAdapter<ThemeItem>(getActivity(), themeItems);
+
+		mThemeAdapter.addItemViewDelegate(new SingleItemViewDelegate<ThemeItem>(R.layout.item_theme) {
+			@Override
+			public void convert(BaseViewHolder baseViewHolder, ThemeItem themeItem, int i) {
+				CircleView circleView = baseViewHolder.getView(R.id.circle_view);
+				circleView.setColor(themeItem.getColor());
+				baseViewHolder.setVisible(R.id.tv_select, themeItem.isSelect());
+			}
+		});
+
 		mThemeAdapter.setOnItemClickListener(this);
 		recyclerView.setAdapter(mThemeAdapter);
 

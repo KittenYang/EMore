@@ -29,9 +29,9 @@ import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemLongClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.RecyclerViewOnItemLongClickListener;
+import com.caij.rvadapter.adapter.BaseAdapter;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.List;

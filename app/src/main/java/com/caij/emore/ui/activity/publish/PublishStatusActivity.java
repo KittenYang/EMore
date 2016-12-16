@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
@@ -24,11 +25,14 @@ import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.StatusPublishPresent;
 import com.caij.emore.present.imp.StatusPublishPresentImp;
 import com.caij.emore.ui.view.StatusPublishView;
-import com.caij.emore.ui.adapter.PublishImageAdapter;
 import com.caij.emore.utils.DialogUtil;
+import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
+import com.caij.rvadapter.delegate.SingleItemViewDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +50,7 @@ public class PublishStatusActivity extends PublishActivity<StatusPublishPresent>
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    private PublishImageAdapter mPublishImageAdapter;
+    private MultiItemTypeAdapter<String> mPublishImageAdapter;
 
     private Draft mDraft;
 
@@ -71,7 +75,18 @@ public class PublishStatusActivity extends PublishActivity<StatusPublishPresent>
             }
         });
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        mPublishImageAdapter = new PublishImageAdapter(this);
+        mPublishImageAdapter = new MultiItemTypeAdapter<String>(this);
+
+        mPublishImageAdapter.addItemViewDelegate(new SingleItemViewDelegate<String>(R.layout.item_publish_image) {
+
+            @Override
+            public void convert(BaseViewHolder baseViewHolder, String s, int i) {
+                ImageView imageView = baseViewHolder.getView(R.id.siv_image);
+                ImageLoader.load(PublishStatusActivity.this, imageView, s, R.drawable.weibo_image_placeholder);
+                baseViewHolder.getView(R.id.iv_delete).setTag(s);
+            }
+        });
+
         mRecyclerView.setAdapter(mPublishImageAdapter);
         mPublishImageAdapter.setOnItemClickListener(this);
 

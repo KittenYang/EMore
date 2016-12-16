@@ -9,9 +9,8 @@ import android.widget.TextView;
 import com.caij.emore.R;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +34,7 @@ public class UserAdapter extends BaseAdapter<User, UserAdapter.UserViewHolder> {
     @Override
     public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.item_friendship, parent, false);
-        return new UserViewHolder(view, mOnItemClickListener);
+        return new UserViewHolder(view);
     }
 
     @Override
@@ -56,8 +55,8 @@ public class UserAdapter extends BaseAdapter<User, UserAdapter.UserViewHolder> {
         @BindView(R.id.txtDesc)
         TextView txtDesc;
 
-        public UserViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public UserViewHolder(View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }

@@ -8,7 +8,7 @@ import com.caij.emore.R;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 /**
  * Created by Caij on 2016/6/16.
@@ -24,7 +24,7 @@ public class RepostAdapter extends BaseAdapter<Status, CommentAdapter.CommentVie
 
     @Override
     public CommentAdapter.CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new CommentAdapter.CommentViewHolder(mInflater.inflate(R.layout.item_weibo_comment, parent, false), mOnItemClickListener);
+        return new CommentAdapter.CommentViewHolder(mInflater.inflate(R.layout.item_weibo_comment, parent, false));
     }
 
     @Override

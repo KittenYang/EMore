@@ -9,9 +9,10 @@ import android.widget.TextView;
 import com.caij.emore.R;
 import com.caij.emore.bean.ImageFolder;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.RecyclerViewOnItemLongClickListener;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +33,7 @@ public class FolderAdapter extends BaseAdapter<ImageFolder, FolderAdapter.Folder
     @Override
     public FolderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.list_item_folder, parent, false);
-        return new FolderViewHolder(view, mOnItemClickListener);
+        return new FolderViewHolder(view);
     }
 
     @Override
@@ -56,8 +57,8 @@ public class FolderAdapter extends BaseAdapter<ImageFolder, FolderAdapter.Folder
         @BindView(R.id.iv_select)
         ImageView ivSelect;
 
-        public FolderViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public FolderViewHolder(View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }

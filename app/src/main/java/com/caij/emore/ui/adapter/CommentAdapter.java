@@ -12,9 +12,8 @@ import com.caij.emore.bean.Comment;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.FixClickableSpanBugTextView;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +32,7 @@ public class CommentAdapter extends BaseAdapter<Comment, CommentAdapter.CommentV
 
     @Override
     public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new CommentViewHolder(mInflater.inflate(R.layout.item_weibo_comment, parent, false), mOnItemClickListener);
+        return new CommentViewHolder(mInflater.inflate(R.layout.item_weibo_comment, parent, false));
     }
 
     @Override
@@ -64,15 +63,9 @@ public class CommentAdapter extends BaseAdapter<Comment, CommentAdapter.CommentV
         @BindView(R.id.txtDesc)
         TextView txtDesc;
 
-        public CommentViewHolder(View itemView, final RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public CommentViewHolder(View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
-            imgPhoto.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onItemClick(v, getLayoutPosition());
-                }
-            });
         }
     }
 

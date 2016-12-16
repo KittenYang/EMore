@@ -10,9 +10,8 @@ import com.caij.emore.R;
 import com.caij.emore.account.Account;
 import com.caij.emore.bean.AccountInfo;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,8 +30,7 @@ public class AccountAdapter extends BaseAdapter<AccountInfo, AccountAdapter.Acco
 
     @Override
     public AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AccountViewHolder(mInflater.inflate(R.layout.item_account, parent, false),
-                mOnItemClickListener);
+        return new AccountViewHolder(mInflater.inflate(R.layout.item_account, parent, false));
     }
 
     @Override
@@ -70,15 +68,9 @@ public class AccountAdapter extends BaseAdapter<AccountInfo, AccountAdapter.Acco
         @BindView(R.id.iv_delete)
         ImageView ivDelete;
 
-        public AccountViewHolder(View itemView, final RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public AccountViewHolder(View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
-            ivDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onItemClick(v, getLayoutPosition());
-                }
-            });
         }
 
     }

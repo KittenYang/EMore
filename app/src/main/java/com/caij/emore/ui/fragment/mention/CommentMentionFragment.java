@@ -18,10 +18,10 @@ import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
 import com.caij.emore.ui.adapter.MessageCommentAdapter;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 /**
  * Created by Caij on 2016/7/4.

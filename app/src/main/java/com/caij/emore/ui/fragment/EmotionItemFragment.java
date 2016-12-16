@@ -18,11 +18,10 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.bean.Emotion;
 import com.caij.emore.present.BasePresent;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.rxbus.RxBus;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,7 +130,7 @@ public class EmotionItemFragment extends BaseFragment {
         @Override
         public EmotionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = mInflater.inflate(R.layout.item_emotion, parent, false);
-            return new EmotionViewHolder(view, mOnItemClickListener);
+            return new EmotionViewHolder(view);
         }
 
         @Override
@@ -168,8 +167,8 @@ public class EmotionItemFragment extends BaseFragment {
 
         private ImageView imageView;
 
-        public EmotionViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public EmotionViewHolder(View itemView) {
+            super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.iv_emotion);
         }
     }

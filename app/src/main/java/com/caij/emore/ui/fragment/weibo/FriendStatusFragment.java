@@ -21,17 +21,9 @@ import com.caij.emore.present.FriendStatusPresent;
 import com.caij.emore.present.imp.FriendStatusPresentImp;
 import com.caij.emore.remote.imp.AttitudeApiImp;
 import com.caij.emore.remote.imp.StatusApiImp;
-import com.caij.emore.ui.brige.ToolbarDoubleClick;
 import com.caij.emore.ui.view.FriendStatusView;
-import com.caij.emore.ui.activity.DefaultFragmentActivity;
-import com.caij.emore.ui.activity.SearchRecommendActivity;
-import com.caij.emore.ui.activity.publish.PublishStatusActivity;
-import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
-
-import rx.Observable;
-import rx.functions.Action1;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
 
 /**
  * Created by Caij on 2016/6/4.

@@ -20,8 +20,8 @@ import com.caij.emore.ui.adapter.AccountAdapter;
 import com.caij.emore.ui.view.AccountView;
 import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.Init;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 /**

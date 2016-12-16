@@ -15,9 +15,9 @@ import com.caij.emore.ui.view.MyPublishCommentsView;
 import com.caij.emore.ui.adapter.MyMessageCommentAdapter;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 /**
  * Created by Caij on 2016/7/4.

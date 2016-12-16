@@ -11,9 +11,8 @@ import com.caij.emore.R;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +29,7 @@ public class DraftAdapter extends BaseAdapter<Draft, DraftAdapter.DraftViewHolde
     @Override
     public DraftViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.item_draft, parent, false);
-        return new DraftViewHolder(view, mOnItemClickListener);
+        return new DraftViewHolder(view);
     }
 
     @Override
@@ -65,20 +64,11 @@ public class DraftAdapter extends BaseAdapter<Draft, DraftAdapter.DraftViewHolde
         @BindView(R.id.btnResend)
         LinearLayout btnResend;
 
-        public DraftViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public DraftViewHolder(View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
-            btnDel.setOnClickListener(this);
-            btnResend.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View v) {
-            super.onClick(v);
-            if (v.getId() == R.id.btnDel || v.getId() == R.id.btnResend) {
-                mOnItemClickListener.onItemClick(v, getLayoutPosition());
-            }
-        }
     }
 
 }

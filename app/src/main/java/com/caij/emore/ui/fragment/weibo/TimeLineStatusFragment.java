@@ -17,11 +17,11 @@ import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.AnimUtil;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.widget.recyclerview.HeaderAndFooterRecyclerViewAdapter;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

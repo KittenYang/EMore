@@ -12,9 +12,8 @@ import com.caij.emore.bean.Image;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.widget.RatioImageView;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,14 +44,14 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == 2) {
             View view = mInflater.inflate(R.layout.item_image, parent, false);
-            ImageViewHolder imageViewHolder = new ImageViewHolder(view, mOnItemClickListener);
+            ImageViewHolder imageViewHolder = new ImageViewHolder(view);
             return imageViewHolder;
         }else {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             RatioImageView imageView = new RatioImageView(mContext);
             imageView.setRatio(1);
             imageView.setLayoutParams(params);
-            CameraViewHolder viewHolder = new CameraViewHolder(imageView, mOnItemClickListener);
+            CameraViewHolder viewHolder = new CameraViewHolder(imageView);
             return viewHolder;
         }
     }
@@ -100,9 +99,8 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
         @BindView(R.id.view_shaw)
         View viewShaw;
 
-        public ImageViewHolder(final View itemView,
-                               RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public ImageViewHolder(final View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
             selectCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -141,8 +139,8 @@ public class GridImageAdapter extends BaseAdapter<Image, BaseViewHolder> {
 
         RatioImageView imageView;
 
-        public CameraViewHolder(final View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public CameraViewHolder(final View itemView) {
+            super(itemView);
             imageView = (RatioImageView) itemView;
         }
     }

@@ -8,9 +8,8 @@ import com.caij.emore.R;
 import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.RatioImageView;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 /**
  * Created by Caij on 2016/6/23.
@@ -31,7 +30,7 @@ public class UserGridImageAdapter extends BaseAdapter<StatusImageInfo, BaseViewH
         RatioImageView imageView = new RatioImageView(mContext);
         imageView.setLayoutParams(params);
         imageView.setRatio(1);
-        ImageViewHolder viewHolder = new ImageViewHolder(imageView, mOnItemClickListener);
+        ImageViewHolder viewHolder = new ImageViewHolder(imageView);
         return viewHolder;
     }
 
@@ -47,8 +46,8 @@ public class UserGridImageAdapter extends BaseAdapter<StatusImageInfo, BaseViewH
 
         RatioImageView imageView;
 
-        public ImageViewHolder(final View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public ImageViewHolder(final View itemView) {
+            super(itemView);
             imageView = (RatioImageView) itemView;
         }
     }

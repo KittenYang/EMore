@@ -13,10 +13,10 @@ import com.caij.emore.R;
 import com.caij.emore.present.ListPresent;
 import com.caij.emore.ui.brige.ToolbarDoubleClick;
 import com.caij.emore.ui.view.ListView;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import java.util.List;
 

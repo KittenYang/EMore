@@ -21,7 +21,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.caij.emore.Key;
@@ -30,14 +29,17 @@ import com.caij.emore.bean.SinaSearchRecommend;
 import com.caij.emore.present.SearchRecommendPresent;
 import com.caij.emore.present.imp.SearchRecommendPresentImp;
 import com.caij.emore.remote.imp.ServerSearchRecommendImp;
-import com.caij.emore.ui.adapter.SearchAdapter;
 import com.caij.emore.ui.fragment.StatusAndUserSearchFragment;
 import com.caij.emore.ui.view.SearchRecommendView;
 import com.caij.emore.utils.AnimUtil;
+import com.caij.emore.utils.CountUtil;
 import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.weibo.ThemeUtils;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
+import com.caij.rvadapter.delegate.SingleItemViewDelegate;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.List;
@@ -71,7 +73,7 @@ public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent
     RecyclerView recyclerView;
 
     private Handler mHandler;
-    SearchAdapter mSearchAdapter;
+    MultiItemTypeAdapter<SinaSearchRecommend.RecommendData> mSearchAdapter;
 
 
     Animator mSearchViewShowAnimator;
@@ -114,7 +116,14 @@ public class SearchRecommendActivity extends BaseActivity<SearchRecommendPresent
     private void initView() {
         editTextSearch.addTextChangedListener(this);
 
-        mSearchAdapter = new SearchAdapter(this);
+        mSearchAdapter = new MultiItemTypeAdapter<SinaSearchRecommend.RecommendData>(this);
+        mSearchAdapter.addItemViewDelegate(new SingleItemViewDelegate<SinaSearchRecommend.RecommendData>(R.layout.item_search) {
+            @Override
+            public void convert(BaseViewHolder baseViewHolder, SinaSearchRecommend.RecommendData recommendData, int i) {
+                baseViewHolder.setText(R.id.tv_name, recommendData.getKey());
+                baseViewHolder.setText(R.id.tv_count, CountUtil.getCounter(SearchRecommendActivity.this, Integer.parseInt(recommendData.getCount())));
+            }
+        });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mSearchAdapter);
 

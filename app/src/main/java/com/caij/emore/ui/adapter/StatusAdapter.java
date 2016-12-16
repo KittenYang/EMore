@@ -8,9 +8,6 @@ import com.caij.emore.R;
 import com.caij.emore.bean.PageInfo;
 import com.caij.emore.bean.ShortUrl;
 import com.caij.emore.database.bean.Status;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
 import com.caij.emore.widget.weibo.list.RepostStatusListArticleItemView;
 import com.caij.emore.widget.weibo.list.RepostStatusListImageItemView;
 import com.caij.emore.widget.weibo.list.RepostStatusListVideoItemView;
@@ -18,6 +15,10 @@ import com.caij.emore.widget.weibo.list.StatusListArticleItemView;
 import com.caij.emore.widget.weibo.list.StatusListImageItemView;
 import com.caij.emore.widget.weibo.list.StatusListItemView;
 import com.caij.emore.widget.weibo.list.StatusListVideoItemView;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.RecyclerViewOnItemLongClickListener;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import java.util.List;
 
@@ -76,8 +77,7 @@ public class StatusAdapter extends BaseAdapter<Status, StatusAdapter.WeiboBaseVi
             weiboListItemView.setId(R.id.weibo_item_view);
             viewGroup.addView(weiboListItemView, layoutParams);
         }
-        return new WeiboBaseViewHolder(viewGroup,
-                mOnItemClickListener, mOnItemActionClickListener);
+        return new WeiboBaseViewHolder(viewGroup, mOnItemActionClickListener);
     }
 
     @Override
@@ -133,9 +133,8 @@ public class StatusAdapter extends BaseAdapter<Status, StatusAdapter.WeiboBaseVi
         @BindView(R.id.weibo_item_view)
         StatusListItemView weiboItemView;
 
-        public WeiboBaseViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener,
-                                   final OnItemActionClickListener onItemActionClickListener) {
-            super(itemView, onItemClickListener);
+        public WeiboBaseViewHolder(View itemView, final OnItemActionClickListener onItemActionClickListener) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
             weiboItemView.setOnMenuClickListener(new View.OnClickListener() {
                 @Override

@@ -17,9 +17,9 @@ import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,27 +40,7 @@ public class MessageCommentAdapter extends BaseAdapter<Comment, MessageCommentAd
     @Override
     public CommentMentionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.item_comment_mention, parent, false);
-        return new CommentMentionViewHolder(view, mOnItemClickListener, new RecyclerViewOnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = StatusDetailActivity.newIntent(mContext, getItem(position).getStatus().getId());
-                mContext.startActivity(intent);
-            }
-        }, new RecyclerViewOnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Comment comment = getItem(position);
-                Intent intent = ReplyCommentActivity.newIntent(mContext, comment.getStatus().getId(), comment.getId());
-                mContext.startActivity(intent);
-            }
-        }, new RecyclerViewOnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Comment comment = getItem(position);
-                Intent intent = UserInfoActivity.newIntent(mContext, comment.getUser().getScreen_name());
-                mContext.startActivity(intent);
-            }
-        });
+        return new CommentMentionViewHolder(view);
     }
 
     @Override
@@ -107,43 +87,12 @@ public class MessageCommentAdapter extends BaseAdapter<Comment, MessageCommentAd
         TextView tvHeadName;
         TextView tvBottomName;
 
-        private RecyclerViewOnItemClickListener onWeiboViewClickListener;
-        private RecyclerViewOnItemClickListener onReplayClickListener;
-        private RecyclerViewOnItemClickListener onAvatarClickListener;
-
-        public CommentMentionViewHolder(final View itemView, RecyclerViewOnItemClickListener onItemClickListener,
-                                        final RecyclerViewOnItemClickListener onWeiboViewClickListener,
-                                        final RecyclerViewOnItemClickListener onReplayClickListener,
-                                        final RecyclerViewOnItemClickListener onAvatarClickListener) {
-            super(itemView, onItemClickListener);
+        public CommentMentionViewHolder(final View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
-            this.onWeiboViewClickListener = onWeiboViewClickListener;
-            this.onReplayClickListener = onReplayClickListener;
-            this.onAvatarClickListener =  onAvatarClickListener;
             tvHeadName = (TextView) itemView.findViewById(R.id.item_head).findViewById(R.id.tv_name);
             View bottomView = itemView.findViewById(R.id.item_bottom);
             tvBottomName = (TextView) bottomView.findViewById(R.id.tv_name);
-            bottomView.setOnClickListener(this);
-            tvReplay.setOnClickListener(this);
-            sdvAvatar.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            super.onClick(v);
-            if (v.getId() == R.id.item_bottom) {
-                if (onWeiboViewClickListener != null) {
-                    onWeiboViewClickListener.onItemClick(v, getLayoutPosition());
-                }
-            }else if (v.getId() ==  R.id.tv_reply) {
-                if (onReplayClickListener != null) {
-                    onReplayClickListener.onItemClick(v, getLayoutPosition());
-                }
-            }else if (v.getId() == R.id.sdv_avatar) {
-                if (onAvatarClickListener != null) {
-                    onAvatarClickListener.onItemClick(v, getLayoutPosition());
-                }
-            }
         }
     }
 

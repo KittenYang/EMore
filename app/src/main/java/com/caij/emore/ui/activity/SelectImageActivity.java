@@ -35,13 +35,12 @@ import com.caij.emore.bean.ImageFolder;
 import com.caij.emore.present.BasePresent;
 import com.caij.emore.ui.adapter.FolderAdapter;
 import com.caij.emore.ui.adapter.GridImageAdapter;
-import com.caij.emore.utils.ExecutorServicePool;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.utils.rxjava.RxUtil;
 import com.caij.emore.utils.rxjava.SubscriberAdapter;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.RecyclerViewOnItemClickListener;
 
 import java.io.File;
 import java.util.ArrayList;

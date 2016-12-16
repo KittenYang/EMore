@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.caij.emore"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 24
         versionCode 4
         versionName "1.2"
@@ -129,6 +129,7 @@ dependencies {
     //    compile "com.tencent.bugly:nativecrashreport:${rootProject.ext.nativecrashreportVersion}"
 
     compile 'com.github.Caij:ProgressView:9ff7176f6b'
+    compile 'com.github.Caij:rvadapter:9449e64516'
 
     compile "com.jakewharton:butterknife:${rootProject.ext.butterknifeVersion}"
     apt "com.jakewharton:butterknife-compiler:${rootProject.ext.butterknifeVersion}"

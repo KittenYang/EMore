@@ -15,9 +15,8 @@ import com.caij.emore.database.bean.DirectMessage;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.glide.MaskTransformation;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
-import com.caij.emore.widget.recyclerview.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,8 +35,6 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
     private MaskTransformation mOtherTransformation;
     private MaskTransformation mSelfTransformation;
 
-    RecyclerViewOnItemClickListener onItemLongClickListener;
-
     public MessageAdapter(Context context) {
         super(context);
         mAvatarImageConfig = new ImageLoader.ImageConfigBuild().
@@ -48,24 +45,20 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         mSelfTransformation = new MaskTransformation(mContext, R.drawable.messages_right_bubble);
     }
 
-    public void setItemLongClickListener(RecyclerViewOnItemClickListener onItemLongClickListener) {
-        this.onItemLongClickListener = onItemLongClickListener;
-    }
-
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_OTHER_TEXT) {
             View view = mInflater.inflate(R.layout.item_chat_other_send_message_text, parent, false);
-            return new OtherMessageViewHolder(view, mOnItemClickListener);
+            return new OtherMessageViewHolder(view);
         } else if (viewType == TYPE_SELT_TEXT) {
             View view = mInflater.inflate(R.layout.item_chat_self_send_message, parent, false);
-            return new SelfMessageViewHolder(view, mOnItemClickListener, onItemLongClickListener);
+            return new SelfMessageViewHolder(view);
         }else if (viewType == TYPE_SELT_IMAGE) {
             View view = mInflater.inflate(R.layout.item_chat_self_send_message_image, parent, false);
-            return new SelfMessageViewImageHolder(view, mOnItemClickListener, onItemLongClickListener);
+            return new SelfMessageViewImageHolder(view);
         }else if (viewType == TYPE_OTHER_IMAGE) {
             View view = mInflater.inflate(R.layout.item_chat_other_send_message_image, parent, false);
-            return new OtherMessageViewImageHolder(view, mOnItemClickListener);
+            return new OtherMessageViewImageHolder(view);
         }
         return null;
     }
@@ -219,15 +212,9 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         @BindView(R.id.tv_send_time)
         TextView tvTime;
 
-        public MessageViewHolder(View itemView, final RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public MessageViewHolder(View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
-            ivAvatar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onItemClick(v, getLayoutPosition());
-                }
-            });
         }
     }
 
@@ -236,8 +223,8 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         @BindView(R.id.tv_message)
         TextView tvMessage;
 
-        public OtherMessageViewHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public OtherMessageViewHolder(View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
@@ -251,17 +238,9 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         @BindView(R.id.iv_fail)
         ImageView ivFail;
 
-        public SelfMessageViewHolder(View itemView, final RecyclerViewOnItemClickListener onItemClickListener,
-                                     final RecyclerViewOnItemClickListener onItemLongClickListener) {
-            super(itemView, onItemClickListener);
+        public SelfMessageViewHolder(View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    onItemLongClickListener.onItemClick(v, getLayoutPosition());
-                    return true;
-                }
-            });
         }
     }
 
@@ -270,8 +249,8 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         @BindView(R.id.iv_image)
         ImageView ivImage;
 
-        public OtherMessageViewImageHolder(View itemView, RecyclerViewOnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
+        public OtherMessageViewImageHolder(View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
@@ -285,17 +264,9 @@ public class MessageAdapter extends BaseAdapter<DirectMessage, BaseViewHolder> {
         @BindView(R.id.iv_fail)
         ImageView ivFail;
 
-        public SelfMessageViewImageHolder(View itemView, final RecyclerViewOnItemClickListener onItemClickListener,
-                                          final RecyclerViewOnItemClickListener onItemLongClickListener) {
-            super(itemView, onItemClickListener);
+        public SelfMessageViewImageHolder(View itemView) {
+            super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    onItemLongClickListener.onItemClick(v, getLayoutPosition());
-                    return true;
-                }
-            });
         }
     }
 

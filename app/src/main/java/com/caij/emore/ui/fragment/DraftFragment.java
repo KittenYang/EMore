@@ -13,8 +13,8 @@ import com.caij.emore.present.imp.DraftPresentImp;
 import com.caij.emore.ui.view.DraftListView;
 import com.caij.emore.ui.activity.publish.PublishStatusActivity;
 import com.caij.emore.ui.adapter.DraftAdapter;
-import com.caij.emore.widget.recyclerview.BaseAdapter;
-import com.caij.emore.widget.recyclerview.BaseViewHolder;
+import com.caij.rvadapter.BaseViewHolder;
+import com.caij.rvadapter.adapter.BaseAdapter;
 
 /**
  * Created by Caij on 2016/7/20.
