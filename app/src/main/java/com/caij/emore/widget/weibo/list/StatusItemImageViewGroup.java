@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/6.
  */
-public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickListener, ImageInterface, Runnable {
+public class StatusItemImageViewGroup extends ViewGroup implements View.OnClickListener, ImageInterface, Runnable {
 
     public static final float MAX_RADIO = 13 * 1.0f / 13;
 
@@ -37,23 +37,23 @@ public class WeiboItemImageViewGroup extends ViewGroup implements View.OnClickLi
 
     private Handler mHandler;
 
-    public WeiboItemImageViewGroup(Context context) {
+    public StatusItemImageViewGroup(Context context) {
         super(context);
         init(context);
     }
 
-    public WeiboItemImageViewGroup(Context context, AttributeSet attrs) {
+    public StatusItemImageViewGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public WeiboItemImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StatusItemImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public WeiboItemImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public StatusItemImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
     }

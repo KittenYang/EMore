@@ -11,7 +11,7 @@ import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.widget.weibo.ImageInterface;
-import com.caij.emore.widget.weibo.list.RepostStatusListItemView;
+import com.caij.emore.widget.weibo.list.RepostStatusItemView;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,7 +21,7 @@ import butterknife.BindView;
 /**
  * Created by Caij on 2016/6/16.
  */
-public class RepostStatusImageItemView extends RepostStatusListItemView {
+public class RepostStatusImageItemView extends RepostStatusItemView {
 
     @BindView(R.id.fl_pics_view)
     FrameLayout flPicsView;

@@ -9,26 +9,26 @@ import com.caij.emore.database.bean.Status;
 /**
  * Created by Caij on 2016/9/1.
  */
-public class StatusListVideoItemView extends StatusListItemView {
+public class StatusVideoItemView extends StatusListItemView {
 
     private CompositePatternVideo mCompositePatternVideo;
 
-    public StatusListVideoItemView(Context context) {
+    public StatusVideoItemView(Context context) {
         super(context);
         init();
     }
 
-    public StatusListVideoItemView(Context context, AttributeSet attrs) {
+    public StatusVideoItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public StatusListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StatusVideoItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public StatusListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public StatusVideoItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }

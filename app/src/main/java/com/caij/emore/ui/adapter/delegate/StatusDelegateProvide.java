@@ -9,13 +9,13 @@ import com.caij.emore.bean.PageInfo;
 import com.caij.emore.bean.ShortUrl;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
-import com.caij.emore.widget.weibo.list.RepostStatusListArticleItemView;
-import com.caij.emore.widget.weibo.list.RepostStatusListImageItemView;
-import com.caij.emore.widget.weibo.list.RepostStatusListVideoItemView;
-import com.caij.emore.widget.weibo.list.StatusListArticleItemView;
-import com.caij.emore.widget.weibo.list.StatusListImageItemView;
+import com.caij.emore.widget.weibo.list.RepostStatusArticleItemView;
+import com.caij.emore.widget.weibo.list.RepostStatusImageItemView;
+import com.caij.emore.widget.weibo.list.RepostStatusVideoItemView;
+import com.caij.emore.widget.weibo.list.StatusArticleItemView;
+import com.caij.emore.widget.weibo.list.StatusImageItemView;
 import com.caij.emore.widget.weibo.list.StatusListItemView;
-import com.caij.emore.widget.weibo.list.StatusListVideoItemView;
+import com.caij.emore.widget.weibo.list.StatusVideoItemView;
 import com.caij.rvadapter.BaseViewHolder;
 
 /**
@@ -86,7 +86,7 @@ public interface StatusDelegateProvide {
 
         @Override
         public StatusListItemView getStatusListItemView(Context context) {
-            return new StatusListImageItemView(context);
+            return new StatusImageItemView(context);
         }
 
         @Override
@@ -103,7 +103,7 @@ public interface StatusDelegateProvide {
 
         @Override
         public StatusListItemView getStatusListItemView(Context context) {
-            return new RepostStatusListImageItemView(context);
+            return new RepostStatusImageItemView(context);
         }
 
         @Override
@@ -120,7 +120,7 @@ public interface StatusDelegateProvide {
 
         @Override
         public StatusListItemView getStatusListItemView(Context context) {
-            return new StatusListVideoItemView(context);
+            return new StatusVideoItemView(context);
         }
 
         @Override
@@ -137,7 +137,7 @@ public interface StatusDelegateProvide {
 
         @Override
         public StatusListItemView getStatusListItemView(Context context) {
-            return new RepostStatusListVideoItemView(context);
+            return new RepostStatusVideoItemView(context);
         }
 
         @Override
@@ -154,7 +154,7 @@ public interface StatusDelegateProvide {
 
         @Override
         public StatusListItemView getStatusListItemView(Context context) {
-            return new StatusListArticleItemView(context);
+            return new StatusArticleItemView(context);
         }
 
         @Override
@@ -171,7 +171,7 @@ public interface StatusDelegateProvide {
 
         @Override
         public StatusListItemView getStatusListItemView(Context context) {
-            return new RepostStatusListArticleItemView(context);
+            return new RepostStatusArticleItemView(context);
         }
 
         @Override

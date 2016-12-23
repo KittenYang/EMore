@@ -10,27 +10,31 @@ import com.caij.emore.widget.weibo.ImageInterface;
 import butterknife.BindView;
 
 /**
- * Created by Caij on 2016/9/1.
+ * Created by Caij on 2016/6/16.
  */
-public class StatusListImageItemView extends StatusListItemView {
+public class RepostStatusImageItemView extends RepostStatusItemView {
 
     @BindView(R.id.pics_view)
     ImageInterface picsView;
 
-    public StatusListImageItemView(Context context) {
+    public RepostStatusImageItemView(Context context) {
         super(context);
     }
 
-    public StatusListImageItemView(Context context, AttributeSet attrs) {
+    public RepostStatusImageItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public StatusListImageItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RepostStatusImageItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public StatusListImageItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RepostStatusImageItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    protected int getLayoutId() {
+        return R.layout.view_weibo_repost_text_and_image_item;
     }
 
     @Override
@@ -40,10 +44,7 @@ public class StatusListImageItemView extends StatusListItemView {
     }
 
     protected void setImages(Status weibo, ImageInterface picsView) {
-        picsView.setPics(weibo.getPic_ids(), weibo.getPic_infos());
+        picsView.setPics(weibo.getRetweeted_status().getPic_ids(), weibo.getRetweeted_status().getPic_infos());
     }
 
-    protected int getLayoutId() {
-        return R.layout.view_weibo_text_and_image_item;
-    }
 }

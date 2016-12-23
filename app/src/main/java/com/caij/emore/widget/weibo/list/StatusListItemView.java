@@ -143,6 +143,7 @@ public abstract class StatusListItemView extends StatusItemView {
 
     public void setDetail(boolean isDetail) {
         this.isDetail = isDetail;
+        requestLayout();
     }
 
 

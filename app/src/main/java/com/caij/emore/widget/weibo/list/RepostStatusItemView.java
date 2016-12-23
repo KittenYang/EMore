@@ -18,26 +18,26 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/16.
  */
-public abstract class RepostStatusListItemView extends StatusListItemView {
+public abstract class RepostStatusItemView extends StatusListItemView {
 
     @BindView(R.id.ll_re)
     LinearLayout llRe;
     @BindView(R.id.tv_re_content)
     TextView tvReContent;
 
-    public RepostStatusListItemView(Context context) {
+    public RepostStatusItemView(Context context) {
         super(context);
     }
 
-    public RepostStatusListItemView(Context context, AttributeSet attrs) {
+    public RepostStatusItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public RepostStatusListItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RepostStatusItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public RepostStatusListItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RepostStatusItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 

@@ -6,12 +6,12 @@ import android.view.View;
 
 import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.widget.weibo.list.WeiboItemImageViewGroup;
+import com.caij.emore.widget.weibo.list.StatusItemImageViewGroup;
 
 /**
  * Created by Caij on 2016/6/13.
  */
-public class StatusDetailItemImageViewGroup extends WeiboItemImageViewGroup {
+public class StatusDetailItemImageViewGroup extends StatusItemImageViewGroup {
 
     public StatusDetailItemImageViewGroup(Context context) {
         super(context);

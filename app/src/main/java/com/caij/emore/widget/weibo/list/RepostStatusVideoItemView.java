@@ -9,26 +9,26 @@ import com.caij.emore.database.bean.Status;
 /**
  * Created by Caij on 2016/9/1.
  */
-public class RepostStatusListVideoItemView extends RepostStatusListItemView {
+public class RepostStatusVideoItemView extends RepostStatusItemView {
 
     private CompositePatternVideo mCompositePatternVideo;
 
-    public RepostStatusListVideoItemView(Context context) {
+    public RepostStatusVideoItemView(Context context) {
         super(context);
         initSelf();
     }
 
-    public RepostStatusListVideoItemView(Context context, AttributeSet attrs) {
+    public RepostStatusVideoItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initSelf();
     }
 
-    public RepostStatusListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RepostStatusVideoItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initSelf();
     }
 
-    public RepostStatusListVideoItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RepostStatusVideoItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initSelf();
     }

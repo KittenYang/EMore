@@ -40,11 +40,11 @@ import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.widget.recyclerview.OnScrollListener;
 import com.caij.emore.widget.weibo.detail.RepostStatusImageItemView;
 import com.caij.emore.widget.weibo.detail.StatusImageItemView;
-import com.caij.emore.widget.weibo.list.RepostStatusListArticleItemView;
-import com.caij.emore.widget.weibo.list.RepostStatusListVideoItemView;
-import com.caij.emore.widget.weibo.list.StatusListArticleItemView;
+import com.caij.emore.widget.weibo.list.RepostStatusArticleItemView;
+import com.caij.emore.widget.weibo.list.RepostStatusVideoItemView;
+import com.caij.emore.widget.weibo.list.StatusArticleItemView;
 import com.caij.emore.widget.weibo.list.StatusListItemView;
-import com.caij.emore.widget.weibo.list.StatusListVideoItemView;
+import com.caij.emore.widget.weibo.list.StatusVideoItemView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
@@ -255,19 +255,19 @@ public class StatusDetailActivity extends BaseToolBarActivity<StatusDetailPresen
                     break;
 
                 case StatusDelegateProvide.TYPE_NORMAL_VIDEO:
-                    mWeiboItemView = new StatusListVideoItemView(this);
+                    mWeiboItemView = new StatusVideoItemView(this);
                     break;
 
                 case StatusDelegateProvide.TYPE_REPOST_VIDEO:
-                    mWeiboItemView = new RepostStatusListVideoItemView(this);
+                    mWeiboItemView = new RepostStatusVideoItemView(this);
                     break;
 
                 case StatusDelegateProvide.TYPE_NORMAL_ARTICLE:
-                    mWeiboItemView = new StatusListArticleItemView(this);
+                    mWeiboItemView = new StatusArticleItemView(this);
                     break;
 
                 case StatusDelegateProvide.TYPE_REPOST_ARTICLE:
-                    mWeiboItemView = new RepostStatusListArticleItemView(this);
+                    mWeiboItemView = new RepostStatusArticleItemView(this);
                     break;
             }
             mWeiboItemView.setDetail(true);

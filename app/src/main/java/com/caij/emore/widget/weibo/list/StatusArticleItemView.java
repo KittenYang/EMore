@@ -9,26 +9,26 @@ import com.caij.emore.database.bean.Status;
 /**
  * Created by Caij on 2016/9/1.
  */
-public class RepostStatusListArticleItemView extends RepostStatusListItemView {
+public class StatusArticleItemView extends StatusListItemView {
 
     private CompositePatternArticle mCompositePatternArticle;
 
-    public RepostStatusListArticleItemView(Context context) {
+    public StatusArticleItemView(Context context) {
         super(context);
         init();
     }
 
-    public RepostStatusListArticleItemView(Context context, AttributeSet attrs) {
+    public StatusArticleItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public RepostStatusListArticleItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StatusArticleItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public RepostStatusListArticleItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public StatusArticleItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
@@ -41,7 +41,7 @@ public class RepostStatusListArticleItemView extends RepostStatusListItemView {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.view_weibo_repost_article_item;
+        return R.layout.view_weibo_article_item;
     }
 
     @Override

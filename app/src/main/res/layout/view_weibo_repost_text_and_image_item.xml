@@ -54,13 +54,13 @@
                 android:textColor="@color/text_54"
                 android:textSize="@dimen/text_size_medium" />
 
-            <com.caij.emore.widget.weibo.list.WeiboItemImageViewGroup
+            <com.caij.emore.widget.weibo.list.StatusItemImageViewGroup
                 android:id="@+id/pics_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_medium">
 
-            </com.caij.emore.widget.weibo.list.WeiboItemImageViewGroup>
+            </com.caij.emore.widget.weibo.list.StatusItemImageViewGroup>
 
         </LinearLayout>
 
