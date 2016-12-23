@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -58,11 +59,12 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/22.
  */
-public class SelectImageActivity extends BaseToolBarActivity implements OnItemPartViewClickListener {
+public class SelectImageActivity extends BaseToolBarActivity implements OnItemPartViewClickListener, RecyclerViewOnItemClickListener {
 
     private static final int REQUEST_CODE_CAPTURE = 100;
     private static final int MY_PERMISSIONS_REQUEST_READ_IMAGE = 100;
     private static final int REQUEST_CODE_SELECT_IMAGES = 101;
+    private static final int MY_PERMISSIONS_REQUEST_CAMERA = 102;
 
     @BindView(R.id.tv_folder)
     TextView tvFolder;
@@ -154,25 +156,7 @@ public class SelectImageActivity extends BaseToolBarActivity implements OnItemPa
             }
         });
 
-        mImageAdapter.setOnItemClickListener(new RecyclerViewOnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Image image = mImageAdapter.getItem(position);
-                if (image.getType() == 1) {
-                    Intent intent = new Intent();
-                    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                    mCameraOutputPath = ImageUtil.createCameraImagePath(SelectImageActivity.this);
-                    Uri uri = Uri.fromFile(new File(mCameraOutputPath));
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                    startActivityForResult(intent, REQUEST_CODE_CAPTURE);
-                } else if (image.getType() == 2) {
-                    ArrayList<String> paths = new ArrayList<String>();
-                    paths.add(image.getPath());
-                    NavigationUtil.startLocalImagePreActivity(SelectImageActivity.this, view, paths, 0);
-
-                }
-            }
-        });
+        mImageAdapter.setOnItemClickListener(this);
     }
 
     private void initDate() {
@@ -454,14 +438,21 @@ public class SelectImageActivity extends BaseToolBarActivity implements OnItemPa
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_IMAGE: {
+            case MY_PERMISSIONS_REQUEST_READ_IMAGE:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initDate();
                 } else {
                     ToastUtil.show(this, getString(R.string.refused_to_read_image));
                 }
-            }
+                break;
+
+            case MY_PERMISSIONS_REQUEST_CAMERA:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    toCAMERA();
+                }
+                break;
         }
     }
 
@@ -530,5 +521,36 @@ public class SelectImageActivity extends BaseToolBarActivity implements OnItemPa
         ObjectAnimator scaleAnimatorY = ObjectAnimator.ofFloat(v, View.SCALE_Y, 1f, 1.15f, 1f);
         animatorSet.playTogether(scaleAnimatorY, scaleAnimatorX);
         animatorSet.start();
+    }
+
+    @Override
+    public void onItemClick(View view, int i) {
+        Image image = mImageAdapter.getItem(i);
+        if (image.getType() == 1) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+            }else {
+                toCAMERA();
+            }
+        } else if (image.getType() == 2) {
+            ArrayList<String> paths = new ArrayList<String>();
+            paths.add(image.getPath());
+            NavigationUtil.startLocalImagePreActivity(SelectImageActivity.this, view, paths, 0);
+        }
+    }
+
+    private void toCAMERA() {
+        Intent intent = new Intent();
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        mCameraOutputPath = ImageUtil.createCameraImagePath(getApplicationContext());
+        ContentValues contentValues = new ContentValues(1);
+        contentValues.put(MediaStore.Images.Media.DATA, mCameraOutputPath);
+        Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intent, REQUEST_CODE_CAPTURE);
     }
 }
