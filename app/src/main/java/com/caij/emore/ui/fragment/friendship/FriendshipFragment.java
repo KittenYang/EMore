@@ -8,14 +8,15 @@ import android.view.View;
 import com.caij.emore.R;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.RefreshListPresent;
+import com.caij.emore.ui.adapter.delegate.UserDelegate;
 import com.caij.emore.ui.view.FriendshipView;
 import com.caij.emore.ui.activity.UserInfoActivity;
-import com.caij.emore.ui.adapter.UserAdapter;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DensityUtil;
 import com.caij.rvadapter.BaseViewHolder;
 import com.caij.rvadapter.RecyclerViewOnItemClickListener;
 import com.caij.rvadapter.adapter.BaseAdapter;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 /**
@@ -47,7 +48,9 @@ public abstract class FriendshipFragment<P extends RefreshListPresent> extends S
 
     @Override
     protected BaseAdapter<User, ? extends BaseViewHolder> createRecyclerViewAdapter() {
-        return  new UserAdapter(getActivity());
+        MultiItemTypeAdapter<User> multiItemTypeAdapter = new MultiItemTypeAdapter<User>(getActivity());
+        multiItemTypeAdapter.addItemViewDelegate(new UserDelegate(null));
+        return multiItemTypeAdapter;
     }
 
     @Override

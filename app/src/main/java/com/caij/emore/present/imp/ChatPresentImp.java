@@ -309,7 +309,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
 
                         if (isShowDialog) {
                             mDirectMessageView.toScrollToPosition(mDirectMessages.size());
-                        }else {
+                        }else if (directMessages.size() > 0){
                             mDirectMessageView.attemptSmoothScrollToBottom();
                         }
                     }

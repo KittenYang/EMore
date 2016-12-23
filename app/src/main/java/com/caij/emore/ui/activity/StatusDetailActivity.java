@@ -25,7 +25,7 @@ import com.caij.emore.present.imp.StatusDetailPresentImp;
 import com.caij.emore.remote.imp.AttitudeApiImp;
 import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.ui.activity.publish.RelayStatusActivity;
-import com.caij.emore.ui.adapter.StatusAdapter;
+import com.caij.emore.ui.adapter.delegate.StatusDelegateProvide;
 import com.caij.emore.ui.view.StatusDetailView;
 import com.caij.emore.ui.activity.publish.CommentStatusActivity;
 import com.caij.emore.ui.adapter.StatusFragmentPagerAdapter;
@@ -244,29 +244,29 @@ public class StatusDetailActivity extends BaseToolBarActivity<StatusDetailPresen
         mAttachContainer.setVisibility(View.VISIBLE);
 
         if (mWeiboItemView == null) {
-            int type = StatusAdapter.getStatusType(status);
+            int type = StatusDelegateProvide.Type.getStatusType(status);
             switch (type) {
-                case StatusAdapter.TYPE_NORMAL_IMAGE:
+                case StatusDelegateProvide.TYPE_NORMAL_IMAGE:
                     mWeiboItemView = new StatusImageItemView(this);
                     break;
 
-                case StatusAdapter.TYPE_REPOST_IMAGE:
+                case StatusDelegateProvide.TYPE_REPOST_IMAGE:
                     mWeiboItemView = new RepostStatusImageItemView(this);
                     break;
 
-                case StatusAdapter.TYPE_NORMAL_VIDEO:
+                case StatusDelegateProvide.TYPE_NORMAL_VIDEO:
                     mWeiboItemView = new StatusListVideoItemView(this);
                     break;
 
-                case StatusAdapter.TYPE_REPOST_VIDEO:
+                case StatusDelegateProvide.TYPE_REPOST_VIDEO:
                     mWeiboItemView = new RepostStatusListVideoItemView(this);
                     break;
 
-                case StatusAdapter.TYPE_NORMAL_ARTICLE:
+                case StatusDelegateProvide.TYPE_NORMAL_ARTICLE:
                     mWeiboItemView = new StatusListArticleItemView(this);
                     break;
 
-                case StatusAdapter.TYPE_REPOST_ARTICLE:
+                case StatusDelegateProvide.TYPE_REPOST_ARTICLE:
                     mWeiboItemView = new RepostStatusListArticleItemView(this);
                     break;
             }

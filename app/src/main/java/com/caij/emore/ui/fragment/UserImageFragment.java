@@ -14,11 +14,12 @@ import com.caij.emore.bean.StatusImageInfo;
 import com.caij.emore.present.UserStatusPresent;
 import com.caij.emore.present.imp.UserImagePresentImp;
 import com.caij.emore.remote.imp.StatusApiImp;
+import com.caij.emore.ui.adapter.delegate.StatusImageDelegate;
 import com.caij.emore.ui.view.TimeLineStatusImageView;
-import com.caij.emore.ui.adapter.UserGridImageAdapter;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
 import com.caij.rvadapter.BaseViewHolder;
 import com.caij.rvadapter.adapter.BaseAdapter;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 
 /**
  * Created by Caij on 2016/6/29.
@@ -42,7 +43,9 @@ public class UserImageFragment extends RecyclerViewFragment<StatusImageInfo, Use
 
     @Override
     protected BaseAdapter<StatusImageInfo, ? extends BaseViewHolder> createRecyclerViewAdapter() {
-        return new UserGridImageAdapter(getActivity());
+        MultiItemTypeAdapter<StatusImageInfo> multiItemTypeAdapter = new MultiItemTypeAdapter<StatusImageInfo>(getActivity());
+        multiItemTypeAdapter.addItemViewDelegate(new StatusImageDelegate(null));
+        return multiItemTypeAdapter;
     }
 
     private void initView() {

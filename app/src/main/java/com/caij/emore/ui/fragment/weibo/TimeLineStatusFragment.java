@@ -11,32 +11,40 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.present.TimeLinePresent;
 import com.caij.emore.ui.activity.StatusDetailActivity;
-import com.caij.emore.ui.adapter.StatusAdapter;
+import com.caij.emore.ui.adapter.delegate.StatusDelegateProvide;
 import com.caij.emore.ui.view.TimeLineStatusView;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.AnimUtil;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.emore.widget.recyclerview.HeaderAndFooterRecyclerViewAdapter;
+import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
+import com.caij.emore.widget.weibo.list.StatusListItemView;
 import com.caij.rvadapter.BaseViewHolder;
 import com.caij.rvadapter.RecyclerViewOnItemClickListener;
 import com.caij.rvadapter.adapter.BaseAdapter;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.R.attr.value;
 
 /**
  * Created by Caij on 2016/6/4.
  */
 public abstract class TimeLineStatusFragment<P extends TimeLinePresent> extends SwipeRefreshRecyclerViewFragment<Status, P>
-        implements TimeLineStatusView, RecyclerViewOnItemClickListener, XRecyclerView.OnLoadMoreListener, StatusAdapter.OnItemActionClickListener {
+        implements TimeLineStatusView, RecyclerViewOnItemClickListener, XRecyclerView.OnLoadMoreListener, OnItemPartViewClickListener {
 
     @Override
     protected BaseAdapter<Status, ? extends BaseViewHolder> createRecyclerViewAdapter() {
-        return new StatusAdapter(getActivity(), this, this);
+        MultiItemTypeAdapter<Status> multiItemTypeAdapter = new MultiItemTypeAdapter<Status>(getActivity());
+        multiItemTypeAdapter.addItemViewDelegate(new StatusDelegateProvide.TextAndImageStatusDelegate(this));
+        multiItemTypeAdapter.addItemViewDelegate(new StatusDelegateProvide.RepostTextAndImageStatusDelegate(this));
+        multiItemTypeAdapter.addItemViewDelegate(new StatusDelegateProvide.VideoStatusDelegate(this));
+        multiItemTypeAdapter.addItemViewDelegate(new StatusDelegateProvide.RepostVideoStatusDelegate(this));
+        multiItemTypeAdapter.addItemViewDelegate(new StatusDelegateProvide.ArticleStatusDelegate(this));
+        multiItemTypeAdapter.addItemViewDelegate(new StatusDelegateProvide.RepostArticleStatusDelegate(this));
+        return multiItemTypeAdapter;
     }
 
     @Override
@@ -48,6 +56,113 @@ public abstract class TimeLineStatusFragment<P extends TimeLinePresent> extends 
     @Override
     public void onLoadComplete(boolean isHaveMore) {
         xRecyclerView.completeLoading(isHaveMore);
+    }
+
+
+
+    private void deleteStatus(Status status, int position) {
+        mPresent.deleteStatus(status, position);
+    }
+
+    private void collectStatus(Status status) {
+        mPresent.collectStatus(status);
+    }
+
+    private void unCollectStatus(Status status) {
+        mPresent.unCollectStatus(status);
+    }
+
+    @Override
+    public void onDeleteStatusSuccess(Status status, int position) {
+        mRecyclerViewAdapter.removeEntity(status);
+        mRecyclerViewAdapter.notifyItemRemoved(position);
+    }
+
+    @Override
+    public void onCollectSuccess(Status status) {
+        status.setFavorited(true);
+    }
+
+    @Override
+    public void onUnCollectSuccess(Status status) {
+        status.setFavorited(false);
+    }
+
+
+    @Override
+    public void onStatusAttitudeUpdate(Status status, int index) {
+        RecyclerView.ViewHolder viewHolder = findViewHolder(index);
+        if (viewHolder != null && viewHolder instanceof BaseViewHolder) {
+            StatusListItemView weiboItemView = ((BaseViewHolder) viewHolder).getView(R.id.weibo_item_view);
+            weiboItemView.setLikeSelected(status);
+            weiboItemView.setLikeCount(status);
+        }
+    }
+
+    @Override
+    public void onStatusAttitudeCountUpdate(Status status, int index) {
+        RecyclerView.ViewHolder viewHolder = findViewHolder(index);
+        if (viewHolder != null && viewHolder instanceof BaseViewHolder) {
+            StatusListItemView weiboItemView = ((BaseViewHolder) viewHolder).getView(R.id.weibo_item_view);
+            weiboItemView.setLikeSelected(status);
+            weiboItemView.setLikeCount(status);
+        }
+    }
+
+    @Override
+    public void onStatusCommentCountUpdate(Status status, int index) {
+        RecyclerView.ViewHolder viewHolder = findViewHolder(index);
+        if (viewHolder != null && viewHolder instanceof BaseViewHolder) {
+            StatusListItemView weiboItemView = ((BaseViewHolder) viewHolder).getView(R.id.weibo_item_view);
+            weiboItemView.setCommentCount(status);
+        }
+    }
+
+    @Override
+    public void onStatusRelayCountUpdate(Status status, int index) {
+        RecyclerView.ViewHolder viewHolder = findViewHolder(index);
+        if (viewHolder != null && viewHolder instanceof BaseViewHolder) {
+            StatusListItemView weiboItemView = ((BaseViewHolder) viewHolder).getView(R.id.weibo_item_view);
+            weiboItemView.setRelayCount(status);
+        }
+    }
+
+    private RecyclerView.ViewHolder findViewHolder(int index) {
+        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) xRecyclerView.getLayoutManager();
+        int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+        int lastVisibleFeedPosition = linearLayoutManager.findLastVisibleItemPosition();
+
+        HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter = xRecyclerView.getAdapter();
+
+        if (firstVisibleItemPosition <= index + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount()
+                && index + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount() <= lastVisibleFeedPosition) {
+            //得到要更新的item的view
+            View view = xRecyclerView.getRecyclerView().getChildAt(index - firstVisibleItemPosition + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
+
+            return xRecyclerView.getRecyclerView().getChildViewHolder(view);
+        }
+
+        return null;
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        Status status = mRecyclerViewAdapter.getItem(position);
+        if (view.getId() == R.id.tv_like) {
+            if (WeicoAuthUtil.checkWeicoLogin(this, false)) {
+                if (status.getAttitudes_status() == 1) {
+                    mPresent.destroyAttitudeStatus(status);
+                    view.setSelected(false);
+                    AnimUtil.scale(view, 1f, 1.2f, 1f);
+                } else {
+                    mPresent.attitudeStatus(status);
+                    view.setSelected(true);
+                    AnimUtil.scale(view, 1f, 1.2f, 1f);
+                }
+            }
+        }else if (view.getId() == R.id.btn_menus) {
+            onMenuClick(status, position);
+        }
     }
 
     private void onMenuClick(final Status status, final int position) {
@@ -81,104 +196,4 @@ public abstract class TimeLineStatusFragment<P extends TimeLinePresent> extends 
             }
         });
     }
-
-    private void deleteStatus(Status status, int position) {
-        mPresent.deleteStatus(status, position);
-    }
-
-    private void collectStatus(Status status) {
-        mPresent.collectStatus(status);
-    }
-
-    private void unCollectStatus(Status status) {
-        mPresent.unCollectStatus(status);
-    }
-
-    @Override
-    public void onDeleteStatusSuccess(Status status, int position) {
-        mRecyclerViewAdapter.removeEntity(status);
-        mRecyclerViewAdapter.notifyItemRemoved(position);
-    }
-
-    @Override
-    public void onCollectSuccess(Status status) {
-        status.setFavorited(true);
-    }
-
-    @Override
-    public void onUnCollectSuccess(Status status) {
-        status.setFavorited(false);
-    }
-
-    @Override
-    public void onMenuClick(View v, int position) {
-        onMenuClick(mRecyclerViewAdapter.getItem(position), position);
-    }
-
-    @Override
-    public void onStatusAttitudeUpdate(Status status, int index) {
-        RecyclerView.ViewHolder viewHolder = findViewHolder(index);
-        if (viewHolder != null && viewHolder instanceof StatusAdapter.WeiboBaseViewHolder) {
-            ((StatusAdapter.WeiboBaseViewHolder) viewHolder).onStatusAttitudeUpdate(status);
-        }
-    }
-
-    @Override
-    public void onStatusAttitudeCountUpdate(Status status, int index) {
-        RecyclerView.ViewHolder viewHolder = findViewHolder(index);
-        if (viewHolder != null && viewHolder instanceof StatusAdapter.WeiboBaseViewHolder) {
-            ((StatusAdapter.WeiboBaseViewHolder) viewHolder).onStatusAttitudeUpdate(status);
-        }
-    }
-
-    @Override
-    public void onStatusCommentCountUpdate(Status status, int index) {
-        RecyclerView.ViewHolder viewHolder = findViewHolder(index);
-        if (viewHolder != null && viewHolder instanceof StatusAdapter.WeiboBaseViewHolder) {
-            ((StatusAdapter.WeiboBaseViewHolder) viewHolder).onStatusCommentCountUpdate(status);
-        }
-    }
-
-    @Override
-    public void onStatusRelayCountUpdate(Status status, int index) {
-        RecyclerView.ViewHolder viewHolder = findViewHolder(index);
-        if (viewHolder != null && viewHolder instanceof StatusAdapter.WeiboBaseViewHolder) {
-            ((StatusAdapter.WeiboBaseViewHolder) viewHolder).onStatusRelayCountUpdate(status);
-        }
-    }
-
-    private RecyclerView.ViewHolder findViewHolder(int index) {
-        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) xRecyclerView.getLayoutManager();
-        int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
-        int lastVisibleFeedPosition = linearLayoutManager.findLastVisibleItemPosition();
-
-        HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter = xRecyclerView.getAdapter();
-
-        if (firstVisibleItemPosition <= index + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount()
-                && index + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount() <= lastVisibleFeedPosition) {
-            //得到要更新的item的view
-            View view = xRecyclerView.getRecyclerView().getChildAt(index - firstVisibleItemPosition + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
-
-            return xRecyclerView.getRecyclerView().getChildViewHolder(view);
-        }
-
-        return null;
-    }
-
-    @Override
-    public void onLikeClick(View v, int position) {
-        if (WeicoAuthUtil.checkWeicoLogin(this, false)) {
-            Status status = mRecyclerViewAdapter.getItem(position);
-            if (status.getAttitudes_status() == 1) {
-                mPresent.destroyAttitudeStatus(status);
-                v.setSelected(false);
-                AnimUtil.scale(v, 1f, 1.2f, 1f);
-            }else {
-                mPresent.attitudeStatus(status);
-                v.setSelected(true);
-                AnimUtil.scale(v, 1f, 1.2f, 1f);
-            }
-        }
-    }
-
 }

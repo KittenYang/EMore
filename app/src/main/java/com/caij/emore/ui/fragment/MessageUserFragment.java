@@ -19,11 +19,11 @@ import com.caij.emore.manager.imp.NotifyManagerImp;
 import com.caij.emore.present.MessageUserPresent;
 import com.caij.emore.present.imp.MessageUserPresentImp;
 import com.caij.emore.remote.imp.MessageApiImp;
+import com.caij.emore.ui.adapter.delegate.RecentContactDelegate;
 import com.caij.emore.ui.view.MessageUserView;
 import com.caij.emore.ui.activity.CommentsActivity;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.MentionActivity;
-import com.caij.emore.ui.adapter.MessageUserAdapter;
 import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.LogUtil;
@@ -32,6 +32,7 @@ import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.rvadapter.BaseViewHolder;
 import com.caij.rvadapter.RecyclerViewOnItemLongClickListener;
 import com.caij.rvadapter.adapter.BaseAdapter;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.List;
@@ -133,7 +134,9 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
 
     @Override
     protected BaseAdapter<MessageUser.UserListBean, ? extends BaseViewHolder> createRecyclerViewAdapter() {
-        return new MessageUserAdapter(getActivity());
+        MultiItemTypeAdapter<MessageUser.UserListBean> multiItemTypeAdapter = new MultiItemTypeAdapter<MessageUser.UserListBean>(getActivity());
+        multiItemTypeAdapter.addItemViewDelegate(new RecentContactDelegate(null));
+        return multiItemTypeAdapter;
     }
 
     @Override

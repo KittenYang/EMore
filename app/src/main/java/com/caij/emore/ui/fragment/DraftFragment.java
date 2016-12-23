@@ -10,16 +10,18 @@ import com.caij.emore.manager.imp.DraftManagerImp;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.DraftPresent;
 import com.caij.emore.present.imp.DraftPresentImp;
+import com.caij.emore.ui.adapter.delegate.DraftDelegate;
 import com.caij.emore.ui.view.DraftListView;
 import com.caij.emore.ui.activity.publish.PublishStatusActivity;
-import com.caij.emore.ui.adapter.DraftAdapter;
+import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.rvadapter.BaseViewHolder;
 import com.caij.rvadapter.adapter.BaseAdapter;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 
 /**
  * Created by Caij on 2016/7/20.
  */
-public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> implements DraftListView {
+public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> implements DraftListView, OnItemPartViewClickListener {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -28,7 +30,9 @@ public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> imp
 
     @Override
     protected BaseAdapter<Draft, ? extends BaseViewHolder> createRecyclerViewAdapter() {
-        return new DraftAdapter(getActivity());
+        MultiItemTypeAdapter<Draft> multiItemTypeAdapter = new MultiItemTypeAdapter<Draft>(getActivity());
+        multiItemTypeAdapter.addItemViewDelegate(new DraftDelegate(this));
+        return multiItemTypeAdapter;
     }
 
     @Override
@@ -39,21 +43,11 @@ public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> imp
     @Override
     public void onItemClick(View view, int position) {
         Draft draft = mRecyclerViewAdapter.getItem(position);
-        if (view.getId() == R.id.btnResend) {
-            mPresent.publishDraft(draft);
-            mRecyclerViewAdapter.removeEntity(draft);
-            mRecyclerViewAdapter.notifyItemRemoved(position);
-        }else if (view.getId() == R.id.btnDel) {
-            mPresent.deleteDraft(draft, position);
-            mRecyclerViewAdapter.removeEntity(draft);
-            mRecyclerViewAdapter.notifyItemRemoved(position);
-        }else {
-            switch (draft.getType()) {
-                case Draft.TYPE_WEIBO:
-                    Intent intent = PublishStatusActivity.newIntent(getActivity(), draft);
-                    startActivity(intent);
-                    break;
-            }
+        switch (draft.getType()) {
+            case Draft.TYPE_WEIBO:
+                Intent intent = PublishStatusActivity.newIntent(getActivity(), draft);
+                startActivity(intent);
+                break;
         }
     }
 
@@ -62,4 +56,17 @@ public class DraftFragment extends RecyclerViewFragment<Draft, DraftPresent> imp
         mRecyclerViewAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onClick(View view, int position) {
+        Draft draft = mRecyclerViewAdapter.getItem(position);
+        if (view.getId() == R.id.btnResend) {
+            mPresent.publishDraft(draft);
+            mRecyclerViewAdapter.removeEntity(draft);
+            mRecyclerViewAdapter.notifyItemRemoved(position);
+        }else if (view.getId() == R.id.btnDel) {
+            mPresent.deleteDraft(draft, position);
+            mRecyclerViewAdapter.removeEntity(draft);
+            mRecyclerViewAdapter.notifyItemRemoved(position);
+        }
+    }
 }

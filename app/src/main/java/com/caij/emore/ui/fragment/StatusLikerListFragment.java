@@ -13,13 +13,14 @@ import com.caij.emore.database.bean.User;
 import com.caij.emore.present.ListPresent;
 import com.caij.emore.present.imp.StatusAttitudesPresentImp;
 import com.caij.emore.remote.imp.AttitudeApiImp;
+import com.caij.emore.ui.adapter.delegate.AttitudeDelegate;
 import com.caij.emore.ui.view.StatusAttitudesView;
 import com.caij.emore.ui.activity.UserInfoActivity;
-import com.caij.emore.ui.adapter.AttitudeAdapter;
 import com.caij.emore.widget.recyclerview.OnScrollListener;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
 import com.caij.rvadapter.BaseViewHolder;
 import com.caij.rvadapter.adapter.BaseAdapter;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 
@@ -55,7 +56,9 @@ public class StatusLikerListFragment extends RecyclerViewFragment<User, ListPres
 
     @Override
     protected BaseAdapter<User, ? extends BaseViewHolder> createRecyclerViewAdapter() {
-        return  new AttitudeAdapter(getActivity());
+        MultiItemTypeAdapter<User> multiItemTypeAdapter = new MultiItemTypeAdapter<User>(getActivity());
+        multiItemTypeAdapter.addItemViewDelegate(new AttitudeDelegate(null));
+        return multiItemTypeAdapter;
     }
 
     @Override

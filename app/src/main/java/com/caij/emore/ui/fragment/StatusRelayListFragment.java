@@ -14,13 +14,15 @@ import com.caij.emore.database.bean.Status;
 import com.caij.emore.present.StatusRelayPresent;
 import com.caij.emore.present.imp.StatusRelayPresentImp;
 import com.caij.emore.remote.imp.StatusApiImp;
+import com.caij.emore.ui.adapter.delegate.RepostDelegate;
 import com.caij.emore.ui.view.StatusRelayView;
 import com.caij.emore.ui.activity.UserInfoActivity;
-import com.caij.emore.ui.adapter.RepostAdapter;
+import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.emore.widget.recyclerview.OnScrollListener;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
 import com.caij.rvadapter.BaseViewHolder;
 import com.caij.rvadapter.adapter.BaseAdapter;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.List;
@@ -29,7 +31,7 @@ import java.util.List;
  * Created by Caij on 2016/6/14.
  */
 public class StatusRelayListFragment extends RecyclerViewFragment<Status, StatusRelayPresent> implements StatusRelayView,
-        XRecyclerView.OnLoadMoreListener {
+        XRecyclerView.OnLoadMoreListener, OnItemPartViewClickListener {
 
     public static StatusRelayListFragment newInstance(long statusId) {
         Bundle args = new Bundle();
@@ -59,7 +61,9 @@ public class StatusRelayListFragment extends RecyclerViewFragment<Status, Status
 
     @Override
     protected BaseAdapter<Status, ? extends BaseViewHolder> createRecyclerViewAdapter() {
-       return  new RepostAdapter(getActivity());
+        MultiItemTypeAdapter<Status> multiItemTypeAdapter = new MultiItemTypeAdapter<Status>(getActivity());
+        multiItemTypeAdapter.addItemViewDelegate(new RepostDelegate(this));
+       return multiItemTypeAdapter;
     }
 
     @Override
@@ -87,13 +91,7 @@ public class StatusRelayListFragment extends RecyclerViewFragment<Status, Status
 
     @Override
     public void onItemClick(View view, int position) {
-        Status weibo = mRecyclerViewAdapter.getItem(position);
-        if (view.getId() == R.id.imgPhoto) {
-            Intent intent = UserInfoActivity.newIntent(getActivity(), weibo.getUser().getScreen_name());
-            startActivity(intent);
-        }else {
 
-        }
     }
 
     @Override
@@ -103,6 +101,15 @@ public class StatusRelayListFragment extends RecyclerViewFragment<Status, Status
         LinearLayoutManager manager = (LinearLayoutManager) xRecyclerView.getLayoutManager();
         if (manager.findFirstVisibleItemPosition() < 2) {
             xRecyclerView.smoothScrollToPosition(0);
+        }
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        Status weibo = mRecyclerViewAdapter.getItem(position);
+        if (view.getId() == R.id.imgPhoto) {
+            Intent intent = UserInfoActivity.newIntent(getActivity(), weibo.getUser().getScreen_name());
+            startActivity(intent);
         }
     }
 }

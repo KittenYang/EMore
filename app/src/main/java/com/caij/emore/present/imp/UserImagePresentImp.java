@@ -81,13 +81,13 @@ public class UserImagePresentImp extends AbsBasePresent implements UserStatusPre
                 .flatMap(new Func1<UserStatusesResponse, Observable<Status>>() {
                     @Override
                     public Observable<Status> call(UserStatusesResponse response) {
+                        mPicUrl.clear();
                         return Observable.from(response.getStatuses());
                     }
                 })
                 .doOnNext(new Action1<Status>() {
                     @Override
                     public void call(Status weibo) {
-                        mPicUrl.clear();
                         for (String picId : weibo.getPic_ids()) {
                             mPicUrl.add(weibo.getPic_infos().get(picId));
                         }

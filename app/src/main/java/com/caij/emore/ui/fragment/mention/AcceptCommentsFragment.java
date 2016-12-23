@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 
+import com.caij.emore.R;
 import com.caij.emore.account.Account;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Comment;
@@ -12,22 +13,26 @@ import com.caij.emore.present.RefreshListPresent;
 import com.caij.emore.present.imp.AcceptCommentsPresentImp;
 import com.caij.emore.remote.imp.CommentApiImp;
 import com.caij.emore.remote.imp.NotifyApiImp;
+import com.caij.emore.ui.activity.UserInfoActivity;
+import com.caij.emore.ui.adapter.delegate.CommentMesssageDelegate;
 import com.caij.emore.ui.view.RefreshListView;
 import com.caij.emore.ui.activity.StatusDetailActivity;
 import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
-import com.caij.emore.ui.adapter.MessageCommentAdapter;
 import com.caij.emore.ui.fragment.SwipeRefreshRecyclerViewFragment;
 import com.caij.emore.utils.DialogUtil;
+import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
+import com.caij.rvadapter.BaseViewHolder;
 import com.caij.rvadapter.RecyclerViewOnItemClickListener;
 import com.caij.rvadapter.adapter.BaseAdapter;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 
 
 /**
  * Created by Caij on 2016/7/4.
  */
 public class AcceptCommentsFragment extends SwipeRefreshRecyclerViewFragment<Comment, RefreshListPresent> implements
-        XRecyclerView.OnLoadMoreListener,RecyclerViewOnItemClickListener, RefreshListView<Comment> {
+        XRecyclerView.OnLoadMoreListener,RecyclerViewOnItemClickListener, RefreshListView<Comment>,OnItemPartViewClickListener {
 
     @Override
     protected void onUserFirstVisible() {
@@ -41,8 +46,10 @@ public class AcceptCommentsFragment extends SwipeRefreshRecyclerViewFragment<Com
     }
 
     @Override
-    protected BaseAdapter createRecyclerViewAdapter() {
-        return  new MessageCommentAdapter(getActivity());
+    protected BaseAdapter<Comment, ? extends BaseViewHolder> createRecyclerViewAdapter() {
+        MultiItemTypeAdapter<Comment> multiItemTypeAdapter = new MultiItemTypeAdapter<Comment>(getActivity());
+        multiItemTypeAdapter.addItemViewDelegate(new CommentMesssageDelegate(this));
+        return  multiItemTypeAdapter;
     }
 
     protected RefreshListPresent createPresent() {
@@ -70,5 +77,26 @@ public class AcceptCommentsFragment extends SwipeRefreshRecyclerViewFragment<Com
                 }
             }
         });
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        Comment comment = mRecyclerViewAdapter.getItem(position);
+        switch (view.getId()) {
+            case R.id.item_bottom:
+                Intent intent = StatusDetailActivity.newIntent(getActivity(), comment.getStatus().getId());
+                startActivity(intent);
+                break;
+
+            case R.id.tv_reply:
+                intent = ReplyCommentActivity.newIntent(getActivity(), comment.getStatus().getId(), comment.getId());
+                startActivity(intent);
+                break;
+
+            case R.id.sdv_avatar:
+                intent = UserInfoActivity.newIntent(getActivity(), comment.getUser().getScreen_name());
+                startActivity(intent);
+                break;
+        }
     }
 }

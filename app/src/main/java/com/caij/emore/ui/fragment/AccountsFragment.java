@@ -16,18 +16,20 @@ import com.caij.emore.present.AccountPresent;
 import com.caij.emore.present.imp.AccountPresentImp;
 import com.caij.emore.ui.activity.MainActivity;
 import com.caij.emore.ui.activity.login.WeiCoLoginActivity;
-import com.caij.emore.ui.adapter.AccountAdapter;
+import com.caij.emore.ui.adapter.delegate.AccountDelegate;
 import com.caij.emore.ui.view.AccountView;
 import com.caij.emore.utils.DensityUtil;
 import com.caij.emore.Init;
+import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.rvadapter.BaseViewHolder;
 import com.caij.rvadapter.adapter.BaseAdapter;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 /**
  * Created by Caij on 2016/8/22.
  */
-public class AccountsFragment extends RecyclerViewFragment<AccountInfo, AccountPresent> implements AccountView {
+public class AccountsFragment extends RecyclerViewFragment<AccountInfo, AccountPresent> implements AccountView, OnItemPartViewClickListener {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -41,7 +43,9 @@ public class AccountsFragment extends RecyclerViewFragment<AccountInfo, AccountP
 
     @Override
     protected BaseAdapter<AccountInfo, ? extends BaseViewHolder> createRecyclerViewAdapter() {
-        return new AccountAdapter(getActivity());
+        MultiItemTypeAdapter<AccountInfo> multiItemTypeAdapter = new MultiItemTypeAdapter<AccountInfo>(getActivity());
+        multiItemTypeAdapter.addItemViewDelegate(new AccountDelegate(this));
+        return multiItemTypeAdapter;
     }
 
     @Override
@@ -52,11 +56,7 @@ public class AccountsFragment extends RecyclerViewFragment<AccountInfo, AccountP
     @Override
     public void onItemClick(View view, int position) {
         Account account = mRecyclerViewAdapter.getItem(position).getAccount();
-        if (view.getId() == R.id.iv_delete) {
-            deleteAccount(account, position);
-        }else {
-            changeAccount(account);
-        }
+        changeAccount(account);
     }
 
     private void deleteAccount(Account account, int position) {
@@ -125,4 +125,11 @@ public class AccountsFragment extends RecyclerViewFragment<AccountInfo, AccountP
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onClick(View view, int position) {
+        Account account = mRecyclerViewAdapter.getItem(position).getAccount();
+        if (view.getId() == R.id.iv_delete) {
+            deleteAccount(account, position);
+        }
+    }
 }

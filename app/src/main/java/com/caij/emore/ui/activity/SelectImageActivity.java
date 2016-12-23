@@ -2,6 +2,7 @@ package com.caij.emore.ui.activity;
 
 import android.Manifest;
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,14 +33,18 @@ import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.bean.Image;
 import com.caij.emore.bean.ImageFolder;
 import com.caij.emore.present.BasePresent;
-import com.caij.emore.ui.adapter.FolderAdapter;
-import com.caij.emore.ui.adapter.GridImageAdapter;
+import com.caij.emore.ui.adapter.delegate.CameraDelegate;
+import com.caij.emore.ui.adapter.delegate.FolderDelegate;
+import com.caij.emore.ui.adapter.delegate.GridImageDelegate;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.utils.rxjava.RxUtil;
 import com.caij.emore.utils.rxjava.SubscriberAdapter;
+import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
+import com.caij.rvadapter.BaseViewHolder;
 import com.caij.rvadapter.RecyclerViewOnItemClickListener;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,11 +58,11 @@ import butterknife.OnClick;
 /**
  * Created by Caij on 2016/6/22.
  */
-public class SelectImageActivity extends BaseToolBarActivity implements GridImageAdapter.ImageSelectListener {
+public class SelectImageActivity extends BaseToolBarActivity implements OnItemPartViewClickListener {
 
     private static final int REQUEST_CODE_CAPTURE = 100;
     private static final int MY_PERMISSIONS_REQUEST_READ_IMAGE = 100;
-    private static final int REQUEST_CODE_SELECT_IMAGES = 100;
+    private static final int REQUEST_CODE_SELECT_IMAGES = 101;
 
     @BindView(R.id.tv_folder)
     TextView tvFolder;
@@ -70,11 +74,13 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
     RecyclerView mRecyclerView;
     private MenuItem mMiImageCount;
 
-    private GridImageAdapter mImageAdapter;
-    private FolderAdapter mFolderAdapter;
+    private MultiItemTypeAdapter<Image> mImageAdapter;
+    private MultiItemTypeAdapter<ImageFolder> mFolderAdapter;
+
+    private ArrayList<String> mSelectImages;
 
     private Handler mHandler;
-    private String camareOutputPath;
+    private String mCameraOutputPath;
     private int mMaxImageSelectCount;
 
     public static Intent newIntent(Context context, int maxImageCount) {
@@ -88,21 +94,12 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         mMaxImageSelectCount = getIntent().getIntExtra(Key.MAX, 0);
+        mSelectImages = new ArrayList<>(mMaxImageSelectCount);
         initView();
         mHandler = new Handler();
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-//                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-//                ActivityCompat.requestPermissions(getActivity(),
-//                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                        MY_PERMISSIONS_REQUEST_READ_IMAGE);
-//            } else {
-//                ActivityCompat.requestPermissions(getActivity(),
-//                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                        MY_PERMISSIONS_REQUEST_READ_IMAGE);
-//            }
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST_READ_IMAGE);
@@ -125,7 +122,12 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setBackgroundColor(getResources().getColor(R.color.ui_background));
-        mImageAdapter = new GridImageAdapter(this, mMaxImageSelectCount);
+        mImageAdapter = new MultiItemTypeAdapter<Image>(this);
+        GridImageDelegate gridImageDelegate = new GridImageDelegate(this);
+        gridImageDelegate.setSelectImagePaths(mSelectImages);
+        mImageAdapter.addItemViewDelegate(gridImageDelegate);
+        mImageAdapter.addItemViewDelegate(new CameraDelegate(null));
+
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
@@ -137,7 +139,8 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
         });
         mRecyclerView.setAdapter(mImageAdapter);
 
-        mFolderAdapter = new FolderAdapter(this);
+        mFolderAdapter = new MultiItemTypeAdapter<ImageFolder>(this);
+        mFolderAdapter.addItemViewDelegate(new FolderDelegate(null));
         recyclerViewFolder.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewFolder.setAdapter(mFolderAdapter);
 
@@ -158,8 +161,8 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
                 if (image.getType() == 1) {
                     Intent intent = new Intent();
                     intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                    camareOutputPath = ImageUtil.createCameraImagePath(SelectImageActivity.this);
-                    Uri uri = Uri.fromFile(new File(camareOutputPath));
+                    mCameraOutputPath = ImageUtil.createCameraImagePath(SelectImageActivity.this);
+                    Uri uri = Uri.fromFile(new File(mCameraOutputPath));
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                     startActivityForResult(intent, REQUEST_CODE_CAPTURE);
                 } else if (image.getType() == 2) {
@@ -170,8 +173,6 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
                 }
             }
         });
-
-        mImageAdapter.setOnSelectListener(this);
     }
 
     private void initDate() {
@@ -208,7 +209,7 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
 
                     mImageAdapter.setEntities(images);
                     mImageAdapter.notifyDataSetChanged();
-                    mMiImageCount.setTitle(getString(R.string.complete) + "(" + mImageAdapter.getSelectImages().size() + "/" + mMaxImageSelectCount + ")");
+                    updateSelectItem();
                 }
             });
     }
@@ -310,13 +311,6 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
         return imageList;
     }
 
-
-    @Override
-    public boolean onSelect(boolean isSelect, Image image) {
-        mMiImageCount.setTitle(getString(R.string.complete) + "(" + mImageAdapter.getSelectImages().size() + "/" + mMaxImageSelectCount + ")");
-        return true;
-    }
-
     private void showImageFolder() {
         recyclerViewFolder.setVisibility(View.INVISIBLE);
         //这里最开始没有recyclerViewFolder的高度， 需要通过mHandler 等测量完才开始动画
@@ -393,37 +387,38 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
         switch (requestCode) {
             case REQUEST_CODE_CAPTURE:
                 if (resultCode == Activity.RESULT_OK) {
-                    if (!TextUtils.isEmpty(camareOutputPath)) {
+                    if (!TextUtils.isEmpty(mCameraOutputPath)) {
                         Intent intent = new Intent();
                         ArrayList<String> paths = new ArrayList<>();
-                        paths.add(camareOutputPath);
+                        paths.add(mCameraOutputPath);
                         intent.putStringArrayListExtra(Key.IMAGE_PATHS, paths);
                         setResult(Activity.RESULT_OK, intent);
                         finish();
                     }
                 }
                 break;
-        }
 
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CODE_SELECT_IMAGES) {
-                ArrayList<String> paths = data.getStringArrayListExtra(Key.IMAGE_PATHS);
-                boolean isOk = data.getBooleanExtra(Key.TYPE, false);
+            case REQUEST_CODE_SELECT_IMAGES:
+                if (resultCode == RESULT_OK) {
+                    ArrayList<String> paths = data.getStringArrayListExtra(Key.IMAGE_PATHS);
+                    boolean isOk = data.getBooleanExtra(Key.TYPE, false);
+                    if (isOk) {
+                        Intent intent = new Intent();
+                        intent.putStringArrayListExtra(Key.IMAGE_PATHS, mSelectImages);
+                        setResult(Activity.RESULT_OK, intent);
+                        finish();
+                    }else {
+                        mSelectImages.clear();
+                        mSelectImages.addAll(paths);
 
-                mImageAdapter.setSelectImages(paths);
+                        updateSelectItem();
+                    }
 
-                if (isOk) {
-                    Intent intent = new Intent();
-                    intent.putStringArrayListExtra(Key.IMAGE_PATHS, (ArrayList<String>) mImageAdapter.getSelectImages());
-                    setResult(Activity.RESULT_OK, intent);
-                    finish();
-                }else {
-                    mMiImageCount.setTitle(getString(R.string.complete) + "(" + mImageAdapter.getSelectImages().size() + "/" + mMaxImageSelectCount + ")");
+                    mImageAdapter.notifyDataSetChanged();
                 }
-
-                mImageAdapter.notifyDataSetChanged();
-            }
+                break;
         }
+
     }
 
     @Override
@@ -436,20 +431,19 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.image_count) {
-            if (mImageAdapter.getSelectImages() == null || mImageAdapter.getSelectImages().size() == 0) {
+            if (mSelectImages == null || mSelectImages.size() == 0) {
                 ToastUtil.show(this, R.string.unselect_image);
             }else {
                 Intent intent = new Intent();
-                intent.putStringArrayListExtra(Key.IMAGE_PATHS, (ArrayList<String>) mImageAdapter.getSelectImages());
+                intent.putStringArrayListExtra(Key.IMAGE_PATHS, mSelectImages);
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             }
         }else if (item.getItemId() == R.id.image_pre) {
-            if (mImageAdapter.getSelectImages() == null || mImageAdapter.getSelectImages().size() == 0) {
+            if (mSelectImages == null || mSelectImages.size() == 0) {
                 ToastUtil.show(this, R.string.unselect_image);
             }else {
-                Intent intent = SelectImagePrewActivity.newIntent(SelectImageActivity.this,
-                        (ArrayList<String>) mImageAdapter.getSelectImages(), 0);
+                Intent intent = SelectImagePrewActivity.newIntent(SelectImageActivity.this, mSelectImages, 0);
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGES);
             }
         }
@@ -471,4 +465,70 @@ public class SelectImageActivity extends BaseToolBarActivity implements GridImag
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (recyclerViewFolder.getVisibility() == View.VISIBLE) {
+            hideImageFolder();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        Image image = mImageAdapter.getItem(position);
+        if (view.getId() == R.id.select_check_box) {
+            if (mSelectImages.contains(image.getPath())) {
+                mSelectImages.remove(image.getPath());
+                view.setSelected(false);
+
+                RecyclerView.ViewHolder viewHolder = findViewHolder(position);
+                if (viewHolder != null && viewHolder instanceof BaseViewHolder) {
+                    ((BaseViewHolder) viewHolder).setVisible(R.id.view_shaw, false);
+                }
+            }else {
+                if (mSelectImages.size() >= mMaxImageSelectCount) {
+                    ToastUtil.show(this, String.format(getString(R.string.max_image_select_hint), mMaxImageSelectCount));
+                    return;
+                }
+
+                mSelectImages.add(image.getPath());
+                view.setSelected(true);
+
+                RecyclerView.ViewHolder viewHolder = findViewHolder(position);
+                if (viewHolder != null && viewHolder instanceof BaseViewHolder) {
+                    ((BaseViewHolder) viewHolder).setVisible(R.id.view_shaw, true);
+                }
+                playSelectAnim(view);
+            }
+
+            updateSelectItem();
+        }
+    }
+
+    private RecyclerView.ViewHolder findViewHolder(int index) {
+        GridLayoutManager gridLayoutManager = (GridLayoutManager) mRecyclerView.getLayoutManager();
+        int firstVisibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition();
+        int lastVisibleFeedPosition = gridLayoutManager.findLastVisibleItemPosition();
+
+        if (firstVisibleItemPosition <= index && index <= lastVisibleFeedPosition) {
+            //得到要更新的item的view
+            View view = mRecyclerView.getChildAt(index - firstVisibleItemPosition);
+
+            return mRecyclerView.getChildViewHolder(view);
+        }
+        return null;
+    }
+
+    private void updateSelectItem() {
+        mMiImageCount.setTitle(getString(R.string.complete) + "(" + mSelectImages.size() + "/" + mMaxImageSelectCount + ")");
+    }
+
+    private void playSelectAnim(View v) {
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator scaleAnimatorX = ObjectAnimator.ofFloat(v, View.SCALE_X, 1f, 1.15f, 1f);
+        ObjectAnimator scaleAnimatorY = ObjectAnimator.ofFloat(v, View.SCALE_Y, 1f, 1.15f, 1f);
+        animatorSet.playTogether(scaleAnimatorY, scaleAnimatorX);
+        animatorSet.start();
+    }
 }

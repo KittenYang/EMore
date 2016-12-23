@@ -20,17 +20,19 @@ import com.caij.emore.present.StatusCommentsPresent;
 import com.caij.emore.present.imp.StatusCommentsPresentImp;
 import com.caij.emore.remote.imp.CommentApiImp;
 import com.caij.emore.ui.activity.publish.RelayStatusActivity;
+import com.caij.emore.ui.adapter.delegate.CommentDelegate;
 import com.caij.emore.ui.view.StatusCommentsView;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.ui.activity.publish.ReplyCommentActivity;
-import com.caij.emore.ui.adapter.CommentAdapter;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.ToastUtil;
+import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.emore.widget.recyclerview.OnScrollListener;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
 import com.caij.rvadapter.BaseViewHolder;
 import com.caij.rvadapter.RecyclerViewOnItemClickListener;
 import com.caij.rvadapter.adapter.BaseAdapter;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.List;
@@ -38,7 +40,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/6/14.
  */
-public class StatusCommentListFragment extends RecyclerViewFragment<Comment, StatusCommentsPresent> implements StatusCommentsView, XRecyclerView.OnLoadMoreListener, RecyclerViewOnItemClickListener {
+public class StatusCommentListFragment extends RecyclerViewFragment<Comment, StatusCommentsPresent> implements StatusCommentsView, XRecyclerView.OnLoadMoreListener, RecyclerViewOnItemClickListener, OnItemPartViewClickListener {
 
     private static final int REPLY_COMMENT_REQUEST_CODE = 100;
     private ClipboardManager mClipboardManager;
@@ -71,7 +73,9 @@ public class StatusCommentListFragment extends RecyclerViewFragment<Comment, Sta
 
     @Override
     protected BaseAdapter<Comment, ? extends BaseViewHolder> createRecyclerViewAdapter() {
-        return  new CommentAdapter(getActivity());
+        MultiItemTypeAdapter<Comment> multiItemTypeAdapter = new MultiItemTypeAdapter<Comment>(getActivity());
+        multiItemTypeAdapter.addItemViewDelegate(new CommentDelegate(this));
+        return multiItemTypeAdapter;
     }
 
     @Override
@@ -121,43 +125,47 @@ public class StatusCommentListFragment extends RecyclerViewFragment<Comment, Sta
     @Override
     public void onItemClick(View view, int position) {
         final Comment comment = mRecyclerViewAdapter.getItem(position);
+        if (comment.getUser().getId() == Long.parseLong(UserPrefs.get(getActivity()).getToken().getUid())) {
+            String[] array = new String[]{"删除", "复制"};
+            DialogUtil.showItemDialog(getActivity(), null, array, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == 0) {
+                        mPresent.deleteComment(comment);
+                    } else if (which == 1) {
+                        // 将文本内容放到系统剪贴板里。
+                        mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, comment.getText()));
+                        ToastUtil.show(getActivity(), "复制成功");
+                    }
+                }
+            });
+        } else {
+            String[] array = new String[]{"回复", "转发", "复制"};
+            DialogUtil.showItemDialog(getActivity(), null, array, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == 0) {
+                        Intent intent = ReplyCommentActivity.newIntent(getActivity(), comment.getStatus().getId(), comment.getId());
+                        startActivityForResult(intent, REPLY_COMMENT_REQUEST_CODE);
+                    } else if (which == 1) {
+                        Intent intent = RelayStatusActivity.newIntent(getActivity(), comment.getStatus(), comment);
+                        startActivityForResult(intent, REPLY_COMMENT_REQUEST_CODE);
+                    } else if (which == 2) {
+                        // 将文本内容放到系统剪贴板里。
+                        mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, comment.getText()));
+                        ToastUtil.show(getActivity(), "复制成功");
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        final Comment comment = mRecyclerViewAdapter.getItem(position);
         if (view.getId() == R.id.imgPhoto) {
             Intent intent = UserInfoActivity.newIntent(getActivity(), comment.getUser().getScreen_name());
             startActivity(intent);
-        }else {
-            if (comment.getUser().getId() == Long.parseLong(UserPrefs.get(getActivity()).getToken().getUid())) {
-                String[] array = new String[]{"删除", "复制"};
-                DialogUtil.showItemDialog(getActivity(), null, array, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            mPresent.deleteComment(comment);
-                        } else if (which == 1) {
-                            // 将文本内容放到系统剪贴板里。
-                            mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, comment.getText()));
-                            ToastUtil.show(getActivity(), "复制成功");
-                        }
-                    }
-                });
-            } else {
-                String[] array = new String[]{"回复", "转发", "复制"};
-                DialogUtil.showItemDialog(getActivity(), null, array, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            Intent intent = ReplyCommentActivity.newIntent(getActivity(), comment.getStatus().getId(), comment.getId());
-                            startActivityForResult(intent, REPLY_COMMENT_REQUEST_CODE);
-                        } else if (which == 1) {
-                            Intent intent = RelayStatusActivity.newIntent(getActivity(), comment.getStatus(), comment);
-                            startActivityForResult(intent, REPLY_COMMENT_REQUEST_CODE);
-                        } else if (which == 2) {
-                            // 将文本内容放到系统剪贴板里。
-                            mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, comment.getText()));
-                            ToastUtil.show(getActivity(), "复制成功");
-                        }
-                    }
-                });
-            }
         }
     }
 }

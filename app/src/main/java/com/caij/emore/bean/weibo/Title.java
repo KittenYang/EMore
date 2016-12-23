@@ -1,10 +1,12 @@
 package com.caij.emore.bean.weibo;
 
+import java.io.Serializable;
+
 /**
  * Created by Caij on 2016/9/29.
  */
 
-public class Title {
+public class Title implements Serializable {
 
     private String icon_url;
     private String text;

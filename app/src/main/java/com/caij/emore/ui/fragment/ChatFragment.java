@@ -37,20 +37,22 @@ import com.caij.emore.present.ChatPresent;
 import com.caij.emore.present.imp.ChatPresentImp;
 import com.caij.emore.remote.imp.MessageApiImp;
 import com.caij.emore.ui.activity.UserInfoActivity;
+import com.caij.emore.ui.adapter.delegate.MessageDelegateProvider;
 import com.caij.emore.ui.view.DirectMessageView;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
 import com.caij.emore.ui.activity.ImagePrewActivity;
-import com.caij.emore.ui.adapter.MessageAdapter;
 import com.caij.emore.utils.DialogUtil;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.SystemUtil;
 import com.caij.emore.utils.rxbus.RxBus;
 import com.caij.emore.widget.recyclerview.HeaderAndFooterRecyclerViewAdapter;
+import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.emore.widget.recyclerview.XRecyclerView;
 import com.caij.emore.widget.recyclerview.LoadMoreView;
 import com.caij.rvadapter.RecyclerViewOnItemClickListener;
 import com.caij.rvadapter.RecyclerViewOnItemLongClickListener;
+import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +69,7 @@ import static android.support.v7.widget.RecyclerView.*;
  * Created by Caij on 2016/7/10.
  */
 public class ChatFragment extends BaseFragment<ChatPresent> implements
-        DefaultFragmentActivity.OnBackPressedListener, DirectMessageView, TextWatcher, RecyclerViewOnItemClickListener {
+        DefaultFragmentActivity.OnBackPressedListener, DirectMessageView, TextWatcher, RecyclerViewOnItemClickListener, OnItemPartViewClickListener, RecyclerViewOnItemLongClickListener {
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -82,11 +84,12 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @BindView(R.id.et_content)
     EditText etContent;
 
-    private MessageAdapter mMessageAdapter;
+    private MultiItemTypeAdapter<DirectMessage> mMessageAdapter;
     private LoadMoreView mLoadMoreView;
     Observable<Emotion> mEmotionObservable;
     Observable<Object> mEmotionDeleteObservable;
     private LinearLayoutManager mLinearLayoutManager;
+    private HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter;
 
     public static ChatFragment newInstance(String name, long uid) {
         Bundle args = new Bundle();
@@ -136,9 +139,13 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mLinearLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mMessageAdapter = new MessageAdapter(getActivity());
+        mMessageAdapter = new MultiItemTypeAdapter<DirectMessage>(getActivity());
         mMessageAdapter.setOnItemClickListener(this);
-        HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter
+        mMessageAdapter.addItemViewDelegate(new MessageDelegateProvider.OutImageMessageDelegate(this));
+        mMessageAdapter.addItemViewDelegate(new MessageDelegateProvider.OutTextMessageDelegate(this));
+        mMessageAdapter.addItemViewDelegate(new MessageDelegateProvider.ReceiveImageMessageDelegate(this));
+        mMessageAdapter.addItemViewDelegate(new MessageDelegateProvider.ReceiveTextMessageDelegate(this));
+        headerAndFooterRecyclerViewAdapter
                 = new HeaderAndFooterRecyclerViewAdapter(mMessageAdapter);
         mLoadMoreView = new LoadMoreView(getActivity());
         mLoadMoreView.setState(XRecyclerView.STATE_EMPTY);
@@ -163,22 +170,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
                 }
             }
         });
-        mMessageAdapter.setOnItemLongClickListener(new RecyclerViewOnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(View view, int position) {
-                final DirectMessage directMessage = mMessageAdapter.getItem(position - 1);
-                if (directMessage.getLocal_status() == DirectMessage.STATUS_FAIL) {
-                    DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), "是否重新发送",
-                            getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mPresent.sendMessage(directMessage);
-                                }
-                            }, getString(R.string.cancel), null);
-                }
-                return true;
-            }
-        });
+        mMessageAdapter.setOnItemLongClickListener(this);
         etContent.addTextChangedListener(this);
         mRecyclerView.setAdapter(headerAndFooterRecyclerViewAdapter);
 
@@ -371,25 +363,43 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
 
     @Override
     public void onItemClick(View view, int position) {
-        DirectMessage directMessage = mMessageAdapter.getItem(position - 1);
+        DirectMessage directMessage = mMessageAdapter.getItem(position - headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
+        int type = mMessageAdapter.getItemViewType(position - 1);
+        if (type == MessageDelegateProvider.TYPE_OTHER_IMAGE || type == MessageDelegateProvider.TYPE_SELT_IMAGE) {
+            ArrayList<ImageInfo> images = new ArrayList<>(1);
+            images.add(directMessage.getImageInfo());
+
+            ArrayList<ImageInfo> hdPaths = new ArrayList<>(1);
+            ImageInfo hdImageInfo = new ImageInfo(mPresent.getMessageImageHdUrl(directMessage), directMessage.getImageInfo().getWidth(),
+                    directMessage.getImageInfo().getWidth(), directMessage.getImageInfo().getImageType());
+            hdPaths.add(hdImageInfo);
+
+            Intent intent = ImagePrewActivity.newIntent(getActivity(), images, hdPaths, 0);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        final DirectMessage directMessage = mMessageAdapter.getItem(position - headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
         if (view.getId() == R.id.iv_avatar) {
             Intent intent = UserInfoActivity.newIntent(getActivity(), directMessage.getSender_screen_name());
             startActivity(intent);
-        }else {
-            int type = mMessageAdapter.getItemViewType(position - 1);
-            if (type == MessageAdapter.TYPE_OTHER_IMAGE || type == MessageAdapter.TYPE_SELT_IMAGE) {
-                ArrayList<ImageInfo> images = new ArrayList<>(1);
-                images.add(directMessage.getImageInfo());
-
-                ArrayList<ImageInfo> hdPaths = new ArrayList<>(1);
-                ImageInfo hdImageInfo = new ImageInfo(mPresent.getMessageImageHdUrl(directMessage), directMessage.getImageInfo().getWidth(),
-                        directMessage.getImageInfo().getWidth(), directMessage.getImageInfo().getImageType());
-                hdPaths.add(hdImageInfo);
-
-                Intent intent = ImagePrewActivity.newIntent(getActivity(), images, hdPaths, 0);
-                startActivity(intent);
+        }else if (view.getId() == R.id.iv_fail) {
+            if (directMessage.getLocal_status() == DirectMessage.STATUS_FAIL) {
+                DialogUtil.showHintDialog(getActivity(), getString(R.string.hint), "是否重新发送",
+                        getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mPresent.sendMessage(directMessage);
+                            }
+                        }, getString(R.string.cancel), null);
             }
         }
     }
 
+    @Override
+    public boolean onItemLongClick(View view, int i) {
+        return false;
+    }
 }
