@@ -69,7 +69,9 @@ import static android.support.v7.widget.RecyclerView.*;
  * Created by Caij on 2016/7/10.
  */
 public class ChatFragment extends BaseFragment<ChatPresent> implements
-        DefaultFragmentActivity.OnBackPressedListener, DirectMessageView, TextWatcher, RecyclerViewOnItemClickListener, OnItemPartViewClickListener, RecyclerViewOnItemLongClickListener {
+        DefaultFragmentActivity.OnBackPressedListener, DirectMessageView,
+        TextWatcher, RecyclerViewOnItemClickListener, OnItemPartViewClickListener,
+        RecyclerViewOnItemLongClickListener {
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -111,11 +113,10 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        initImage();
+        initView();
+        initIconImage();
         getChildFragmentManager().beginTransaction().
                 replace(R.id.fl_emotion, new EmotionFragment()).commit();
-        initView();
 
         mEmotionObservable = RxBus.getDefault().register(EventTag.ON_EMOTION_CLICK);
         mEmotionDeleteObservable = RxBus.getDefault().register(EventTag.ON_EMOTION_DELETE_CLICK);
@@ -131,7 +132,6 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
                 onEmotionDeleteClick();
             }
         });
-
     }
 
     private void initView() {
@@ -150,7 +150,6 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
         mLoadMoreView = new LoadMoreView(getActivity());
         mLoadMoreView.setState(XRecyclerView.STATE_EMPTY);
         headerAndFooterRecyclerViewAdapter.addHeaderView(mLoadMoreView);
-
         mRecyclerView.addOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -188,7 +187,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
 
     private void hideBottom() {
         SystemUtil.hideKeyBoard(getActivity());
-        flEmotion.setVisibility(View.GONE);
+        showEmotionView(false);
     }
 
     protected void onEmotionDeleteClick() {
@@ -206,7 +205,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
         mPresent.loadMore();
     }
 
-    private void initImage() {
+    private void initIconImage() {
         Drawable emotionDrawable = DrawableUtil.createSelectThemeDrawable(getActivity(),
                 R.mipmap.compose_emoticonbutton_background,
                 R.color.icon_normal_color, R.color.colorPrimary);
@@ -274,24 +273,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
                 ivEmotion.setSelected(false);
                 break;
             case R.id.iv_emotion:
-                if (flEmotion.getVisibility() == View.VISIBLE) {
-                    flEmotion.setVisibility(View.GONE);
-                    ivEmotion.setSelected(false);
-                    SystemUtil.showKeyBoard(getActivity());
-                } else {
-                    if (SystemUtil.isKeyBoardShow(getActivity())) {
-                        flEmotion.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                flEmotion.setVisibility(View.VISIBLE);
-                            }
-                        }, 200);
-                        SystemUtil.hideKeyBoard(getActivity());
-                    } else {
-                        flEmotion.setVisibility(View.VISIBLE);
-                    }
-                    ivEmotion.setSelected(true);
-                }
+                onEmotionIconClick();
                 break;
             case R.id.iv_add:
                 Intent intent = NavigationUtil.newSelectImageActivityIntent(getActivity(), 9);
@@ -301,6 +283,35 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
                 mPresent.sendTextMessage(etContent.getText().toString());
                 etContent.setText("");
                 break;
+        }
+    }
+
+    private void onEmotionIconClick() {
+        if (flEmotion.getVisibility() == View.VISIBLE) {
+            showEmotionView(false);
+            SystemUtil.showKeyBoard(getActivity());
+        } else {
+            if (SystemUtil.isKeyBoardShow(getActivity())) {
+                flEmotion.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        showEmotionView(true);
+                    }
+                }, 200);
+                SystemUtil.hideKeyBoard(getActivity());
+            } else {
+                showEmotionView(true);
+            }
+        }
+    }
+
+    private void showEmotionView(boolean isShow) {
+        if (isShow) {
+            flEmotion.setVisibility(View.VISIBLE);
+            ivEmotion.setSelected(true);
+        }else {
+            flEmotion.setVisibility(View.GONE);
+            ivEmotion.setSelected(false);
         }
     }
 
