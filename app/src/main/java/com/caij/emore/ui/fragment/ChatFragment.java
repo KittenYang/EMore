@@ -71,7 +71,7 @@ import static android.support.v7.widget.RecyclerView.*;
 public class ChatFragment extends BaseFragment<ChatPresent> implements
         DefaultFragmentActivity.OnBackPressedListener, DirectMessageView,
         TextWatcher, RecyclerViewOnItemClickListener, OnItemPartViewClickListener,
-        RecyclerViewOnItemLongClickListener {
+        RecyclerViewOnItemLongClickListener, OnTouchListener {
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -88,10 +88,11 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
 
     private MultiItemTypeAdapter<DirectMessage> mMessageAdapter;
     private LoadMoreView mLoadMoreView;
-    Observable<Emotion> mEmotionObservable;
-    Observable<Object> mEmotionDeleteObservable;
     private LinearLayoutManager mLinearLayoutManager;
     private HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter;
+
+    private Observable<Emotion> mEmotionObservable;
+    private Observable<Object> mEmotionDeleteObservable;
 
     public static ChatFragment newInstance(String name, long uid) {
         Bundle args = new Bundle();
@@ -150,39 +151,13 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
         mLoadMoreView = new LoadMoreView(getActivity());
         mLoadMoreView.setState(XRecyclerView.STATE_EMPTY);
         headerAndFooterRecyclerViewAdapter.addHeaderView(mLoadMoreView);
-        mRecyclerView.addOnScrollListener(new OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int firstVisibleItemPosition = mLinearLayoutManager.findFirstVisibleItemPosition();
-                if (firstVisibleItemPosition == 0 && mLoadMoreView.getState() == XRecyclerView.STATE_NORMAL) {
-                    mLoadMoreView.setState(XRecyclerView.STATE_LOADING);
-                    loadMore();
-                }
-            }
 
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    hideBottom();
-                }
-            }
-        });
         mMessageAdapter.setOnItemLongClickListener(this);
         etContent.addTextChangedListener(this);
         mRecyclerView.setAdapter(headerAndFooterRecyclerViewAdapter);
+        etContent.setOnTouchListener(this);
 
-        etContent.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    flEmotion.setVisibility(View.GONE);
-                    ivEmotion.setSelected(false);
-                }
-                return false;
-            }
-        });
+        mRecyclerView.addOnScrollListener(new ScrollListener());
     }
 
     private void hideBottom() {
@@ -269,8 +244,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.et_content:
-                flEmotion.setVisibility(View.GONE);
-                ivEmotion.setSelected(false);
+                showEmotionView(false);
                 break;
             case R.id.iv_emotion:
                 onEmotionIconClick();
@@ -318,8 +292,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @Override
     public boolean onBackPressed() {
         if (flEmotion.getVisibility() == View.VISIBLE) {
-            flEmotion.setVisibility(View.GONE);
-            ivEmotion.setSelected(false);
+            showEmotionView(false);
             return true;
         }
         return false;
@@ -334,7 +307,8 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     public void attemptSmoothScrollToBottom() {
         int last = mMessageAdapter.getItemCount();
         if (mLinearLayoutManager.findLastVisibleItemPosition() + 3 >= last) {
-            mRecyclerView.smoothScrollToPosition(mMessageAdapter.getEntities().size());
+            mRecyclerView.smoothScrollToPosition(mMessageAdapter.getEntities().size()
+                    + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount() - 1);
         }
     }
 
@@ -412,5 +386,35 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @Override
     public boolean onItemLongClick(View view, int i) {
         return false;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v.getId() == R.id.et_content) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                showEmotionView(false);
+            }
+        }
+        return false;
+    }
+
+    private class ScrollListener extends  OnScrollListener {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int firstVisibleItemPosition = mLinearLayoutManager.findFirstVisibleItemPosition();
+            if (firstVisibleItemPosition == 0 && mLoadMoreView.getState() == XRecyclerView.STATE_NORMAL) {
+                mLoadMoreView.setState(XRecyclerView.STATE_LOADING);
+                loadMore();
+            }
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                hideBottom();
+            }
+        }
     }
 }
