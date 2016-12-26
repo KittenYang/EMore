@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.Attitude;
-import com.caij.emore.database.bean.Geo;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
@@ -20,6 +19,8 @@ import com.caij.rvadapter.BaseViewHolder;
  */
 
 public class ToMeAttitudeDelegate extends BaseItemViewDelegate<Attitude> {
+
+    public static final int TYPE_STATUS = 0;
 
     private final ImageLoader.ImageConfig mImageConfig;
 
@@ -43,7 +44,7 @@ public class ToMeAttitudeDelegate extends BaseItemViewDelegate<Attitude> {
 
         baseViewHolder.setText(R.id.tv_name, attitude.getUser().getName());
 
-        if (attitude.getAttitude_type() == 0) {
+        if (attitude.getAttitude_type() == TYPE_STATUS) {
             baseViewHolder.setVisible(R.id.item_bottom, true);
 
             baseViewHolder.setText(R.id.tv_comment, "赞了这条微博");

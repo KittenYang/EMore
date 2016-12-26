@@ -127,7 +127,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                         mDirectMessages.addAll(directMessages);
 
                         mDirectMessageView.setEntities(mDirectMessages);
-                        mDirectMessageView.toScrollToPosition(mDirectMessages.size());
+                        mDirectMessageView.toScrollToPosition(mDirectMessages.size() - 1);
 
                         if (directMessages.size() == 0) {
                             loadNewMessage(0, true);
@@ -323,7 +323,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                         }
 
                         if (isShowDialog) {
-                            mDirectMessageView.toScrollToPosition(mDirectMessages.size());
+                            mDirectMessageView.toScrollToPosition(mDirectMessages.size() - 1);
                         }else if (directMessages.size() > 0){
                             mDirectMessageView.attemptSmoothScrollToBottom();
                         }

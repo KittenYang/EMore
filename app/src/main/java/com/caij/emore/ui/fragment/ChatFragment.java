@@ -243,9 +243,6 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @OnClick({R.id.et_content, R.id.iv_emotion, R.id.iv_add, R.id.tv_send})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.et_content:
-                showEmotionView(false);
-                break;
             case R.id.iv_emotion:
                 onEmotionIconClick();
                 break;
@@ -300,7 +297,11 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
 
     @Override
     public void toScrollToPosition(int position) {
-        mRecyclerView.scrollToPosition(position);
+        mRecyclerView.scrollToPosition(position + headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
+    }
+
+    private void scrollBottom() {
+        toScrollToPosition(mMessageAdapter.getItemCount() - 1);
     }
 
     @Override
@@ -359,11 +360,13 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
 
     @Override
     public void onItemClick(View view, int position) {
+        hideBottom();
         DirectMessage directMessage = mMessageAdapter.getItem(position - headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
     }
 
     @Override
     public void onClick(View view, final int position) {
+        hideBottom();
         final DirectMessage directMessage = mMessageAdapter.getItem(position - headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
         if (view.getId() == R.id.iv_avatar) {
             Intent intent = UserInfoActivity.newIntent(getActivity(), directMessage.getSender_screen_name());
@@ -403,8 +406,9 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (v.getId() == R.id.et_content) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
                 showEmotionView(false);
+                scrollBottom();
             }
         }
         return false;

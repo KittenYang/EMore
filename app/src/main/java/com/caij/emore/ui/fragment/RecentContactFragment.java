@@ -43,7 +43,7 @@ import rx.functions.Action1;
 /**
  * Created by Caij on 2016/7/4.
  */
-public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<MessageUser.UserListBean, MessageUserPresent> implements MessageUserView, RecyclerViewOnItemLongClickListener {
+public class RecentContactFragment extends SwipeRefreshRecyclerViewFragment<MessageUser.UserListBean, MessageUserPresent> implements MessageUserView, RecyclerViewOnItemLongClickListener {
 
     private TextView tvMentionCount;
     private TextView tvCommentCount;
@@ -163,7 +163,7 @@ public class MessageUserFragment extends SwipeRefreshRecyclerViewFragment<Messag
 
     @Override
     public void onItemClick(View view, int position) {
-        MessageUser.UserListBean bean = mRecyclerViewAdapter.getItem(position - 3);
+        MessageUser.UserListBean bean = mRecyclerViewAdapter.getItem(position - xRecyclerView.getAdapter().getHeaderViewsCount());
         bean.setUnread_count(0);
         Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), bean.getUser().getScreen_name(), ChatFragment.class,
                 ChatFragment.newInstance(bean.getUser().getScreen_name(), bean.getUser().getId()).getArguments());

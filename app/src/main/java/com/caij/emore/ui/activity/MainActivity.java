@@ -31,7 +31,7 @@ import com.caij.emore.ui.fragment.StatusContainerFragment;
 import com.caij.emore.ui.fragment.weibo.HotStatusFragment;
 import com.caij.emore.ui.view.MainView;
 import com.caij.emore.ui.fragment.DraftFragment;
-import com.caij.emore.ui.fragment.MessageUserFragment;
+import com.caij.emore.ui.fragment.RecentContactFragment;
 import com.caij.emore.utils.DrawableUtil;
 import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.weibo.ThemeUtils;
@@ -126,7 +126,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
             mStatusContainerFragment = new StatusContainerFragment();
-            mMessageFragment = new MessageUserFragment();
+            mMessageFragment = new RecentContactFragment();
             transaction.add(R.id.attach_container,
                     mStatusContainerFragment, Key.FRIEND_WEIBO_FRAGMENT_TAG).commit();
 
@@ -140,7 +140,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
 
             mMessageFragment = getSupportFragmentManager().findFragmentByTag(Key.MESSAGE_FRAGMENT_TAG);
             if (mMessageFragment == null) {
-                mMessageFragment = new MessageUserFragment();
+                mMessageFragment = new RecentContactFragment();
             }
 
             String key  = savedInstanceState.getString(Key.ID);
