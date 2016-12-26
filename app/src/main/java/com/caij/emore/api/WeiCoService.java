@@ -347,4 +347,8 @@ public interface WeiCoService {
     Observable<QueryStatusResponse> getGroupStatus(@Query("list_id") long list_id, @Query("since_id") long since_id, @Query("max_id") long max_id,
                                                     @Query("count") int count, @Query("page") int page);
 
+    @FormUrlEncoded
+    @POST("/blocks/create")
+    public Observable<Response> addtoblack(@Field("uid") long uid);
+
 }

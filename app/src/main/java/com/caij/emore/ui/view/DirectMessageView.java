@@ -18,6 +18,7 @@ public interface DirectMessageView extends ListView<DirectMessage> {
 
     void setShowTimeDirectMessageMap(ArrayMap<String, DirectMessage> showTimeDirectMessageMap);
 
-
     void notifyItemRemoved(List<DirectMessage> directMessage, int index);
+
+    void blockUserSuccess();
 }

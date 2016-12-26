@@ -30,4 +30,5 @@ public interface MessageApi {
 
     Observable<Response> deleteConversation(long uid);
 
+    Observable<Response> blockUser(long recipientId);
 }

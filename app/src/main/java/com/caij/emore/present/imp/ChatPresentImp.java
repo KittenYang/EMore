@@ -9,9 +9,12 @@ import com.caij.emore.EMApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
+import com.caij.emore.api.ex.ErrorCheckerTransformer;
+import com.caij.emore.api.ex.ResponseSubscriber;
 import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.bean.MessageAttachInfo;
 import com.caij.emore.bean.event.MessageResponseEvent;
+import com.caij.emore.bean.response.Response;
 import com.caij.emore.bean.response.UserMessageResponse;
 import com.caij.emore.manager.MessageManager;
 import com.caij.emore.manager.NotifyManager;
@@ -409,6 +412,27 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
                 filterShowTimeMessage(mDirectMessages);
             }
         };
+    }
+
+    @Override
+    public void blockUser(final long recipientId) {
+        Subscription subscription = mMessageApi.blockUser(recipientId)
+                .compose(ErrorCheckerTransformer.create())
+                .compose(SchedulerTransformer.<Response>create())
+                .subscribe(new ResponseSubscriber<Response>(mDirectMessageView) {
+                    @Override
+                    protected void onFail(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        mDirectMessageView.blockUserSuccess();
+
+                        RxBus.getDefault().post(EventTag.EVENT_BLOCK_USER, recipientId);
+                    }
+                });
+        addSubscription(subscription);
     }
 
     private void send(DirectMessage message) {

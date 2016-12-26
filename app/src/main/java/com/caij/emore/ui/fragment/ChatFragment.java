@@ -15,6 +15,9 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,6 +97,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
 
     private Observable<Emotion> mEmotionObservable;
     private Observable<Object> mEmotionDeleteObservable;
+    private long recipientId;
 
     public static ChatFragment newInstance(String name, long uid) {
         Bundle args = new Bundle();
@@ -115,6 +119,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
         initView();
         initIconImage();
         getChildFragmentManager().beginTransaction().
@@ -160,6 +165,21 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
         mRecyclerView.addOnScrollListener(new ScrollListener());
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_chat, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.block) {
+            mPresent.blockUser(recipientId);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void hideBottom() {
         SystemUtil.hideKeyBoard(getActivity());
         showEmotionView(false);
@@ -195,7 +215,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @Override
     protected ChatPresent createPresent() {
         Token accessToken = UserPrefs.get(getActivity()).getToken();
-        long recipientId = getArguments().getLong(Key.ID);
+        recipientId = getArguments().getLong(Key.ID);
         return new ChatPresentImp(accessToken, recipientId, Long.parseLong(accessToken.getUid()),
                 new MessageApiImp(), new MessageManagerImp(), new UserManagerImp(), new NotifyManagerImp(), this);
     }
@@ -322,6 +342,11 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     public void notifyItemRemoved(List<DirectMessage> directMessage, int index) {
         mMessageAdapter.setEntities(directMessage);
         mMessageAdapter.notifyItemRemoved(index);
+    }
+
+    @Override
+    public void blockUserSuccess() {
+        getActivity().finish();
     }
 
     @Override

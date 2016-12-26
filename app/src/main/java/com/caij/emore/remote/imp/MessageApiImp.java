@@ -84,4 +84,9 @@ public class MessageApiImp implements MessageApi {
         return mWeiBoService.deleteMessageConversation(uid);
     }
 
+    @Override
+    public Observable<Response> blockUser(long recipientId) {
+        return mWeiCoService.addtoblack(recipientId);
+    }
+
 }

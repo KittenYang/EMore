@@ -41,6 +41,7 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
     private MessageUser mMessageUser;
 
     private Observable<UnReadMessage> mUnReadMessageObservable;
+    private Observable<Long> mUserBlockObservable;
 
     public MessageUserPresentImp(long uid, MessageApi messageApi, NotifyManager notifyManager,
                                  MessageUserView view) {
@@ -49,6 +50,25 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
         mMessageUserView = view;
         mNotifyManager = notifyManager;
         mUserListBeens = new ArrayList<>();
+
+        mUserBlockObservable = RxBus.getDefault().register(EventTag.EVENT_BLOCK_USER);
+        mUserBlockObservable.subscribe(new Action1<Long>() {
+            @Override
+            public void call(Long aLong) {
+                removeRecentContact(aLong);
+            }
+        });
+    }
+
+    private void removeRecentContact(long uid) {
+        for (int i = 0; i < mUserListBeens.size(); i ++) {
+            MessageUser.UserListBean userListBean = mUserListBeens.get(i);
+            if (userListBean.getUser().getId().equals(uid)) {
+                mUserListBeens.remove(i);
+                mMessageUserView.notifyItemRemove(mUserListBeens, i);
+                break;
+            }
+        }
     }
 
     @Override
@@ -208,6 +228,7 @@ public class MessageUserPresentImp extends AbsBasePresent implements MessageUser
     public void onDestroy() {
         super.onDestroy();
         RxBus.getDefault().unregister(EventTag.EVENT_UNREAD_MESSAGE_COMPLETE, mUnReadMessageObservable);
+        RxBus.getDefault().unregister(EventTag.EVENT_BLOCK_USER, mUserBlockObservable);
     }
 
 }
