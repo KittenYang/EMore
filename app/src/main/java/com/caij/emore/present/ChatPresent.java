@@ -1,6 +1,8 @@
 package com.caij.emore.present;
 
 
+import android.support.v7.widget.RecyclerView;
+
 import com.caij.emore.database.bean.DirectMessage;
 
 import java.util.ArrayList;
@@ -14,7 +16,9 @@ public interface ChatPresent extends ListPresent {
 
     void sendImageMessage(ArrayList<String> paths);
 
-    void sendMessage(DirectMessage directMessage);
+    void sendMessage(DirectMessage directMessage, int position);
 
     String getMessageImageHdUrl(DirectMessage directMessage);
+
+    RecyclerView.AdapterDataObserver getAdapterDataObserver();
 }

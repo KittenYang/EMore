@@ -50,9 +50,9 @@ public class RepostStatusImageItemView extends RepostStatusItemView {
     public void setStatus(Status status) {
         super.setStatus(status);
         ImageInterface picsView = null;
-        Status reWeibo = status.getRetweeted_status();
-        List<String> picIds = reWeibo.getPic_ids();
-        LinkedHashMap<String, StatusImageInfo> imageInfoLinkedHashMap = reWeibo.getPic_infos();
+        Status reStatus = status.getRetweeted_status();
+        List<String> picIds = reStatus.getPic_ids();
+        LinkedHashMap<String, StatusImageInfo> imageInfoLinkedHashMap = reStatus.getPic_infos();
         if (picIds == null || picIds.size() == 0) {
             flPicsView.setVisibility(GONE);
         }else if (picIds.size() == 1

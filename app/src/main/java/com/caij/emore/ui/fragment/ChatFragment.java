@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -37,6 +38,7 @@ import com.caij.emore.present.ChatPresent;
 import com.caij.emore.present.imp.ChatPresentImp;
 import com.caij.emore.remote.imp.MessageApiImp;
 import com.caij.emore.ui.activity.UserInfoActivity;
+import com.caij.emore.ui.adapter.MessageAdapter;
 import com.caij.emore.ui.adapter.delegate.MessageDelegateProvider;
 import com.caij.emore.ui.view.DirectMessageView;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
@@ -52,7 +54,6 @@ import com.caij.emore.widget.recyclerview.XRecyclerView;
 import com.caij.emore.widget.recyclerview.LoadMoreView;
 import com.caij.rvadapter.RecyclerViewOnItemClickListener;
 import com.caij.rvadapter.RecyclerViewOnItemLongClickListener;
-import com.caij.rvadapter.adapter.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +87,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @BindView(R.id.et_content)
     EditText etContent;
 
-    private MultiItemTypeAdapter<DirectMessage> mMessageAdapter;
+    private MessageAdapter mMessageAdapter;
     private LoadMoreView mLoadMoreView;
     private LinearLayoutManager mLinearLayoutManager;
     private HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter;
@@ -133,6 +134,8 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
                 onEmotionDeleteClick();
             }
         });
+
+        mMessageAdapter.registerAdapterDataObserver(mPresent.getAdapterDataObserver());
     }
 
     private void initView() {
@@ -140,12 +143,9 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mLinearLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mMessageAdapter = new MultiItemTypeAdapter<DirectMessage>(getActivity());
+        mMessageAdapter = new MessageAdapter(getActivity(), this);
         mMessageAdapter.setOnItemClickListener(this);
-        mMessageAdapter.addItemViewDelegate(new MessageDelegateProvider.OutImageMessageDelegate(this));
-        mMessageAdapter.addItemViewDelegate(new MessageDelegateProvider.OutTextMessageDelegate(this));
-        mMessageAdapter.addItemViewDelegate(new MessageDelegateProvider.ReceiveImageMessageDelegate(this));
-        mMessageAdapter.addItemViewDelegate(new MessageDelegateProvider.ReceiveTextMessageDelegate(this));
+
         headerAndFooterRecyclerViewAdapter
                 = new HeaderAndFooterRecyclerViewAdapter(mMessageAdapter);
         mLoadMoreView = new LoadMoreView(getActivity());
@@ -313,6 +313,17 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     }
 
     @Override
+    public void setShowTimeDirectMessageMap(ArrayMap<String, DirectMessage> showTimeDirectMessageMap) {
+        mMessageAdapter.setShowTimeMessageMap(showTimeDirectMessageMap);
+    }
+
+    @Override
+    public void notifyItemRemoved(List<DirectMessage> directMessage, int index) {
+        mMessageAdapter.setEntities(directMessage);
+        mMessageAdapter.notifyItemRemoved(index);
+    }
+
+    @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
     }
@@ -349,23 +360,10 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     @Override
     public void onItemClick(View view, int position) {
         DirectMessage directMessage = mMessageAdapter.getItem(position - headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
-        int type = mMessageAdapter.getItemViewType(position - 1);
-        if (type == MessageDelegateProvider.TYPE_OTHER_IMAGE || type == MessageDelegateProvider.TYPE_SELT_IMAGE) {
-            ArrayList<ImageInfo> images = new ArrayList<>(1);
-            images.add(directMessage.getImageInfo());
-
-            ArrayList<ImageInfo> hdPaths = new ArrayList<>(1);
-            ImageInfo hdImageInfo = new ImageInfo(mPresent.getMessageImageHdUrl(directMessage), directMessage.getImageInfo().getWidth(),
-                    directMessage.getImageInfo().getWidth(), directMessage.getImageInfo().getImageType());
-            hdPaths.add(hdImageInfo);
-
-            Intent intent = ImagePrewActivity.newIntent(getActivity(), images, hdPaths, 0);
-            startActivity(intent);
-        }
     }
 
     @Override
-    public void onClick(View view, int position) {
+    public void onClick(View view, final int position) {
         final DirectMessage directMessage = mMessageAdapter.getItem(position - headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
         if (view.getId() == R.id.iv_avatar) {
             Intent intent = UserInfoActivity.newIntent(getActivity(), directMessage.getSender_screen_name());
@@ -376,9 +374,23 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
                         getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mPresent.sendMessage(directMessage);
+                                mPresent.sendMessage(directMessage, position - headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
                             }
                         }, getString(R.string.cancel), null);
+            }
+        }else if (view.getId() == R.id.iv_image) {
+            int type = MessageDelegateProvider.Type.getType(directMessage);
+            if (type == MessageDelegateProvider.TYPE_OTHER_IMAGE || type == MessageDelegateProvider.TYPE_SELT_IMAGE) {
+                ArrayList<ImageInfo> images = new ArrayList<>(1);
+                images.add(directMessage.getImageInfo());
+
+                ArrayList<ImageInfo> hdPaths = new ArrayList<>(1);
+                ImageInfo hdImageInfo = new ImageInfo(mPresent.getMessageImageHdUrl(directMessage), directMessage.getImageInfo().getWidth(),
+                        directMessage.getImageInfo().getWidth(), directMessage.getImageInfo().getImageType());
+                hdPaths.add(hdImageInfo);
+
+                Intent intent = ImagePrewActivity.newIntent(getActivity(), images, hdPaths, 0);
+                startActivity(intent);
             }
         }
     }

@@ -137,13 +137,7 @@ public class DateUtil {
             if (currentcal.get(Calendar.MONTH) == createCal.get(Calendar.MONTH)) {
                 // 同一天
                 if (currentcal.get(Calendar.DAY_OF_MONTH) == createCal.get(Calendar.DAY_OF_MONTH)) {
-                    if (diffTime < 3600 && diffTime >= 60) {
-                        buffer.append((diffTime / 60) + res.getString(R.string.msg_few_minutes_ago));
-                    } else if (diffTime < 60) {
-                        buffer.append(res.getString(R.string.msg_now));
-                    }else {
-                        buffer.append(res.getString(R.string.msg_today)).append(" ").append(formatDate(createCal.getTimeInMillis(), "HH:mm"));
-                    }
+                    buffer.append(res.getString(R.string.msg_today)).append(" ").append(formatDate(createCal.getTimeInMillis(), "HH:mm"));
                 } else if (currentcal.get(Calendar.DAY_OF_MONTH) - createCal.get(Calendar.DAY_OF_MONTH) == 1) { // 昨天
                     buffer.append(res.getString(R.string.msg_yesterday)).append(" ").append(formatDate(createCal.getTimeInMillis(), "HH:mm"));
                 } else if (currentcal.get(Calendar.DAY_OF_MONTH) - createCal.get(Calendar.DAY_OF_MONTH) == 2) { //前天

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.Attitude;
+import com.caij.emore.database.bean.Geo;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.utils.DateUtil;
 import com.caij.emore.utils.ImageLoader;
@@ -43,27 +44,30 @@ public class ToMeAttitudeDelegate extends BaseItemViewDelegate<Attitude> {
         baseViewHolder.setText(R.id.tv_name, attitude.getUser().getName());
 
         if (attitude.getAttitude_type() == 0) {
+            baseViewHolder.setVisible(R.id.item_bottom, true);
+
             baseViewHolder.setText(R.id.tv_comment, "赞了这条微博");
+            Status status = attitude.getStatus();
+            if (status != null) {
+                baseViewHolder.setText(R.id.tv_status_name, "@" + status.getUser().getName());
+                baseViewHolder.setText(R.id.tv_status, status.getText());
+
+                ImageView statusImageView = baseViewHolder.getView(R.id.image_view);
+                ImageLoader.load(context, statusImageView,
+                        status.getBmiddle_pic() != null ? status.getBmiddle_pic() : status.getUser().getAvatar_large(),
+                        R.drawable.weibo_image_placeholder);
+
+                String createAt = DateUtil.convWeiboDate(context, status.getCreated_at().getTime());
+                String from = "";
+                if (!TextUtils.isEmpty(status.getSource()))
+                    from = String.format("%s", Html.fromHtml(status.getSource()));
+                String desc = String.format("%s %s", createAt, from);
+                baseViewHolder.setText(R.id.tv_source, desc);
+            }
         }else {
-            baseViewHolder.setText(R.id.tv_comment, "");
+            baseViewHolder.setText(R.id.tv_comment, "不支持此种类型");
+            baseViewHolder.setVisible(R.id.item_bottom, false);
         }
-
-        Status status = attitude.getStatus();
-
-        baseViewHolder.setText(R.id.tv_status_name, "@" + status.getUser().getName());
-        baseViewHolder.setText(R.id.tv_status, status.getText());
-
-        ImageView statusImageView = baseViewHolder.getView(R.id.image_view);
-        ImageLoader.load(context, statusImageView,
-                status.getBmiddle_pic() != null ?  status.getBmiddle_pic() : status.getUser().getAvatar_large(),
-                R.drawable.weibo_image_placeholder);
-
-        String createAt = DateUtil.convWeiboDate(context, status.getCreated_at().getTime());
-        String from = "";
-        if (!TextUtils.isEmpty(status.getSource()))
-            from = String.format("%s", Html.fromHtml(status.getSource()));
-        String desc = String.format("%s %s", createAt, from);
-        baseViewHolder.setText(R.id.tv_source, desc);
     }
 
     @Override

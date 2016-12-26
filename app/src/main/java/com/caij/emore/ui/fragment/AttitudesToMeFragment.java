@@ -57,9 +57,12 @@ public class AttitudesToMeFragment extends SwipeRefreshRecyclerViewFragment<Atti
 
     @Override
     public void onItemClick(View view, final int position) {
-        Intent intent = StatusDetailActivity.newIntent(getActivity(),
-                mRecyclerViewAdapter.getItem(position).getStatus().getId());
-        startActivity(intent);
+        Attitude attitude = mRecyclerViewAdapter.getItem(position);
+        if (attitude.getAttitude_type() == 0) {
+            Intent intent = StatusDetailActivity.newIntent(getActivity(),
+                    attitude.getStatus().getId());
+            startActivity(intent);
+        }
     }
 
     public void onClick(View view, int position) {

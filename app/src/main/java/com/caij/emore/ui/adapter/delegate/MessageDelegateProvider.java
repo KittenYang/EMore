@@ -184,6 +184,17 @@ public interface MessageDelegateProvider {
         }
 
         @Override
+        public void onCreateViewHolder(final BaseViewHolder baseViewHolder) {
+            super.onCreateViewHolder(baseViewHolder);
+            baseViewHolder.setOnClickListener(R.id.iv_image, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemPartViewClickListener.onClick(v, baseViewHolder.getAdapterPosition());
+                }
+            });
+        }
+
+        @Override
         public boolean isForViewType(DirectMessage directMessage, int i) {
             return Type.getType(directMessage) == TYPE_OTHER_IMAGE;
         }
@@ -222,6 +233,17 @@ public interface MessageDelegateProvider {
                     .build();
             ImageLoader.loadUrl(context, imageView, imageInfo.getUrl(),
                     R.drawable.messages_right_bubble, imageConfig);
+        }
+
+        @Override
+        public void onCreateViewHolder(final BaseViewHolder baseViewHolder) {
+            super.onCreateViewHolder(baseViewHolder);
+            baseViewHolder.setOnClickListener(R.id.iv_image, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemPartViewClickListener.onClick(v, baseViewHolder.getAdapterPosition());
+                }
+            });
         }
 
         @Override

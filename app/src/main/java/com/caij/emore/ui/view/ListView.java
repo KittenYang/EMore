@@ -21,4 +21,5 @@ public interface ListView<E> extends BaseView{
      * @param entities 这个是全部的数据，而不是添加的数据
      */
     void notifyItemRangeInserted(List<E> entities, int position, int count);
+
 }
