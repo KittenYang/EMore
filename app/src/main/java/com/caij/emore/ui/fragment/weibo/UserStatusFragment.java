@@ -23,6 +23,7 @@ import com.caij.emore.widget.recyclerview.XRecyclerView;
 public class UserStatusFragment extends TimeLineStatusFragment<UserStatusPresent> implements View.OnClickListener, DialogInterface.OnClickListener {
 
     private Dialog mFilterDialog;
+    private HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter;
 
     public static UserStatusFragment newInstance(long uid) {
         Bundle args = new Bundle();
@@ -36,7 +37,7 @@ public class UserStatusFragment extends TimeLineStatusFragment<UserStatusPresent
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mSwipeRefreshLayout.setEnabled(false);
-        HeaderAndFooterRecyclerViewAdapter headerAndFooterRecyclerViewAdapter = xRecyclerView.getAdapter();
+        headerAndFooterRecyclerViewAdapter = xRecyclerView.getAdapter();
         View headView = getActivity().getLayoutInflater().
                 inflate(R.layout.header_view_profile_weibo, xRecyclerView, false);
         headerAndFooterRecyclerViewAdapter.addHeaderView(headView);
@@ -82,7 +83,12 @@ public class UserStatusFragment extends TimeLineStatusFragment<UserStatusPresent
     @Override
     public void onItemClick(View view, int position) {
         //这里因为加了head  现在需要 -1
-        super.onItemClick(view, position - 1);
+        super.onItemClick(view, position - headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        super.onClick(view, position - headerAndFooterRecyclerViewAdapter.getHeaderViewsCount());
     }
 
     @Override

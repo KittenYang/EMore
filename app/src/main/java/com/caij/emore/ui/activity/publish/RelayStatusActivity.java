@@ -39,7 +39,7 @@ public class RelayStatusActivity extends PublishActivity<RepostWeiboPresent> imp
     EmotionEditText etContent;
     @BindView(R.id.image_view)
     ImageView imageView;
-    @BindView(R.id.tv_name)
+    @BindView(R.id.tv_status_name)
     TextView tvName;
     @BindView(R.id.tv_status)
     TextView tvDesc;

@@ -246,7 +246,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
 
                         StatusActionCountUpdateEvent statusActionCountUpdateEvent =
                                 new StatusActionCountUpdateEvent(EventTag.EVENT_STATUS_ATTITUDE_COUNT_UPDATE, status.getId(),
-                                        attitude.getStatus().getAttitudes_count());
+                                        attitude.getStatus().getAttitudes_count() + 1);
                         RxBus.getDefault().post(statusActionCountUpdateEvent.type, statusActionCountUpdateEvent);
                     }
                 });
