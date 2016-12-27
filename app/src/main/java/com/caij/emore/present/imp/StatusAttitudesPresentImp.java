@@ -2,6 +2,7 @@ package com.caij.emore.present.imp;
 
 import com.caij.emore.EventTag;
 import com.caij.emore.api.ex.ResponseSubscriber;
+import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.event.Event;
 import com.caij.emore.bean.event.StatusActionCountUpdateEvent;
 import com.caij.emore.bean.event.StatusAttitudeEvent;
@@ -67,10 +68,16 @@ public class StatusAttitudesPresentImp extends AbsBasePresent implements StatusR
             if (statusAttitudeEvent.statusId == mStatusId) {
                 if (statusAttitudeEvent.isAttitude) {
                     mAttitudes.add(0, statusAttitudeEvent.user);
-                    mView.setEntities(mAttitudes);
+                    mView.notifyItemRangeInserted(mAttitudes, mAttitudes.size() - 1 - 1, 1);
                 } else {
-                    mAttitudes.remove(statusAttitudeEvent.user);
-                    mView.setEntities(mAttitudes);
+                    for (int i = 0; i < mAttitudes.size(); i ++) {
+                        User user = mAttitudes.get(i);
+                        if (user.getId().equals(((StatusAttitudeEvent) event).user.getId())) {
+                            mAttitudes.remove(i);
+                            mView.notifyItemRemoved(mAttitudes, i);
+                            break;
+                        }
+                    }
                 }
             }
         }else if (EventTag.EVENT_STATUS_REFRESH.equals(event.type)) {

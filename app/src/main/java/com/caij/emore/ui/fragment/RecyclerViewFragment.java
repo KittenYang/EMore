@@ -133,6 +133,12 @@ public abstract class RecyclerViewFragment<E, P extends ListPresent> extends Laz
         mRecyclerViewAdapter.notifyItemRangeInserted(position, count);
     }
 
+    @Override
+    public void notifyItemRemoved(List<E> entities, int index) {
+        mRecyclerViewAdapter.setEntities(entities);
+        mRecyclerViewAdapter.notifyItemRemoved(index);
+    }
+
     protected void onReLoadBtnClick() {
 
     }

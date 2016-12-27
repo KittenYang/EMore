@@ -1,7 +1,9 @@
 package com.caij.emore.present.imp;
 
+import com.caij.emore.EMApplication;
 import com.caij.emore.EventTag;
 import com.caij.emore.R;
+import com.caij.emore.account.UserPrefs;
 import com.caij.emore.api.ex.ResponseSubscriber;
 import com.caij.emore.bean.Attitude;
 import com.caij.emore.bean.event.Event;
@@ -9,6 +11,7 @@ import com.caij.emore.bean.event.StatusActionCountUpdateEvent;
 import com.caij.emore.bean.event.StatusAttitudeEvent;
 import com.caij.emore.bean.response.FavoritesCreateResponse;
 import com.caij.emore.bean.response.Response;
+import com.caij.emore.database.bean.User;
 import com.caij.emore.manager.StatusManager;
 import com.caij.emore.database.bean.Status;
 import com.caij.emore.present.StatusActionPresent;
@@ -280,7 +283,7 @@ public abstract class AbsTimeLinePresent<V extends WeiboActionView> extends AbsB
                         RxBus.getDefault().post(attitudeCountEvent.type, attitudeCountEvent);
 
                         StatusAttitudeEvent attitudeSuccessEvent = new StatusAttitudeEvent(EventTag.EVENT_ATTITUDE_WEIBO_SUCCESS,
-                                status.getId(), false, null);
+                                status.getId(), false, new User(UserPrefs.get(EMApplication.getInstance()).getAccount().getUid()));
                         RxBus.getDefault().post(attitudeSuccessEvent.type, attitudeSuccessEvent);
                     }
                 });

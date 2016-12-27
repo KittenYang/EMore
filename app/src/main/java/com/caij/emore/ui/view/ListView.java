@@ -15,6 +15,8 @@ public interface ListView<E> extends BaseView{
 
     void notifyItemChanged(List<E> entities, int index);
 
+    void notifyItemRemoved(List<E> entities, int index);
+
     /**
      * @param position
      * @param count
