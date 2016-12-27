@@ -111,9 +111,10 @@ public class UnReadMessageManager extends IManager implements UnReadMessageManag
                         R.mipmap.statusbar_ic_comment_small, COMMENT_NOTIFICATION_ID, intents);
             }
 
-            if (AppSettings.isNotifyDmEnable(ctx) && serverUnReadMessage.getDm_single() > 0
-                    && (localUnReadMessage == null || serverUnReadMessage.getDm_single() - localUnReadMessage.getDm_single() > 0)) {
-                String text = serverUnReadMessage.getDm_single() + ctx.getString(R.string.new_dm);
+            if (AppSettings.isNotifyDmEnable(ctx)
+                    && ((serverUnReadMessage.getDm_single() > 0 && (localUnReadMessage == null || serverUnReadMessage.getDm_single() - localUnReadMessage.getDm_single() > 0))
+                    || (serverUnReadMessage.getMsgbox() > 0 && (localUnReadMessage == null || serverUnReadMessage.getMsgbox() - localUnReadMessage.getMsgbox() > 0)))) {
+                String text = (serverUnReadMessage.getDm_single() + serverUnReadMessage.getMsgbox()) + ctx.getString(R.string.new_dm);
                 Intent[] intents = new Intent[1];
                 Intent intent = Intent.makeMainActivity(new ComponentName(ctx, MainActivity.class));
                 intent.putExtra(Key.ID, Key.MESSAGE_FRAGMENT_TAG);
