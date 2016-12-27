@@ -37,7 +37,7 @@
         android:textColor="@color/white"
         android:textSize="10.0dp"
         android:padding="1.0dp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@color/red_message_bg"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/iv_arrow"
