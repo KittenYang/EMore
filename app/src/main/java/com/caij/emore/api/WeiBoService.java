@@ -111,4 +111,11 @@ public interface WeiBoService {
     @POST("/2/direct_messages/destroy_batch.json")
     Observable<Response> deleteMessageConversation(@Field("uid") long uid);
 
+
+    @GET("2/direct_messages/public/messages.json")
+    Observable<UserMessageResponse> getStrangerMessages(@Query("since_id") long since_id,
+                                                        @Query("max_id") long max_id,
+                                                        @Query("count") int count,
+                                                        @Query("page") int page);
+
 }

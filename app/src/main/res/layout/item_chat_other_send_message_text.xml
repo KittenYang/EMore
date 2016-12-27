@@ -22,18 +22,28 @@
         android:layout_height="42dp"
         tool:src="@mipmap/messagescenter_at"/>
 
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@color/text_54"
+            android:layout_toRightOf="@id/iv_avatar"
+            android:layout_marginLeft="@dimen/spacing_medium"
+            android:layout_marginBottom="@dimen/spacing_micro"/>
+
     <TextView
         android:id="@+id/tv_message"
         android:layout_toRightOf="@id/iv_avatar"
+        android:layout_below="@id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_medium"
         android:textColor="@color/text_70"
         android:background="@drawable/other_sender_message_bg"
         android:layout_marginLeft="@dimen/spacing_micro"
-        android:text="附近的刷卡缴费卡手机付款了敬爱是房价快速的减肥开始大家法律框架爱死了福建省立刻就放开手"
         android:paddingLeft="@dimen/spacing_large"
-        android:gravity="center_vertical"/>
+        android:gravity="center_vertical" />
 
     </RelativeLayout>
 

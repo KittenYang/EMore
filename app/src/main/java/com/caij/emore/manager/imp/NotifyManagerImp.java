@@ -40,6 +40,8 @@ public class NotifyManagerImp implements NotifyManager {
                 unReadMessage.setAttitude(value);
             }else if (type.equals(UnReadMessage.TYPE_FOLLOWER)) {
                 unReadMessage.setFollower(value);
+            }else if (type.equals(UnReadMessage.TYPE_MSG_BOX)) {
+                unReadMessage.setMsgbox(value);
             }
             mUnReadMessageDao.insertOrReplace(unReadMessage);
         }

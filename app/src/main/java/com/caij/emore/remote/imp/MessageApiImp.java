@@ -89,4 +89,9 @@ public class MessageApiImp implements MessageApi {
         return mWeiCoService.addtoblack(recipientId);
     }
 
+    @Override
+    public Observable<UserMessageResponse> getStrangerMessages(long since_id, long max_id, int count, int page) {
+        return mWeiBoService.getStrangerMessages(since_id, max_id, count, page);
+    }
+
 }

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Caij on 2016/7/10.
  */
-public class UserMessageResponse {
+public class UserMessageResponse extends Response {
 
     /**
      * direct_messages : []

@@ -300,5 +300,6 @@ public class UnReadMessage extends Response implements Serializable {
     public static final String TYPE_DM = "dm";
     public static final String TYPE_ATTITUDE = "attitude";
     public static final String TYPE_FOLLOWER = "follower";
+    public static final String TYPE_MSG_BOX = "msgbox";
 
 }

@@ -20,6 +20,7 @@ import com.caij.emore.present.MessageUserPresent;
 import com.caij.emore.present.imp.MessageUserPresentImp;
 import com.caij.emore.remote.imp.MessageApiImp;
 import com.caij.emore.ui.adapter.delegate.RecentContactDelegate;
+import com.caij.emore.ui.fragment.mention.StatusMentionFragment;
 import com.caij.emore.ui.view.MessageUserView;
 import com.caij.emore.ui.activity.CommentsActivity;
 import com.caij.emore.ui.activity.DefaultFragmentActivity;
@@ -48,6 +49,7 @@ public class RecentContactFragment extends SwipeRefreshRecyclerViewFragment<Mess
     private TextView tvMentionCount;
     private TextView tvCommentCount;
     private TextView tvAttitudeCount;
+    private TextView tvStrangeMessageCount;
 
     private Observable<UnReadMessage> mUnReadMessageObservable;
     private boolean isHasNewDm;
@@ -78,21 +80,25 @@ public class RecentContactFragment extends SwipeRefreshRecyclerViewFragment<Mess
         mRecyclerViewAdapter.setOnItemLongClickListener(this);
 
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        final View mentionView = layoutInflater.inflate(R.layout.item_message_head, xRecyclerView, false);
+        View mentionView = layoutInflater.inflate(R.layout.item_message_head, xRecyclerView, false);
         View commentView = layoutInflater.inflate(R.layout.item_message_head, xRecyclerView, false);
         View priseView = layoutInflater.inflate(R.layout.item_message_head, xRecyclerView, false);
+        View strangerDmView = layoutInflater.inflate(R.layout.item_message_head, xRecyclerView, false);
 
         tvMentionCount = (TextView) mentionView.findViewById(R.id.tv_unread_count);
         tvCommentCount = (TextView) commentView.findViewById(R.id.tv_unread_count);
         tvAttitudeCount = (TextView) priseView.findViewById(R.id.tv_unread_count);
+        tvStrangeMessageCount = (TextView) strangerDmView.findViewById(R.id.tv_unread_count);
 
         setValue(mentionView, getString(R.string.mention), R.mipmap.messagescenter_at);
         setValue(commentView, getString(R.string.comment), R.mipmap.messagescenter_comments);
         setValue(priseView, getString(R.string.attitude), R.mipmap.messagescenter_good);
+        setValue(strangerDmView, getString(R.string.stranger_dm), R.mipmap.messagescenter_messagebox);
 
         xRecyclerView.getAdapter().addHeaderView(mentionView);
         xRecyclerView.getAdapter().addHeaderView(commentView);
         xRecyclerView.getAdapter().addHeaderView(priseView);
+        xRecyclerView.getAdapter().addHeaderView(strangerDmView);
 
         mentionView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +118,13 @@ public class RecentContactFragment extends SwipeRefreshRecyclerViewFragment<Mess
             @Override
             public void onClick(View v) {
                 Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), getString(R.string.attitude), AttitudesToMeFragment.class, null);
+                startActivity(intent);
+            }
+        });
+        strangerDmView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(),  getString(R.string.stranger_dm), StrangerMessageFragment.class, null);
                 startActivity(intent);
             }
         });
@@ -166,7 +179,7 @@ public class RecentContactFragment extends SwipeRefreshRecyclerViewFragment<Mess
         MessageUser.UserListBean bean = mRecyclerViewAdapter.getItem(position - xRecyclerView.getAdapter().getHeaderViewsCount());
         bean.setUnread_count(0);
         Intent intent = DefaultFragmentActivity.starFragmentV4(getActivity(), bean.getUser().getScreen_name(), ChatFragment.class,
-                ChatFragment.newInstance(bean.getUser().getScreen_name(), bean.getUser().getId()).getArguments());
+                ChatFragment.newInstance(bean.getUser().getId()).getArguments());
         startActivity(intent);
         xRecyclerView.getAdapter().notifyItemChanged(position);
     }
@@ -174,8 +187,8 @@ public class RecentContactFragment extends SwipeRefreshRecyclerViewFragment<Mess
 
     @Override
     public boolean onItemLongClick(View view, int position) {
-        final MessageUser.UserListBean bean = mRecyclerViewAdapter.getItem(position - 3);
-        DialogUtil.showItemDialog(getActivity(), null, new String[]{"清除会话"}, new DialogInterface.OnClickListener() {
+        final MessageUser.UserListBean bean = mRecyclerViewAdapter.getItem(position - xRecyclerView.getAdapter().getHeaderViewsCount());
+        DialogUtil.showItemDialog(getActivity(), null, new String[]{getString(R.string.clear_conversion)}, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mPresent.deleteMessageConversation(bean);
@@ -207,6 +220,13 @@ public class RecentContactFragment extends SwipeRefreshRecyclerViewFragment<Mess
                 tvAttitudeCount.setText(String.valueOf(unReadMessage.getAttitude()));
             }else {
                 tvAttitudeCount.setVisibility(View.GONE);
+            }
+
+            if (unReadMessage.getMsgbox() > 0) {
+                tvStrangeMessageCount.setVisibility(View.VISIBLE);
+                tvStrangeMessageCount.setText(String.valueOf(unReadMessage.getMsgbox()));
+            }else {
+                tvStrangeMessageCount.setVisibility(View.GONE);
             }
         }
     }

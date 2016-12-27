@@ -14,18 +14,30 @@
         android:paddingLeft="@dimen/spacing_medium"
         android:paddingRight="45dp">
 
-    <ImageView
-        android:id="@+id/iv_avatar"
-        android:layout_width="42dp"
-        android:layout_height="42dp"/>
 
-    <ImageView
-        android:id="@+id/iv_image"
-        android:layout_toRightOf="@id/iv_avatar"
-        android:layout_marginLeft="@dimen/spacing_micro"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="fitXY"/>
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="42dp"
+            android:layout_height="42dp"/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@color/text_54"
+            android:layout_toRightOf="@id/iv_avatar"
+            android:layout_marginLeft="@dimen/spacing_medium"
+            android:layout_marginBottom="@dimen/spacing_micro"/>
+
+        <ImageView
+            android:id="@+id/iv_image"
+            android:layout_toRightOf="@id/iv_avatar"
+            android:layout_below="@id/tv_name"
+            android:layout_marginLeft="@dimen/spacing_micro"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="fitXY"/>
 
     </RelativeLayout>
 

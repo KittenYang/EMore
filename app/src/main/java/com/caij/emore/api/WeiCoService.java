@@ -340,6 +340,7 @@ public interface WeiCoService {
                                                     @Query("count") int count,
                                                     @Query("page") int page);
 
+
     @GET("/2/groups")
     Observable<GroupResponse> getGroups();
 

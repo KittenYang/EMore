@@ -26,7 +26,6 @@ public class FollowsFragment extends FriendshipFragment<FriendshipPresent> {
 
     @Override
     protected FriendshipPresent createPresent() {
-        Account account = UserPrefs.get(getActivity()).getAccount();
         long uid = getArguments().getLong(Key.ID);
         return new FollowsPresentImp(uid, new UserApiImp(),
                 new NotifyApiImp(), new NotifyManagerImp(), this);

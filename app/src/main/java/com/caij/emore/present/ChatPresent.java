@@ -18,8 +18,6 @@ public interface ChatPresent extends ListPresent {
 
     void sendMessage(DirectMessage directMessage, int position);
 
-    String getMessageImageHdUrl(DirectMessage directMessage);
-
     RecyclerView.AdapterDataObserver getAdapterDataObserver();
 
     void blockUser(long recipientId);

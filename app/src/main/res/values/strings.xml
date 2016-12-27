@@ -213,5 +213,8 @@
     <string name="collection">收藏</string>
     <string name="delete">删除</string>
     <string name="block">拉黑</string>
+    <string name="clear_conversion">清除会话</string>
+    <string name="stranger_dm">陌生人消息</string>
+    <string name="reply">回复</string>
 
 </resources>

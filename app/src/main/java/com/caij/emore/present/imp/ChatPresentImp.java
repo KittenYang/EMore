@@ -372,8 +372,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
             });
     }
 
-    @Override
-    public String getMessageImageHdUrl(DirectMessage directMessage) {
+    public static String getMessageImageHdUrl(DirectMessage directMessage) {
         String url = directMessage.getAttachinfo().get(0).getThumbnail();
         return appImageUrl(url, DensityUtil.getScreenWidth(EMApplication.getInstance()),
                 DensityUtil.getScreenHeight(EMApplication.getInstance()));
@@ -594,7 +593,7 @@ public class ChatPresentImp extends AbsBasePresent implements ChatPresent {
         cancelLooperLoadMessage();
     }
 
-    static class MessageTransformer implements Observable.Transformer<DirectMessage, DirectMessage> {
+    public static class MessageTransformer implements Observable.Transformer<DirectMessage, DirectMessage> {
 
         @Override
         public Observable<DirectMessage> call(Observable<DirectMessage> directMessageObservable) {

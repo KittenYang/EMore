@@ -236,7 +236,7 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
         }
 
         int unReadMessageCount = unReadMessage.getCmt() + unReadMessage.getDm_single()
-                + unReadMessage.getMention_status() + unReadMessage.getMention_cmt();
+                + unReadMessage.getMention_status() + unReadMessage.getMention_cmt() + unReadMessage.getMsgbox();
 
         if (unReadMessageCount >  0) {
             tvUnreadMessageCount.setVisibility(View.VISIBLE);

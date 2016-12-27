@@ -49,8 +49,13 @@ public interface MessageDelegateProvider {
         }
 
         @Override
-        public void onCreateViewHolder(BaseViewHolder baseViewHolder) {
-
+        public void onCreateViewHolder(final BaseViewHolder baseViewHolder) {
+            baseViewHolder.setOnClickListener(R.id.iv_avatar, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemPartViewClickListener.onClick(v, baseViewHolder.getAdapterPosition());
+                }
+            });
         }
     }
 
@@ -117,6 +122,7 @@ public interface MessageDelegateProvider {
             super.convert(baseViewHolder, directMessage, position);
             TextView tvMessage = baseViewHolder.getView(R.id.tv_message);
             tvMessage.setText(directMessage.getTextContentSpannable());
+            baseViewHolder.setText(R.id.tv_name, directMessage.getSender_screen_name());
         }
 
         @Override
@@ -181,6 +187,8 @@ public interface MessageDelegateProvider {
                     .build();
             ImageLoader.loadUrl(context, imageView, imageInfo.getUrl(),
                     R.drawable.messages_left_bubble, imageConfig);
+
+            baseViewHolder.setText(R.id.tv_name, directMessage.getSender_screen_name());
         }
 
         @Override

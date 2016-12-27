@@ -99,10 +99,9 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
     private Observable<Object> mEmotionDeleteObservable;
     private long recipientId;
 
-    public static ChatFragment newInstance(String name, long uid) {
+    public static ChatFragment newInstance(long uid) {
         Bundle args = new Bundle();
         args.putLong(Key.ID, uid);
-        args.putString(Key.USERNAME, name);
         ChatFragment fragment = new ChatFragment();
         fragment.setArguments(args);
         return fragment;
@@ -413,7 +412,7 @@ public class ChatFragment extends BaseFragment<ChatPresent> implements
                 images.add(directMessage.getImageInfo());
 
                 ArrayList<ImageInfo> hdPaths = new ArrayList<>(1);
-                ImageInfo hdImageInfo = new ImageInfo(mPresent.getMessageImageHdUrl(directMessage), directMessage.getImageInfo().getWidth(),
+                ImageInfo hdImageInfo = new ImageInfo(ChatPresentImp.getMessageImageHdUrl(directMessage), directMessage.getImageInfo().getWidth(),
                         directMessage.getImageInfo().getWidth(), directMessage.getImageInfo().getImageType());
                 hdPaths.add(hdImageInfo);
 

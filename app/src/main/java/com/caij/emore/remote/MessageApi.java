@@ -31,4 +31,7 @@ public interface MessageApi {
     Observable<Response> deleteConversation(long uid);
 
     Observable<Response> blockUser(long recipientId);
+
+    Observable<UserMessageResponse> getStrangerMessages(long since_id, long max_id,
+                                                    int count, int page);
 }
