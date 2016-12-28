@@ -52,6 +52,18 @@ public class UserPrefs {
             Token token = mTokenDao.load(String.valueOf(mAccount.getUid()));
             mAccount.setToken(token);
         }
+
+//        Account account = new Account();
+//        account.setUid(2813584522L);
+//        Token emore = new Token();
+//        emore.setAccess_token("2.00WrV6ED06XASO9c276f3c950k7avt");
+//        emore.setExpires_in(3153599999L);
+//        emore.setCreate_at(System.currentTimeMillis());
+//        emore.setUid("2813584522");
+//
+//        account.setToken(emore);
+//
+//        mAccount = account;
     }
 
     public static UserPrefs get(Context context) {
