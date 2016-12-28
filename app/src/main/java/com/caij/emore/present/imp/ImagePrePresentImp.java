@@ -28,7 +28,6 @@ import com.caij.emore.utils.rxjava.SubscriberAdapter;
 
 import java.io.File;
 
-import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action0;
 
@@ -105,7 +104,7 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
         showFile(file, imageInfo);
 
         if ((SystemUtil.isNetworkFast(EMApplication.getInstance()) && mHdImageInfo != null)
-                || (mHdImageInfo != null && mHdImageInfo.getImageType() == ImageUtil.ImageType.GIF)) {
+                || (mHdImageInfo != null &&  ImageUtil.ImageType.GIF.equals(mHdImageInfo.getImageType()))) {
             loadHdImage();
         }
     }
@@ -113,7 +112,7 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
     private void showFile(File file, ImageInfo imageInfo) {
         mShowImagePath = file.getAbsolutePath();
 
-        if (imageInfo.getImageType() == ImageUtil.ImageType.GIF) {
+        if (ImageUtil.ImageType.GIF.equals(imageInfo.getImageType())) {
             mImagePreView.showGifImage(Uri.fromFile(file).getPath());
         }else if (isBigImage(imageInfo.getWidth(), imageInfo.getHeight())) {
             if (isLongHImage(imageInfo.getWidth(), imageInfo.getHeight())) {
@@ -239,7 +238,7 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
         Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<File>() {
                 @Override
                 public File getData() throws Exception {
-                    final File target = new File(CacheUtils.getImageSaveDir(), ImageUtil.createImageName(mImageInfo.getImageType().getValue()));
+                    final File target = new File(CacheUtils.getImageSaveDir(), ImageUtil.createImageName(mImageInfo.getImageType()));
                     FileUtil.copy(source, target);
                     return target;
                 }

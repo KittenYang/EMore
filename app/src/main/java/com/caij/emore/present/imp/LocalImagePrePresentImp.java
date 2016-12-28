@@ -63,7 +63,7 @@ public class LocalImagePrePresentImp extends AbsBasePresent implements ImagePreP
                 @Override
                 public void onNext(Zip zip) {
                     if (zip != null) {
-                        if (zip.imageType == ImageUtil.ImageType.GIF) {
+                        if (ImageUtil.ImageType.GIF.equals(zip.imageType)) {
                             mImagePreView.showGifImage("file://" + localFilePath);
                         }else {
                             if (ImagePrePresentImp.isLongHImage(zip.width, zip.height)) {
@@ -86,7 +86,7 @@ public class LocalImagePrePresentImp extends AbsBasePresent implements ImagePreP
     }
 
     private static class Zip {
-        ImageUtil.ImageType imageType = ImageUtil.ImageType.JPEG;
+        String imageType = ImageUtil.ImageType.JPEG;
         int width;
         int height;
     }

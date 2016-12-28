@@ -16,7 +16,7 @@ public class ImageInfo implements Serializable {
     private String url;
     private Integer width;
     private Integer height;
-    private ImageUtil.ImageType imageType;
+    private String imageType;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -28,7 +28,7 @@ public class ImageInfo implements Serializable {
         this.url = url;
     }
 
-    public ImageInfo(String url, Integer width, Integer height, ImageUtil.ImageType imageType) {
+    public ImageInfo(String url, Integer width, Integer height, String imageType) {
         this.url = url;
         this.width = width;
         this.height = height;
@@ -59,11 +59,11 @@ public class ImageInfo implements Serializable {
         this.height = height;
     }
 
-    public ImageUtil.ImageType getImageType() {
+    public String getImageType() {
         return imageType;
     }
 
-    public void setImageType(ImageUtil.ImageType imageType) {
+    public void setImageType(String imageType) {
         this.imageType = imageType;
     }
 

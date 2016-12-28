@@ -42,25 +42,16 @@ import static android.media.ExifInterface.TAG_ORIENTATION;
  */
 public class ImageUtil {
 
-    public enum ImageType implements Serializable {
+    public interface ImageType {
 
-        GIF("gif"),
+        public static final String GIF = "gif";
         /** JPG type. */
-        JPEG("jpeg"),
+        public static final String JPEG = "jpeg";
         /** PNG type with alpha. */
-        PNG("png"),
+        public static final String PNG = "png";
         /** Unrecognized type. */
-        UNKNOWN("png");
+        public static final String UNKNOWN = "png";
 
-        private final String value;
-
-        ImageType(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
     }
 
     private final static String PATTERN = "yyyyMMddHH_mmss";
@@ -104,7 +95,7 @@ public class ImageUtil {
         return result;
     }
 
-    public static ImageType getImageType(File file) throws IOException {
+    public static String getImageType(File file) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(file);
         ImageHeaderParser imageHeaderParser= new ImageHeaderParser(fileInputStream);
         ImageHeaderParser.ImageType imageType = imageHeaderParser.getType();

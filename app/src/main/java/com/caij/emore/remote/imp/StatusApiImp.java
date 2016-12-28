@@ -58,7 +58,7 @@ public class StatusApiImp implements StatusApi {
         return RxUtil.createDataObservable(new RxUtil.Provider<String>() {
                 @Override
                 public String getData() throws Exception {
-                    return ImageUtil.getImageType(file).getValue();
+                    return ImageUtil.getImageType(file);
                 }
             }).flatMap(new Func1<String, Observable<Status>>() {
                 @Override
@@ -78,7 +78,7 @@ public class StatusApiImp implements StatusApi {
         return RxUtil.createDataObservable(new RxUtil.Provider<String>() {
                 @Override
                 public String getData() throws Exception {
-                    return ImageUtil.getImageType(file).getValue();
+                    return ImageUtil.getImageType(file);
                 }
             }).flatMap(new Func1<String, Observable<UploadImageResponse>>() {
                 @Override

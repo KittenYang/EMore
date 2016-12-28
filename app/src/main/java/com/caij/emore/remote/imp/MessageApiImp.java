@@ -63,7 +63,7 @@ public class MessageApiImp implements MessageApi {
         return RxUtil.createDataObservable(new RxUtil.Provider<String>() {
             @Override
             public String getData() throws IOException {
-                return ImageUtil.getImageType(file).getValue();
+                return ImageUtil.getImageType(file);
             }
         }).flatMap(new Func1<String, Observable<MessageImage>>() {
                         @Override

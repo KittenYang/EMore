@@ -176,7 +176,7 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
                             image.setWidth(options.outWidth);
                             image.setUrl("file://" + file.getAbsolutePath());
                             String type = "png";
-                            try {type = ImageUtil.getImageType(file).getValue();} catch (IOException e) {}
+                            try {type = ImageUtil.getImageType(file);} catch (IOException e) {}
                             image.setType(type);
                             statusImageInfo.setBmiddle(image);
                             map.put(uploadImageResponse.getPic_id(),statusImageInfo);
@@ -236,7 +236,7 @@ public class PublishStatusManagerPresentImp extends AbsBasePresent implements Pu
                         image.setWidth(options.outWidth);
                         image.setUrl("file://" + file.getAbsolutePath());
                         String type = "png";
-                        try {type = ImageUtil.getImageType(file).getValue();} catch (IOException e) {}
+                        try {type = ImageUtil.getImageType(file);} catch (IOException e) {}
                         image.setType(type);
                         statusImageInfo.setBmiddle(image);
                         map.put(status.getPic_ids().get(0),statusImageInfo);

@@ -255,9 +255,9 @@ public class StatusItemImageViewGroup extends ViewGroup implements View.OnClickL
         NavigationUtil.startImagePreActivity(getContext(), v, paths, hdPaths, position);
     }
 
-    protected ImageUtil.ImageType getImageType(String type) {
-        if (ImageUtil.ImageType.GIF.getValue().toLowerCase().contains(type)
-                || ImageUtil.ImageType.GIF.getValue().toUpperCase().contains(type)) {
+    protected String getImageType(String type) {
+        if (ImageUtil.ImageType.GIF.toLowerCase().contains(type)
+                || ImageUtil.ImageType.GIF.toUpperCase().contains(type)) {
             return ImageUtil.ImageType.GIF;
         }else {
             return ImageUtil.ImageType.PNG;
