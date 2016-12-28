@@ -386,19 +386,19 @@ public class SelectImageActivity extends BaseToolBarActivity implements OnItemPa
                 if (resultCode == RESULT_OK) {
                     ArrayList<String> paths = data.getStringArrayListExtra(Key.IMAGE_PATHS);
                     boolean isOk = data.getBooleanExtra(Key.TYPE, false);
+
+                    mSelectImages.clear();
+                    mSelectImages.addAll(paths);
+
                     if (isOk) {
                         Intent intent = new Intent();
                         intent.putStringArrayListExtra(Key.IMAGE_PATHS, mSelectImages);
                         setResult(Activity.RESULT_OK, intent);
                         finish();
                     }else {
-                        mSelectImages.clear();
-                        mSelectImages.addAll(paths);
-
                         updateSelectItem();
+                        mImageAdapter.notifyDataSetChanged();
                     }
-
-                    mImageAdapter.notifyDataSetChanged();
                 }
                 break;
         }

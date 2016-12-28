@@ -83,12 +83,17 @@ public class PublishStatusActivity extends PublishActivity<StatusPublishPresent>
             public void convert(BaseViewHolder baseViewHolder, String s, int i) {
                 ImageView imageView = baseViewHolder.getView(R.id.siv_image);
                 ImageLoader.load(PublishStatusActivity.this, imageView, s, R.drawable.weibo_image_placeholder);
-                baseViewHolder.getView(R.id.iv_delete).setTag(s);
             }
 
             @Override
-            public void onCreateViewHolder(BaseViewHolder baseViewHolder) {
-
+            public void onCreateViewHolder(final BaseViewHolder baseViewHolder) {
+                baseViewHolder.setOnClickListener(R.id.iv_delete, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mPublishImageAdapter.getEntities().remove(baseViewHolder.getAdapterPosition());
+                        mPublishImageAdapter.notifyItemRemoved(baseViewHolder.getAdapterPosition());
+                    }
+                });
             }
         });
 

@@ -79,7 +79,7 @@
 
         <activity android:name="com.caij.emore.ui.activity.publish.PublishStatusActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize"/>
 
         <activity android:name="com.caij.emore.ui.activity.SelectImageActivity"
             android:screenOrientation="portrait"/>
@@ -94,7 +94,7 @@
 
         <activity android:name="com.caij.emore.ui.activity.publish.CommentStatusActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize"/>
 
         <activity android:name="com.caij.emore.ui.activity.publish.RelayStatusActivity"
             android:screenOrientation="portrait"
@@ -102,7 +102,7 @@
 
         <activity android:name="com.caij.emore.ui.activity.publish.ReplyCommentActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize"/>
 
         <activity android:name="com.caij.emore.ui.activity.FriendshipActivity"
             android:screenOrientation="portrait"/>
