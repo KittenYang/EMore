@@ -5,7 +5,7 @@ import android.widget.ImageView;
 
 import com.caij.emore.R;
 import com.caij.emore.database.bean.User;
-import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.rvadapter.BaseViewHolder;
 
@@ -15,14 +15,8 @@ import com.caij.rvadapter.BaseViewHolder;
 
 public class UserDelegate extends BaseItemViewDelegate<User> {
 
-    private final ImageLoader.ImageConfig mImageConfig;
-
     public UserDelegate(OnItemPartViewClickListener onClickListener) {
         super(onClickListener);
-        mImageConfig = new ImageLoader.ImageConfigBuild().
-                setScaleType(ImageLoader.ScaleType.CENTER_CROP)
-                .setCircle(true)
-                .build();
     }
 
     @Override
@@ -36,8 +30,8 @@ public class UserDelegate extends BaseItemViewDelegate<User> {
         baseViewHolder.setText(R.id.txtName, user.getScreen_name());
         baseViewHolder.setText(R.id.txtDesc, user.getDescription());
         ImageView avatarImageView = baseViewHolder.getView(R.id.imgPhoto);
-        ImageLoader.loadUrl(context, avatarImageView, user.getAvatar_large(),
-                R.drawable.circle_image_placeholder, mImageConfig);
+        ImageLoadFactory.getImageLoad().loadImageCircle(context, avatarImageView, user.getAvatar_large(),
+                R.drawable.circle_image_placeholder);
     }
 
     @Override

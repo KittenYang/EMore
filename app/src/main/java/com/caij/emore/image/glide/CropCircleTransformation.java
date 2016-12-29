@@ -1,4 +1,4 @@
-package com.caij.emore.utils.glide;
+package com.caij.emore.image.glide;
 
 /**
  * Copyright (C) 2015 Wasabeef

@@ -13,12 +13,12 @@ import com.caij.emore.EMApplication;
 import com.caij.emore.R;
 import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.bean.ImageInfo;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.present.ImagePrePresent;
 import com.caij.emore.ui.view.ImagePreView;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.DownLoadUtil;
 import com.caij.emore.utils.FileUtil;
-import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.MD5Util;
@@ -80,7 +80,7 @@ public class ImagePrePresentImp  extends AbsBasePresent implements ImagePrePrese
         Subscription subscription = RxUtil.createDataObservable(new RxUtil.Provider<File>() {
                 @Override
                 public File getData() throws Exception {
-                    return ImageLoader.getFile(mContent, imageInfo.getUrl(), Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+                    return ImageLoadFactory.getImageLoad().getFile(mContent, imageInfo.getUrl(), Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
                 }
             }).compose(SchedulerTransformer.<File>create())
             .subscribe(new SubscriberAdapter<File>() {

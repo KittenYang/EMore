@@ -1,4 +1,4 @@
-package com.caij.emore.utils.glide;
+package com.caij.emore.image.glide;
 
 import android.content.Context;
 import android.graphics.Bitmap;

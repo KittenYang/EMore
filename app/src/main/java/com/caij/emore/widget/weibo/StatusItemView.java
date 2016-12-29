@@ -15,9 +15,10 @@ import android.widget.TextView;
 import com.caij.emore.R;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.database.bean.Status;
+import com.caij.emore.image.ImageLoad;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.ui.activity.UserInfoActivity;
 import com.caij.emore.utils.DateUtil;
-import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.weibo.WeiboUtil;
 
 import butterknife.BindView;
@@ -74,9 +75,8 @@ public abstract class StatusItemView extends RelativeLayout {
         }else {
             tvName.setText(weibo.getUser().getRemark());
         }
-        ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild().setCircle(true).build();
-        ImageLoader.loadUrl(getContext(), ivAvatar,
-                weibo.getUser().getAvatar_large(), R.drawable.circle_image_placeholder, config);
+        ImageLoadFactory.getImageLoad().loadImageCircle(getContext(), ivAvatar,
+                weibo.getUser().getAvatar_large(), R.drawable.circle_image_placeholder);
 
         String createAt = DateUtil.convWeiboDate(getContext(), weibo.getCreated_at().getTime());
         String from = "";

@@ -18,6 +18,8 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.Token;
 import com.caij.emore.account.UserPrefs;
+import com.caij.emore.image.ImageLoad;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.manager.imp.DraftManagerImp;
 import com.caij.emore.manager.imp.NotifyManagerImp;
 import com.caij.emore.manager.imp.UserManagerImp;
@@ -33,7 +35,6 @@ import com.caij.emore.ui.view.MainView;
 import com.caij.emore.ui.fragment.DraftFragment;
 import com.caij.emore.ui.fragment.RecentContactFragment;
 import com.caij.emore.utils.DrawableUtil;
-import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.weibo.ThemeUtils;
 import com.caij.emore.widget.main.ActionBarDrawerToggle;
 import com.caij.emore.widget.DoubleClickToolBar;
@@ -217,9 +218,9 @@ public class MainActivity extends BaseActivity<MainPresent> implements MainView,
     public void setUser(User user) {
         if (user != null) {
             mTvNavigationUsername.setText(user.getName());
-            ImageLoader.ImageConfig config = new ImageLoader.ImageConfigBuild().setCircle(true).build();
-            ImageLoader.loadUrl(this, mImgNavigationAvatar, user.getAvatar_large(), R.drawable.circle_image_placeholder, config);
-            ImageLoader.load(this, ivHeaderBackground, user.getCover_image_phone(), R.mipmap.bg_nav_head);
+            ImageLoadFactory.getImageLoad().loadImageCircle(this, mImgNavigationAvatar, user.getAvatar_large(),
+                    R.drawable.circle_image_placeholder);
+            ImageLoadFactory.getImageLoad().loadImageCenterCrop(this, ivHeaderBackground, user.getCover_image_phone(), R.mipmap.bg_nav_head);
             mImgNavigationAvatar.setTag(user);
         }
     }

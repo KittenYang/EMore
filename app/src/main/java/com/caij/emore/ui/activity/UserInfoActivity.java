@@ -18,6 +18,8 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
+import com.caij.emore.image.ImageLoad;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.manager.imp.UserManagerImp;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.UserInfoDetailPresent;
@@ -30,7 +32,6 @@ import com.caij.emore.ui.fragment.UserImageFragment;
 import com.caij.emore.ui.fragment.UserInfoFragment;
 import com.caij.emore.ui.fragment.weibo.UserStatusFragment;
 import com.caij.emore.utils.CountUtil;
-import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.weibo.ThemeUtils;
 import com.caij.emore.utils.weibo.WeiboUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
@@ -176,14 +177,13 @@ public class UserInfoActivity extends BaseActivity<UserInfoDetailPresent> implem
 
     private void fillDate(User user) {
         viewRoot.setVisibility(View.VISIBLE);
-        ImageLoader.load(this, imgCover, user.getCover_image_phone(), R.mipmap.default_user_info_bg);
+        ImageLoadFactory.getImageLoad().loadImageCenterCrop(this, imgCover, user.getCover_image_phone(), R.mipmap.default_user_info_bg);
         txtName.setText(user.getName());
         txtDesc.setText(user.getDescription());
         txtFriendsCounter.setText(CountUtil.getCounter(this, user.getFriends_count()) + getString(R.string.follow));
         txtFollowersCounter.setText(CountUtil.getCounter(this, user.getFollowers_count()) + getString(R.string.fans));
-        ImageLoader.ImageConfigBuild build = new ImageLoader.ImageConfigBuild().setCircle(true).
-                setScaleType(ImageLoader.ScaleType.CENTER_CROP);
-        ImageLoader.loadUrl(this, ivAvatar, user.getAvatar_large(), R.drawable.circle_image_placeholder, build.build());
+        ImageLoadFactory.getImageLoad().loadImageCircle(this, ivAvatar, user.getAvatar_large(),
+                R.drawable.circle_image_placeholder);
 
         WeiboUtil.setImageVerified(imgVerified, user);
         WeiboUtil.setGender(user, imgGender);

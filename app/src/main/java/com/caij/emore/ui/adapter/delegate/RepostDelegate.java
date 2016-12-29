@@ -6,10 +6,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.caij.emore.R;
-import com.caij.emore.bean.Comment;
 import com.caij.emore.database.bean.Status;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.utils.DateUtil;
-import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.rvadapter.BaseViewHolder;
 
@@ -19,11 +18,9 @@ import com.caij.rvadapter.BaseViewHolder;
 
 public class RepostDelegate extends BaseItemViewDelegate<Status> {
 
-    private final ImageLoader.ImageConfig mAvatarImageConfig;
 
     public RepostDelegate(OnItemPartViewClickListener onClickListener) {
         super(onClickListener);
-        mAvatarImageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
     }
 
     @Override
@@ -47,8 +44,8 @@ public class RepostDelegate extends BaseItemViewDelegate<Status> {
 
         ImageView imageView = baseViewHolder.getView(R.id.imgPhoto);
 
-        ImageLoader.loadUrl(baseViewHolder.getConvertView().getContext(), imageView, status.getUser().getAvatar_large(),
-                R.drawable.circle_image_placeholder, mAvatarImageConfig);
+        ImageLoadFactory.getImageLoad().loadImageCircle(baseViewHolder.getConvertView().getContext(),
+                imageView, status.getUser().getAvatar_large(), R.drawable.circle_image_placeholder);
     }
 
     @Override

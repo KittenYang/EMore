@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.caij.emore.R;
 import com.caij.emore.bean.PageInfo;
 import com.caij.emore.database.bean.Status;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.ui.activity.ArticleActivity;
-import com.caij.emore.utils.ImageLoader;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,13 +33,8 @@ public class CompositePatternArticle {
     @BindView(R.id.rl_article)
     RelativeLayout mRlArticle;
 
-    ImageLoader.ImageConfig mVideoImageConfig;
-
     public void setUp(View view) {
         ButterKnife.bind(this, view);
-        mVideoImageConfig = new ImageLoader.ImageConfigBuild()
-                .setScaleType(ImageLoader.ScaleType.CENTER_CROP)
-                .build();
     }
 
     public void setWeibo(Status weibo, Context context) {
@@ -48,11 +43,11 @@ public class CompositePatternArticle {
         PageInfo.Card card1 = pageInfo.getCards().get(0);
         PageInfo.Card card2 = pageInfo.getCards().get(1);
 
-        ImageLoader.loadUrl(context, mIvArticle, card1.getPage_pic(),
-                R.drawable.weibo_image_placeholder, mVideoImageConfig);
+        ImageLoadFactory.getImageLoad().loadImageCenterCrop(context, mIvArticle, card1.getPage_pic(),
+                R.drawable.weibo_image_placeholder);
 
-        ImageLoader.loadUrl(context, mIvArticleType, card1.getType_icon(),
-                R.drawable.weibo_image_placeholder, mVideoImageConfig);
+        ImageLoadFactory.getImageLoad().loadImageCenterCrop(context, mIvArticleType, card1.getType_icon(),
+                R.drawable.weibo_image_placeholder);
 
         mTvArticleTitle.setText(card2.getContent1());
         mTvUserName.setText(card1.getContent1());

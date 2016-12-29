@@ -11,9 +11,9 @@ import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.database.bean.DirectMessage;
-import com.caij.emore.utils.DateUtil;
-import com.caij.emore.utils.ImageLoader;
-import com.caij.emore.utils.glide.MaskTransformation;
+import com.caij.emore.image.ImageLoad;
+import com.caij.emore.image.ImageLoadFactory;
+import com.caij.emore.image.glide.MaskTransformation;
 import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.rvadapter.BaseViewHolder;
 
@@ -30,22 +30,16 @@ public interface MessageDelegateProvider {
 
     public static abstract class BaseMessageDelegate extends BaseItemViewDelegate<DirectMessage> {
 
-        private final ImageLoader.ImageConfig mAvatarImageConfig;
-
         public BaseMessageDelegate(OnItemPartViewClickListener onClickListener) {
             super(onClickListener);
-            mAvatarImageConfig = new ImageLoader.ImageConfigBuild().
-                    setScaleType(ImageLoader.ScaleType.CENTER_CROP)
-                    .setCircle(true)
-                    .build();
         }
 
         @Override
         public void convert(BaseViewHolder baseViewHolder, DirectMessage directMessage, int position) {
             Context context = baseViewHolder.getConvertView().getContext();
             ImageView avatarImageView = baseViewHolder.getView(R.id.iv_avatar);
-            ImageLoader.loadUrl(context, avatarImageView, directMessage.getSender().getAvatar_large(),
-                    R.drawable.circle_image_placeholder, mAvatarImageConfig);
+            ImageLoadFactory.getImageLoad().loadImageCircle(context, avatarImageView, directMessage.getSender().getAvatar_large(),
+                    R.drawable.circle_image_placeholder);
         }
 
         @Override
@@ -157,11 +151,9 @@ public interface MessageDelegateProvider {
 
     public static class ReceiveImageMessageDelegate extends ReceiveMessageDelegate {
 
-        private final MaskTransformation mOtherTransformation;
 
         public ReceiveImageMessageDelegate(OnItemPartViewClickListener onClickListener) {
             super(onClickListener);
-            mOtherTransformation = new MaskTransformation(EMApplication.getInstance(), R.drawable.messages_left_bubble);
         }
 
         @Override
@@ -180,12 +172,13 @@ public interface MessageDelegateProvider {
             layoutParams.width = imageInfo.getWidth();
             layoutParams.height = imageInfo.getHeight();
             imageView.setLayoutParams(layoutParams);
-            ImageLoader.ImageConfig imageConfig = new ImageLoader.ImageConfigBuild().
-                    setScaleType(ImageLoader.ScaleType.CENTER_CROP)
+
+            ImageLoad.ImageConfig imageConfig = new ImageLoad.ImageConfigBuild()
                     .setWidthAndHeight(layoutParams.width, layoutParams.height)
-                    .setTransformation(mOtherTransformation)
+                    .setScaleType(ImageLoad.ScaleType.MASK)
+                    .setMaskResourceId(R.drawable.messages_left_bubble)
                     .build();
-            ImageLoader.loadUrl(context, imageView, imageInfo.getUrl(),
+            ImageLoadFactory.getImageLoad().loadImage(context, imageView, imageInfo.getUrl(),
                     R.drawable.messages_left_bubble, imageConfig);
 
             baseViewHolder.setText(R.id.tv_name, directMessage.getSender_screen_name());
@@ -210,11 +203,8 @@ public interface MessageDelegateProvider {
 
     public static class OutImageMessageDelegate extends OutMessageDelegate {
 
-        private final MaskTransformation mSelfTransformation;
-
         public OutImageMessageDelegate(OnItemPartViewClickListener onClickListener) {
             super(onClickListener);
-            mSelfTransformation = new MaskTransformation(EMApplication.getInstance(), R.drawable.messages_right_bubble);
         }
 
         @Override
@@ -234,12 +224,12 @@ public interface MessageDelegateProvider {
             layoutParams.width = imageInfo.getWidth();
             layoutParams.height = imageInfo.getHeight();
             imageView.setLayoutParams(layoutParams);
-            ImageLoader.ImageConfig imageConfig = new ImageLoader.ImageConfigBuild().
-                    setScaleType(ImageLoader.ScaleType.CENTER_CROP)
+            ImageLoad.ImageConfig imageConfig = new ImageLoad.ImageConfigBuild()
                     .setWidthAndHeight(layoutParams.width, layoutParams.height)
-                    .setTransformation(mSelfTransformation)
+                    .setScaleType(ImageLoad.ScaleType.MASK)
+                    .setMaskResourceId(R.drawable.messages_right_bubble)
                     .build();
-            ImageLoader.loadUrl(context, imageView, imageInfo.getUrl(),
+            ImageLoadFactory.getImageLoad().loadImage(context, imageView, imageInfo.getUrl(),
                     R.drawable.messages_right_bubble, imageConfig);
         }
 

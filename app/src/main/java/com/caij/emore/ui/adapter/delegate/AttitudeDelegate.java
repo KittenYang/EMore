@@ -4,7 +4,7 @@ import android.widget.ImageView;
 
 import com.caij.emore.R;
 import com.caij.emore.database.bean.User;
-import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.rvadapter.BaseViewHolder;
 
@@ -14,14 +14,8 @@ import com.caij.rvadapter.BaseViewHolder;
 
 public class AttitudeDelegate extends BaseItemViewDelegate<User> {
 
-    private final ImageLoader.ImageConfig mImageConfig;
-
     public AttitudeDelegate(OnItemPartViewClickListener onClickListener) {
         super(onClickListener);
-        mImageConfig = new ImageLoader.ImageConfigBuild().
-                setCircle(true).
-                setScaleType(ImageLoader.ScaleType.CENTER_CROP).
-                build();
     }
 
     @Override
@@ -33,8 +27,8 @@ public class AttitudeDelegate extends BaseItemViewDelegate<User> {
     public void convert(BaseViewHolder baseViewHolder, User user, int i) {
         baseViewHolder.setText(R.id.tv_name, user.getScreen_name());
         ImageView imageView = baseViewHolder.getView(R.id.iv_avatar);
-        ImageLoader.loadUrl(baseViewHolder.getConvertView().getContext() ,imageView, user.getAvatar_large(),
-                R.drawable.circle_image_placeholder, mImageConfig);
+        ImageLoadFactory.getImageLoad().loadImageCircle(baseViewHolder.getConvertView().getContext(),
+                imageView, user.getAvatar_large(), R.drawable.circle_image_placeholder);
     }
 
     @Override

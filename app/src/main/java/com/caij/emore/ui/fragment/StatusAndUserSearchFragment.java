@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.caij.emore.Key;
 import com.caij.emore.R;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.manager.imp.StatusManagerImp;
 import com.caij.emore.database.bean.User;
 import com.caij.emore.present.StatusAndUserSearchPresent;
@@ -20,7 +21,6 @@ import com.caij.emore.remote.imp.UserApiImp;
 import com.caij.emore.ui.fragment.weibo.TimeLineStatusFragment;
 import com.caij.emore.ui.view.StatusAndUserSearchView;
 import com.caij.emore.ui.activity.UserInfoActivity;
-import com.caij.emore.utils.ImageLoader;
 
 import java.util.List;
 
@@ -30,7 +30,6 @@ import java.util.List;
 public class StatusAndUserSearchFragment extends TimeLineStatusFragment<StatusAndUserSearchPresent> implements StatusAndUserSearchView {
 
     private LinearLayout mUserlinearLayout;
-    private ImageLoader.ImageConfig mUserImageConfig;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -49,9 +48,6 @@ public class StatusAndUserSearchFragment extends TimeLineStatusFragment<StatusAn
     private View createHeadUserView() {
         View headUserView = getActivity().getLayoutInflater().inflate(R.layout.item_search_head, xRecyclerView, false);
         mUserlinearLayout = (LinearLayout) headUserView.findViewById(R.id.ll_user);
-        mUserImageConfig = new ImageLoader.ImageConfigBuild().setCircle(true)
-                .setScaleType(ImageLoader.ScaleType.CENTER_CROP)
-                .build();
         return headUserView;
     }
 
@@ -85,7 +81,7 @@ public class StatusAndUserSearchFragment extends TimeLineStatusFragment<StatusAn
                 startActivity(intent);
             }
         });
-        ImageLoader.loadUrl(getActivity(), imageView, user.getAvatar_large(), R.drawable.circle_image_placeholder, mUserImageConfig);
+        ImageLoadFactory.getImageLoad().loadImageCircle(getActivity(), imageView, user.getAvatar_large(), R.drawable.circle_image_placeholder);
         return view;
     }
 

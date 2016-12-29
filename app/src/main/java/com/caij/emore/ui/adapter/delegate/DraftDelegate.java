@@ -6,8 +6,8 @@ import android.widget.ImageView;
 
 import com.caij.emore.R;
 import com.caij.emore.database.bean.Draft;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.utils.DateUtil;
-import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.rvadapter.BaseViewHolder;
 
@@ -39,7 +39,7 @@ public class DraftDelegate extends BaseItemViewDelegate<Draft> {
         if (draft.getImages() != null && draft.getImages().size() > 0) {
             baseViewHolder.setVisible(R.id.iv_image, true);
             ImageView imageView = baseViewHolder.getView(R.id.iv_image);
-            ImageLoader.load(context, imageView,
+            ImageLoadFactory.getImageLoad().loadImageCenterCrop(context, imageView,
                     "file://" + draft.getImages().get(0), R.drawable.weibo_image_placeholder);
         }else {
             baseViewHolder.setVisible(R.id.iv_image, false);

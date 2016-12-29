@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import com.caij.emore.R;
 import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.bean.StatusImageInfo;
-import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.image.ImageLoad;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.widget.weibo.ImageInterface;
@@ -28,8 +29,8 @@ public class StatusItemImageViewGroup extends ViewGroup implements View.OnClickL
 
     public static final float MAX_RADIO = 13 * 1.0f / 13;
 
-    public ImageLoader.ImageConfig mNormalImageConfig;
-    public ImageLoader.ImageConfig mLongAndGifImageConfig;
+    public ImageLoad.ImageConfig mNormalImageConfig;
+    public ImageLoad.ImageConfig mLongAndGifImageConfig;
 
     protected int mSpaceWidth;
     protected LinkedHashMap<String, StatusImageInfo> mImageInfoLinkedHashMap;
@@ -59,14 +60,14 @@ public class StatusItemImageViewGroup extends ViewGroup implements View.OnClickL
     }
 
     private void init(Context context) {
-        ImageLoader.ImageConfigBuild normalImageConfigBuild = new ImageLoader.ImageConfigBuild()
-                .setPriority(ImageLoader.Priority.LOW)
-                .setScaleType(ImageLoader.ScaleType.TOP);
-        mLongAndGifImageConfig = normalImageConfigBuild.build();
+        ImageLoad.ImageConfigBuild longAndGifConfigBuild = new ImageLoad.ImageConfigBuild()
+                .setPriority(ImageLoad.Priority.LOW)
+                .setScaleType(ImageLoad.ScaleType.TOP);
+        mLongAndGifImageConfig = longAndGifConfigBuild.build();
 
-        ImageLoader.ImageConfigBuild longAndGifConfigBuild = new ImageLoader.ImageConfigBuild()
-                .setScaleType(ImageLoader.ScaleType.CENTER_CROP);
-        mNormalImageConfig = longAndGifConfigBuild.build();
+        ImageLoad.ImageConfigBuild normalImageConfigBuild = new ImageLoad.ImageConfigBuild()
+                .setScaleType(ImageLoad.ScaleType.CENTER_CROP);
+        mNormalImageConfig = normalImageConfigBuild.build();
 
         addItemViews();
         mSpaceWidth = getResources().getDimensionPixelSize(R.dimen.weibo_image_space);
@@ -205,20 +206,20 @@ public class StatusItemImageViewGroup extends ViewGroup implements View.OnClickL
                 imgView.setUrl(imageInfo);
 
                 if (imgView.isLongImage() || imgView.isGif()) {
-                    ImageLoader.ImageConfig imageConfig  = processImageConfig(mLongAndGifImageConfig);
-                    ImageLoader.loadUrl(getContext(), imgView, url, R.drawable.weibo_image_placeholder, imageConfig);
+                    ImageLoad.ImageConfig imageConfig  = processImageConfig(mLongAndGifImageConfig);
+                    ImageLoadFactory.getImageLoad().loadImage(getContext(), imgView, url, R.drawable.weibo_image_placeholder, imageConfig);
                 } else {
-                    ImageLoader.ImageConfig imageConfig = processImageConfig(mNormalImageConfig);
-                    ImageLoader.loadUrl(getContext(), imgView, url, R.drawable.weibo_image_placeholder, imageConfig);
+                    ImageLoad.ImageConfig imageConfig = processImageConfig(mNormalImageConfig);
+                    ImageLoadFactory.getImageLoad().loadImage(getContext(), imgView, url, R.drawable.weibo_image_placeholder, imageConfig);
                 }
             }else {
                 //不可见的view 加载null 是为了在item复用imageview没有复用时关闭之前的请求
-                ImageLoader.loadUrl(getContext(), imgView, null, R.drawable.weibo_image_placeholder, mNormalImageConfig);
+                ImageLoadFactory.getImageLoad().loadImage(getContext(), imgView, null, R.drawable.weibo_image_placeholder, mNormalImageConfig);
             }
         }
     }
 
-    protected ImageLoader.ImageConfig processImageConfig(ImageLoader.ImageConfig imageConfig) {
+    protected ImageLoad.ImageConfig processImageConfig(ImageLoad.ImageConfig imageConfig) {
         return imageConfig;
     }
 

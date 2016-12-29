@@ -5,7 +5,7 @@ import android.widget.ImageView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.StatusImageInfo;
-import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.rvadapter.BaseViewHolder;
 
@@ -15,19 +15,17 @@ import com.caij.rvadapter.BaseViewHolder;
 
 public class StatusImageDelegate extends BaseItemViewDelegate<StatusImageInfo> {
 
-    private final ImageLoader.ImageConfig mImageConfig;
 
     public StatusImageDelegate(OnItemPartViewClickListener onClickListener) {
         super(onClickListener);
-        mImageConfig = new ImageLoader.ImageConfigBuild().
-                setScaleType(ImageLoader.ScaleType.CENTER_CROP).build();
     }
 
     @Override
     public void convert(BaseViewHolder baseViewHolder, StatusImageInfo statusImageInfo, int i) {
         Context context = baseViewHolder.getConvertView().getContext();
         ImageView imageView = baseViewHolder.getView(R.id.image_view);
-        ImageLoader.loadUrl(context, imageView, statusImageInfo.getBmiddle().getUrl(), R.drawable.weibo_image_placeholder, mImageConfig);
+        ImageLoadFactory.getImageLoad().loadImageCenterCrop(context, imageView,
+                statusImageInfo.getBmiddle().getUrl(), R.drawable.weibo_image_placeholder);
     }
 
     @Override

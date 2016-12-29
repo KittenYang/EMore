@@ -9,9 +9,9 @@ import android.widget.TextView;
 import com.caij.emore.R;
 import com.caij.emore.bean.PageInfo;
 import com.caij.emore.database.bean.Status;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.ui.activity.VideoViewPlayingActivity;
 import com.caij.emore.utils.DateUtil;
-import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.RatioRelativeLayout;
 
 import butterknife.BindView;
@@ -32,19 +32,16 @@ public class CompositePatternVideo {
     @BindView(R.id.rl_video)
     RatioRelativeLayout mRlVideo;
 
-    ImageLoader.ImageConfig mVideoImageConfig;
-
     public void setUp(View view) {
         ButterKnife.bind(this, view);
-        mVideoImageConfig = new ImageLoader.ImageConfigBuild()
-                .setScaleType(ImageLoader.ScaleType.CENTER_CROP)
-                .build();
     }
 
     public void setWeibo(Status weibo, Context context) {
         PageInfo pageInfo = weibo.getPage_info();
-        ImageLoader.loadUrl(context, mIvVideo, pageInfo.getPage_pic(),
-                R.drawable.weibo_image_placeholder, mVideoImageConfig);
+
+        ImageLoadFactory.getImageLoad().loadImageCenterCrop(context, mIvVideo, pageInfo.getPage_pic(),
+                R.drawable.weibo_image_placeholder);
+
         mTvVideoViewCount.setText(pageInfo.getMedia_info().getOnline_users());
         if (pageInfo.getMedia_info().getDuration() > 0) {
             mTvVideoDuring.setVisibility(View.VISIBLE);

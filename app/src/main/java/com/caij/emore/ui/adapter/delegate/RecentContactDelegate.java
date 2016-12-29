@@ -1,13 +1,12 @@
 package com.caij.emore.ui.adapter.delegate;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.MessageUser;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.utils.DateUtil;
-import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.rvadapter.BaseViewHolder;
 
@@ -17,14 +16,9 @@ import com.caij.rvadapter.BaseViewHolder;
 
 public class RecentContactDelegate extends BaseItemViewDelegate<MessageUser.UserListBean> {
 
-    private final ImageLoader.ImageConfig mImageConfig;
 
     public RecentContactDelegate(OnItemPartViewClickListener onClickListener) {
         super(onClickListener);
-        mImageConfig = new ImageLoader.ImageConfigBuild().
-                setScaleType(ImageLoader.ScaleType.CENTER_CROP)
-                .setCircle(true)
-                .build();
     }
 
     @Override
@@ -36,8 +30,8 @@ public class RecentContactDelegate extends BaseItemViewDelegate<MessageUser.User
     public void convert(BaseViewHolder baseViewHolder, MessageUser.UserListBean userBean, int i) {
         Context context = baseViewHolder.getConvertView().getContext();
         ImageView avatarImageView = baseViewHolder.getView(R.id.iv_icon);
-        ImageLoader.loadUrl(context, avatarImageView, userBean.getUser().getAvatar_large(),
-                R.drawable.circle_image_placeholder, mImageConfig);
+        ImageLoadFactory.getImageLoad().loadImageCircle(context, avatarImageView, userBean.getUser().getAvatar_large(),
+                R.drawable.circle_image_placeholder);
         baseViewHolder.setText(R.id.tv_name, userBean.getUser().getScreen_name());
         baseViewHolder.setText(R.id.tv_message, userBean.getDirect_message().getText());
         baseViewHolder.setText(R.id.tv_time, DateUtil.convWeiboDate(context, userBean.getDirect_message().getCreated_at().getTime()));

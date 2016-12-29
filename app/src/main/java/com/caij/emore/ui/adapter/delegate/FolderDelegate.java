@@ -1,12 +1,11 @@
 package com.caij.emore.ui.adapter.delegate;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.ImageFolder;
-import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.rvadapter.BaseViewHolder;
 
@@ -16,12 +15,8 @@ import com.caij.rvadapter.BaseViewHolder;
 
 public class FolderDelegate extends BaseItemViewDelegate<ImageFolder> {
 
-    private final ImageLoader.ImageConfig mImageConfig;
-
     public FolderDelegate(OnItemPartViewClickListener onClickListener) {
         super(onClickListener);
-        mImageConfig = new ImageLoader.ImageConfigBuild().
-                setScaleType(ImageLoader.ScaleType.CENTER_CROP).build();
     }
 
     @Override
@@ -34,7 +29,7 @@ public class FolderDelegate extends BaseItemViewDelegate<ImageFolder> {
         Context context = baseViewHolder.getConvertView().getContext();
         String path = "file://" + imageFolder.getImgPath();
         ImageView imageView = baseViewHolder.getView(R.id.imageView);
-        ImageLoader.loadUrl(context, imageView, path, R.drawable.weibo_image_placeholder, mImageConfig);
+        ImageLoadFactory.getImageLoad().loadImageCenterCrop(context, imageView, path, R.drawable.weibo_image_placeholder);
 
         baseViewHolder.setText(R.id.tv_folder_name, imageFolder.getName());
         baseViewHolder.setText(R.id.tv_folder_image_count, imageFolder.getCount() + context.getString(R.string.image_count));

@@ -13,8 +13,7 @@ import com.bumptech.glide.request.target.Target;
 import com.caij.emore.api.ex.SchedulerTransformer;
 import com.caij.emore.bean.ImageInfo;
 import com.caij.emore.bean.StatusImageInfo;
-import com.caij.emore.utils.ExecutorServicePool;
-import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.utils.ImageUtil;
 import com.caij.emore.utils.LogUtil;
 import com.caij.emore.utils.NavigationUtil;
@@ -26,7 +25,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import rx.Subscription;
 
@@ -136,7 +134,7 @@ public class StatusDetailItemImageViewGroupOf1BigImage extends ViewGroup impleme
         mGetImageFileSubscription = RxUtil.createDataObservable(new RxUtil.Provider<File>() {
                 @Override
                 public File getData() throws Exception {
-                    return ImageLoader.getFile(getContext(), imageInfo.getBmiddle().getUrl(),
+                    return ImageLoadFactory.getImageLoad().getFile(getContext(), imageInfo.getBmiddle().getUrl(),
                             Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
                 }
             }).compose(SchedulerTransformer.<File>create())

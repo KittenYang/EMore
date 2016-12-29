@@ -17,12 +17,12 @@ import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Comment;
 import com.caij.emore.bean.Emotion;
 import com.caij.emore.database.bean.Status;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.present.RepostWeiboPresent;
 import com.caij.emore.present.imp.RelayStatusPresentImp;
 import com.caij.emore.remote.imp.StatusApiImp;
 import com.caij.emore.ui.view.RelayStatusView;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.ToastUtil;
 import com.caij.emore.widget.emotion.EmotionEditText;
 
@@ -130,11 +130,14 @@ public class RelayStatusActivity extends PublishActivity<RepostWeiboPresent> imp
     }
 
     public void setWeibo(Status weibo, Comment comment) {
+        String imageUrl;
         if (TextUtils.isEmpty(weibo.getBmiddle_pic())) {
-            ImageLoader.load(this, imageView, weibo.getUser().getAvatar_large(), R.drawable.weibo_image_placeholder);
+            imageUrl = weibo.getUser().getAvatar_large();
         }else {
-            ImageLoader.load(this, imageView, weibo.getBmiddle_pic(), R.drawable.weibo_image_placeholder);
+            imageUrl = weibo.getBmiddle_pic();
         }
+
+        ImageLoadFactory.getImageLoad().loadImageCircle(this, imageView, imageUrl, R.drawable.weibo_image_placeholder);
 
         if (comment != null) {
             etContent.setText("//@" + comment.getUser().getName() + ":" + comment.getText());

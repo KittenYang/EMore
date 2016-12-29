@@ -6,7 +6,8 @@ import android.widget.ImageView;
 import com.caij.emore.R;
 import com.caij.emore.account.Account;
 import com.caij.emore.bean.AccountInfo;
-import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.image.ImageLoad;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.rvadapter.BaseViewHolder;
 
@@ -16,12 +17,8 @@ import com.caij.rvadapter.BaseViewHolder;
 
 public class AccountDelegate extends BaseItemViewDelegate<AccountInfo> {
 
-
-    private final ImageLoader.ImageConfig mAvatarImageConfig;
-
     public AccountDelegate(OnItemPartViewClickListener onClickListener) {
         super(onClickListener);
-        mAvatarImageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
     }
 
     @Override
@@ -32,8 +29,10 @@ public class AccountDelegate extends BaseItemViewDelegate<AccountInfo> {
     @Override
     public void convert(BaseViewHolder baseViewHolder, AccountInfo accountInfo, int i) {
         ImageView ivAvatar = baseViewHolder.getView(R.id.iv_avatar);
-        ImageLoader.loadUrl(baseViewHolder.getConvertView().getContext(), ivAvatar, accountInfo.getUser().getAvatar_large(),
-                R.drawable.circle_image_placeholder, mAvatarImageConfig);
+
+        ImageLoadFactory.getImageLoad().loadImageCircle(baseViewHolder.getConvertView().getContext(), ivAvatar,
+                accountInfo.getUser().getAvatar_large(), R.drawable.circle_image_placeholder);
+
         baseViewHolder.setText(R.id.tv_name, accountInfo.getUser().getName());
         baseViewHolder.setText(R.id.tv_desc, accountInfo.getUser().getDescription());
 

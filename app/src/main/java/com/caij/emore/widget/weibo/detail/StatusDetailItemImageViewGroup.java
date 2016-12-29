@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.caij.emore.bean.StatusImageInfo;
-import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.image.ImageLoad;
 import com.caij.emore.widget.weibo.list.StatusItemImageViewGroup;
 
 /**
@@ -50,14 +50,14 @@ public class StatusDetailItemImageViewGroup extends StatusItemImageViewGroup {
 
 
     @Override
-    protected ImageLoader.ImageConfig processImageConfig(ImageLoader.ImageConfig  imageConfig) {
+    protected ImageLoad.ImageConfig processImageConfig(ImageLoad.ImageConfig  imageConfig) {
         //详情页是一张图片的时候不存到内存中
         if (mPicIds == null || mPicIds.size() == 1) {
-            ImageLoader.ImageConfigBuild imageConfigBuild = ImageLoader.ImageConfigBuild.clone(imageConfig);
+            ImageLoad.ImageConfigBuild imageConfigBuild = ImageLoad.ImageConfigBuild.clone(imageConfig);
             imageConfigBuild.setSupportGif(true);
             imageConfigBuild.setCacheMemory(false);
             if (mImageInfoLinkedHashMap.get(mPicIds.get(0)).getBmiddle().getType().contains("gif")) {
-                imageConfigBuild.setDiskCacheStrategy(ImageLoader.CacheConfig.SOURCE);
+                imageConfigBuild.setDiskCacheStrategy(ImageLoad.DiskCacheConfig.SOURCE);
             }
             return imageConfigBuild.build();
         }else {

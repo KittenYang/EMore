@@ -20,13 +20,13 @@ import com.caij.emore.Key;
 import com.caij.emore.R;
 import com.caij.emore.account.UserPrefs;
 import com.caij.emore.bean.Emotion;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.manager.imp.DraftManagerImp;
 import com.caij.emore.database.bean.Draft;
 import com.caij.emore.present.StatusPublishPresent;
 import com.caij.emore.present.imp.StatusPublishPresentImp;
 import com.caij.emore.ui.view.StatusPublishView;
 import com.caij.emore.utils.DialogUtil;
-import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.utils.NavigationUtil;
 import com.caij.emore.utils.weibo.WeicoAuthUtil;
 import com.caij.rvadapter.BaseViewHolder;
@@ -82,7 +82,8 @@ public class PublishStatusActivity extends PublishActivity<StatusPublishPresent>
             @Override
             public void convert(BaseViewHolder baseViewHolder, String s, int i) {
                 ImageView imageView = baseViewHolder.getView(R.id.siv_image);
-                ImageLoader.load(PublishStatusActivity.this, imageView, s, R.drawable.weibo_image_placeholder);
+                ImageLoadFactory.getImageLoad().loadImageCenterCrop(PublishStatusActivity.this,
+                        imageView, s, R.drawable.weibo_image_placeholder);
             }
 
             @Override

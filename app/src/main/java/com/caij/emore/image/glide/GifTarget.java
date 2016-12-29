@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.caij.emore.utils.glide;
+package com.caij.emore.image.glide;
 
 import android.widget.ImageView;
 

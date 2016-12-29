@@ -10,7 +10,8 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.Article;
-import com.caij.emore.utils.ImageLoader;
+import com.caij.emore.image.ImageLoad;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.widget.RatioImageView;
 
 import org.jsoup.Jsoup;
@@ -71,11 +72,8 @@ public class ArticleHeadView extends RelativeLayout {
         Element faceElement = elements.get(0);
         Element userImgElement = faceElement.getElementsByTag("img").get(0);
         String userImgUrl = userImgElement.attr("src");
-        ImageLoader.ImageConfig ivAvatarImageConfig = new ImageLoader.ImageConfigBuild()
-                .setScaleType(ImageLoader.ScaleType.CENTER_CROP)
-                .setCircle(true)
-                .build();
-        ImageLoader.loadUrl(getContext(), ivAvatar, userImgUrl, R.drawable.circle_image_placeholder, ivAvatarImageConfig);
+        ImageLoadFactory.getImageLoad().loadImageCircle(getContext(), ivAvatar, userImgUrl,
+                R.drawable.circle_image_placeholder);
         tvUserName.setText(article.getData().getConfig().getAuthor());
 
         tvArticleTitle.setText(article.getData().getTitle());
@@ -86,9 +84,8 @@ public class ArticleHeadView extends RelativeLayout {
 
         tvArticleViewCount.setText("阅读 " + article.getData().getConfig().getRead_count());
 
-        ImageLoader.ImageConfig ivArticleImageConfig = new ImageLoader.ImageConfigBuild()
-                .setScaleType(ImageLoader.ScaleType.CENTER_CROP)
-                .build();
-        ImageLoader.loadUrl(getContext(), ivArticle, article.getData().getConfig().getImage(), R.drawable.weibo_image_placeholder, ivArticleImageConfig);
+
+        ImageLoadFactory.getImageLoad().loadImageCenterCrop(getContext(), ivArticle, article.getData().getConfig().getImage(),
+                R.drawable.weibo_image_placeholder);
     }
 }

@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.bean.Comment;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.utils.DateUtil;
-import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.recyclerview.OnItemPartViewClickListener;
 import com.caij.rvadapter.BaseViewHolder;
 
@@ -18,11 +18,8 @@ import com.caij.rvadapter.BaseViewHolder;
 
 public class CommentDelegate extends BaseItemViewDelegate<Comment> {
 
-    private final ImageLoader.ImageConfig mAvatarImageConfig;
-
     public CommentDelegate(OnItemPartViewClickListener onClickListener) {
         super(onClickListener);
-        mAvatarImageConfig = new ImageLoader.ImageConfigBuild().setCircle(true).build();
     }
 
     @Override
@@ -46,8 +43,8 @@ public class CommentDelegate extends BaseItemViewDelegate<Comment> {
 
         ImageView imageView = baseViewHolder.getView(R.id.imgPhoto);
 
-        ImageLoader.loadUrl(baseViewHolder.getConvertView().getContext(), imageView, comment.getUser().getAvatar_large(),
-                R.drawable.circle_image_placeholder, mAvatarImageConfig);
+        ImageLoadFactory.getImageLoad().loadImageCircle(baseViewHolder.getConvertView().getContext(),
+                imageView, comment.getUser().getAvatar_large(), R.drawable.circle_image_placeholder);
     }
 
     @Override

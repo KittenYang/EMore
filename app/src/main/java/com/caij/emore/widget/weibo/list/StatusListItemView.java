@@ -11,10 +11,10 @@ import android.widget.TextView;
 
 import com.caij.emore.R;
 import com.caij.emore.database.bean.Status;
+import com.caij.emore.image.ImageLoadFactory;
 import com.caij.emore.ui.activity.StatusDetailActivity;
 import com.caij.emore.ui.activity.publish.RelayStatusActivity;
 import com.caij.emore.utils.CountUtil;
-import com.caij.emore.utils.ImageLoader;
 import com.caij.emore.widget.weibo.StatusItemView;
 
 import butterknife.BindView;
@@ -78,7 +78,8 @@ public abstract class StatusListItemView extends StatusItemView {
         if (status.getTitle() != null && !isDetail) {
             llTitle.setVisibility(VISIBLE);
             tvTitle.setText(TextUtils.isEmpty(status.getTitle().getText()) ? "推荐" : status.getTitle().getText());
-            ImageLoader.load(getContext(), ivTitleIcon, status.getTitle().getIcon_url(), R.drawable.circle_image_placeholder);
+            ImageLoadFactory.getImageLoad().loadImageCenterCrop(getContext(), ivTitleIcon,
+                    status.getTitle().getIcon_url(), R.drawable.circle_image_placeholder);
         }else {
             llTitle.setVisibility(GONE);
         }

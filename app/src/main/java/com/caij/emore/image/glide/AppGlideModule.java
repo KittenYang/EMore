@@ -1,4 +1,4 @@
-package com.caij.emore.utils.glide;
+package com.caij.emore.image.glide;
 
 import android.content.Context;
 
@@ -10,7 +10,6 @@ import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.GlideModule;
 import com.bumptech.glide.request.target.ViewTarget;
-import com.caij.emore.EMApplication;
 import com.caij.emore.R;
 import com.caij.emore.utils.CacheUtils;
 import com.caij.emore.utils.okhttp.OkHttpClientProvider;
