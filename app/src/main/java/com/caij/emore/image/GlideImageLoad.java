@@ -17,6 +17,7 @@ import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapper;
 import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapperTransformation;
 import com.caij.emore.image.glide.CropCircleTransformation;
 import com.caij.emore.image.glide.MaskTransformation;
+import com.caij.emore.image.glide.TopTransformation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,6 +39,8 @@ public class GlideImageLoad implements ImageLoad {
 
     private SparseArray<Transformation<GifBitmapWrapper>> mMaskDrawableTransformationSparseArray;
     private SparseArray<Transformation<Bitmap>> mMaskBitmapTransformationSparseArray;
+    private TopTransformation topTransformation;
+    private GifBitmapWrapperTransformation drawableTop;
 
     public GlideImageLoad() {
         mMaskDrawableTransformationSparseArray = new SparseArray<>();
@@ -121,6 +124,20 @@ public class GlideImageLoad implements ImageLoad {
         return drawableFitCenter;
     }
 
+    private TopTransformation top(Context context) {
+        if (topTransformation == null) {
+            topTransformation = new TopTransformation(context);
+        }
+        return topTransformation;
+    }
+
+    private GifBitmapWrapperTransformation drawableTop(Context context) {
+        if (drawableTop == null) {
+            drawableTop = new GifBitmapWrapperTransformation(Glide.get(context).getBitmapPool(), top(context));
+        }
+        return drawableTop;
+    }
+
     private DiskCacheStrategy getDiskCacheType(int cacheType) {
         if(cacheType == DiskCacheConfig.All) {
             return DiskCacheStrategy.ALL;
@@ -192,6 +209,8 @@ public class GlideImageLoad implements ImageLoad {
             return centerCrop(context);
         }else if (imageConfig.getScaleType() == ScaleType.MASK) {
             return getMaskBitmapTransformation(context, imageConfig.getMaskResourceId());
+        }else if (imageConfig.getScaleType() == ScaleType.TOP) {
+            return top(context);
         }
         return centerCrop(context);
     }
@@ -205,6 +224,8 @@ public class GlideImageLoad implements ImageLoad {
             return drawableCenterCrop(context);
         }else if (imageConfig.getScaleType() == ScaleType.MASK) {
             return getMaskDrawableTransformation(context, imageConfig.getMaskResourceId());
+        }else if (imageConfig.getScaleType() == ScaleType.TOP) {
+            return drawableTop(context);
         }
         return drawableCenterCrop(context);
     }

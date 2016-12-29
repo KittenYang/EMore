@@ -130,6 +130,8 @@ public interface ImageLoad {
             imageConfigBuild.setPriority(imageConfig.priority);
             imageConfigBuild.setScaleType(imageConfig.scaleType);
             imageConfigBuild.setSupportGif(imageConfig.isSupportGif);
+            imageConfigBuild.setMaskResourceId(imageConfig.maskResourceId);
+            imageConfigBuild.setAnimate(imageConfig.isAnimate);
             return imageConfigBuild;
         }
 
